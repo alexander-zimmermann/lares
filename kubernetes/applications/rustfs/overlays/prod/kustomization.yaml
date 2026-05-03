@@ -63,7 +63,7 @@ patches:
             memory: 128Mi
           limits:
             cpu: 200m
-            memory: 512Mi
+            memory: 2Gi
 
   # RustFS API service with static IP and BGP advertisement
   - target:
