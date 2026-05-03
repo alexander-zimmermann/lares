@@ -2,8 +2,6 @@ version: "3"
 
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
-  PYTHON: "{{.ROOT_DIR}}/.venv/bin/python"
-  PIP: "{{.ROOT_DIR}}/.venv/bin/pip"
 
 includes:
   infra:
@@ -21,12 +19,11 @@ tasks:
         silent: true
 
   initialize:
-    desc: "initialize homelab project environment"
+    desc: "initialize lares project environment"
     summary: |
       Setup project dependencies and environment.
-      - Installs Homebrew packages (k8s-cli, tofu, omnictl, etc)
-      - Sets up Python virtualenv (.venv)
-      - Installs Python requirements (kustomize, pylint)
+      - Installs Homebrew packages (k8s-cli, tofu, omnictl, uv, etc)
+      - Installs pre-commit as an isolated uv tool (no in-repo venv)
       - Configures pre-commit hooks
     vars:
       FORMULAS: >-
@@ -41,29 +38,18 @@ tasks:
         nats-io/nats-tools/nsc
         actionlint
         yq
-      PACKAGES: >-
-        pre-commit
+        uv
     preconditions:
       - sh: command -v brew
         msg: |
           Homebrew is not installed. Please install Homebrew using the following command:
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      - sh: command -v python3
-        msg: |
-          Python3 is not installed. Please install Python3 using Homebrew:
-          brew install python3
     cmds:
       # Install System Packages
       - for:
           var: FORMULAS
           as: FORMULA
         cmd: "brew list {{.FORMULA}} >/dev/null 2>&1 || brew install {{.FORMULA}} >/dev/null 2>&1"
-      # Setup Python Environment
-      - test -d .venv || python3 -m venv .venv
-      - "{{.PIP}} install --upgrade pip >/dev/null 2>&1"
-      # Install Python Dependencies
-      - for:
-          var: PACKAGES
-          as: PACKAGE
-        cmd: "{{.PIP}} install {{.PACKAGE}} >/dev/null 2>&1"
-      - "{{.TASKFILE_DIR}}/.venv/bin/pre-commit install >/dev/null 2>&1"
+      # Install pre-commit as an isolated uv tool (lives in ~/.local/share/uv/tools/)
+      - uv tool install --quiet pre-commit
+      - pre-commit install >/dev/null 2>&1
