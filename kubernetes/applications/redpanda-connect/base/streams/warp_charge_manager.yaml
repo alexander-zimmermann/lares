@@ -60,6 +60,7 @@ output:
                     "payload": this.raw.format_json(),
                   }
               - parquet_encode:
+                  default_compression: zstd
                   schema:
                     - { name: time,    type: UTF8 }
                     - { name: subject, type: UTF8 }
