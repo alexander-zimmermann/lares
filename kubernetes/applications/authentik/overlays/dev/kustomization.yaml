@@ -41,7 +41,7 @@ replacements:
           index: 2
 
   # Blueprint env var injections — resolved at runtime via !Env tags in blueprints
-  - sourceValue: https://argocd.zimmermann.phd/auth/callback
+  - sourceValue: https://argocd.zimmermann.phd/api/dex/callback
     targets:
       - select:
           kind: Deployment

@@ -18,14 +18,14 @@ replacements:
           delimiter: "/"
           index: 2
 
-  # Replace the Authentik domain in the OIDC issuer URL for dev
+  # Replace the Authentik domain in the Dex upstream issuer URL for dev
   - sourceValue: "auth.zimmermann.phd"
     targets:
       - select:
           kind: ConfigMap
           name: argocd-cm
         fieldPaths:
-          - data.[oidc.config]
+          - data.[dex.config]
         options:
           delimiter: "/"
           index: 2

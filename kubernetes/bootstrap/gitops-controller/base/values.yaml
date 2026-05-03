@@ -18,18 +18,24 @@ configs:
     accounts.homepage: apiKey
     # ArgoCD server URL – PLACEHOLDER is replaced per environment via overlay replacements
     url: https://argocd.PLACEHOLDER
-    # OIDC via Authentik – PLACEHOLDER is replaced per environment via overlay replacements
-    oidc.config: |
-      name: Authentik
-      issuer: https://PLACEHOLDER/application/o/argocd/
-      clientID: argocd
-      clientSecret: $argocd-oidc-secret:oidc.authentik.clientSecret
-      requestedScopes:
-        - openid
-        - profile
-        - email
-        - groups
-      groupsClaim: groups
+    # OIDC via bundled Dex with Authentik upstream — PLACEHOLDER replaced per env
+    dex.config: |
+      connectors:
+        - type: oidc
+          id: authentik
+          name: Authentik
+          config:
+            issuer: https://PLACEHOLDER/application/o/argocd/
+            clientID: argocd
+            clientSecret: $argocd-oidc-secret:oidc.authentik.clientSecret
+            insecureEnableGroups: true
+            scopes:
+              - openid
+              - profile
+              - email
+              - groups
+            userIDKey: sub
+            userNameKey: name
 
   rbac:
     # Default role for authenticated users without a matching group
@@ -169,6 +175,6 @@ redis:
       cpu: 200m
       memory: 128Mi
 
-# Disable DEX server, as we are using Authentik as OIDC provider directly
+# Dex fronts Authentik as OIDC upstream — see configs.cm.[dex.config]
 dex:
-  enabled: false
+  enabled: true
