@@ -1,9 +1,4 @@
 fleet_vm:
-  ## Linux VM fleets
-  ubuntu_01:
-    template_id: vm_ubuntu_noble
-    vm_id: 1001
-
   ## Cluster management VM (Omni)
   cluster_mgmt_01:
     template_id: vm_ubuntu_noble_cluster_mgmt
