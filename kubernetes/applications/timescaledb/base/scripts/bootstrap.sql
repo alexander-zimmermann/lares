@@ -324,9 +324,10 @@ SELECT add_continuous_aggregate_policy('warp_meter_1h',
 -- =========================================================
 -- Native compression — segment_by chosen for the column the queries
 -- usually filter on; order_by time DESC matches "most recent first".
--- compress_after = 7 days keeps the live-write window uncompressed
--- (compressed chunks support inserts + upserts in TS 2.16+, but the
--- recent window stays cheaper for ad-hoc analytics).
+-- compress_after = 2 days aligns with the CAGG refresh window
+-- (start_offset => 2 days) so the materialization always reads from
+-- heap, while still leaving today + yesterday in the live-write window
+-- for cheap point lookups and late-arriving rows.
 -- =========================================================
 ALTER TABLE knx SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'ga',
@@ -356,15 +357,15 @@ ALTER TABLE warp_meter SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'meter_id',
     timescaledb.compress_orderby = 'time DESC');
 
-SELECT add_compression_policy('knx',                 INTERVAL '7 days');
-SELECT add_compression_policy('solaredge_inverter',  INTERVAL '7 days');
-SELECT add_compression_policy('solaredge_powerflow', INTERVAL '7 days');
-SELECT add_compression_policy('ems_esp',             INTERVAL '7 days');
-SELECT add_compression_policy('warp_system',         INTERVAL '7 days');
-SELECT add_compression_policy('warp_evse',           INTERVAL '7 days');
-SELECT add_compression_policy('warp_charge_manager', INTERVAL '7 days');
-SELECT add_compression_policy('warp_charge_tracker', INTERVAL '7 days');
-SELECT add_compression_policy('warp_meter',          INTERVAL '7 days');
+SELECT add_compression_policy('knx',                 INTERVAL '2 days');
+SELECT add_compression_policy('solaredge_inverter',  INTERVAL '2 days');
+SELECT add_compression_policy('solaredge_powerflow', INTERVAL '2 days');
+SELECT add_compression_policy('ems_esp',             INTERVAL '2 days');
+SELECT add_compression_policy('warp_system',         INTERVAL '2 days');
+SELECT add_compression_policy('warp_evse',           INTERVAL '2 days');
+SELECT add_compression_policy('warp_charge_manager', INTERVAL '2 days');
+SELECT add_compression_policy('warp_charge_tracker', INTERVAL '2 days');
+SELECT add_compression_policy('warp_meter',          INTERVAL '2 days');
 
 -- =========================================================
 -- Retention policies — 365d on every hot hypertable. Raw chunks past
