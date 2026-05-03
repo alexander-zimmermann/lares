@@ -1,5 +1,5 @@
 template_vm:
-  ## Linux VM templates
+  ## Standard Linux VM templates
   vm_debian_trixie:
     vm_id: 10000
     image_id: vm_debian_trixie
@@ -30,6 +30,7 @@ template_vm:
     ci_network_config: std_linux
     ci_meta_config: std_linux
 
+  ## Cluster management VM (Omni)
   vm_ubuntu_noble_cluster_mgmt:
     vm_id: 10005
     image_id: vm_ubuntu_noble
