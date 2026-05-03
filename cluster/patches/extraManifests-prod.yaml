@@ -3,6 +3,6 @@
 ###############################################################################
 cluster:
   extraManifests:
-    - "https://raw.githubusercontent.com/alexander-zimmermann/homelab/bootstrap/prod/cilium.yaml"
-    - "https://raw.githubusercontent.com/alexander-zimmermann/homelab/bootstrap/prod/argocd.yaml"
-    - "https://raw.githubusercontent.com/alexander-zimmermann/homelab/bootstrap/prod/talos-ccm.yaml"
+    - "https://raw.githubusercontent.com/alexander-zimmermann/lares/bootstrap/prod/cilium.yaml"
+    - "https://raw.githubusercontent.com/alexander-zimmermann/lares/bootstrap/prod/argocd.yaml"
+    - "https://raw.githubusercontent.com/alexander-zimmermann/lares/bootstrap/prod/talos-ccm.yaml"

@@ -4,7 +4,7 @@
 [![Kustomize](https://img.shields.io/badge/Kustomize-1A73E8?style=flat-square&logo=kubernetes&logoColor=white)](https://kustomize.io/)
 [![Sealed Secrets](https://img.shields.io/badge/Sealed%20Secrets-encrypted-2F855A?style=flat-square&logo=kubernetes&logoColor=white)](https://github.com/bitnami-labs/sealed-secrets)
 
-> **Layer 3 of [the homelab stack](../README.md).** Standard CNCF-compatible Kubernetes manifests, reconciled by Argo CD. Nothing Talos- or Proxmox-specific lives in here (except a tiny `talos-ccm` bootstrap bit). Drop this directory into k3s, kind, EKS, or whatever — it'll work.
+> **Layer 3 of [the Lares stack](../README.md).** Standard CNCF-compatible Kubernetes manifests, reconciled by Argo CD. Nothing Talos- or Proxmox-specific lives in here (except a tiny `talos-ccm` bootstrap bit). Drop this directory into k3s, kind, EKS, or whatever — it'll work.
 
 ## What this directory does
 
@@ -178,7 +178,7 @@ Everything else (ingress, certs, DNS, Argo CD, all 25+ apps) is portable.
 
 ### With Omni (this repo's default)
 
-Omni applies Cilium, Argo CD, and Talos-CCM automatically via [`extraManifests`](../cluster/patches/extraManifests-prod.yaml) during cluster creation — see [Layer 2 (cluster)](../cluster/README.md#bootstrap-sequence). The rendered manifests are continuously published to the [`bootstrap` branch](https://github.com/alexander-zimmermann/homelab/tree/bootstrap) by the [`cd-render-bootstrap.yaml`](../.github/workflows/cd-render-bootstrap.yaml) workflow — that's what Omni pulls.
+Omni applies Cilium, Argo CD, and Talos-CCM automatically via [`extraManifests`](../cluster/patches/extraManifests-prod.yaml) during cluster creation — see [Layer 2 (cluster)](../cluster/README.md#bootstrap-sequence). The rendered manifests are continuously published to the [`bootstrap` branch](https://github.com/alexander-zimmermann/lares/tree/bootstrap) by the [`cd-render-bootstrap.yaml`](../.github/workflows/cd-render-bootstrap.yaml) workflow — that's what Omni pulls.
 
 So once the cluster is up and `kubeconfig` is on your machine, there's only one step left:
 

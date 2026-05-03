@@ -4,7 +4,7 @@
 [![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fkubernetes_version&style=flat-square&logo=kubernetes&logoColor=white&color=blue&label=Kubernetes)](https://kubernetes.io/)
 [![Omni](https://img.shields.io/badge/Managed%20by-Omni-ff7300?style=flat-square&logo=sidero&logoColor=white)](https://omni.siderolabs.com/)
 
-> **Layer 2 of [the homelab stack](../README.md).** This is just cluster definition — machine shapes and Talos/Kubernetes versions. It has no opinion on what runs underneath (any infra provider works) or on top (standard Kubernetes manifests).
+> **Layer 2 of [the Lares stack](../README.md).** This is just cluster definition — machine shapes and Talos/Kubernetes versions. It has no opinion on what runs underneath (any infra provider works) or on top (standard Kubernetes manifests).
 
 ## What this directory does
 
@@ -75,7 +75,7 @@ This only makes sense in combination with [Layer 1 (infrastructure)](../infrastr
 2. **Omni sees them** — Machines register automatically and land in Omni as unassigned.
 3. **Register classes** — `task cluster:init` pushes [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml) to Omni.
 4. **Create the cluster** — `task cluster:create` syncs the template. Omni assigns machines to roles based on their specs matching the classes, hands out Talos configs, bootstraps etcd, signs certs.
-5. **Omni applies day-zero manifests** — via `extraManifests` in [`patches/extraManifests-prod.yaml`](patches/extraManifests-prod.yaml), Omni pulls the rendered Cilium, Argo CD, and Talos-CCM manifests from the [`bootstrap` branch](https://github.com/alexander-zimmermann/homelab/tree/bootstrap) and applies them to the new cluster. No manual `kubectl apply -k` required.
+5. **Omni applies day-zero manifests** — via `extraManifests` in [`patches/extraManifests-prod.yaml`](patches/extraManifests-prod.yaml), Omni pulls the rendered Cilium, Argo CD, and Talos-CCM manifests from the [`bootstrap` branch](https://github.com/alexander-zimmermann/lares/tree/bootstrap) and applies them to the new cluster. No manual `kubectl apply -k` required.
 6. **Fetch kubeconfig** — `task cluster:show` writes `kubeconfig` / `talosconfig` locally. Done.
 
 At this point [Layer 3 (kubernetes)](../kubernetes/README.md) takes over — `task k8s:init` seeds the sealed-secrets master key and Argo CD reconciles the rest.

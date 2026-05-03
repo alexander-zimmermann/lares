@@ -8,7 +8,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/alexander-zimmermann/homelab
+        repoURL: https://github.com/alexander-zimmermann/lares
         revision: HEAD
         # Scan Base Kustomizations to get annotations/namespace
         files:
@@ -27,7 +27,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/alexander-zimmermann/homelab
+        repoURL: https://github.com/alexander-zimmermann/lares
         targetRevision: HEAD
         # Construct path to overlays/{prod|dev}, where /(prod|dev) is appended via replacement
         path: kubernetes/applications/{{index .path.segments 2}}/overlays
