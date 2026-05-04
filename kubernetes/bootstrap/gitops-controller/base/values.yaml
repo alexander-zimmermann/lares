@@ -62,6 +62,12 @@ controller:
       labels:
         release: prometheus
 
+# Repo server renders manifests; livenessProbe default 1s is too tight for /healthz?full=true
+# (does git ls-remote on every registered repo) and caused restart storms on transient network blips.
+repoServer:
+  livenessProbe:
+    timeoutSeconds: 3
+
 # ApplicationSet controller generates Applications from generators (e.g. Git, List, Cluster, etc.)
 applicationSet:
   resources:
