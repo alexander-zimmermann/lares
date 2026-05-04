@@ -11,7 +11,7 @@ helmCharts:
   - name: k8s-monitoring
     repo: oci://ghcr.io/grafana/helm-charts
     releaseName: alloy
-    version: 4.0.5
+    version: 4.1.0
     valuesFile: values.yaml
     namespace: alloy
     includeCRDs: true
