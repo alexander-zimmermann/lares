@@ -18,20 +18,22 @@ spec:
     spec:
       serviceAccountName: argocd-sa-provisioner
       restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: dhi-registry-secret
       initContainers:
-        # Wait until ArgoCD is ready before provisioning
+        # Wait until ArgoCD is ready
         - name: wait-for-argocd
-          image: curlimages/curl:8.20.0
-          command: ["/bin/sh", "-c"]
+          image: dhi.io/curl:8-alpine3.23
+          command: ["curl"]
           args:
-            - |
-              until curl -sf "$ARGOCD_URL/healthz" >/dev/null; do
-                echo "Waiting for ArgoCD..."
-                sleep 3
-              done
-          env:
-            - name: ARGOCD_URL
-              value: "http://argocd-server.gitops-controller.svc.cluster.local"
+            - --silent
+            - --fail
+            - --retry-connrefused
+            - --retry-all-errors
+            - --retry=60
+            - --retry-delay=3
+            - --retry-max-time=300
+            - http://argocd-server.gitops-controller.svc.cluster.local/healthz
       containers:
         - name: provision
           image: alpine/k8s:1.36.0
