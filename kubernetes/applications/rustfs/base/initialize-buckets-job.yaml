@@ -22,16 +22,17 @@ spec:
       initContainers:
         - name: wait-for-rustfs
           image: dhi.io/curl:8-alpine3.23
-          command: ["/bin/sh", "-c"]
+          command: ["curl"]
           args:
-            - |
-              until curl -sSf "$RUSTFS_URL/health" >/dev/null; do
-                echo "Waiting for RustFS..."
-                sleep 3
-              done
-          env:
-            - name: RUSTFS_URL
-              value: "http://rustfs-svc.rustfs.svc.cluster.local:9000"
+            - --silent
+            - --show-error
+            - --fail
+            - --retry-connrefused
+            - --retry-all-errors
+            - --retry=60
+            - --retry-delay=3
+            - --retry-max-time=300
+            - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
       containers:
         - name: mc
           image: minio/mc:latest

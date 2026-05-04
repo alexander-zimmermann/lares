@@ -21,19 +21,19 @@ spec:
       imagePullSecrets:
         - name: dhi-registry-secret
       initContainers:
-        # Wait until Grafana is ready before provisioning
+        # Wait until Grafana is ready
         - name: wait-for-grafana
           image: dhi.io/curl:8-alpine3.23
-          command: ["/bin/sh", "-c"]
+          command: ["curl"]
           args:
-            - |
-              until curl -sf "$GRAFANA_URL/api/health" >/dev/null; do
-                echo "Waiting for Grafana..."
-                sleep 3
-              done
-          env:
-            - name: GRAFANA_URL
-              value: "http://grafana.grafana.svc.cluster.local"
+            - --silent
+            - --fail
+            - --retry-connrefused
+            - --retry-all-errors
+            - --retry=60
+            - --retry-delay=3
+            - --retry-max-time=300
+            - http://grafana.grafana.svc.cluster.local/api/health
       containers:
         - name: provision
           image: alpine/k8s:1.36.0
