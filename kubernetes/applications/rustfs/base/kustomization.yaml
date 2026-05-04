@@ -34,13 +34,6 @@ patches:
         path: /metadata/labels/bgp.cilium.io~1advertise-service
         value: default
 
-configMapGenerator:
-  - name: rustfs-bucket-init-script
-    options:
-      disableNameSuffixHash: true
-    files:
-      - scripts/initialize-rustfs-buckets.sh
-
 labels:
   - includeSelectors: false
     pairs:
