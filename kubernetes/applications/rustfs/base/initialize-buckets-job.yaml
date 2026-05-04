@@ -43,7 +43,12 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
             readOnlyRootFilesystem: true
-          command: ["/bin/sh", "/scripts/initialize-rustfs-buckets.sh"]
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              for B in $BUCKETS; do
+                rclone mkdir "rustfs:$B"
+              done
           env:
             - name: BUCKETS
               value: "authentik-backups longhorn-backups timescaledb-backups nats-archive"
@@ -73,14 +78,8 @@ spec:
               cpu: "200m"
               memory: "128Mi"
           volumeMounts:
-            - name: scripts
-              mountPath: /scripts
             - name: tmp
               mountPath: /tmp
       volumes:
-        - name: scripts
-          configMap:
-            name: rustfs-bucket-init-script
-            defaultMode: 0555
         - name: tmp
           emptyDir: {}
