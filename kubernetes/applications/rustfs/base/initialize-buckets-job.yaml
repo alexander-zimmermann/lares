@@ -34,8 +34,8 @@ spec:
             - --retry-max-time=300
             - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
       containers:
-        - name: mc
-          image: minio/mc:latest
+        - name: rclone
+          image: rclone/rclone:1.74.0
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
@@ -45,16 +45,22 @@ spec:
             readOnlyRootFilesystem: true
           command: ["/bin/sh", "/scripts/initialize-rustfs-buckets.sh"]
           env:
-            - name: RUSTFS_URL
-              value: "http://rustfs-svc.rustfs.svc.cluster.local:9000"
             - name: BUCKETS
               value: "authentik-backups longhorn-backups timescaledb-backups nats-archive"
-            - name: ACCESS_KEY
+            - name: RCLONE_CONFIG_RUSTFS_TYPE
+              value: s3
+            - name: RCLONE_CONFIG_RUSTFS_PROVIDER
+              value: Other
+            - name: RCLONE_CONFIG_RUSTFS_ENDPOINT
+              value: "http://rustfs-svc.rustfs.svc.cluster.local:9000"
+            - name: RCLONE_CONFIG_RUSTFS_FORCE_PATH_STYLE
+              value: "true"
+            - name: RCLONE_CONFIG_RUSTFS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   name: rustfs-admin-credentials
                   key: RUSTFS_ACCESS_KEY
-            - name: SECRET_KEY
+            - name: RCLONE_CONFIG_RUSTFS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: rustfs-admin-credentials
