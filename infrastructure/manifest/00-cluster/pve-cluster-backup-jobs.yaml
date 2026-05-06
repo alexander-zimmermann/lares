@@ -5,5 +5,4 @@ pve_cluster_backup_jobs:
     mode: snapshot
     compress: zstd
     vmids:
-      - 1001 # ubuntu_01
       - 1100 # windows_01
