@@ -5,7 +5,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/knx-nats-bridge
-    tag: 0.1.4
+    tag: 0.3.1
     pullPolicy: IfNotPresent
 
   # KNX tunnel allows only one connection per credential; never run two replicas.
@@ -27,8 +27,8 @@ deployment:
     # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
     NATS_NKEY_SEED_FILE:
       value: /etc/knx-nats-bridge/nkey-seed
-    KNX_NATS_MAPPING_PATH:
-      value: /etc/knx-nats-bridge/ga-mapping.yaml
+    KNX_NATS_CATALOG_PATH:
+      value: /etc/knx-nats-bridge/knx-catalog.yaml
     KNX_NATS_UNMAPPED_POLICY:
       value: skip
     LOG_FORMAT:
@@ -39,17 +39,17 @@ deployment:
       value: Europe/Berlin
 
   volumes:
-    mapping:
+    catalog:
       configMap:
-        name: knx-nats-bridge-mapping
+        name: knx-nats-bridge-catalog
     nats-credentials:
       secret:
         secretName: knx-nats-bridge-credentials
 
   volumeMounts:
-    mapping:
-      mountPath: /etc/knx-nats-bridge/ga-mapping.yaml
-      subPath: ga-mapping.yaml
+    catalog:
+      mountPath: /etc/knx-nats-bridge/knx-catalog.yaml
+      subPath: knx-catalog.yaml
     nats-credentials:
       mountPath: /etc/knx-nats-bridge/nkey-seed
       subPath: nkey-seed

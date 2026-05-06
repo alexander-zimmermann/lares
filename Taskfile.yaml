@@ -2,6 +2,8 @@ version: "3"
 
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
+  KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
+  KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/knx-catalog.yaml"
 
 includes:
   infra:
@@ -11,6 +13,8 @@ includes:
     taskfile: ./tasks/kubernetes.yaml
   cluster:
     taskfile: ./tasks/cluster.yaml
+  knx:
+    taskfile: ./tasks/knx.yaml
 
 tasks:
   default:

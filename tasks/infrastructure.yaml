@@ -5,7 +5,6 @@ tasks:
     desc: "initialize tofu modules"
     summary: |
       Initialize OpenTofu modules.
-      Underlying command: tofu init
     preconditions:
       - sh: command -v tofu
         msg: "OpenTofu (tofu) is not installed"
@@ -22,7 +21,6 @@ tasks:
     desc: "apply infrastructure resources"
     summary: |
       Create or update infrastructure resources.
-      Underlying command: tofu apply
     sources:
       - tfplan
     generates:
@@ -39,7 +37,6 @@ tasks:
     desc: "destroy infrastructure resources"
     summary: |
       Destroy all infrastructure resources.
-      Underlying command: tofu destroy
     preconditions:
       - sh: command -v tofu
         msg: "OpenTofu (tofu) is not installed"
@@ -52,7 +49,6 @@ tasks:
     desc: "show infrastructure drift"
     summary: |
       Check for configuration drift.
-      Underlying command: tofu plan
     generates:
       - tfplan
     preconditions:
@@ -67,7 +63,6 @@ tasks:
     desc: "show infrastructure outputs"
     summary: |
       Display infrastructure outputs.
-      Underlying command: tofu output
     preconditions:
       - sh: command -v tofu
         msg: "OpenTofu (tofu) is not installed"

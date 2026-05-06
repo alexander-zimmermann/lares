@@ -8,7 +8,6 @@ tasks:
       - Creates the sealed-secrets-controller namespace
       - Injects the Sealed Secrets master key
       - Injects DHI registry credentials into sealed-secrets-controller and kube-system
-      Underlying command: kubectl apply
     preconditions:
       - sh: command -v kubectl
         msg: "kubectl is not installed"
@@ -34,7 +33,6 @@ tasks:
     summary: |
       Delete all managed namespaces and wait for termination.
       Force-removes finalizers on stuck namespaces.
-      Underlying command: kubectl delete ns
     vars:
       COMPONENTS_DIR: "kubernetes/components"
       MANAGED_NAMESPACES:
@@ -70,7 +68,6 @@ tasks:
     desc: "verify cluster health"
     summary: |
       Verify cluster health and connectivity.
-      Underlying command: kubectl get nodes/pods, cilium status
     preconditions:
       - sh: command -v kubectl
         msg: "kubectl is not installed"
@@ -85,7 +82,6 @@ tasks:
     desc: "show admin credentials"
     summary: |
       Show important cluster secrets (ArgoCD admin).
-      Underlying command: kubectl get secret
     vars:
       ARGOCD_PASSWORD:
         sh: kubectl get secret/argocd-initial-admin-secret -n gitops-controller -o jsonpath='{.data.password}' | base64 -d
@@ -100,7 +96,6 @@ tasks:
     summary: |
       Seals a secret.yaml and writes sealed-secret.yaml into the same directory.
       Arguments: [path/to/secret.yaml]
-      Underlying command: kubeseal --cert master-key.yaml
     vars:
       INPUT: "{{index .CLI_ARGS_LIST 0}}"
       DIR:
@@ -128,7 +123,6 @@ tasks:
     summary: |
       Decrypts a sealed-secret.yaml back to plaintext secret.yaml in the same directory.
       Arguments: [path/to/sealed-secret.yaml]
-      Underlying command: kubeseal --recovery-unseal --recovery-private-key master-key.yaml
     vars:
       INPUT: "{{index .CLI_ARGS_LIST 0}}"
       DIR:
