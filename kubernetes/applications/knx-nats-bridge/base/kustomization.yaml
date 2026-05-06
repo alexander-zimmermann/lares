@@ -16,11 +16,11 @@ helmCharts:
       - monitoring.coreos.com/v1
 
 configMapGenerator:
-  - name: knx-nats-bridge-mapping
+  - name: knx-nats-bridge-catalog
     options:
       disableNameSuffixHash: true
     files:
-      - ga-mapping.yaml=config/ga-mapping.yaml
+      - knx-catalog.yaml=config/knx-catalog.yaml
 
 labels:
   - includeSelectors: false

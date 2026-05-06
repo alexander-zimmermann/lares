@@ -6,6 +6,7 @@ resources:
   - ./namespace.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
+  - ./import-knx-catalog-job.yaml
 
 helmCharts:
   - name: application

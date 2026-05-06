@@ -1,0 +1,67 @@
+version: "3"
+
+# Tasks for the KNX catalog pipeline. Paths come from Taskfile.yaml vars:
+#   KNX_BRIDGE_DIR    — sibling repo holding knxproj-to-yaml and the schema
+#   KNX_CATALOG_PATH  — destination ConfigMap source file in lares
+#   SCRIPTS_DIR       — lares scripts/
+
+tasks:
+  catalog:
+    desc: "rebuild knx-catalog.yaml from an ETS project export [path/to/project.knxproj]"
+    summary: |
+      Run the full pipeline — extract the raw catalog from the .knxproj via
+      xknxproject, then apply project-specific enrichment.
+      Arguments: [path/to/project.knxproj]
+      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+    cmds:
+      - task: generate-catalog
+        vars:
+          CLI_ARGS: "{{.CLI_ARGS}}"
+      - task: enrich-catalog
+
+  generate-catalog:
+    desc: "extract raw knx-catalog.yaml from an ETS project export (no enrichment) [path/to/project.knxproj]"
+    summary: |
+      Run knxproj-to-yaml against the supplied .knxproj and write the raw catalog into the ConfigMap
+      source file.
+      Arguments: [path/to/project.knxproj]
+      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+    vars:
+      KNXPROJ: "{{index .CLI_ARGS_LIST 0}}"
+    requires:
+      vars:
+        - KNXPROJ
+    preconditions:
+      - sh: test -f "{{.KNXPROJ}}"
+        msg: "'{{.KNXPROJ}}' not found"
+    cmds:
+      - uv run --directory {{.KNX_BRIDGE_DIR}} --extra tools knxproj-to-yaml
+        --input {{.KNXPROJ}}
+        --output {{.KNX_CATALOG_PATH}}
+        {{if .KNXPROJ_PASSWORD}}--password '{{.KNXPROJ_PASSWORD}}'{{end}}
+
+  enrich-catalog:
+    desc: "apply project-specific enrichment to knx-catalog.yaml"
+    summary: |
+      Normalise ETS Building-style room names, backfill missing room/function from the dotted GA
+      name, and drop ETS auto-generated descriptions. Configuration (floor tokens, regex) lives in
+      scripts/knx_enrich_catalog.py.
+    vars:
+      ENRICH_SCRIPT: "{{.SCRIPTS_DIR}}/knx_enrich_catalog.py"
+    cmds:
+      - "{{.ENRICH_SCRIPT}} {{.KNX_CATALOG_PATH}}"
+
+  validate-catalog:
+    desc: "validate knx-catalog.yaml against the JSON-Schema"
+    summary: |
+      Check the rendered ConfigMap source against the upstream JSON-Schema.
+    vars:
+      SCHEMA: "{{.KNX_BRIDGE_DIR}}/src/knx_nats_bridge/_schemas/knx-catalog.schema.json"
+    cmds:
+      - >
+        uv run --directory {{.KNX_BRIDGE_DIR}} python -c
+        "import json, yaml, jsonschema;
+        schema = json.load(open('{{.SCHEMA}}'));
+        data   = yaml.safe_load(open('{{.KNX_CATALOG_PATH}}'));
+        jsonschema.validate(data, schema);
+        print(f'OK: {len(data)} entries valid')"

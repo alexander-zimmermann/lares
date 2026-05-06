@@ -50,3 +50,6 @@ build/
 
 # --- KI ---
 .claude/
+
+# --- KNX ---
+*.knxproj

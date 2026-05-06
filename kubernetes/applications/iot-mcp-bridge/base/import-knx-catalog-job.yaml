@@ -1,0 +1,65 @@
+# PostSync Job that imports the KNX catalog (group address → name/room/
+# function/description) from the cloned knx-nats-bridge-catalog ConfigMap
+# into the `knx_catalog` Postgres table. Uses admin credentials (homelab
+# role) — the read-only role the MCP server runs with cannot write.
+# Idempotent: re-runs only update changed rows and purge stale ones.
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: iot-mcp-bridge-import-knx-catalog
+  namespace: iot-mcp-bridge
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: importer
+          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.5.1
+          command: ["python", "-m", "iot_mcp_bridge.cli.import_knx_catalog"]
+          args:
+            - --catalog-path=/etc/iot-mcp-bridge/knx-catalog.yaml
+          env:
+            - name: MCP_DB_HOST
+              value: timescaledb-db-rw.timescaledb.svc.cluster.local
+            - name: MCP_DB_PORT
+              value: "5432"
+            - name: MCP_DB_NAME
+              value: homelab
+            - name: MCP_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-db-app
+                  key: username
+            - name: MCP_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: timescaledb-db-app
+                  key: password
+            - name: MCP_AUTH_ENABLED
+              value: "false"
+            - name: TZ
+              value: Europe/Berlin
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: catalog
+              mountPath: /etc/iot-mcp-bridge/knx-catalog.yaml
+              subPath: knx-catalog.yaml
+              readOnly: true
+      volumes:
+        - name: catalog
+          configMap:
+            name: knx-nats-bridge-catalog
+            defaultMode: 0444

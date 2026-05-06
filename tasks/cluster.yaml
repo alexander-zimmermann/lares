@@ -5,7 +5,6 @@ tasks:
     desc: "register machine classes"
     summary: |
       Register Machine Classes in Omni.
-      Underlying command: omnictl apply
     sources:
       - "cluster/homelab-machine-classes.yaml"
     preconditions:
@@ -22,7 +21,6 @@ tasks:
     summary: |
       Sync local cluster template with Omni.
       Arguments: [env] (default: prod)
-      Underlying command: omnictl cluster template sync
     vars:
       ENVIRONMENT: "{{if gt (len .CLI_ARGS_LIST) 0}}{{index .CLI_ARGS_LIST 0}}{{else}}prod{{end}}"
       MANIFEST: "homelab-cluster-{{.ENVIRONMENT}}.yaml"
@@ -44,7 +42,6 @@ tasks:
     summary: |
       Show status of the cluster in Omni.
       Arguments: [env] (default: prod)
-      Underlying command: omnictl cluster status
     vars:
       ENVIRONMENT: "{{if gt (len .CLI_ARGS_LIST) 0}}{{index .CLI_ARGS_LIST 0}}{{else}}prod{{end}}"
     requires:
@@ -62,7 +59,6 @@ tasks:
     summary: |
       Download kubeconfig and talosconfig.
       Arguments: [env] (default: prod)
-      Underlying command: omnictl kubeconfig / talosconfig
     vars:
       ENVIRONMENT: "{{if gt (len .CLI_ARGS_LIST) 0}}{{index .CLI_ARGS_LIST 0}}{{else}}prod{{end}}"
     requires:

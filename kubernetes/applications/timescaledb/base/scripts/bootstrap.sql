@@ -383,6 +383,30 @@ SELECT add_retention_policy('warp_charge_tracker', INTERVAL '365 days');
 SELECT add_retention_policy('warp_meter',          INTERVAL '365 days');
 
 -- =========================================================
+-- KNX catalog — GA → name/room/function/description lookup,
+-- populated by the iot-mcp-bridge import-knx-catalog Job from
+-- the knx-nats-bridge ConfigMap. The `knx_catalog_view` view
+-- joins `knx` against the catalog so MCP tools can filter / group by
+-- room or function in plain SQL.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS knx_catalog (
+    ga          TEXT PRIMARY KEY,
+    name        TEXT NOT NULL,
+    room        TEXT,
+    function    TEXT,
+    description TEXT,
+    dpt         TEXT NOT NULL,
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS knx_catalog_room_idx     ON knx_catalog (room) WHERE room IS NOT NULL;
+CREATE INDEX IF NOT EXISTS knx_catalog_function_idx ON knx_catalog (function);
+
+CREATE OR REPLACE VIEW knx_catalog_view AS
+SELECT k.time, k.ga, k.knx_main, k.knx_middle, k.knx_sub, k.dpt, k.value,
+       n.name AS ga_name, n.room, n.function, n.description
+FROM knx k LEFT JOIN knx_catalog n USING (ga);
+
+-- =========================================================
 -- Transfer ownership from `postgres` (CNPG runs initdb as superuser)
 -- to the application user `homelab`, so it can issue table-level GRANTs.
 -- =========================================================
@@ -395,5 +419,9 @@ BEGIN
     END LOOP;
     FOR r IN SELECT view_name FROM timescaledb_information.continuous_aggregates LOOP
         EXECUTE format('ALTER MATERIALIZED VIEW public.%I OWNER TO homelab', r.view_name);
+    END LOOP;
+    -- Plain views need their own loop — pg_views excludes hypertable views.
+    FOR r IN SELECT viewname FROM pg_views WHERE schemaname = 'public' LOOP
+        EXECUTE format('ALTER VIEW public.%I OWNER TO homelab', r.viewname);
     END LOOP;
 END$$;
