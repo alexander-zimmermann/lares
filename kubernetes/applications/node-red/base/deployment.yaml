@@ -50,7 +50,7 @@ spec:
               mountPath: /data
       containers:
         - name: node-red
-          image: docker.io/nodered/node-red:4.1.8
+          image: docker.io/nodered/node-red:4.1.9
           imagePullPolicy: IfNotPresent
           args:
             - --settings
