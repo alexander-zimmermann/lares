@@ -50,6 +50,18 @@ deployment:
       cpu: 200m
       memory: 256Mi
 
+  # grafana/smtprelay image ships without a non-root USER — pin UID/GID explicitly so
+  # the chart's runAsNonRoot default is satisfied. Listening on 2525 is non-privileged.
+  containerSecurityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+
+  # Pod-level fsGroup so the mounted ConfigMap and Secret are group-readable by the non-root user.
+  securityContext:
+    fsGroup: 65534
+
 # LoadBalancer with BGP advertisement via Cilium — static IP injected per environment via overlay
 service:
   enabled: true
