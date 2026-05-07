@@ -1,0 +1,102 @@
+applicationName: fritz-exporter
+
+deployment:
+  enabled: true
+  # Single instance is sufficient; fritz-exporter is stateless and scrapes one FritzBox.
+  replicas: 1
+  image:
+    repository: docker.io/pdreker/fritz_exporter
+    tag: 2.6.2
+    pullPolicy: IfNotPresent
+
+  args:
+    - --config=/etc/fritz-exporter.yml
+
+  volumes:
+    # Non-secret exporter config from ConfigMap (kustomize hash-suffix is auto-resolved by reference rewrite).
+    fritz-exporter-config:
+      configMap:
+        name: fritz-exporter-config
+    # FritzBox credentials (password_file reference in config).
+    fritz-exporter-credentials:
+      secret:
+        secretName: fritz-exporter-credentials
+
+  volumeMounts:
+    # Mount the exporter config at the expected path.
+    fritz-exporter-config:
+      mountPath: /etc/fritz-exporter.yml
+      subPath: fritz-exporter.yaml
+      readOnly: true
+    # Credentials directory (read-only); referenced via password_file in config.
+    fritz-exporter-credentials:
+      mountPath: /etc/fritz-exporter/secrets
+      readOnly: true
+
+  ports:
+    - name: metrics
+      containerPort: 9787
+      protocol: TCP
+
+  # Consider the exporter ready when it serves the metrics endpoint.
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 30
+    timeoutSeconds: 25
+    failureThreshold: 3
+
+  # Restart if the metrics endpoint stops responding.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 60
+    timeoutSeconds: 25
+    failureThreshold: 5
+
+  resources:
+    # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  # pdreker/fritz_exporter image runs as root by default — pin UID/GID explicitly so
+  # the chart's runAsNonRoot default is satisfied. Listening on 9787 is non-privileged.
+  containerSecurityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+
+  # Pod-level fsGroup so the mounted ConfigMap and Secret are group-readable by the non-root user.
+  securityContext:
+    fsGroup: 65534
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 9787
+      protocol: TCP
+      targetPort: metrics
+
+# Prometheus scrapes fritz-exporter for FritzBox metrics (uplink/downlink, WiFi, etc.).
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 60s
+      scrapeTimeout: 20s

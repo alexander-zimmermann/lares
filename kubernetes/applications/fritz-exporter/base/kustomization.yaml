@@ -4,10 +4,17 @@ kind: Kustomization
 namespace: fritz-exporter
 resources:
   - ./namespace.yaml
-  - ./deployment.yaml
-  - ./service.yaml
-  - ./servicemonitor.yaml
   - ./sealed-secret.yaml
+
+helmCharts:
+  - name: application
+    repo: https://stakater.github.io/stakater-charts
+    releaseName: fritz-exporter
+    version: 6.16.1
+    valuesFile: values.yaml
+    namespace: fritz-exporter
+    apiVersions:
+      - monitoring.coreos.com/v1
 
 configMapGenerator:
   - name: fritz-exporter-config
