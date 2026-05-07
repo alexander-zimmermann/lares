@@ -1,4 +1,3 @@
-# Override chart's default resource naming (`application`) — everything gets prefixed `gatus`
 applicationName: gatus
 
 deployment:
@@ -28,6 +27,16 @@ deployment:
         limits:
           cpu: 100m
           memory: 64Mi
+      # Distroless image ships without USER — pin non-root identity to satisfy PodSecurity restricted
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
 
   env:
     # Directory mode: Gatus merges all YAMLs in /config (static config.yaml + sidecar-written gatus-sidecar.yaml)
@@ -110,10 +119,16 @@ deployment:
     runAsGroup: 65534
     runAsNonRoot: true
     readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
 
   # Pod-level fsGroup so mounted volumes (emptyDir + ConfigMap subPath) are group-readable by the non-root user
   securityContext:
     fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
 
 # LoadBalancer with BGP advertisement via Cilium — static IP injected per environment via overlay
 service:
