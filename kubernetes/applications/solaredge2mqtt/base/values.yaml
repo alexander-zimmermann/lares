@@ -46,16 +46,12 @@ deployment:
       cpu: 200m
       memory: 256Mi
 
-  # Image runs as root by default — pin a non-root UID so the chart's runAsNonRoot default holds.
+  # Image entrypoint runs as root, chown's /app/cache, then `su`'s to the solaredge2mqtt
+  # user (UID 1000). The chart's runAsNonRoot default would block kubelet startup —
+  # turn it off; readOnlyRootFilesystem must also stay false for the chown to succeed.
   containerSecurityContext:
-    runAsUser: 65534
-    runAsGroup: 65534
-    runAsNonRoot: true
-    readOnlyRootFilesystem: true
-
-  # Pod-level fsGroup so the mounted ConfigMap, Secret and emptyDir are group-writable for nobody.
-  securityContext:
-    fsGroup: 65534
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
 
 # No Service / no Probes — solaredge2mqtt is an outbound-only MQTT publisher.
 service:
