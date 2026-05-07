@@ -1,4 +1,3 @@
-# Override chart's default resource naming (`application`) — everything gets prefixed `kromgo`
 applicationName: kromgo
 
 deployment:

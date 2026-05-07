@@ -1,4 +1,3 @@
-# Override chart's default resource naming (`application`)
 applicationName: knx-nats-bridge
 
 deployment:
