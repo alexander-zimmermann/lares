@@ -1,0 +1,132 @@
+applicationName: homepage
+
+deployment:
+  enabled: true
+  replicas: 1
+  # Recreate avoids Multi-Attach errors on the homepage-images RWO PVC — old pod must terminate before new one starts.
+  strategy:
+    type: Recreate
+
+  image:
+    repository: ghcr.io/gethomepage/homepage
+    tag: v1.12.3
+    pullPolicy: IfNotPresent
+
+  env:
+    # Required for Kubernetes liveness probes — pod IP must be in HOMEPAGE_ALLOWED_HOSTS.
+    MY_POD_IP:
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    # Domain injected via overlay replacement (delimiter: ",", index: 1).
+    HOMEPAGE_ALLOWED_HOSTS:
+      value: "$(MY_POD_IP):3000,PLACEHOLDER"
+    # Authentik API token — cloned from authentik namespace by Kyverno.
+    HOMEPAGE_VAR_AUTHENTIK_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: authentik-homepage-token
+          key: AUTHENTIK_HOMEPAGE_API_TOKEN
+    # Grafana admin credentials — cloned from grafana namespace by Kyverno.
+    HOMEPAGE_VAR_GRAFANA_USERNAME:
+      valueFrom:
+        secretKeyRef:
+          name: grafana-admin-credentials
+          key: admin-user
+    HOMEPAGE_VAR_GRAFANA_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: grafana-admin-credentials
+          key: admin-password
+    # ArgoCD API token — provisioned by post-sync job, cloned by Kyverno.
+    HOMEPAGE_VAR_ARGOCD_TOKEN:
+      valueFrom:
+        secretKeyRef:
+          name: argocd-homepage-token
+          key: token
+    # CrowdSec widget username — static value, matches machine name in CrowdSec LAPI.
+    HOMEPAGE_VAR_CROWDSEC_USERNAME:
+      value: "homepage"
+
+  envFrom:
+    # Proxmox, Unifi, and other API credentials. nameSuffix combines with applicationName → "homepage-secrets".
+    homepage-secrets:
+      type: secret
+      nameSuffix: secrets
+
+  volumes:
+    homepage-config:
+      configMap:
+        name: homepage-config
+    homepage-icons:
+      configMap:
+        name: homepage-icons
+    homepage-images:
+      persistentVolumeClaim:
+        claimName: homepage-images
+    homepage-logs:
+      emptyDir: {}
+
+  volumeMounts:
+    homepage-config:
+      mountPath: /app/config
+    homepage-icons:
+      mountPath: /app/public/icons
+    homepage-images:
+      mountPath: /app/public/images
+    homepage-logs:
+      mountPath: /app/logs
+
+  ports:
+    - containerPort: 3000
+      name: http
+      protocol: TCP
+
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /api/healthcheck
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 15
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 512Mi
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    seccompProfile:
+      type: RuntimeDefault
+
+  securityContext:
+    fsGroup: 1000
+
+# LoadBalancer with BGP advertisement via Cilium — static IP injected per environment via overlay
+service:
+  enabled: true
+  type: LoadBalancer
+  additionalLabels:
+    bgp.cilium.io/ip-pool: default
+    bgp.cilium.io/advertise-service: default
+  ports:
+    - port: 3000
+      name: http
+      protocol: TCP
+      targetPort: http
+
+# ServiceAccount bound to ClusterRole in rbac.yaml (needed for the Kubernetes widget that lists pods/nodes/services).
+rbac:
+  serviceAccount:
+    enabled: true
+    name: homepage
