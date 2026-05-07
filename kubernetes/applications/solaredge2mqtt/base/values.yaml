@@ -1,0 +1,62 @@
+deployment:
+  enabled: true
+  replicas: 1
+  image:
+    repository: ghcr.io/deroetzi/solaredge2mqtt
+    tag: main
+    pullPolicy: IfNotPresent
+
+  # No API access required.
+  automountServiceAccountToken: false
+
+  env:
+    TZ:
+      value: "Europe/Berlin"
+
+  volumes:
+    # Per-instance ConfigMap; the actual `name` is overridden via valuesInline.
+    config-volume:
+      configMap:
+        name: solaredge2mqtt-config-PLACEHOLDER
+    # MQTT credentials (secrets.yml with password); shared between both instances.
+    secrets-volume:
+      secret:
+        secretName: solaredge2mqtt-credentials
+    # Writable cache directory required by the application.
+    cache-volume:
+      emptyDir: {}
+
+  volumeMounts:
+    config-volume:
+      mountPath: /app/config/configuration.yml
+      subPath: configuration.yml
+      readOnly: true
+    secrets-volume:
+      mountPath: /app/config/secrets.yml
+      subPath: secrets.yml
+      readOnly: true
+    cache-volume:
+      mountPath: /app/cache
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  # Image runs as root by default — pin a non-root UID so the chart's runAsNonRoot default holds.
+  containerSecurityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+
+  # Pod-level fsGroup so the mounted ConfigMap, Secret and emptyDir are group-writable for nobody.
+  securityContext:
+    fsGroup: 65534
+
+# No Service / no Probes — solaredge2mqtt is an outbound-only MQTT publisher.
+service:
+  enabled: false
