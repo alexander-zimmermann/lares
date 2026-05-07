@@ -6,8 +6,6 @@ namespace: solaredge2mqtt
 resources:
   - ./namespace.yaml
 
-# Two Helm releases off the same chart and shared values.yaml; per-release
-# overrides (applicationName, ConfigMap name) come via valuesInline.
 helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
@@ -22,6 +20,7 @@ helmCharts:
           config-volume:
             configMap:
               name: solaredge2mqtt-1-config
+
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: solaredge2mqtt-2
