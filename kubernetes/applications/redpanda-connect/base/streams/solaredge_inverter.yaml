@@ -97,7 +97,7 @@ output:
             ]
       - aws_s3:
           bucket: nats-archive
-          canned_acl: private
+          object_canned_acl: private
           region: us-east-1
           endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
           force_path_style_urls: true
