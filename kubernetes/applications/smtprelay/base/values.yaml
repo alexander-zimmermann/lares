@@ -1,0 +1,64 @@
+applicationName: smtprelay
+
+deployment:
+  enabled: true
+  # Single instance is sufficient for a simple relay; scale only if you need HA.
+  replicas: 1
+  image:
+    repository: grafana/smtprelay
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  args:
+    # Load the app config from the mounted ConfigMap.
+    - "-config=/etc/smtprelay/config/smtprelay.ini"
+
+  env:
+    # Disable OpenTelemetry SDK to avoid unexpected side effects/noise in a small homelab setup.
+    OTEL_SDK_DISABLED:
+      value: "true"
+
+  volumes:
+    # Non-secret config (kustomize configMapGenerator hash-suffix is auto-resolved by reference rewrite).
+    config-volume:
+      configMap:
+        name: smtprelay-config
+    # Credentials from SealedSecret (smtprelay imports secrets.ini into smtprelay.ini at startup).
+    secret-volume:
+      secret:
+        secretName: smtprelay-icloud-credentials
+
+  volumeMounts:
+    config-volume:
+      mountPath: /etc/smtprelay/config
+    secret-volume:
+      mountPath: /etc/smtprelay/secrets
+      readOnly: true
+
+  ports:
+    # SMTP listen port (non-standard to avoid conflicts; exposed via Service on port 25).
+    - containerPort: 2525
+      name: smtp
+      protocol: TCP
+
+  resources:
+    # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
+    requests:
+      cpu: 10m
+      memory: 50Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+# LoadBalancer with BGP advertisement via Cilium — static IP injected per environment via overlay
+service:
+  enabled: true
+  type: LoadBalancer
+  additionalLabels:
+    bgp.cilium.io/ip-pool: default
+    bgp.cilium.io/advertise-service: default
+  ports:
+    - port: 25
+      name: smtp
+      protocol: TCP
+      targetPort: smtp
