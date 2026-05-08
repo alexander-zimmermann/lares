@@ -145,20 +145,14 @@ patches:
           - name: GOMEMLIMIT
             value: "241591910"
 
-  # Alloy metrics service with static IP and BGP advertisement
+  # Alloy receiver service with static IP and BGP advertisement
   - target:
-      kind: Service
-      name: alloy-alloy-metrics
-    patch: |-
-      - op: add
-        path: /metadata/annotations/io.cilium~1lb-ipam-ips
-        value: "192.168.10.22"
-
-  # Alloy Receiver: Syslog service with static IP
-  - target:
-      kind: Service
+      kind: Alloy
       name: alloy-alloy-receiver
     patch: |-
+      - op: test
+        path: /spec/service/type
+        value: LoadBalancer
       - op: add
-        path: /metadata/annotations/io.cilium~1lb-ipam-ips
+        path: /spec/service/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.21"
