@@ -50,6 +50,26 @@ spec:
             summary: "Gatus is not being scraped"
             description: "Gatus has not been scraped by Prometheus for more than 5 minutes — external reachability monitoring is offline."
 
+    - name: proxmox-alerts
+      rules:
+        - alert: PbsDatastoreAlmostFull
+          expr: 'pve_disk_usage_bytes{id=~"storage/.*",instance="backup-01"} / pve_disk_size_bytes{id=~"storage/.*",instance="backup-01"} > 0.85'
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "PBS datastore {{ $labels.id }} almost full"
+            description: "PBS datastore {{ $labels.id }} on {{ $labels.instance }} is above 85% used — prune/GC may be falling behind."
+
+        - alert: PbsRootFsAlmostFull
+          expr: 'pve_disk_size_bytes{id="node/backup-01"} - pve_disk_usage_bytes{id="node/backup-01"} < 5e9'
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PBS root filesystem on {{ $labels.instance }} almost full"
+            description: "Less than 5 GiB free on the PBS host root filesystem — investigate logs/journal growth."
+
     - name: rustfs-alerts
       rules:
         - alert: RustfsDriveOffline
