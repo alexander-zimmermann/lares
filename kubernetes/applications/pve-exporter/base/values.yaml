@@ -62,6 +62,13 @@ deployment:
       cpu: 200m
       memory: 256Mi
 
+  # Image's USER directive is the literal string "prometheus" (UID 101); pin
+  # the numeric UID so PodSecurity restricted's runAsNonRoot can verify it.
+  containerSecurityContext:
+    runAsUser: 101
+    runAsGroup: 101
+    runAsNonRoot: true
+
 service:
   enabled: true
   type: ClusterIP
