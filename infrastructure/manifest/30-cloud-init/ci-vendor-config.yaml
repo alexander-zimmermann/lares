@@ -270,6 +270,10 @@ ci_vendor_config:
         permissions: "0640"
         owner: "backup:backup"
         defer: true
+        vars:
+          ## OpenTelemetry endpoint (alloy-receiver)
+          metrics_otlp_host: "telemetry.zimmermann.eu.com"
+          metrics_otlp_port: "4318"
 
       ## PBS bootstrap script
       - path: /usr/local/bin/pbs-bootstrap.sh

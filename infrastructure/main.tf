@@ -119,6 +119,29 @@ module "pve_cluster_hw_mapping_usb" {
 
 
 ###############################################################################
+## PVE cluster - OpenTelemetry metrics server
+###############################################################################
+module "pve_cluster_metrics_server" {
+  source   = "./modules/00-pve-cluster-metrics-server"
+  for_each = local.manifest.pve_cluster_metrics_server
+
+  name   = each.key
+  server = each.value.server
+  port   = each.value.port
+  enable = try(each.value.enable, true)
+
+  opentelemetry_compression         = try(each.value.opentelemetry_compression, null)
+  opentelemetry_headers             = try(each.value.opentelemetry_headers, null)
+  opentelemetry_max_body_size       = try(each.value.opentelemetry_max_body_size, null)
+  opentelemetry_path                = try(each.value.opentelemetry_path, null)
+  opentelemetry_proto               = try(each.value.opentelemetry_proto, null)
+  opentelemetry_resource_attributes = try(each.value.opentelemetry_resource_attributes, null)
+  opentelemetry_timeout             = try(each.value.opentelemetry_timeout, null)
+  opentelemetry_verify_ssl          = try(each.value.opentelemetry_verify_ssl, null)
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {

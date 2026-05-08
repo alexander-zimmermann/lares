@@ -155,6 +155,31 @@ setup_acl() {
 }
 
 ###############################################################################
+## Helper: Metrics server setup (OpenTelemetry → Alloy receiver)
+###############################################################################
+setup_metrics_server() {
+  local name="${1}"
+  local host="${2}"
+  local port="${3}"
+
+  ## Check if metrics server is already configured
+  if proxmox-backup-manager metrics list | grep -qw "${name}"; then
+    info "Metrics server ${name} already configured."
+    return 0
+  fi
+
+  ## Create OpenTelemetry metrics server
+  info "Configuring OTel metrics server ${name} -> ${host}:${port}..."
+  proxmox-backup-manager metrics create opentelemetry "${name}" \
+    --host "${host}" \
+    --port "${port}" \
+    --enable true \
+    || die "Failed to create OTel metrics server ${name}."
+
+  success "Metrics server ${name} configured."
+}
+
+###############################################################################
 ## Helper: Datastore setup
 ###############################################################################
 setup_datastore() {
@@ -430,6 +455,17 @@ create_user "${PBS_HOMEPAGE_USERNAME}" "${PBS_HOMEPAGE_PASSWORD}"
 setup_acl "${PBS_HOMEPAGE_USERNAME}" "Audit" "/"
 create_api_token "${PBS_HOMEPAGE_USERNAME}" "homepage"
 setup_acl "${PBS_HOMEPAGE_USERNAME}" "Audit" "/" "homepage"
+
+## Create metrics user (read-only Prometheus scraping via API token)
+info "Setting up metrics user..."
+create_user "${PBS_METRICS_USERNAME}" "${PBS_METRICS_PASSWORD}"
+setup_acl "${PBS_METRICS_USERNAME}" "Audit" "/"
+create_api_token "${PBS_METRICS_USERNAME}" "metrics"
+setup_acl "${PBS_METRICS_USERNAME}" "Audit" "/" "metrics"
+
+## Configure OpenTelemetry metrics server (push to alloy-receiver)
+info "Setting up OTel metrics server..."
+setup_metrics_server "alloy-otel" "${METRICS_OTLP_HOST}" "${METRICS_OTLP_PORT}"
 
 ## Setup data retention
 info "Setting up data retention for datastores..."
