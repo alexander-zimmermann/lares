@@ -15,6 +15,7 @@ jobs:
   label-issue:
     name: Label Issue
     runs-on: ubuntu-latest
+    if: github.actor != 'homelab-zimmermann-renovate-bot[bot]'
     permissions:
       issues: write
     steps:
