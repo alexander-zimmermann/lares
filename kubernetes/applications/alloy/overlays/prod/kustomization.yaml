@@ -155,4 +155,4 @@ patches:
         value: LoadBalancer
       - op: add
         path: /spec/service/annotations/io.cilium~1lb-ipam-ips
-        value: "192.168.10.21"
+        value: "192.168.10.200"

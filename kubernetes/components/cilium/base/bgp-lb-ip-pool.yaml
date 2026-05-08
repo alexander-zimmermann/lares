@@ -6,7 +6,8 @@ metadata:
 
 spec:
   blocks:
-    - cidr: PLACEHOLDER
+    - start: PLACEHOLDER
+      stop: PLACEHOLDER
   serviceSelector:
     matchLabels:
       bgp.cilium.io/ip-pool: default
@@ -18,13 +19,15 @@ kind: CiliumLoadBalancerIPPool
 # The alloy-operator-rendered Service does not honour custom labels (chart
 # limitation), so the standard `bgp.cilium.io/ip-pool: default` selector cannot
 # match it. This dedicated pool selects on labels the operator-managed Service
-# already carries.
+# already carries; ranges are kept disjoint from default-bgp-ip-pool because
+# Cilium rejects pools with overlapping CIDRs even if the selectors disjoint.
 metadata:
   name: alloy-bgp-ip-pool
 
 spec:
   blocks:
-    - cidr: PLACEHOLDER
+    - start: PLACEHOLDER
+      stop: PLACEHOLDER
   serviceSelector:
     matchLabels:
       app.kubernetes.io/part-of: alloy
