@@ -50,15 +50,10 @@ ci_secrets = {
   ## Omni docker stack configuration
   omni_bootstrap_conf = {
     ## Certificate issuer (lego)
-    cf_dns_api_token = "YOUR_CLOUDFLARE_API_TOKEN"
-    cf_api_email     = "YOUR_EMAIL_ADDRESS"
-    primary_domain   = "YOUR_PRIMARY_DOMAIN"
-    san_domains      = "YOUR_SAN_DOMAINS" # comma-separated list of domains
+    acme_cf_token = "YOUR_CLOUDFLARE_API_TOKEN"
     ## Omni container stack configuration
     omni_account_uuid  = "YOUR_OMNI_ACCOUNT_UUID"
     omni_initial_users = "YOUR_OMNI_INITIAL_USERS"
-    omni_domain_name   = "YOUR_OMNI_DOMAIN_NAME"
-    omni_email_address = "YOUR_OMNI_EMAIL_ADDRESS"
     auth0_client_id    = "YOUR_AUTH0_CLIENT_ID"
     auth0_issuer       = "YOUR_AUTH0_ISSUER"
     ## Docker volume backup container stack configuration
@@ -78,12 +73,12 @@ ci_secrets = {
     ## Homepage read-only monitoring user
     pbs_homepage_username = "YOUR_PBS_HOMEPAGE_USERNAME"
     pbs_homepage_password = "YOUR_PBS_HOMEPAGE_PASSWORD"
+    ## Metrics user
+    pbs_metrics_username = "YOUR_PBS_METRICS_USERNAME"
+    pbs_metrics_password = "YOUR_PBS_METRICS_PASSWORD"
     ## ACME Cloudflare DNS plugin
     acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
     acme_cf_zone_id    = "YOUR_CLOUDFLARE_ZONE_ID"
     acme_cf_token      = "YOUR_CLOUDFLARE_API_TOKEN"
-    ## Primary and SAN domains for ACME certificates
-    primary_domain   = "YOUR_PRIMARY_DOMAIN"
-    san_domains      = "YOUR_SAN_DOMAINS" # comma-separated list of domains
   }
 }

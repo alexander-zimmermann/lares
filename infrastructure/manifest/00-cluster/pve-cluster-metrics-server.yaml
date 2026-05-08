@@ -1,0 +1,12 @@
+## Datacenter-level metric servers (Datacenter -> Metric Server in the PVE UI).
+## Each entry pushes PVE host/VM/CT/storage gauges as OTLP/HTTP to the named
+## endpoint. The receiving alloy-receiver Service translates OTLP -> Prometheus
+## remote_write internally.
+pve_cluster_metrics_server:
+  alloy-otel:
+    server: "telemetry.zimmermann.eu.com"
+    port: 4318
+    enable: true
+    opentelemetry_proto: "http"
+    opentelemetry_path: "/v1/metrics"
+    opentelemetry_verify_ssl: false

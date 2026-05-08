@@ -14,6 +14,14 @@ PBS_BACKUP_PASSWORD="${pbs_backup_password}"
 PBS_HOMEPAGE_USERNAME="${pbs_homepage_username}"
 PBS_HOMEPAGE_PASSWORD="${pbs_homepage_password}"
 
+## Metrics user (Prometheus scrape via prometheus-pve-exporter)
+PBS_METRICS_USERNAME="${pbs_metrics_username}"
+PBS_METRICS_PASSWORD="${pbs_metrics_password}"
+
+## OpenTelemetry metrics server (push to Alloy receiver)
+METRICS_OTLP_HOST="${metrics_otlp_host}"
+METRICS_OTLP_PORT="${metrics_otlp_port}"
+
 ## Define primary datastore (local - nvme)
 DATASTORE_PRIMARY_NAME="datastore-primary"
 DATASTORE_PRIMARY_PATH="/mnt/datastore-primary"
