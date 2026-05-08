@@ -39,3 +39,8 @@ replacements:
           name: default-bgp-ip-pool
         fieldPaths:
           - spec.blocks.0.cidr
+      - select:
+          kind: CiliumLoadBalancerIPPool
+          name: alloy-bgp-ip-pool
+        fieldPaths:
+          - spec.blocks.0.cidr

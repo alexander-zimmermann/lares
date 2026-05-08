@@ -10,3 +10,22 @@ spec:
   serviceSelector:
     matchLabels:
       bgp.cilium.io/ip-pool: default
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+
+# The alloy-operator-rendered Service does not honour custom labels (chart
+# limitation), so the standard `bgp.cilium.io/ip-pool: default` selector cannot
+# match it. This dedicated pool selects on labels the operator-managed Service
+# already carries.
+metadata:
+  name: alloy-bgp-ip-pool
+
+spec:
+  blocks:
+    - cidr: PLACEHOLDER
+  serviceSelector:
+    matchLabels:
+      app.kubernetes.io/part-of: alloy
+      app.kubernetes.io/managed-by: Helm
