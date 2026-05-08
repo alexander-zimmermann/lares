@@ -15,3 +15,15 @@ spec:
       selector:
         matchLabels:
           bgp.cilium.io/advertise-service: default
+
+    # The alloy-operator-rendered Service does not honour custom labels (chart
+    # limitation), so the standard advertise-service selector cannot match it.
+    # This entry targets labels the operator-managed Service already carries.
+    - advertisementType: Service
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchLabels:
+          app.kubernetes.io/part-of: alloy
+          app.kubernetes.io/managed-by: Helm

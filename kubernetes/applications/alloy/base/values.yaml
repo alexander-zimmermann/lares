@@ -55,13 +55,6 @@ collectors:
     presets:
       - clustered
       - statefulset
-    # Expose Alloy Metrics service via Cilium/BGP-announced LoadBalancer
-    alloy:
-      service:
-        type: LoadBalancer
-        labels:
-          bgp.cilium.io/ip-pool: default
-          bgp.cilium.io/advertise-service: default
 
   # Alloy Singleton: Per-cluster tasks like event processing
   alloy-singleton:
@@ -80,13 +73,10 @@ collectors:
     includeDestinations:
       - loki
       - prometheus
-    # Expose Alloy Receiver via Cilium/BGP-announced LoadBalancer
+    service:
+      type: LoadBalancer
+      annotations: {}
     alloy:
-      service:
-        type: LoadBalancer
-        labels:
-          bgp.cilium.io/ip-pool: default
-          bgp.cilium.io/advertise-service: default
       # Syslog: TCP 601 / UDP 514 (RFC5424). OTLP HTTP: 4318 (rustfs metrics push).
       extraPorts:
         - name: syslog-tcp
@@ -165,18 +155,20 @@ collectors:
           relabel_rules = discovery.relabel.syslog.rules
       }
 
-      // OTLP/HTTP receiver for rustfs metrics; forwarded to the chart-rendered
-      // otelcol.exporter.prometheus.prometheus exporter for remote-write.
-      otelcol.receiver.otlp "rustfs" {
+      // OTLP/HTTP receiver for external push sources (rustfs, PVE/PBS metric
+      // servers). The chart renders otelcol.exporter.prometheus.prometheus
+      // which translates OTel attributes (service.name -> job, host.name ->
+      // instance) before forwarding to remote-write.
+      otelcol.receiver.otlp "ingress" {
           http {
               endpoint = "0.0.0.0:4318"
           }
           output {
-              metrics = [otelcol.processor.batch.rustfs.input]
+              metrics = [otelcol.processor.batch.ingress.input]
           }
       }
 
-      otelcol.processor.batch "rustfs" {
+      otelcol.processor.batch "ingress" {
           output {
               metrics = [otelcol.exporter.prometheus.prometheus.input]
           }
