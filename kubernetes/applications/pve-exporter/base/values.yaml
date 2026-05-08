@@ -21,12 +21,18 @@ deployment:
     config:
       configMap:
         name: pve-exporter-config
+    # gunicorn needs a writable tmpdir for its worker lifecycle files; the
+    # chart's containerSecurityContext defaults to readOnlyRootFilesystem.
+    tmp:
+      emptyDir: {}
 
   volumeMounts:
     config:
       mountPath: /etc/pve.yml
       subPath: pve.yml
       readOnly: true
+    tmp:
+      mountPath: /tmp
 
   ports:
     - containerPort: 9221
