@@ -17,6 +17,7 @@
     ":timezone(Europe/Berlin)"
   ],
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "dependencyDashboardLabels": ["area/renovate"],
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "ignorePaths": ["**/resources/**", "**/deprecated/**"],
   "ignoreDeps": ["alexellis/arkade-get"],
