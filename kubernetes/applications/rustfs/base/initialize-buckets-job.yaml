@@ -35,7 +35,7 @@ spec:
             - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
       containers:
         - name: rclone
-          image: rclone/rclone:1.74.0
+          image: rclone/rclone:1.74.1
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
