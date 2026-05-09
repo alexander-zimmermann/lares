@@ -10,8 +10,10 @@ deployment:
   args:
     - --config.file=/etc/pve.yml
 
+  # PVE_<FIELD>_<MODULE> env vars override the YAML config; ${...} in
+  # pve.yml is not interpolated.
   env:
-    PVE_TOKEN:
+    PVE_TOKEN_VALUE_PBS:
       valueFrom:
         secretKeyRef:
           name: pve-exporter-credentials
