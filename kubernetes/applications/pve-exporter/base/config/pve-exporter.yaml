@@ -1,6 +1,5 @@
 pbs:
   user: metrics@pbs
   token_name: metrics
-  token_value: ${PVE_TOKEN}
   service: pbs
   verify_ssl: false
