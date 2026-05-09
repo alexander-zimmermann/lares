@@ -71,7 +71,7 @@ disable_subscription_nag() {
   echo "${hook}" > "${nag_script}"
 
   ## Reinstall to immediately trigger the hook
-  apt-get --reinstall install proxmox-widget-toolkit -y &>/dev/null \
+  apt-get --reinstall install proxmox-widget-toolkit -y > /dev/null \
     || die "Failed to reinstall proxmox-widget-toolkit."
 
   success "Subscription nag disabled."
@@ -171,7 +171,7 @@ setup_datastore() {
   info "Initializing datastore ${datastore_name} at ${datastore_path}..."
   proxmox-backup-manager datastore create \
     "${datastore_name}" "${datastore_path}" \
-    &> /dev/null || die "Failed to create datastore ${datastore_name}."
+    > /dev/null || die "Failed to create datastore ${datastore_name}."
 
   success "Datastore ${datastore_name} created successfully."
 }
@@ -204,7 +204,7 @@ setup_nfs_datastore() {
   info "Creating datastore ${datastore_name} locally..."
   proxmox-backup-manager datastore create \
     "${datastore_name}" "${datastore_path}" \
-    &> /dev/null || die "Failed to create datastore ${datastore_name}."
+    > /dev/null || die "Failed to create datastore ${datastore_name}."
 
   ## Preserve local metadata before remounting
   mv "${datastore_path}/.chunks" "${temp_dir}/"
@@ -255,7 +255,7 @@ setup_data_retention() {
   proxmox-backup-manager prune-job create "${job_id}" \
     --store "${datastore_name}" \
     --schedule "daily" \
-    "${args[@]}" &> /dev/null || die "Could not create prune job for ${datastore_name}."
+    "${args[@]}" > /dev/null || die "Could not create prune job for ${datastore_name}."
 
   ## Garbage collection job (still part of datastore configuration)
   info "Update garbage collection job for ${datastore_name}..."
@@ -323,7 +323,7 @@ register_acme_account() {
   info "Registering ACME account ${ACME_ACCOUNT} (${ACME_EMAIL})..."
   printf "y\nn\n" | \
   proxmox-backup-manager acme account register "${ACME_ACCOUNT}" "${ACME_EMAIL}" \
-    --directory "${ACME_DIRECTORY}"  &> /dev/null || die "Failed to register ACME account."
+    --directory "${ACME_DIRECTORY}"  > /dev/null || die "Failed to register ACME account."
 
   success "ACME account ${ACME_ACCOUNT} set up successfully."
 }
