@@ -50,25 +50,43 @@ spec:
             summary: "Gatus is not being scraped"
             description: "Gatus has not been scraped by Prometheus for more than 5 minutes — external reachability monitoring is offline."
 
-    - name: proxmox-alerts
+    - name: pbs-alerts
       rules:
         - alert: PbsDatastoreAlmostFull
-          expr: 'pve_disk_usage_bytes{id=~"storage/.*",instance="backup-01"} / pve_disk_size_bytes{id=~"storage/.*",instance="backup-01"} > 0.85'
+          expr: 'pbs_used / pbs_size > 0.85'
           for: 1h
           labels:
             severity: warning
           annotations:
-            summary: "PBS datastore {{ $labels.id }} almost full"
-            description: "PBS datastore {{ $labels.id }} on {{ $labels.instance }} is above 85% used — prune/GC may be falling behind."
+            summary: "PBS datastore {{ $labels.datastore }} almost full"
+            description: "PBS datastore {{ $labels.datastore }} is above 85% used — prune/GC may be falling behind."
 
-        - alert: PbsRootFsAlmostFull
-          expr: 'pve_disk_size_bytes{id="node/backup-01"} - pve_disk_usage_bytes{id="node/backup-01"} < 5e9'
+        - alert: PbsHostRootFsAlmostFull
+          expr: 'pbs_host_disk_available / pbs_host_disk_total < 0.10'
           for: 10m
           labels:
             severity: warning
           annotations:
-            summary: "PBS root filesystem on {{ $labels.instance }} almost full"
-            description: "Less than 5 GiB free on the PBS host root filesystem — investigate logs/journal growth."
+            summary: "PBS host root filesystem almost full"
+            description: "Less than 10% free on backup-01 root filesystem — investigate logs/journal growth."
+
+        - alert: PbsBackupStale
+          expr: 'time() - pbs_snapshot_vm_last_timestamp > 2 * 86400'
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "PBS backup of {{ $labels.vm_name }} stale"
+            description: "Last backup of VM {{ $labels.vm_name }} (id {{ $labels.vm_id }}) in datastore {{ $labels.datastore }} is older than 2 days."
+
+        - alert: PbsLastVerifyFailed
+          expr: 'pbs_snapshot_vm_last_verify == 0'
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PBS verify failed for {{ $labels.vm_name }}"
+            description: "The last verify of VM {{ $labels.vm_name }} (id {{ $labels.vm_id }}) in datastore {{ $labels.datastore }} did not pass."
 
     - name: rustfs-alerts
       rules:
