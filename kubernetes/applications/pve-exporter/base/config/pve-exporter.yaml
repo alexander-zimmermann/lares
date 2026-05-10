@@ -1,5 +1,0 @@
-pbs:
-  user: metrics@pbs
-  token_name: metrics
-  service: pbs
-  verify_ssl: false

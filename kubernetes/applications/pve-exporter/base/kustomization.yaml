@@ -16,11 +16,6 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-configMapGenerator:
-  - name: pve-exporter-config
-    files:
-      - pve.yml=config/pve-exporter.yaml
-
 labels:
   - includeSelectors: false
     pairs:

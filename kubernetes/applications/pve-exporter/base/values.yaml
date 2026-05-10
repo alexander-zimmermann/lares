@@ -10,19 +10,13 @@ deployment:
   args:
     - --config.file=/etc/pve.yml
 
-  # PVE_<FIELD>_<MODULE> env vars override the YAML config; ${...} in
-  # pve.yml is not interpolated.
-  env:
-    PVE_TOKEN_VALUE_PBS:
-      valueFrom:
-        secretKeyRef:
-          name: pve-exporter-credentials
-          key: PVE_TOKEN
-
   volumes:
+    # The exporter has no `${...}` interpolation and no per-module env-var
+    # overrides, so the entire pve.yml (including token_value) ships as a
+    # single Secret key — same pattern as nats/auth.conf and smtprelay/secrets.ini.
     config:
-      configMap:
-        name: pve-exporter-config
+      secret:
+        secretName: pve-exporter-credentials
     # gunicorn needs a writable tmpdir for its worker lifecycle files; the
     # chart's containerSecurityContext defaults to readOnlyRootFilesystem.
     tmp:
