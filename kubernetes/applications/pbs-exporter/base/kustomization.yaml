@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: pve-exporter
+namespace: pbs-exporter
 resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
@@ -9,17 +9,17 @@ resources:
 helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
-    releaseName: pve-exporter
+    releaseName: pbs-exporter
     version: 6.16.1
     valuesFile: values.yaml
-    namespace: pve-exporter
+    namespace: pbs-exporter
     apiVersions:
       - monitoring.coreos.com/v1
 
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: pve-exporter
+      homelab.app: pbs-exporter
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

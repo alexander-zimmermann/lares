@@ -1,0 +1,78 @@
+applicationName: pbs-exporter
+
+deployment:
+  enabled: true
+  image:
+    repository: ghcr.io/natrontech/pbs-exporter
+    tag: v0.9.0
+    pullPolicy: IfNotPresent
+
+  env:
+    PBS_ENDPOINT:
+      value: "https://backup-01.zimmermann.eu.com:8007"
+    PBS_USERNAME:
+      value: "metrics@pbs"
+    PBS_API_TOKEN_NAME:
+      value: "metrics"
+    PBS_INSECURE:
+      value: "true"
+    PBS_API_TOKEN:
+      valueFrom:
+        secretKeyRef:
+          name: pbs-exporter-credentials
+          key: PBS_API_TOKEN
+
+  ports:
+    - containerPort: 10019
+      name: metrics
+      protocol: TCP
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 3
+
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 5
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 10019
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 60s
+      scrapeTimeout: 30s
+      relabelings:
+        - sourceLabels: [__address__]
+          targetLabel: instance
+          replacement: backup-01

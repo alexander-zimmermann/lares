@@ -2,4 +2,4 @@ apiVersion: v1
 kind: Namespace
 
 metadata:
-  name: pve-exporter
+  name: pbs-exporter
