@@ -9,7 +9,7 @@ spec:
   instances: 2
 
   # PostgreSQL version and configuration
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.3
 
   # Rolling update process is managed by Kubernetes
   primaryUpdateStrategy: unsupervised
