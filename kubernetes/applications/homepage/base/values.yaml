@@ -47,6 +47,12 @@ deployment:
     # CrowdSec widget username — static value, matches machine name in CrowdSec LAPI.
     HOMEPAGE_VAR_CROWDSEC_USERNAME:
       value: "homepage"
+    # CrowdSec LAPI password for the "homepage" machine — cloned from crowdsec namespace by Kyverno.
+    HOMEPAGE_VAR_CROWDSEC_PASSWORD:
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-homepage-lapi-key
+          key: crowdsec_homepage_lapi_key
 
   envFrom:
     # Proxmox, Unifi, and other API credentials. nameSuffix combines with applicationName → "homepage-secrets".
