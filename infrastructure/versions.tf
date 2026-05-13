@@ -15,7 +15,7 @@ terraform {
     local = {
       ## https://search.opentofu.org/provider/hashicorp/local/latest
       source  = "hashicorp/local"
-      version = "2.8.0"
+      version = "2.9.0"
     }
     random = {
       ## https://search.opentofu.org/provider/hashicorp/random/latest
