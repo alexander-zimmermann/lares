@@ -48,6 +48,12 @@ spec:
         comment: "iot-mcp-bridge — SELECT only on hypertables and CAGGs"
         passwordSecret:
           name: timescaledb-db-iot-mcp-bridge-ro-secret
+      - name: grafana_ro
+        ensure: present
+        login: true
+        comment: "Grafana — SELECT only on hypertables and CAGGs"
+        passwordSecret:
+          name: timescaledb-db-grafana-ro-secret
 
   postgresql:
     # Load TimescaleDB extension at server start

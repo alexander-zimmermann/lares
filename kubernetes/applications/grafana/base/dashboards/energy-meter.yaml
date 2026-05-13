@@ -54,8 +54,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -111,45 +111,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "zaehlerwatt",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> last()",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ]
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-Gesamt' AND time > now() - INTERVAL '15 minutes' ORDER BY time DESC LIMIT 1;",
+              "refId": "A"
             }
           ],
           "title": "Aktueller Netzbezug",
@@ -157,8 +126,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -262,10 +231,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"Netzbezug\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-Gesamt' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -274,8 +246,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -401,44 +373,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\ntempDate = date.add(d: 3d, to: today())\nweekStart = date.sub(d: 3d, from: date.truncate(t: tempDate, unit: 1w))\n\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 3mo), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1w, offset: -3d, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 week', bucket, 'Europe/Berlin'::text) AS _time, max(max_value) - min(min_value) AS _value, (max(max_value) - min(min_value)) * 0.2937 AS _cost FROM knx_1h WHERE bucket >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '2 months' AND bucket <= now() AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt' GROUP BY 1 ORDER BY 1;",
+              "refId": "A"
             }
           ],
           "title": "Netzbezug & Kosten pro Woche der letzten 3 Monate",
@@ -446,8 +388,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -573,44 +515,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1y), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1mo, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 month', bucket, 'Europe/Berlin'::text) AS _time, max(max_value) - min(min_value) AS _value, (max(max_value) - min(min_value)) * 0.2937 AS _cost FROM knx_1h WHERE bucket >= date_trunc('year', now() AT TIME ZONE 'Europe/Berlin') AND bucket <= now() AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt' GROUP BY 1 ORDER BY 1;",
+              "refId": "A"
             }
           ],
           "title": "Netzbezug & Kosten pro Monat im aktuellen Jahr",
@@ -618,8 +530,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -673,44 +585,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "none"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "zaehlerstand1",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> last()",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "refId": "A"
             }
           ],
           "title": "Zählerstand Netzbezug",
@@ -718,8 +600,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -771,44 +653,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1d), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1d, fn: sum, timeSrc: \"_start\")",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AS time, max(value) - min(value) AS value FROM knx WHERE time >= date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AT TIME ZONE 'Europe/Berlin' AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt';",
+              "refId": "A"
             }
           ],
           "title": "Netzbezug heute",
@@ -816,8 +668,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -870,44 +722,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1d), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1d, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _value: float(v: r._value) * 0.2937}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AS time, (max(value) - min(value)) * 0.2937 AS value FROM knx WHERE time >= date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AT TIME ZONE 'Europe/Berlin' AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Zählerstand-Gesamt';",
+              "refId": "A"
             }
           ],
           "title": "Kosten heute",
@@ -928,8 +750,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -985,45 +807,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "hide": false,
-              "measurement": "zaehlerwatt",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Wirkleistung-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> last()",
-              "rawQuery": false,
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ]
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Wirkleistung-Gesamt-1' AND time > now() - INTERVAL '15 minutes' ORDER BY time DESC LIMIT 1;",
+              "refId": "A"
             }
           ],
           "title": "Aktuelle Einspeisung",
@@ -1031,8 +822,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1160,10 +951,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Wirkleistung-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"Einspeisung\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Wirkleistung-Gesamt-1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1172,8 +966,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1298,44 +1092,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\ntempDate = date.add(d: 3d, to: today())\nweekStart = date.sub(d: 3d, from: date.truncate(t: tempDate, unit: 1w))\n\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 3mo), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1w, offset: -3d, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 week', bucket, 'Europe/Berlin'::text) AS _time, max(max_value) - min(min_value) AS _value, (max(max_value) - min(min_value)) * 0.0328 AS _cost FROM knx_1h WHERE bucket >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '2 months' AND bucket <= now() AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1' GROUP BY 1 ORDER BY 1;",
+              "refId": "A"
             }
           ],
           "title": "Einspeisung & Ertrag pro Woche der letzten 3 Monate",
@@ -1343,8 +1107,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1469,44 +1233,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1y), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1mo, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 month', bucket, 'Europe/Berlin'::text) AS _time, max(max_value) - min(min_value) AS _value, (max(max_value) - min(min_value)) * 0.0328 AS _cost FROM knx_1h WHERE bucket >= date_trunc('year', now() AT TIME ZONE 'Europe/Berlin') AND bucket <= now() AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1' GROUP BY 1 ORDER BY 1;",
+              "refId": "A"
             }
           ],
           "title": "Einspeisung & Ertrag pro Monat im aktuellen Jahr",
@@ -1514,8 +1248,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1569,44 +1303,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "none"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "zaehlerstand1",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> last()",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "refId": "A"
             }
           ],
           "title": "Zählerstand Einspeisung",
@@ -1614,8 +1318,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1667,44 +1371,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1d), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1d, fn: sum, timeSrc: \"_start\")",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AS time, max(value) - min(value) AS value FROM knx WHERE time >= date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AT TIME ZONE 'Europe/Berlin' AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1';",
+              "refId": "A"
             }
           ],
           "title": "Einspeisung heute",
@@ -1712,8 +1386,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1766,44 +1440,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "NI4OYAvVz"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "groupBy": [
-                {
-                  "params": [
-                    "$__interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "monatsverbrauch",
-              "orderByTime": "ASC",
-              "policy": "default",
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1d), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1\")\n  |> group(columns: [\"_field\"])\n  |> difference()\n  |> aggregateWindow(every: 1d, fn: sum, timeSrc: \"_start\")\n  |> map(fn: (r) => ({r with _value: float(v: r._value) * 0.0328}))",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": []
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AS time, (max(value) - min(value)) * 0.0328 AS value FROM knx WHERE time >= date_trunc('day', now() AT TIME ZONE 'Europe/Berlin') AT TIME ZONE 'Europe/Berlin' AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Gesamt-1';",
+              "refId": "A"
             }
           ],
           "title": "Ertrag heute",
@@ -1824,8 +1468,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1929,10 +1573,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L1\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1941,8 +1588,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2046,10 +1693,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L2\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2058,8 +1708,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2163,10 +1813,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L3\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L3' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2175,8 +1828,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2280,10 +1933,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Stromstärke-L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L1\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Stromstärke-L1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2292,8 +1948,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2397,10 +2053,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Stromstärke-L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L2\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Stromstärke-L2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2409,8 +2068,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2514,10 +2173,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Stromstärke-L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L3\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Stromstärke-L3' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2526,8 +2188,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2631,10 +2293,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Spannung-L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L1\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Spannung-L1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2643,8 +2308,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2748,10 +2413,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Spannung-L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L2\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Spannung-L2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2760,8 +2428,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2865,10 +2533,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.Energiezähler.Strom.Spannung-L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS \"L3\" FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.Energiezähler.Strom.Spannung-L3' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
