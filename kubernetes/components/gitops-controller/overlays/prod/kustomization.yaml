@@ -40,3 +40,11 @@ replacements:
         options:
           delimiter: "/"
           index: 2
+
+  # Rewrite external-dns target annotation to prod UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]

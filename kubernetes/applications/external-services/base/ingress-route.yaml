@@ -5,7 +5,7 @@ metadata:
   name: proxmox
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
@@ -60,7 +60,7 @@ metadata:
   name: backup
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
@@ -111,7 +111,7 @@ metadata:
   name: omni
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
@@ -164,7 +164,7 @@ metadata:
   name: ai-pro-1
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -193,7 +193,7 @@ metadata:
   name: ai-pro-2
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -222,7 +222,7 @@ metadata:
   name: ai-pro-3
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -251,7 +251,7 @@ metadata:
   name: ai-pro-4
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -280,7 +280,7 @@ metadata:
   name: dali-1
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -309,7 +309,7 @@ metadata:
   name: dali-2
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 spec:
@@ -337,7 +337,7 @@ metadata:
   name: ems-esp
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
@@ -389,7 +389,7 @@ metadata:
   name: fritzbox
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
@@ -440,7 +440,7 @@ metadata:
   name: knx-ip
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
@@ -493,7 +493,7 @@ metadata:
   name: verso
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 
@@ -522,7 +522,7 @@ metadata:
   name: warp
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: udm-pro.zimmermann.sh
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
 

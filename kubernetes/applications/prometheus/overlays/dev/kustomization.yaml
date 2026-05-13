@@ -85,6 +85,14 @@ replacements:
         fieldPaths:
           - spec.retentionSize
 
+  # Rewrite external-dns target annotation to dev UDM Pro (applies to prometheus and alertmanager IngressRoutes)
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # Prometheus Operator: Deploy with standardized resources and GOMEMLIMIT
   - target:

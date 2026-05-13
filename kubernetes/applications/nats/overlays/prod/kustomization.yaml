@@ -36,6 +36,14 @@ replacements:
         fieldPaths:
           - spec.volumeClaimTemplates.0.spec.resources.requests.storage
 
+  # Rewrite external-dns target annotation to prod UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRouteTCP
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # NATS container resource limits
   - target:
