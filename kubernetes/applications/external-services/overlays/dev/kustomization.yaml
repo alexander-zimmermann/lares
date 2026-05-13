@@ -296,3 +296,11 @@ replacements:
         options:
           delimiter: "`"
           index: 1
+
+  # Rewrite external-dns target annotation to dev UDM Pro (applies to all IngressRoutes above)
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]

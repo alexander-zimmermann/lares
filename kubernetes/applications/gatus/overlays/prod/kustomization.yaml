@@ -59,6 +59,14 @@ replacements:
         fieldPaths:
           - spec.postgresql.parameters.max_wal_size
 
+  # Rewrite external-dns target annotation to prod UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # Gatus service with static IP and BGP advertisement
   - target:

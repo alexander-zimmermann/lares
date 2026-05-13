@@ -57,6 +57,14 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=NODE_RED_CALLBACK_URL].value
 
+  # Rewrite external-dns target annotation to prod UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # node-red service with static IP and BGP advertisement
   - target:

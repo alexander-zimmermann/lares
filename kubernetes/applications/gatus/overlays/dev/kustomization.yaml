@@ -58,3 +58,11 @@ replacements:
           name: gatus-db
         fieldPaths:
           - spec.postgresql.parameters.max_wal_size
+
+  # Rewrite external-dns target annotation to dev UDM Pro
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]

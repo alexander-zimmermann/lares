@@ -22,6 +22,14 @@ replacements:
           delimiter: "`"
           index: 1
 
+  # Rewrite external-dns target annotation to prod UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # kromgo service with static IP and BGP advertisement
   - target:

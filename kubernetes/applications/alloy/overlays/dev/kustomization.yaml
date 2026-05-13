@@ -30,6 +30,14 @@ replacements:
           delimiter: "//"
           index: 1
 
+  # Rewrite external-dns target annotation to dev UDM Pro
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # Alloy Operator: Manages the lifecycle of Alloy instances
   - target:
