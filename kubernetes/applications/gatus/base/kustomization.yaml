@@ -14,7 +14,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: gatus
-    version: 6.16.1
+    version: 6.18.0
     valuesFile: values.yaml
     namespace: gatus
     apiVersions:
