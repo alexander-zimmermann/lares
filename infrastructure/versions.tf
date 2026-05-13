@@ -10,7 +10,7 @@ terraform {
     external = {
       ## https://search.opentofu.org/provider/hashicorp/external/latest
       source  = "hashicorp/external"
-      version = "=2.3.5"
+      version = "2.4.0"
     }
     local = {
       ## https://search.opentofu.org/provider/hashicorp/local/latest
