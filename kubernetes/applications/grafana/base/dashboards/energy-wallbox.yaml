@@ -134,7 +134,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(charger_state, time) AS \"Ladecontroller\" FROM warp_evse WHERE $__timeFilter(time) AND charger_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time, charger_state AS \"Ladecontroller\" FROM warp_evse WHERE charger_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -229,7 +229,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(error_state, time) AS \"Fehlerzustand\" FROM warp_evse WHERE $__timeFilter(time) AND error_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time, error_state AS \"Fehlerzustand\" FROM warp_evse WHERE error_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -494,7 +494,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('1 hour', time) AS time, last(error_state, time) AS \"error_state\", last(contactor_error, time) AS \"contactor_error\", last(dc_fault_current_state, time) AS \"dc_fault_current_state\" FROM warp_evse WHERE time >= date_trunc('hour', now()) - INTERVAL '12 hours' AND time < date_trunc('hour', now()) GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket_gapfill('1 hour', time, date_trunc('hour', now()) - INTERVAL '12 hours', date_trunc('hour', now())) AS time, locf(last(error_state, time)) AS \"error_state\", locf(last(contactor_error, time)) AS \"contactor_error\", locf(last(dc_fault_current_state, time)) AS \"dc_fault_current_state\" FROM warp_evse WHERE time >= date_trunc('hour', now()) - INTERVAL '30 days' AND time < date_trunc('hour', now()) GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -600,7 +600,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(dc_fault_current_state, time) AS \"DC-Fehler\" FROM warp_evse WHERE $__timeFilter(time) AND dc_fault_current_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time, dc_fault_current_state AS \"DC-Fehler\" FROM warp_evse WHERE dc_fault_current_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -739,7 +739,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(contactor_error, time) AS \"Schützfehler\" FROM warp_evse WHERE $__timeFilter(time) AND contactor_error IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time, contactor_error AS \"Schützfehler\" FROM warp_evse WHERE contactor_error IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -816,7 +816,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(tracked_charges, time) AS \"Ladevorgänge Gesamt\" FROM warp_charge_tracker WHERE $__timeFilter(time) AND tracked_charges IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time, tracked_charges AS \"Ladevorgänge Gesamt\" FROM warp_charge_tracker WHERE tracked_charges IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -972,33 +972,13 @@ spec:
           "targets": [
             {
               "editorMode": "code",
-              "format": "time_series",
+              "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time AS _time, charge_duration AS _value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND charge_duration IS NOT NULL ORDER BY time;",
+              "rawSql": "SELECT time AS _time, charge_duration AS _duration, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND (charge_duration IS NOT NULL OR energy_charged IS NOT NULL) ORDER BY time;",
               "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "postgres",
-                "uid": "timescaledb"
-              },
-              "hide": false,
-              "editorMode": "code",
-              "format": "time_series",
-              "rawQuery": true,
-              "rawSql": "SELECT time AS _time, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND energy_charged IS NOT NULL ORDER BY time;",
-              "refId": "B"
             }
           ],
           "title": "Ladevorgänge im aktuellen Monat",
-          "transformations": [
-            {
-              "id": "joinByField",
-              "options": {
-                "mode": "inner"
-              }
-            }
-          ],
           "type": "table"
         },
         {
@@ -1150,33 +1130,13 @@ spec:
           "targets": [
             {
               "editorMode": "code",
-              "format": "time_series",
+              "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time AS _time, charge_duration AS _value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND charge_duration IS NOT NULL ORDER BY time;",
+              "rawSql": "SELECT time AS _time, charge_duration AS _duration, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND (charge_duration IS NOT NULL OR energy_charged IS NOT NULL) ORDER BY time;",
               "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "postgres",
-                "uid": "timescaledb"
-              },
-              "hide": false,
-              "editorMode": "code",
-              "format": "time_series",
-              "rawQuery": true,
-              "rawSql": "SELECT time AS _time, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND energy_charged IS NOT NULL ORDER BY time;",
-              "refId": "B"
             }
           ],
           "title": "Ladevorgänge im letzten Monat",
-          "transformations": [
-            {
-              "id": "joinByField",
-              "options": {
-                "mode": "inner"
-              }
-            }
-          ],
           "type": "table"
         },
         {
