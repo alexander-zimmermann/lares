@@ -40,3 +40,41 @@ spec:
   instanceSelector:
     matchLabels:
       homelab.app: grafana
+
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+
+metadata:
+  name: timescaledb
+  namespace: grafana
+
+spec:
+  uid: timescaledb
+  valuesFrom:
+    - targetPath: secureJsonData.password
+      valueFrom:
+        secretKeyRef:
+          name: timescaledb-db-grafana-ro-secret
+          key: password
+  datasource:
+    name: TimescaleDB
+    type: postgres
+    access: proxy
+    url: timescaledb-db-pooler.timescaledb.svc.cluster.local:5432
+    database: homelab
+    user: grafana_ro
+    isDefault: false
+    editable: false
+    jsonData:
+      sslmode: disable
+      postgresVersion: 1800
+      timescaledb: true
+      maxOpenConns: 10
+      maxIdleConns: 5
+      connMaxLifetime: 14400
+    secureJsonData:
+      password: ${password}
+  instanceSelector:
+    matchLabels:
+      homelab.app: grafana
