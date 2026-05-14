@@ -6,6 +6,7 @@ metadata:
   namespace: grafana
 
 spec:
+  folder: "Energie"
   instanceSelector:
     matchLabels:
       homelab.app: grafana
