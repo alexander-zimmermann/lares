@@ -13,6 +13,15 @@ input:
 
 pipeline:
   processors:
+    # `warp.charge_tracker.last_charges` is published as a JSON *array* of completed
+    # charges. Split each element into its own message so the downstream mapping can
+    # extract typed columns per charge. Other subjects (state, current_charge) are
+    # single objects and pass through unchanged.
+    - switch:
+        - check: 'meta("nats_subject") == "warp.charge_tracker.last_charges" && this.type() == "array"'
+          processors:
+            - unarchive:
+                format: json_array
     - mapping: |
         let evt = this
         let parts = meta("nats_subject").split(".")
@@ -76,7 +85,10 @@ output:
               this.first_charge_timestamp,
               this.generator_state,
             ]
-      # Cold archive: original NATS payload as Parquet on RustFS
+      # Cold archive: original NATS payload as Parquet on RustFS. After the
+      # array-unarchive above, last_charges entries land here as individual charge
+      # objects (one parquet row per completed charge) rather than the original
+      # array — by design the typed and archived views stay aligned.
       - aws_s3:
           bucket: nats-archive
           object_canned_acl: private
