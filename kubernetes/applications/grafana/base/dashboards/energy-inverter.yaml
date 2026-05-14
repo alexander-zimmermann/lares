@@ -54,8 +54,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -188,10 +188,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nitems = [\n  \"grid_delivery\",\n  \"consumer_used_battery_production\",\n  \"consumer_used_pv_production\",\n]\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => contains(value: r._field, set: items))\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> group()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _time: r._time,\n      \"Grid delivery\": r.grid_delivery,\n      \"Battery used\": r.consumer_used_battery_production,\n      \"Direct used\": r.consumer_used_pv_production\n  }))\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> keep(columns: [\"_time\", \"Grid delivery\", \"Battery used\", \"Direct used\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Grid delivery\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Battery used\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direct used\" FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -220,8 +223,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -370,10 +373,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nitems = [\n  \"grid_delivery\",\n  \"grid_consumption\",\n  \"consumer_used_battery_production\",\n  \"consumer_used_pv_production\",\n  \"inverter_consumption\"\n]\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => contains(value: r._field, set: items))\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> group()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _time: r._time,\n      \"Inverter\": r.inverter_consumption,\n      \"Direct\": r.consumer_used_pv_production,\n      \"Battery\": r.consumer_used_battery_production,\n      \"Grid\": r.grid_consumption - r.inverter_consumption,\n  }))\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> keep(columns: [\"_time\", \"Grid\", \"Direct\", \"Battery\", \"Inverter\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, (avg(grid_consumption) - avg(inverter_consumption)) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Grid\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direct\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Battery\", avg(inverter_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Inverter\" FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -399,8 +405,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -531,10 +537,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\nimport \"math\"\n\nitems = [\n  \"grid_delivery\",\n  \"consumer_used_battery_production\",\n  \"inverter_production\",\n  ]\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => contains(value: r._field, set: items))\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> group()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _time: r._time,\n      \"Grid delivery\":\n        math.round(x: r.grid_delivery / r.inverter_production * 100.0),\n      \"Battery used\":\n        math.round(x: r.consumer_used_battery_production / r.inverter_production * 100.0)\n  }))\n  |> map(fn: (r) => ({r with \"Direct used\": \n    if 100.0 - r[\"Grid delivery\"] - r[\"Battery used\"] < 0 then\n      0.0\n    else\n      100.0 - r[\"Grid delivery\"] - r[\"Battery used\"]}))\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> keep(columns: [\"_time\", \"Battery used\", \"Grid delivery\", \"Direct used\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_delivery) AS gd, avg(consumer_used_battery_production) AS bu, avg(inverter_production) AS ip FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_production > 0 GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, round(bu / ip * 100.0) AS \"Battery used\", round(gd / ip * 100.0) AS \"Grid delivery\", GREATEST(0, 100.0 - round(gd / ip * 100.0) - round(bu / ip * 100.0)) AS \"Direct used\" FROM agg ORDER BY bucket;",
               "refId": "A"
             }
           ],
@@ -559,8 +568,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -692,10 +701,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\nimport \"math\"\n\nitems = [\n  \"grid_consumption\",\n  \"consumer_used_pv_production\",\n  \"consumer_used_battery_production\",\n  \"consumer_total\",\n]\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => contains(value: r._field, set: items))\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> group()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _time: r._time,\n      \"Grid\": \n        if r.consumer_total > 0.0  then\n          math.round(x: (r.grid_consumption / r.consumer_total * 100.0))\n        else\n          0.0,\n      \"Battery\":\n          math.round(x: (r.consumer_used_battery_production / r.consumer_total * 100.0))\n  }))\n  |> map(fn: (r) => ({r with \"Direct\": \n    if 100.0 - r.Grid - r.Battery < 0 then\n      0.0\n    else\n      100.0 - r.Grid - r.Battery}))\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> keep(columns: [\"_time\", \"Grid\", \"Direct\", \"Battery\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_consumption) AS gc, avg(consumer_used_pv_production) AS pv, avg(consumer_used_battery_production) AS bu, avg(consumer_total) AS ct FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END AS \"Grid\", GREATEST(0, 100.0 - CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END - round(bu / NULLIF(ct, 0) * 100.0)) AS \"Direct\", round(bu / NULLIF(ct, 0) * 100.0) AS \"Battery\" FROM agg ORDER BY bucket;",
               "refId": "A"
             }
           ],
@@ -720,8 +732,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -867,19 +879,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"pv_production\")\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg}), _value: if exists r._value then r._value else 0.0}))\n  |> set(key: \"_field\", value: \"Production\")\n  |> keep(columns: [\"_time\", \"_field\" \"_value\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Production\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "import \"date\"\nimport \"timezone\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"forecast\")\n  |> filter(fn: (r) => r[\"_field\"] == \"energy\")\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: true)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT NULL::timestamptz AS _time, NULL::numeric AS _value WHERE false;",
               "refId": "B"
             }
           ],
@@ -888,8 +906,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1029,19 +1047,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"powerflow\")\n  |> filter(fn: (r) => r[\"_field\"] == \"pv_production\")\n  |> filter(fn: (r) => r.agg_type == \"mean\")\n  |> aggregateWindow(every: ${agg}, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> set(key: \"_field\", value: \"Power\")\n  |> keep(columns: [\"_time\", \"_field\" \"_value\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) AS \"Power\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "import \"date\"\nimport \"timezone\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"forecast\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power\")\n  |> aggregateWindow(every: ${agg}, fn: mean, createEmpty: true)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg}), _value: if exists r._value then r._value else 0.0}))",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT NULL::timestamptz AS _time, NULL::numeric AS _value WHERE false;",
               "refId": "B"
             }
           ],
@@ -1050,8 +1074,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1174,10 +1198,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"grid_consumption\" or r[\"_field\"] == \"grid_delivery\" )\n  |> aggregateWindow(every: ${agg}, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> map(fn: (r)=>({r with _field: if r._field == \"grid_consumption\" then \"Consumption\" else \"Delivery\"}))\n  |> group()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Consumption\", avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Delivery\" FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1186,8 +1213,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1277,10 +1304,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\nimport \"timezone\"\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"battery\")\n  |> filter(fn: (r) => r[\"_field\"] == \"state_of_charge\")\n  |> filter(fn: (r) => r.agg_type == \"mean\")\n  |> filter(fn: (r) => r._value >= 0)\n  |> aggregateWindow(every: ${agg}, fn: mean, createEmpty: false)\n  |> map(fn: (r) => ({r with _time: date.truncate(t: date.sub(d: 1s, from: r._time), unit: ${agg})}))\n  |> set(key: \"_field\", value: \"SoC\")\n  |> keep(columns: [\"_time\", \"_field\" \"_value\"])",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT NULL::timestamptz AS _time, NULL::numeric AS _value WHERE false;",
               "refId": "A"
             }
           ],
@@ -1289,8 +1319,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1405,10 +1435,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "import \"date\"\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"grid_consumption\" or r[\"_field\"] == \"grid_delivery\")\n  |> aggregateWindow(every: 1h, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({r with hour: date.hour(t: r._time)}))\n  |> group(columns: [\"_field\", \"hour\"], mode: \"by\")\n  |> mean()\n  |> map(fn: (r) => ({r with _name: if r.hour < 10 then \"0\" + string(v: r.hour) else string(v: r.hour)}))\n  |> map(fn: (r) => ({r with _field: if r._field == \"grid_consumption\" then \"Consumption\" else \"Delivery\" }))\n  |> group()\n  |> pivot(rowKey: [\"_name\"], columnKey:[\"_field\"], valueColumn: \"_value\")",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH hourly AS (SELECT time_bucket('1 hour', time) AS bucket, avg(grid_consumption) AS gc, avg(grid_delivery) AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1) SELECT to_char(EXTRACT(HOUR FROM bucket)::int, 'FM00') AS _name, avg(gc) AS \"Consumption\", avg(gd) AS \"Delivery\" FROM hourly GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1417,8 +1450,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "1ZZNC9BGk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1533,11 +1566,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "1ZZNC9BGk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "import \"date\"\n\nweekdays = [\"Montag\", \"Dienstag\", \"Mittwoch\", \"Donnerstag\", \"Freitag\", \"Samstag\", \"Sonntag\"]\n\nfrom(bucket: \"${sebucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"energy\")\n  |> filter(fn: (r) => r[\"_field\"] == \"grid_consumption\" or r[\"_field\"] == \"grid_delivery\")\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\n  |> map(fn: (r) => ({r with _time: date.sub(d: 1s, from: r._time)}))\n  |> map(fn: (r) => ({r with weekday: date.weekDay(t: r._time)}))\n  |> map(fn: (r) => ({r with weekday: if r.weekday == 0 then 7 else r.weekday}))\n  |> group(columns: [\"_field\", \"weekday\"])\n  |> mean()\n  |> sort(columns: [\"weekday\"])\n  |> map(fn: (r) => ({r with _name: weekdays[r.weekday - 1]}))\n  |> map(fn: (r) => ({r with _field: if r._field == \"grid_consumption\" then \"Consumption\" else \"Delivery\" }))\n  |> group()\n  |> pivot(rowKey: [\"_name\"], columnKey:[\"_field\"], valueColumn: \"_value\")",
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH daily AS (SELECT time_bucket('1 day', time) AS bucket, avg(grid_consumption) * 24 AS gc, avg(grid_delivery) * 24 AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) GROUP BY 1), by_dow AS (SELECT EXTRACT(ISODOW FROM bucket)::int AS dow, avg(gc) AS gc, avg(gd) AS gd FROM daily GROUP BY 1) SELECT (ARRAY['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'])[dow] AS _name, gc AS \"Consumption\", gd AS \"Delivery\" FROM by_dow ORDER BY dow;",
               "refId": "A"
             }
           ],
@@ -1563,30 +1599,30 @@ spec:
               {
                 "selected": true,
                 "text": "1h",
-                "value": "1h"
+                "value": "1 hour"
               },
               {
                 "selected": false,
                 "text": "1d",
-                "value": "1d"
+                "value": "1 day"
               },
               {
                 "selected": false,
                 "text": "1w",
-                "value": "1w"
+                "value": "1 week"
               },
               {
                 "selected": false,
                 "text": "1mo",
-                "value": "1mo"
+                "value": "1 month"
               },
               {
                 "selected": false,
                 "text": "1y",
-                "value": "1y"
+                "value": "1 year"
               }
             ],
-            "query": "1h,1d,1w,1mo,1y",
+            "query": "1 hour,1 day,1 week,1 month,1 year",
             "type": "custom"
           },
           {

@@ -41,8 +41,8 @@ spec:
       "panels": [
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -116,7 +116,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Lüftermodi-Status\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Lüftermodi-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -125,8 +128,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -175,7 +178,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Filter-Betriebsstunden\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filter-Betriebsstunden' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -184,8 +190,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -252,7 +258,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Filterwechsel-Status\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filterwechsel-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -261,8 +270,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -329,7 +338,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Wartungsmodus-Status\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Wartungsmodus-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -338,8 +350,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -406,7 +418,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Status\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -415,8 +430,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -493,7 +508,10 @@ spec:
           "pluginVersion": "11.4.0",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.ComfoConnect-Status\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.ComfoConnect-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -502,8 +520,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -606,10 +624,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Luftstrom\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Luftstrom' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -618,8 +639,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -722,10 +743,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Temperatur-Außenluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Temperatur-Außenluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -734,8 +758,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -838,10 +862,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Temperatur-Fortluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Temperatur-Fortluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -850,8 +877,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -954,10 +981,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Temperatur-Zuluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Temperatur-Zuluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -966,8 +996,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1070,10 +1100,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Temperatur-Abluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Temperatur-Abluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1082,8 +1115,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1187,10 +1220,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Luftfeuchtigkeit-Außenluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Luftfeuchtigkeit-Außenluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1199,8 +1235,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1304,10 +1340,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Luftfeuchtigkeit-Fortluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Luftfeuchtigkeit-Fortluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1316,8 +1355,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1421,10 +1460,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Luftfeuchtigkeit-Zuluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Luftfeuchtigkeit-Zuluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1433,8 +1475,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1538,10 +1580,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Versorgungstechnik.KWL.Luftfeuchtigkeit-Abluft\")\n  |> drop(columns: [\"host\", \"groupaddress\", \"source\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Versorgungstechnik.KWL.Luftfeuchtigkeit-Abluft' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
