@@ -59,8 +59,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -192,19 +192,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Flur.BWM.Eingang.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Flur.BWM.Eingang.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Flur.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Flur.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -230,8 +236,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -359,19 +365,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Gäste-WC.Sensor.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Gäste-WC.Sensor.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Gäste-WC.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Gäste-WC.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -380,8 +392,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -485,10 +497,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Gäste-WC.Sensor.Luftfeuchte\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Gäste-WC.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -497,8 +512,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -599,10 +614,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Gäste-WC.Sensor.CO2\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Gäste-WC.Sensor.CO2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -628,8 +646,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -756,19 +774,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Büro.Sensor.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Büro.Sensor.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Büro.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Büro.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -777,8 +801,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -878,10 +902,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Büro.Sensor.Luftfeuchte\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Büro.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -890,8 +917,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -991,10 +1018,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Büro.Sensor.CO2\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Büro.Sensor.CO2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1020,8 +1050,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1149,19 +1179,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Wohnzimmer.Sensor.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Wohnzimmer.Sensor.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Wohnzimmer.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Wohnzimmer.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -1170,8 +1206,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1272,10 +1308,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Wohnzimmer.Sensor.Luftfeuchte\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Wohnzimmer.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1284,8 +1323,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1385,10 +1424,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Wohnzimmer.Sensor.CO2\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Wohnzimmer.Sensor.CO2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1414,8 +1456,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1542,19 +1584,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Esszimmer.Sensor.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Esszimmer.Sensor.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Esszimmer.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Esszimmer.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -1563,8 +1611,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1664,10 +1712,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Esszimmer.Sensor.Luftfeuchte\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Esszimmer.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1676,8 +1727,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1777,10 +1828,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Esszimmer.Sensor.CO2\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Esszimmer.Sensor.CO2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1806,8 +1860,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1934,19 +1988,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Küche.Sensor.Temperatur\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Küche.Sensor.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Heizung.EG.Küche.FBH.Stellwert-Status\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Küche.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -1955,8 +2015,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -2056,10 +2116,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Küche.Sensor.Luftfeuchte\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Küche.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2068,8 +2131,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -2169,10 +2232,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Sensorik.EG.Küche.Sensor.CO2\")\n  |> group(columns: [\"_field\"])\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.EG.Küche.Sensor.CO2' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
