@@ -2552,9 +2552,8 @@ spec:
       "refresh": "5m",
       "schemaVersion": 41,
       "tags": [
-        "influxdb",
-        "knx",
-        "telegraf"
+        "timescaledb",
+        "knx"
       ],
       "templating": {
         "list": []

@@ -2579,8 +2579,7 @@ spec:
       "refresh": "5m",
       "schemaVersion": 39,
       "tags": [
-        "Influxdb",
-        "telegraf",
+        "timescaledb",
         "knx"
       ],
       "templating": {
@@ -2592,7 +2591,7 @@ spec:
       },
       "timepicker": {},
       "timezone": "",
-      "title": "1. Kellergeschoss",
+      "title": "1. Kellergeschoss — Klima",
       "uid": "fGuhSLM7k",
       "version": 34,
       "weekStart": ""
