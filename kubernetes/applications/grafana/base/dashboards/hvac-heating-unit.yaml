@@ -42,8 +42,8 @@ spec:
       "panels": [
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -118,10 +118,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"curtemp\")\n  |> map(fn: (r) => ({ r with _field: \"Warmwassertemperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(curtemp) AS \"Warmwassertemperatur\" FROM ems_esp WHERE $__timeFilter(time) AND curtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -130,8 +133,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -198,10 +201,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"heatingpump\")\n  |> map(fn: (r) => ({ r with _field: \"Heizkreispumpe\"}))",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(heatingpump, time) AS \"Heizkreispumpe\" FROM ems_esp WHERE $__timeFilter(time) AND heatingpump IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Heizkreispumpe"
             }
           ],
@@ -210,8 +216,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -278,11 +284,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"pumpstatus\")\n  |> map(fn: (r) => ({ r with _field: \"Mischerpumpe\"}))",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(pumpstatus, time) AS \"Mischerpumpe\" FROM ems_esp WHERE $__timeFilter(time) AND pumpstatus IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Mischerpumpe"
             }
           ],
@@ -291,8 +300,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -388,14 +397,17 @@ spec:
               "aggregation": "Last",
               "alias": "Heating",
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "decimals": 2,
               "displayAliasType": "Warning / Critical",
               "displayType": "Regular",
               "displayValueWithAlias": "Never",
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"heatingactive\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Heizung\"}))\n  |> aggregateWindow(every: 1m, fn: last)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(heatingactive, time) AS \"Heizung\" FROM ems_esp WHERE $__timeFilter(time) AND heatingactive IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Heizung",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -405,15 +417,18 @@ spec:
               "aggregation": "Last",
               "alias": "Heating",
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "decimals": 2,
               "displayAliasType": "Warning / Critical",
               "displayType": "Regular",
               "displayValueWithAlias": "Never",
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"charging\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Warmwasser\"}))\n  |> aggregateWindow(every: 1m, fn: last)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(charging, time) AS \"Warmwasser\" FROM ems_esp WHERE $__timeFilter(time) AND charging IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Warmwasser",
               "units": "none",
               "valueHandler": "Number Threshold"
@@ -424,8 +439,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -525,10 +540,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"outdoortemp\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Außentemperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(outdoortemp) AS \"Außentemperatur\" FROM ems_esp WHERE $__timeFilter(time) AND outdoortemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -537,8 +555,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -588,10 +606,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"syspress\")\n  |> map(fn: (r) => ({ r with _field: \"Druck\"}))\n  |> aggregateWindow(every: 5m, fn: last)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(syspress, time) AS \"Druck\" FROM ems_esp WHERE $__timeFilter(time) AND syspress IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -600,8 +621,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -651,10 +672,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"curflow\")\n  |> map(fn: (r) => ({ r with _field: \"Druck\"}))\n  |> aggregateWindow(every: 5m, fn: last)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(curflow, time) AS \"Druck\" FROM ems_esp WHERE $__timeFilter(time) AND curflow IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -663,8 +687,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -810,37 +834,49 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"setflowtemp\")\n  |> map(fn: (r) => ({ r with _field: \"Soll Temperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(setflowtemp) AS \"Soll Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND setflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Soll Temperatur"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"curflowtemp\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Ist Temperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(curflowtemp) AS \"Ist Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND curflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Ist Temperatur"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"rettemp\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Rücklauf\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(rettemp) AS \"Rücklauf\" FROM ems_esp WHERE $__timeFilter(time) AND rettemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Rücklauf"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"switchtemp\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Hydraulische Weiche\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(switchtemp) AS \"Hydraulische Weiche\" FROM ems_esp WHERE $__timeFilter(time) AND switchtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Hydraulische Weiche"
             }
           ],
@@ -849,8 +885,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -968,20 +1004,26 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"settemp\")\n  |> filter(fn: (r) => r[\"topic\"] == \"ems-esp/boiler_data_dhw\")\n  |> drop(columns: [\"host\", \"topic\",\"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Soll Temperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(settemp) AS \"Soll Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND settemp IS NOT NULL AND topic = 'boiler_data_dhw' GROUP BY 1 ORDER BY 1;",
               "refId": "Soll Temperatur"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"curtemp\")\r\n  |> filter(fn: (r) => r[\"topic\"] == \"ems-esp/boiler_data_dhw\")\r\n  |> drop(columns: [\"host\", \"topic\",\"_measurement\"])\r\n  |> map(fn: (r) => ({ r with _field: \"Ist Temperatur\"}))\r\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(curtemp) AS \"Ist Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND curtemp IS NOT NULL AND topic = 'boiler_data_dhw' GROUP BY 1 ORDER BY 1;",
               "refId": "Ist Temperatur"
             }
           ],
@@ -990,8 +1032,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1118,20 +1160,26 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"flowsettemp\")\n  |> drop(columns: [\"host\", \"topic\",\"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Soll Temperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(flowsettemp) AS \"Soll Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND flowsettemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Soll Temperatur"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"flowtemphc\")\n  |> drop(columns: [\"host\", \"topic\",\"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Ist Temperatur\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(flowtemphc) AS \"Ist Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND flowtemphc IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Ist Temperatur"
             }
           ],
@@ -1140,8 +1188,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1209,10 +1257,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"curburnpow\")\n  |> map(fn: (r) => ({ r with _field: \"power\"}))\n  |> aggregateWindow(every: 1m, fn: last)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(curburnpow, time) AS \"power\" FROM ems_esp WHERE $__timeFilter(time) AND curburnpow IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1221,8 +1272,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1319,11 +1370,14 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"curburnpow\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({r with _field: \"Brennerleistung\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(curburnpow) AS \"Brennerleistung\" FROM ems_esp WHERE $__timeFilter(time) AND curburnpow IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1332,8 +1386,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1388,10 +1442,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"valvestatus\")\n  |> map(fn: (r) => ({ r with _field: \"Fußbodenheizung\"}))",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(valvestatus, time) AS \"Fußbodenheizung\" FROM ems_esp WHERE $__timeFilter(time) AND valvestatus IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Fußbodenheizung"
             }
           ],
@@ -1400,8 +1457,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1498,19 +1555,25 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"valvestatus\")\n  |> filter(fn: (r) => r[\"topic\"] == \"ems-esp/mixer_data_hc1\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Ventilöffnung\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(valvestatus) AS \"Ventilöffnung\" FROM ems_esp WHERE $__timeFilter(time) AND valvestatus IS NOT NULL AND topic = 'mixer_data_hc1' GROUP BY 1 ORDER BY 1;",
               "refId": "Fußbodenheizung"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: v.defaultBucket)\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ems-esp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"valvestatus\")\n  |> filter(fn: (r) => r[\"topic\"] == \"ems-esp/mixer_data_hc2\")\n  |> drop(columns: [\"host\", \"topic\", \"_measurement\"])\n  |> map(fn: (r) => ({ r with _field: \"Heizkörper\"}))\n  |> aggregateWindow(every: 1m, fn: mean)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(valvestatus) AS \"Heizkörper\" FROM ems_esp WHERE $__timeFilter(time) AND valvestatus IS NOT NULL AND topic = 'mixer_data_hc2' GROUP BY 1 ORDER BY 1;",
               "refId": "Heizkörper"
             }
           ],

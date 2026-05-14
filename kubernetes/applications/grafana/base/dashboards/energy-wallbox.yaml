@@ -48,8 +48,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -131,7 +131,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"charger_state\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(charger_state, time) AS \"Ladecontroller\" FROM warp_evse WHERE $__timeFilter(time) AND charger_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -140,8 +143,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -223,7 +226,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"error_state\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(error_state, time) AS \"Fehlerzustand\" FROM warp_evse WHERE $__timeFilter(time) AND error_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -232,8 +238,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -485,7 +491,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\ntempTime = date.truncate(t: now(), unit: 1h)\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.sub(from: tempTime, d: 12h), stop: tempTime)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"error_state\" or r[\"_field\"] == \"contactor_error\" or r[\"_field\"] == \"dc_fault_current_state\")\n  |> aggregateWindow(every: 1h, offset: -1h, fn:last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 hour', time) AS time, last(error_state, time) AS \"error_state\", last(contactor_error, time) AS \"contactor_error\", last(dc_fault_current_state, time) AS \"dc_fault_current_state\" FROM warp_evse WHERE time >= date_trunc('hour', now()) - INTERVAL '12 hours' AND time < date_trunc('hour', now()) GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -495,8 +504,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -588,7 +597,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dc_fault_current_state\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(dc_fault_current_state, time) AS \"DC-Fehler\" FROM warp_evse WHERE $__timeFilter(time) AND dc_fault_current_state IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -597,8 +609,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -724,7 +736,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"contactor_error\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(contactor_error, time) AS \"Schützfehler\" FROM warp_evse WHERE $__timeFilter(time) AND contactor_error IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -746,8 +761,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -798,7 +813,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tracked_charges\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(tracked_charges, time) AS \"Ladevorgänge Gesamt\" FROM warp_charge_tracker WHERE $__timeFilter(time) AND tracked_charges IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -807,8 +825,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -953,16 +971,22 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1mo), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"topic\"] == \"warp/charge_tracker/last_charges\")\n  |> filter(fn: (r) => r[\"_field\"] == \"charge_duration\")\n  |> drop(columns: [\"host\", \"topic\", \"user_id\", \"timestamp\"])",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time AS _time, charge_duration AS _value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND charge_duration IS NOT NULL ORDER BY time;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1mo), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"topic\"] == \"warp/charge_tracker/last_charges\")\n  |> filter(fn: (r) => r[\"_field\"] == \"energy_charged\")\n  |> drop(columns: [\"host\", \"topic\", \"user_id\", \"timestamp\"])\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time AS _time, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND energy_charged IS NOT NULL ORDER BY time;",
               "refId": "B"
             }
           ],
@@ -979,8 +1003,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1125,16 +1149,22 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: -1mo, unit: 1mo), stop: date.truncate(t: now(), unit: 1mo))  \n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"topic\"] == \"warp/charge_tracker/last_charges\")\n  |> filter(fn: (r) => r[\"_field\"] == \"charge_duration\")\n  |> drop(columns: [\"host\", \"topic\", \"user_id\", \"timestamp\"])",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time AS _time, charge_duration AS _value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND charge_duration IS NOT NULL ORDER BY time;",
               "refId": "A"
             },
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
               "hide": false,
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: -1mo, unit: 1mo), stop: date.truncate(t: now(), unit: 1mo))  \n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"topic\"] == \"warp/charge_tracker/last_charges\")\n  |> filter(fn: (r) => r[\"_field\"] == \"energy_charged\")\n  |> drop(columns: [\"host\", \"topic\", \"user_id\", \"timestamp\"])\n  |> map(fn: (r) => ({r with _cost: float(v: r._value) * 0.2937}))",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT time AS _time, energy_charged AS _value, energy_charged * 0.2937 AS _cost FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND sub_topic = 'charge_tracker.last_charges' AND energy_charged IS NOT NULL ORDER BY time;",
               "refId": "B"
             }
           ],
@@ -1151,8 +1181,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1203,7 +1233,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\n\nfrom(bucket: \"telegraf/autogen\")\n  |> range(start: date.truncate(t: now(), unit: 1mo), stop: now())\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tracked_charges\")\n  |> spread()",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT now() AS time, COALESCE(max(tracked_charges) - min(tracked_charges), 0) AS value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND tracked_charges IS NOT NULL;",
               "refId": "A"
             }
           ],
@@ -1212,8 +1245,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "fieldConfig": {
             "defaults": {
@@ -1264,7 +1297,10 @@ spec:
           "pluginVersion": "12.2.0-16629863581",
           "targets": [
             {
-              "query": "import \"timezone\"\nimport \"date\"\n\noption location = timezone.location(name: \"Europe/Berlin\")\n\n  from(bucket: \"telegraf/autogen\")\n    |> range(start: date.truncate(t: -1mo, unit: 1mo), stop: date.truncate(t: now(), unit: 1mo))  \n    |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n    |> filter(fn: (r) => r[\"_field\"] == \"tracked_charges\")\n    |> spread()\n\n\n\n",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT now() AS time, COALESCE(max(tracked_charges) - min(tracked_charges), 0) AS value FROM warp_charge_tracker WHERE time >= date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') - INTERVAL '1 month' AND time < date_trunc('month', now() AT TIME ZONE 'Europe/Berlin') AND tracked_charges IS NOT NULL;",
               "refId": "A"
             }
           ],
@@ -1286,8 +1322,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1392,10 +1428,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(power_l1) AS \"L1\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND power_l1 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1404,8 +1443,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1510,10 +1549,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(power_l2) AS \"L2\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND power_l2 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1522,8 +1564,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1628,10 +1670,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"power_L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(power_l3) AS \"L3\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND power_l3 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1640,8 +1685,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1746,10 +1791,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"current_L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(current_l1) AS \"L1\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND current_l1 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1758,8 +1806,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1864,10 +1912,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"current_L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(current_l2) AS \"L2\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND current_l2 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1876,8 +1927,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -1982,10 +2033,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"current_L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(current_l3) AS \"L3\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND current_l3 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1994,8 +2048,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2100,10 +2154,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage_L1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(voltage_l1) AS \"L1\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND voltage_l1 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2112,8 +2169,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2218,10 +2275,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage_L2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(voltage_l2) AS \"L2\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND voltage_l2 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2230,8 +2290,8 @@ spec:
         },
         {
           "datasource": {
-            "type": "influxdb",
-            "uid": "sRCk9Y9nk"
+            "type": "postgres",
+            "uid": "timescaledb"
           },
           "description": "",
           "fieldConfig": {
@@ -2336,10 +2396,13 @@ spec:
           "targets": [
             {
               "datasource": {
-                "type": "influxdb",
-                "uid": "sRCk9Y9nk"
+                "type": "postgres",
+                "uid": "timescaledb"
               },
-              "query": "from(bucket: \"telegraf/autogen\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"warp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"voltage_L3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(voltage_l3) AS \"L3\" FROM warp_meter WHERE $__timeFilter(time) AND meter_id = 0 AND voltage_l3 IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
