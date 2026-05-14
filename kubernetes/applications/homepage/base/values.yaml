@@ -2,6 +2,8 @@ applicationName: homepage
 
 deployment:
   enabled: true
+  # Kubernetes widget queries the cluster API via the SA token; v7 flipped the chart default to false
+  automountServiceAccountToken: true
   replicas: 1
   # Recreate avoids Multi-Attach errors on the homepage-images RWO PVC — old pod must terminate before new one starts.
   strategy:
@@ -134,5 +136,5 @@ service:
 # ServiceAccount bound to ClusterRole in rbac.yaml (needed for the Kubernetes widget that lists pods/nodes/services).
 rbac:
   serviceAccount:
-    enabled: true
+    create: true
     name: homepage

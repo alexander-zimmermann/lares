@@ -2,6 +2,8 @@ applicationName: gatus
 
 deployment:
   enabled: true
+  # gatus-sidecar reads IngressRoutes via the SA token; v7 flipped the chart default to false
+  automountServiceAccountToken: true
   image:
     repository: ghcr.io/twin/gatus
     tag: v5.35.0
@@ -157,5 +159,5 @@ serviceMonitor:
 # ServiceAccount bound to ClusterRole in rbac.yaml (needed by sidecar to watch IngressRoutes cluster-wide)
 rbac:
   serviceAccount:
-    enabled: true
+    create: true
     name: gatus
