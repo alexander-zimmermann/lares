@@ -12,7 +12,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: iot-mcp-bridge
-    version: 6.18.0
+    version: 8.0.0
     valuesFile: values.yaml
     namespace: iot-mcp-bridge
     apiVersions:
