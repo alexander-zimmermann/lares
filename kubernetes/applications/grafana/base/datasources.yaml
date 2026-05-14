@@ -62,11 +62,11 @@ spec:
     type: postgres
     access: proxy
     url: timescaledb-db-pooler.timescaledb.svc.cluster.local:5432
-    database: homelab
     user: grafana_ro
     isDefault: false
     editable: false
     jsonData:
+      database: homelab
       sslmode: disable
       postgresVersion: 1800
       timescaledb: true
