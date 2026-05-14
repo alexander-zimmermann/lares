@@ -1599,8 +1599,7 @@ spec:
       "refresh": "10s",
       "schemaVersion": 40,
       "tags": [
-        "Influxdb",
-        "telegraf",
+        "timescaledb",
         "knx"
       ],
       "templating": {

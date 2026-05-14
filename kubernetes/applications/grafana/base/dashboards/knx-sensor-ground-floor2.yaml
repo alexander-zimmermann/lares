@@ -2250,8 +2250,7 @@ spec:
       "refresh": "",
       "schemaVersion": 39,
       "tags": [
-        "influxdb",
-        "telegraf",
+        "timescaledb",
         "knx"
       ],
       "templating": {
@@ -2263,7 +2262,7 @@ spec:
       },
       "timepicker": {},
       "timezone": "",
-      "title": "2. Erdgeschoss",
+      "title": "2. Erdgeschoss — Heizung & Klima",
       "uid": "EtFiKlGnz",
       "version": 25,
       "weekStart": ""
