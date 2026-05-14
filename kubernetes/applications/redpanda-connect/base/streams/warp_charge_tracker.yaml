@@ -56,6 +56,12 @@ output:
           init_statement: |
             SET timezone = 'UTC';
           query: |
+            -- For `last_charges` entries the publish timestamp is meaningless
+            -- (WARP republishes the same array periodically). Use the per-charge
+            -- timestamp_minutes ($9) instead; for state/current_charge fall back
+            -- to the NATS receive time ($1). The partial unique index on
+            -- (time, timestamp_minutes) WHERE sub_topic = 'charge_tracker.last_charges'
+            -- dedupes the inevitable republished duplicates.
             INSERT INTO warp_charge_tracker (
               time, sub_topic,
               user_id, charge_duration, energy_charged, tracked_charges,
@@ -64,12 +70,20 @@ output:
               generator_state
             )
             VALUES (
-              $1, $2,
+              CASE
+                WHEN $2 = 'charge_tracker.last_charges' AND $9::numeric IS NOT NULL
+                  THEN to_timestamp($9::numeric * 60)
+                ELSE $1::timestamptz
+              END,
+              $2,
               $3, $4, $5, $6,
               $7, $8, $9,
               $10, $11,
               ($12::numeric)::smallint
             )
+            ON CONFLICT (time, timestamp_minutes)
+              WHERE sub_topic = 'charge_tracker.last_charges'
+              DO NOTHING
           args_mapping: |
             root = [
               this.time,
