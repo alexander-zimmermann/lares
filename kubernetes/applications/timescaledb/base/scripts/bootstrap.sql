@@ -263,6 +263,14 @@ CREATE TABLE warp_charge_tracker (
 SELECT create_hypertable('warp_charge_tracker', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON warp_charge_tracker (sub_topic, time DESC);
 CREATE INDEX ON warp_charge_tracker (user_id, time DESC) WHERE user_id IS NOT NULL;
+-- WARP republishes warp.charge_tracker.last_charges periodically with the same
+-- historical charges. After the array-unarchive in redpanda-connect, the stream
+-- uses to_timestamp(timestamp_minutes * 60) as the row's `time`, so
+-- (time, timestamp_minutes) uniquely identifies a completed charge — the
+-- partial unique index lets INSERT ... ON CONFLICT DO NOTHING drop repeats.
+CREATE UNIQUE INDEX IF NOT EXISTS warp_charge_tracker_last_charges_unique
+    ON warp_charge_tracker (time, timestamp_minutes)
+    WHERE sub_topic = 'charge_tracker.last_charges';
 
 -- warp.meter.all_values (86 floats), warp.meters.<N>.values (39 floats), warp.meters.<N>.update
 -- Typed: phase V/A/W (positions 0-8 confirmed via Telegraf XPath).

@@ -13,6 +13,15 @@ input:
 
 pipeline:
   processors:
+    # `warp.charge_tracker.last_charges` is published as a JSON *array* of completed
+    # charges. Split each element into its own message so the downstream mapping can
+    # extract typed columns per charge. Other subjects (state, current_charge) are
+    # single objects and pass through unchanged.
+    - switch:
+        - check: 'meta("nats_subject") == "warp.charge_tracker.last_charges" && this.type() == "array"'
+          processors:
+            - unarchive:
+                format: json_array
     - mapping: |
         let evt = this
         let parts = meta("nats_subject").split(".")
@@ -47,6 +56,12 @@ output:
           init_statement: |
             SET timezone = 'UTC';
           query: |
+            -- For `last_charges` entries the publish timestamp is meaningless
+            -- (WARP republishes the same array periodically). Use the per-charge
+            -- timestamp_minutes ($9) instead; for state/current_charge fall back
+            -- to the NATS receive time ($1). The partial unique index on
+            -- (time, timestamp_minutes) WHERE sub_topic = 'charge_tracker.last_charges'
+            -- dedupes the inevitable republished duplicates.
             INSERT INTO warp_charge_tracker (
               time, sub_topic,
               user_id, charge_duration, energy_charged, tracked_charges,
@@ -55,12 +70,20 @@ output:
               generator_state
             )
             VALUES (
-              $1, $2,
+              CASE
+                WHEN $2 = 'charge_tracker.last_charges' AND $9::numeric IS NOT NULL
+                  THEN to_timestamp($9::numeric * 60)
+                ELSE $1::timestamptz
+              END,
+              $2,
               $3, $4, $5, $6,
               $7, $8, $9,
               $10, $11,
               ($12::numeric)::smallint
             )
+            ON CONFLICT (time, timestamp_minutes)
+              WHERE sub_topic = 'charge_tracker.last_charges'
+              DO NOTHING
           args_mapping: |
             root = [
               this.time,
@@ -76,7 +99,10 @@ output:
               this.first_charge_timestamp,
               this.generator_state,
             ]
-      # Cold archive: original NATS payload as Parquet on RustFS
+      # Cold archive: original NATS payload as Parquet on RustFS. After the
+      # array-unarchive above, last_charges entries land here as individual charge
+      # objects (one parquet row per completed charge) rather than the original
+      # array — by design the typed and archived views stay aligned.
       - aws_s3:
           bucket: nats-archive
           object_canned_acl: private
