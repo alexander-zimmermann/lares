@@ -13,7 +13,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: node-red
-    version: 8.0.0
+    version: 8.1.2
     valuesFile: values.yaml
     namespace: node-red
 

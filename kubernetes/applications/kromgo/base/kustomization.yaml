@@ -11,7 +11,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: kromgo
-    version: 8.0.0
+    version: 8.1.2
     valuesFile: values.yaml
     namespace: kromgo
     apiVersions:
