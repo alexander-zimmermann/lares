@@ -6,7 +6,7 @@ deployment:
   replicas: 1
   image:
     repository: ghcr.io/kashalls/kromgo
-    tag: v0.9.1
+    tag: v0.10.0
     pullPolicy: IfNotPresent
 
   env:
