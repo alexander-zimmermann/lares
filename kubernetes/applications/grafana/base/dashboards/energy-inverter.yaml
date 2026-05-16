@@ -50,7 +50,7 @@ spec:
           },
           "id": 75,
           "panels": [],
-          "title": "PV Overview",
+          "title": "PV-Übersicht",
           "type": "row"
         },
         {
@@ -117,7 +117,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Battery used"
+                  "options": "Aus Batterie"
                 },
                 "properties": [
                   {
@@ -132,7 +132,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Grid delivery"
+                  "options": "Einspeisung"
                 },
                 "properties": [
                   {
@@ -147,7 +147,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Direct used"
+                  "options": "Direktverbrauch"
                 },
                 "properties": [
                   {
@@ -195,11 +195,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Grid delivery\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Battery used\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direct used\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Einspeisung\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Aus Batterie\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direktverbrauch\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
-          "title": "Production AC",
+          "title": "Produktion AC",
           "transformations": [
             {
               "id": "organize",
@@ -209,9 +209,9 @@ spec:
                 },
                 "includeByName": {},
                 "indexByName": {
-                  "Battery used": 2,
-                  "Direct used": 1,
-                  "Grid delivery": 3,
+                  "Aus Batterie": 2,
+                  "Direktverbrauch": 1,
+                  "Einspeisung": 3,
                   "_time": 0
                 },
                 "renameByName": {
@@ -286,7 +286,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Inverter"
+                  "options": "Wechselrichter-Eigenverbrauch"
                 },
                 "properties": [
                   {
@@ -301,7 +301,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Direct"
+                  "options": "Direkt"
                 },
                 "properties": [
                   {
@@ -316,7 +316,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Battery"
+                  "options": "Batterie"
                 },
                 "properties": [
                   {
@@ -331,7 +331,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Grid"
+                  "options": "Netz"
                 },
                 "properties": [
                   {
@@ -380,11 +380,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, (avg(grid_consumption) - avg(inverter_consumption)) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Grid\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direct\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Battery\", avg(inverter_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Inverter\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, (avg(grid_consumption) - avg(inverter_consumption)) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Netz\", avg(consumer_used_pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Direkt\", avg(consumer_used_battery_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Batterie\", avg(inverter_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Wechselrichter-Eigenverbrauch\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
-          "title": "Consumption",
+          "title": "Verbrauch",
           "transformations": [
             {
               "id": "organize",
@@ -470,7 +470,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Direct used"
+                  "options": "Direktverbrauch"
                 },
                 "properties": [
                   {
@@ -485,7 +485,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Battery used"
+                  "options": "Aus Batterie"
                 },
                 "properties": [
                   {
@@ -500,7 +500,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Grid delivery"
+                  "options": "Einspeisung"
                 },
                 "properties": [
                   {
@@ -544,11 +544,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_delivery) AS gd, avg(consumer_used_battery_production) AS bu, avg(inverter_production) AS ip FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND inverter_production > 0 GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, round(bu / ip * 100.0) AS \"Battery used\", round(gd / ip * 100.0) AS \"Grid delivery\", GREATEST(0, 100.0 - round(gd / ip * 100.0) - round(bu / ip * 100.0)) AS \"Direct used\" FROM agg ORDER BY bucket;",
+              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_delivery) AS gd, avg(consumer_used_battery_production) AS bu, avg(inverter_production) AS ip FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND inverter_production > 0 GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, round(bu / ip * 100.0) AS \"Aus Batterie\", round(gd / ip * 100.0) AS \"Einspeisung\", GREATEST(0, 100.0 - round(gd / ip * 100.0) - round(bu / ip * 100.0)) AS \"Direktverbrauch\" FROM agg ORDER BY bucket;",
               "refId": "A"
             }
           ],
-          "title": "Consumption rate",
+          "title": "Verbrauchsverteilung",
           "transformations": [
             {
               "id": "organize",
@@ -556,9 +556,9 @@ spec:
                 "excludeByName": {},
                 "includeByName": {},
                 "indexByName": {
-                  "Battery used": 2,
-                  "Direct used": 1,
-                  "Grid delivery": 3,
+                  "Aus Batterie": 2,
+                  "Direktverbrauch": 1,
+                  "Einspeisung": 3,
                   "_time": 0
                 },
                 "renameByName": {}
@@ -634,7 +634,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Direct"
+                  "options": "Direkt"
                 },
                 "properties": [
                   {
@@ -649,7 +649,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Battery"
+                  "options": "Batterie"
                 },
                 "properties": [
                   {
@@ -664,7 +664,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Grid"
+                  "options": "Netz"
                 },
                 "properties": [
                   {
@@ -708,11 +708,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_consumption) AS gc, avg(consumer_used_pv_production) AS pv, avg(consumer_used_battery_production) AS bu, avg(consumer_total) AS ct FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END AS \"Grid\", GREATEST(0, 100.0 - CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END - round(bu / NULLIF(ct, 0) * 100.0)) AS \"Direct\", round(bu / NULLIF(ct, 0) * 100.0) AS \"Battery\" FROM agg ORDER BY bucket;",
+              "rawSql": "WITH agg AS (SELECT time_bucket('${agg}'::interval, time) AS bucket, avg(grid_consumption) AS gc, avg(consumer_used_pv_production) AS pv, avg(consumer_used_battery_production) AS bu, avg(consumer_total) AS ct FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1) SELECT bucket - INTERVAL '1 second' AS _time, CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END AS \"Netz\", GREATEST(0, 100.0 - CASE WHEN ct > 0 THEN round(gc / ct * 100.0) ELSE 0 END - round(bu / NULLIF(ct, 0) * 100.0)) AS \"Direkt\", round(bu / NULLIF(ct, 0) * 100.0) AS \"Batterie\" FROM agg ORDER BY bucket;",
               "refId": "A"
             }
           ],
-          "title": "Sufficiency rate",
+          "title": "Autarkiequote",
           "transformations": [
             {
               "id": "organize",
@@ -886,7 +886,7 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Production\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Produktion\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
@@ -902,7 +902,7 @@ spec:
               "refId": "B"
             }
           ],
-          "title": "Production DC",
+          "title": "Produktion DC",
           "type": "timeseries"
         },
         {
@@ -1054,7 +1054,7 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) AS \"Power\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(pv_production) AS \"Leistung\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} AND pv_production IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
@@ -1070,7 +1070,7 @@ spec:
               "refId": "B"
             }
           ],
-          "title": "Power DC",
+          "title": "Leistung DC",
           "type": "timeseries"
         },
         {
@@ -1137,7 +1137,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Delivery"
+                  "options": "Einspeisung"
                 },
                 "properties": [
                   {
@@ -1156,7 +1156,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Consumption"
+                  "options": "Verbrauch"
                 },
                 "properties": [
                   {
@@ -1205,11 +1205,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Consumption\", avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Delivery\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(grid_consumption) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Verbrauch\", avg(grid_delivery) * EXTRACT(EPOCH FROM INTERVAL '${agg}') / 3600 AS \"Einspeisung\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
-          "title": "Grid meter",
+          "title": "Netzzähler",
           "type": "timeseries"
         },
         {
@@ -1315,7 +1315,7 @@ spec:
               "refId": "A"
             }
           ],
-          "title": "Battery",
+          "title": "Batterie",
           "type": "timeseries"
         },
         {
@@ -1370,7 +1370,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Consumption"
+                  "options": "Verbrauch"
                 },
                 "properties": [
                   {
@@ -1385,7 +1385,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Delivery"
+                  "options": "Einspeisung"
                 },
                 "properties": [
                   {
@@ -1442,11 +1442,11 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "WITH hourly AS (SELECT time_bucket('1 hour', time) AS bucket, avg(grid_consumption) AS gc, avg(grid_delivery) AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1) SELECT to_char(EXTRACT(HOUR FROM bucket)::int, 'FM00') AS _name, avg(gc) AS \"Consumption\", avg(gd) AS \"Delivery\" FROM hourly GROUP BY 1 ORDER BY 1;",
+              "rawSql": "WITH hourly AS (SELECT time_bucket('1 hour', time) AS bucket, avg(grid_consumption) AS gc, avg(grid_delivery) AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1) SELECT to_char(EXTRACT(HOUR FROM bucket)::int, 'FM00') AS _name, avg(gc) AS \"Verbrauch\", avg(gd) AS \"Einspeisung\" FROM hourly GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
-          "title": "Grid meter - Average per hour",
+          "title": "Netzzähler – Mittel pro Stunde",
           "type": "barchart"
         },
         {
@@ -1501,7 +1501,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Consumption"
+                  "options": "Verbrauch"
                 },
                 "properties": [
                   {
@@ -1516,7 +1516,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Delivery"
+                  "options": "Einspeisung"
                 },
                 "properties": [
                   {
@@ -1574,18 +1574,21 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "WITH daily AS (SELECT time_bucket('1 day', time) AS bucket, avg(grid_consumption) * 24 AS gc, avg(grid_delivery) * 24 AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1), by_dow AS (SELECT EXTRACT(ISODOW FROM bucket)::int AS dow, avg(gc) AS gc, avg(gd) AS gd FROM daily GROUP BY 1) SELECT (ARRAY['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'])[dow] AS _name, gc AS \"Consumption\", gd AS \"Delivery\" FROM by_dow ORDER BY dow;",
+              "rawSql": "WITH daily AS (SELECT time_bucket('1 day', time) AS bucket, avg(grid_consumption) * 24 AS gc, avg(grid_delivery) * 24 AS gd FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1), by_dow AS (SELECT EXTRACT(ISODOW FROM bucket)::int AS dow, avg(gc) AS gc, avg(gd) AS gd FROM daily GROUP BY 1) SELECT (ARRAY['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'])[dow] AS _name, gc AS \"Verbrauch\", gd AS \"Einspeisung\" FROM by_dow ORDER BY dow;",
               "refId": "A"
             }
           ],
-          "title": "Grid meter - Average per weekday",
+          "title": "Netzzähler – Mittel pro Wochentag",
           "type": "barchart"
         }
       ],
       "preload": false,
       "refresh": "5m",
       "schemaVersion": 41,
-      "tags": [],
+      "tags": [
+        "mqtt",
+        "timescaledb"
+      ],
       "templating": {
         "list": [
           {
@@ -1617,7 +1620,7 @@ spec:
               "value": "1h"
             },
             "includeAll": false,
-            "label": "Aggregate Window Every",
+            "label": "Aggregationsfenster",
             "name": "agg",
             "options": [
               {
@@ -1647,29 +1650,6 @@ spec:
               }
             ],
             "query": "1 hour,1 day,1 week,1 month,1 year",
-            "type": "custom"
-          },
-          {
-            "current": {
-              "text": "solaredge",
-              "value": "solaredge"
-            },
-            "includeAll": false,
-            "label": "SolarEdge Bucket",
-            "name": "sebucket",
-            "options": [
-              {
-                "selected": true,
-                "text": "solaredge",
-                "value": "solaredge"
-              },
-              {
-                "selected": false,
-                "text": "solaredgedev",
-                "value": "solaredgedev"
-              }
-            ],
-            "query": "solaredge,solaredgedev",
             "type": "custom"
           }
         ]
