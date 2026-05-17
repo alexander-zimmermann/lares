@@ -36,7 +36,7 @@ spec:
             - http://argocd-server.gitops-controller.svc.cluster.local/healthz
       containers:
         - name: provision
-          image: alpine/k8s:1.36.0
+          image: alpine/k8s:1.36.1
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
