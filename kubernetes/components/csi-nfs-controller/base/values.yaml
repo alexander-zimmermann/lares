@@ -1,3 +1,9 @@
 externalSnapshotter:
   # Enable volume snapshot controller
   enabled: true
+
+node:
+  # Override the chart default (`operator: Exists`, which tolerates every taint).
+  # CPs are tainted node-role.kubernetes.io/control-plane:NoSchedule and never
+  # host workloads with NFS PVCs, so the node DS has nothing to mount there.
+  tolerations: []
