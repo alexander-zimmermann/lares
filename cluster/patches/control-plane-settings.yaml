@@ -10,7 +10,7 @@ cluster:
       GOMEMLIMIT: "2500MiB"
     resources:
       limits:
-        memory: "3GiB"
+        memory: "3Gi"
   ## Expose metrics endpoints on all interfaces (default: 127.0.0.1)
   ## Required for Prometheus ServiceMonitor scraping from within the cluster
   controllerManager:
