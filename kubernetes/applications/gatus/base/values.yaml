@@ -6,7 +6,7 @@ deployment:
   automountServiceAccountToken: true
   image:
     repository: ghcr.io/twin/gatus
-    tag: v5.35.0
+    tag: v5.36.0
     pullPolicy: IfNotPresent
 
   # gatus-sidecar watches Traefik IngressRoutes cluster-wide and writes a generated
