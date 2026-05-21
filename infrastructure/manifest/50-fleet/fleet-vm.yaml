@@ -31,3 +31,5 @@ fleet_vm:
     template_id: vm_windows_11_25h2
     vm_id: 1100
     wait_for_agent: false
+    usb_devices:
+      - mapping: "knx-license"
