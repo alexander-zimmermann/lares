@@ -13,7 +13,7 @@ deployment:
   # endpoint config to /config/gatus-sidecar.yaml; runs as native sidecar (restartPolicy: Always)
   initContainers:
     gatus-sidecar:
-      image: ghcr.io/home-operations/gatus-sidecar:0.0.17
+      image: ghcr.io/home-operations/gatus-sidecar:0.0.18
       imagePullPolicy: IfNotPresent
       restartPolicy: Always
       args:
