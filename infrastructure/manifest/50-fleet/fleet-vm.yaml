@@ -15,7 +15,7 @@ fleet_vm:
     vm_id: 1003
     disks:
       - disk_interface: scsi1
-        disk_size: 128
+        disk_size: 256
       - disk_interface: scsi2
         disk_size: 8
 
