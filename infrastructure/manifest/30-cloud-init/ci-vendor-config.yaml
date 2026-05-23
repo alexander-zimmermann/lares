@@ -238,7 +238,7 @@ ci_vendor_config:
           "storage.zimmermann.eu.com:/var/nfs/shared/proxmox",
           "/mnt/datastore-secondary",
           "nfs",
-          "defaults,_netdev,noauto,nofail,vers=3,rw,nolock,x-systemd.after=cloud-init-network.service",
+          "defaults,_netdev,nofail,vers=3,rw,nolock,x-systemd.automount,x-systemd.idle-timeout=600,x-systemd.after=cloud-init-network.service",
           "0",
           "0",
         ]
@@ -255,8 +255,9 @@ ci_vendor_config:
       - ["localectl", "set-locale", "LANG=de_DE.UTF-8"]
       ## Set permissions for data disk and config directory
       - ["chown", "-R", "backup:backup", "/mnt/datastore-primary"]
-      ## Mount NFS (noauto — requires nfs-common to be installed first)
-      - ["mount", "/mnt/datastore-secondary"]
+      ## Trigger NFS automount (will reconnect after reboots via systemd)
+      - ["systemctl", "daemon-reload"]
+      - ["ls", "/mnt/datastore-secondary"]
       ## Setup PBS
       - ["bash", "/usr/local/bin/pbs-bootstrap.sh"]
       ## Systemd services
