@@ -211,7 +211,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Flur.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Raumklima.EG.Flur.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -384,7 +384,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Gäste-WC.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Raumklima.EG.Gäste-WC.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -793,7 +793,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Büro.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Raumklima.EG.Büro.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -1198,7 +1198,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Wohnzimmer.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Raumklima.EG.Wohnzimmer.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -2007,7 +2007,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Heizung.EG.Küche.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Raumklima.EG.Küche.FBH.Stellwert-Status' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
