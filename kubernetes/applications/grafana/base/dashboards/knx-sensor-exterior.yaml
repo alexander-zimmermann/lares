@@ -952,7 +952,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.SO.Außensensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.DachAußensensor.SO.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1069,7 +1069,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.SO.Außensensor.Luftdruck' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.Außensensor.SO.Luftdruck-Status' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],
@@ -1198,7 +1198,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.NW.Außensensor.Temperatur' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.Außensensor.NW.Temperatur' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1315,7 +1315,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.NW.Außensensor.Helligkeit-Alle' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.A.Dach.Außensensor.NW.Helligkeit-Alle' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],

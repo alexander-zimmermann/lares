@@ -2424,7 +2424,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Strom.EG.Küche.K12-L1.Microwelle.Betriebsstunden' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Schalten.EG.Küche.K12-L1.Mikrowelle.Betriebsstunden' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2498,7 +2498,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Strom.EG.Küche.K12-L1.Microwelle.Kilowattstunde' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Schalten.EG.Küche.K12-L1.Mikrowelle.Kilowattstunde' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2615,7 +2615,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 1000.0 * 220.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Strom.EG.Küche.K12-L1.Microwelle.Stromwert' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 1000.0 * 220.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],
@@ -2732,7 +2732,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 1000.0 * 220.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Strom.EG.Küche.K12-L1.Microwelle.Stromwert' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 1000.0 * 220.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],

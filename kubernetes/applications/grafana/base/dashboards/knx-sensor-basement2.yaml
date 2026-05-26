@@ -424,7 +424,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Garage.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Garage.Sensor.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -541,7 +541,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Garage.Sensor.Luftdruck' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Garage.Sensor.Luftdruck-Relativ' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],
@@ -1025,7 +1025,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Technikraum.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Technikraum.Sensor.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1141,7 +1141,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value / 100.0) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Technikraum.Sensor.Luftdruck' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value / 100.0) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Technikraum.Sensor.Luftdruck-Relativ' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1623,7 +1623,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Vorratsraum.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Vorratsraum.Sensor.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1739,7 +1739,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Vorratsraum.Sensor.Luftdruck' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Vorratsraum.Sensor.Luftdruck-Relativ' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],
@@ -2220,7 +2220,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Hauswirtschaftsraum.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Hauswirtschaftsraum.Sensor.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2336,7 +2336,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Hauswirtschaftsraum.Sensor.Luftdruck' GROUP BY 1 ORDER BY 1) sub;",
+              "rawSql": "SELECT time, (last_value / 100.0) AS value FROM (SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS last_value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.KG.Hauswirtschaftsraum.Sensor.Luftdruck-Relativ' GROUP BY 1 ORDER BY 1) sub;",
               "refId": "A"
             }
           ],
