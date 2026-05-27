@@ -347,7 +347,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Kinder.Sensor.Luftfeuchte-Alarm-1' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Kinder.Sensor.Luftfeuchtigkeit-Alarm-1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
@@ -359,7 +359,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Kinder.Sensor.Luftfeuchte-Alarm-2' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Kinder.Sensor.Luftfeuchtigkeit-Alarm-2' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],
@@ -964,7 +964,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Eltern.Sensor.Luftfeuchte-Alarm-1' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Eltern.Sensor.Luftfeuchtigkeit-Alarm-1' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             },
             {
@@ -976,7 +976,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Eltern.Sensor.Luftfeuchte-Alarm-2' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(value, time) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.OG.Badezimmer-Eltern.Sensor.Luftfeuchtigkeit-Alarm-2' GROUP BY 1 ORDER BY 1;",
               "refId": "B"
             }
           ],

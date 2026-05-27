@@ -288,7 +288,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.DG.Speicher.Sensor.Luftfeuchte' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.DG.Speicher.Sensor.Luftfeuchtigkeit' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -405,7 +405,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) / 100.0 AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.DG.Speicher.Sensor.Luftdruck' GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(value) / 100.0 AS value FROM knx WHERE $__timeFilter(time) AND knx_name = 'Sensorik.DG.Speicher.Sensor.Luftdruck-Relativ' GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
