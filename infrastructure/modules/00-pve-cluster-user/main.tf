@@ -30,10 +30,8 @@ resource "proxmox_virtual_environment_user" "this" {
   comment    = var.comment
 
   lifecycle {
-    ## Avoid perpetual diffs
-    ## acl: managed separately via proxmox_acl resource
-    ## password: can only be set with ticket (not API token) - ignore updates after creation
-    ignore_changes = [acl, password]
+    ## password can only be set with ticket (not API token) - ignore updates after creation
+    ignore_changes = [password]
   }
 }
 
