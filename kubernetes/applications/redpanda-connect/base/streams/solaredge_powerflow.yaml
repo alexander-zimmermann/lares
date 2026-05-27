@@ -8,8 +8,8 @@ input:
     subject: "*.powerflow"
     durable: redpanda-connect-solaredge-powerflow
     deliver: all
-    ack_wait: 30s
-    max_ack_pending: 2000
+    ack_wait: 20m
+    max_ack_pending: 5000
 
 pipeline:
   processors:

@@ -10,8 +10,8 @@ input:
           subject: warp.rtc.>
           durable: redpanda-connect-warp-system-rtc
           deliver: all
-          ack_wait: 30s
-          max_ack_pending: 2000
+          ack_wait: 20m
+          max_ack_pending: 5000
       - nats_jetstream:
           urls: ["nats://nats.nats.svc:4222"]
           auth:
@@ -21,8 +21,8 @@ input:
           subject: warp.esp32.>
           durable: redpanda-connect-warp-system-esp32
           deliver: all
-          ack_wait: 30s
-          max_ack_pending: 2000
+          ack_wait: 20m
+          max_ack_pending: 5000
       - nats_jetstream:
           urls: ["nats://nats.nats.svc:4222"]
           auth:
@@ -32,8 +32,8 @@ input:
           subject: warp.ntp.>
           durable: redpanda-connect-warp-system-ntp
           deliver: all
-          ack_wait: 30s
-          max_ack_pending: 2000
+          ack_wait: 20m
+          max_ack_pending: 5000
 
 pipeline:
   processors:
