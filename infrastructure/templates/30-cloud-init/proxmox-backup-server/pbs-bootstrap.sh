@@ -282,7 +282,7 @@ setup_verification() {
   info "Setting up verification job for ${datastore_name}..."
   proxmox-backup-manager verify-job create "${job_id}" \
     --store "${datastore_name}" \
-    --schedule "Sat 04:00" || die "Could not create verification job for ${datastore_name}."
+    --schedule "daily" || die "Could not create verification job for ${datastore_name}."
 
   success "Verification job for ${datastore_name} set up successfully."
 }
@@ -304,6 +304,7 @@ setup_sync() {
   proxmox-backup-manager sync-job create "${job_id}" \
     --remote-store "${DATASTORE_PRIMARY_NAME}" \
     --store "${DATASTORE_SECONDARY_NAME}" \
+    --remove-vanished true \
     --schedule "*-*-* 05:00" || die "Could not create sync job."
 
   success "Sync job for between primary and secondary datastores set up successfully."

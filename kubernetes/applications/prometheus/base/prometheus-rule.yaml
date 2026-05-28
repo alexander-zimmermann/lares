@@ -80,7 +80,9 @@ spec:
             description: "Last backup of VM {{ $labels.vm_name }} (id {{ $labels.vm_id }}) in datastore {{ $labels.datastore }} is older than 2 days."
 
         - alert: PbsLastVerifyFailed
-          expr: 'pbs_snapshot_vm_last_verify == 0'
+          # pbs-exporter values: 0 = not verified yet, 1 = ok, 2 = failed.
+          # Only alert on real failures, not on fresh snapshots awaiting the next verify run.
+          expr: 'pbs_snapshot_vm_last_verify == 2'
           for: 10m
           labels:
             severity: warning
