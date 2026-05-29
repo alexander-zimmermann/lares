@@ -12,7 +12,7 @@ helmCharts:
   - name: kube-prometheus-stack
     repo: oci://ghcr.io/prometheus-community/charts
     releaseName: prometheus
-    version: 86.0.1
+    version: 86.0.2
     valuesFile: values.yaml
     namespace: prometheus
     includeCRDs: false
