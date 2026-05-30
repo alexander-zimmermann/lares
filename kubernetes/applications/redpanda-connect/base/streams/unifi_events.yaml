@@ -1,0 +1,95 @@
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: UNIFI
+    subject: unifi.events.>
+    durable: redpanda-connect-unifi-events
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        let evt = this
+        # Subject is "unifi.events.<camera>.<detection_type>"; pull both
+        # tokens from the subject rather than trusting payload duplicates,
+        # so a typo in node-RED is visible to whoever reads the row.
+        let parts = meta("nats_subject").split(".")
+        # Use JetStream server-receive time as the canonical row time;
+        # the original UniFi trigger.timestamp (ms epoch) stays in `raw`.
+        let ts = meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z"))
+        root = {
+          "time":           $ts,
+          "camera":         $parts.index(2),
+          "detection_type": $parts.index(3),
+          "score":          $evt.sourceEvent.score.or(null),
+          "event_type":     $evt.sourceEvent.type.or(null),
+          # `value` is only set on face / license-plate triggers (e.g.
+          # "Alexander Zimmermann"). For plain person/motion it's absent.
+          "value":          $evt.value.or(null),
+          "event_id":       $evt.eventId.or(null),
+          # event_link comes from alarm.eventLocalLink, which the node-RED
+          # flow enriches onto each trigger before splitting the alarm.
+          "event_link":     $evt.event_link.or(null),
+          "raw":            $evt,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO unifi_events (
+              time, camera, detection_type, score, event_type, value, event_id, event_link, raw
+            )
+            VALUES (
+              $1, $2, $3, ($4::numeric)::smallint, $5, $6, $7, $8, $9
+            )
+          args_mapping: |
+            root = [
+              this.time,
+              this.camera,
+              this.detection_type,
+              this.score,
+              this.event_type,
+              this.value,
+              this.event_id,
+              this.event_link,
+              this.raw,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: unifi_events/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }

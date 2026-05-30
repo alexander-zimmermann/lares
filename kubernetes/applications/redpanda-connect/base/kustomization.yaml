@@ -25,6 +25,7 @@ configMapGenerator:
       - streams/warp_charge_manager.yaml
       - streams/warp_charge_tracker.yaml
       - streams/warp_meter.yaml
+      - streams/unifi_events.yaml
 
 labels:
   - includeSelectors: false
