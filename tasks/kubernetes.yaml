@@ -122,6 +122,11 @@ tasks:
     desc: "unseal a sealed-secret.yaml [path/to/sealed-secret.yaml]"
     summary: |
       Decrypts a sealed-secret.yaml back to plaintext secret.yaml in the same directory.
+      Handles multi-document YAML (each `---`-separated SealedSecret is unsealed
+      and concatenated into the output). Extracts the PEM private key from the
+      controller's master-key Secret-list before invoking kubeseal — passing the
+      raw list YAML to `--recovery-private-key` made kubeseal fall back to
+      contacting the cluster, which fails outside the cluster.
       Arguments: [path/to/sealed-secret.yaml]
     vars:
       INPUT: "{{index .CLI_ARGS_LIST 0}}"
@@ -133,13 +138,26 @@ tasks:
     preconditions:
       - sh: command -v kubeseal
         msg: "kubeseal is not installed"
+      - sh: command -v yq
+        msg: "yq is not installed"
       - sh: test -f kubernetes/components/sealed-secrets-controller/base/master-key.yaml
         msg: "master-key.yaml not found"
       - sh: test -f "{{.INPUT}}"
         msg: "'{{.INPUT}}' not found"
     cmds:
-      - kubeseal \
-        --recovery-unseal \
-        --recovery-private-key kubernetes/components/sealed-secrets-controller/base/master-key.yaml \
-        < "{{.INPUT}}" \
-        -o yaml > "{{.DIR}}/secret.yaml"
+      - |
+        set -euo pipefail
+        KEY=$(mktemp -t sealed-unseal-key.XXXXXX)
+        SPLIT=$(mktemp -d -t sealed-unseal-split.XXXXXX)
+        trap 'rm -f "$KEY"; rm -rf "$SPLIT"' EXIT
+        yq '.items[0].data["tls.key"]' kubernetes/components/sealed-secrets-controller/base/master-key.yaml \
+          | base64 -d > "$KEY"
+        csplit -sz -f "$SPLIT/doc_" -b "%02d.yaml" "{{.INPUT}}" '/^---$/' '{*}'
+        OUT="{{.DIR}}/secret.yaml"
+        : > "$OUT"
+        for f in "$SPLIT"/doc_*.yaml; do
+          [ -s "$f" ] || continue
+          grep -q '^kind: SealedSecret' "$f" || continue
+          echo '---' >> "$OUT"
+          kubeseal --recovery-unseal --recovery-private-key "$KEY" -o yaml < "$f" >> "$OUT"
+        done
