@@ -10,6 +10,7 @@ resources:
   - ./streams/solaredge.yaml
   - ./streams/ems-esp.yaml
   - ./streams/warp.yaml
+  - ./streams/unifi.yaml
 
 helmCharts:
   - name: nats

@@ -1,0 +1,17 @@
+# UniFi Protect Alarm Manager events published by node-RED on
+# `unifi.events.<camera>.<detection_type>` (one message per trigger).
+# Retention 7d is the safety puffer for redpanda-connect → TimescaleDB
+# downtime; UniFi itself does not buffer Alarm Manager webhooks.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: unifi
+  namespace: nats
+spec:
+  name: UNIFI
+  subjects:
+    - unifi.events.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
