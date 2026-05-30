@@ -71,13 +71,13 @@ image:
 
 From the repo root (uses [go-task](https://taskfile.dev)):
 
-| Task | What it does |
-| --- | --- |
-| `task infra:init` | `tofu init` — download providers. Run once or after provider updates. |
-| `task infra:status` | `tofu plan` — dry-run, drift check. |
+| Task                | What it does                                                              |
+| ------------------- | ------------------------------------------------------------------------- |
+| `task infra:init`   | `tofu init` — download providers. Run once or after provider updates.     |
+| `task infra:status` | `tofu plan` — dry-run, drift check.                                       |
 | `task infra:create` | `tofu apply` — zero-to-hero. Builds everything declared in the manifests. |
-| `task infra:delete` | `tofu destroy` — tears everything down. |
-| `task infra:show` | Print OpenTofu outputs. |
+| `task infra:delete` | `tofu destroy` — tears everything down.                                   |
+| `task infra:show`   | Print OpenTofu outputs.                                                   |
 
 ## Prerequisites
 
