@@ -21,6 +21,11 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - knx-catalog.yaml=config/knx-catalog.yaml
+  - name: knx-nats-bridge-write-mapping
+    options:
+      disableNameSuffixHash: true
+    files:
+      - write-mapping.yaml=config/write-mapping.yaml
 
 labels:
   - includeSelectors: false
