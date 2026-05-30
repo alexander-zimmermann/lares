@@ -102,9 +102,9 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 ### Platform
 
 |                                                                                                        | Component                                                        | Purpose                                                           |
-| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
+| :----------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />        | [Talos Linux](https://www.talos.dev/)                            | Immutable, API-managed Kubernetes OS                              |
-|                                                                                                        | [Omni](https://omni.siderolabs.com/)                             | SaaS control plane for Talos (auto-provisioning, machine classes) |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />        | [Omni](https://omni.siderolabs.com/)                             | SaaS control plane for Talos (auto-provisioning, machine classes) |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cilium.png" height="18" />       | [Cilium](https://cilium.io/)                                     | eBPF CNI (kube-proxy replacement, L2 announcements)               |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/traefik.png" height="18" />      | [Traefik](https://traefik.io/)                                   | Ingress with pre/post-auth middleware chains                      |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cert-manager.png" height="18" /> | [cert-manager](https://cert-manager.io/)                         | Automated TLS via Cloudflare DNS-01                               |
@@ -115,34 +115,34 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 ### GitOps & Automation
 
 |                                                                                                    | Component                                  | Purpose                                       |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------ | --------------------------------------------- |
+| :------------------------------------------------------------------------------------------------: | ------------------------------------------ | --------------------------------------------- |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/argo-cd.png" height="18" />  | [Argo CD](https://argo-cd.readthedocs.io/) | Declarative sync of `kubernetes/applications` |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/renovate.png" height="18" /> | [Renovate](https://docs.renovatebot.com/)  | Automated dependency PRs                      |
 
 ### Security & Identity
 
 |                                                                                                      | Component                                 | Purpose                                 |
-| ---------------------------------------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------- |
+| :--------------------------------------------------------------------------------------------------: | ----------------------------------------- | --------------------------------------- |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/authentik.png" height="18" />  | [Authentik](https://goauthentik.io/)      | SSO / OIDC / forward-auth               |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/crowdsec.png" height="18" />   | [CrowdSec](https://www.crowdsec.net/)     | Behavior-based IPS on ingress           |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cloudflare.png" height="18" /> | [Cloudflare](https://www.cloudflare.com/) | WAF, rate-limiting, edge TLS, tunneling |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cloudflare.png" height="14" /> | [Cloudflare](https://www.cloudflare.com/) | WAF, rate-limiting, edge TLS, tunneling |
 
 ### Storage & Data
 
-|                                                                                                        | Component                                                                          | Purpose                                                       |
-| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kubernetes.png" height="18" />   | CSI Block + NFS                                                                    | Persistent volumes for workloads                              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rustfs.png" height="18" />       | [RustFS](https://github.com/rustfs/rustfs)                                         | S3-compatible object storage                                  |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/postgresql.png" height="18" />   | [CloudNativePG](https://cloudnative-pg.io/) + [Barman](https://pgbarman.org/)      | Postgres operator with S3 PITR backups                        |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/timescale.png" height="18" />    | [TimescaleDB](https://www.timescale.com/)                                          | Time-series Postgres for sensor & telemetry data              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" height="18" />        | [Redis](https://redis.io/)                                                         | In-memory cache                                               |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nats.png" height="18" />         | [NATS](https://nats.io/) JetStream + [NACK](https://github.com/nats-io/nack)       | Message bus + KV/object stores; operator-managed              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redpanda.png" height="18" />     | [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/)              | Stream pipelines (NATS → TimescaleDB / Parquet on RustFS)     |
+|                                                                                                      | Component                                                                     | Purpose                                                   |
+| :--------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kubernetes.png" height="18" /> | CSI Block + NFS                                                               | Persistent volumes for workloads                          |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rustfs.png" height="12" />     | [RustFS](https://github.com/rustfs/rustfs)                                    | S3-compatible object storage                              |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/postgresql.png" height="18" /> | [CloudNativePG](https://cloudnative-pg.io/) + [Barman](https://pgbarman.org/) | Postgres operator with S3 PITR backups                    |
+|                                                                                                      | [TimescaleDB](https://www.timescale.com/)                                     | Time-series Postgres for sensor & telemetry data          |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" height="18" />      | [Redis](https://redis.io/)                                                    | In-memory cache                                           |
+|                                                                                                      | [NATS](https://nats.io/) JetStream + [NACK](https://github.com/nats-io/nack)  | Message bus + KV/object stores; operator-managed          |
+|                                                                                                      | [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/)         | Stream pipelines (NATS → TimescaleDB / Parquet on RustFS) |
 
 ### Observability
 
 |                                                                                                      | Component                                    | Purpose                                     |
-| ---------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------- |
+| :--------------------------------------------------------------------------------------------------: | -------------------------------------------- | ------------------------------------------- |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png" height="18" /> | [Prometheus](https://prometheus.io/)         | Metrics & alerting                          |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png" height="18" />    | [Grafana](https://grafana.com/) + Operator   | Dashboards, dashboards-as-code              |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/loki.png" height="18" />       | [Loki](https://grafana.com/oss/loki/)        | Log aggregation                             |
@@ -152,17 +152,17 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 
 ### Applications
 
-|                                                                                                    | Component                                                                  | Purpose                                                            |
-| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-|                                                                                                    | [Homepage](https://gethomepage.dev/)                                       | Service start page                                                 |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />   | [Wiki.js](https://js.wiki/)                                                | Knowledge base                                                     |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                           | Flow-based automation                                              |
-|                                                                                                    | knx-nats-bridge                                                            | KNX bus ↔ NATS subjects (home automation gateway)                  |
-|                                                                                                    | iot-mcp-bridge                                                             | MCP server exposing TimescaleDB / NATS to AI agents                |
-|                                                                                                    | SolarEdge2MQTT                                                             | PV inverter → MQTT (consumed by Redpanda Connect)                  |
-|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)            | Prometheus metrics from the Fritz!Box                              |
-|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                       | Prometheus metrics from the UniFi controller                       |
-|                                                                                                    | SMTPRelay                                                                  | Outbound mail relay for cluster workloads                          |
+|                                                                                                    | Component                                                       | Purpose                                             |
+| :------------------------------------------------------------------------------------------------: | --------------------------------------------------------------- | --------------------------------------------------- |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png" height="18" /> | [Homepage](https://gethomepage.dev/)                            | Service start page                                  |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />   | [Wiki.js](https://js.wiki/)                                     | Knowledge base                                      |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                | Flow-based automation                               |
+|                                                                                                    | knx-nats-bridge                                                 | KNX bus ↔ NATS subjects (home automation gateway)   |
+|                                                                                                    | iot-mcp-bridge                                                  | MCP server exposing TimescaleDB / NATS to AI agents |
+|                                                                                                    | SolarEdge2MQTT                                                  | PV inverter → MQTT (consumed by Redpanda Connect)   |
+|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter) | Prometheus metrics from the Fritz!Box               |
+|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)            | Prometheus metrics from the UniFi controller        |
+|                                                                                                    | SMTPRelay                                                       | Outbound mail relay for cluster workloads           |
 
 ## Portability note
 

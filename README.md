@@ -16,27 +16,27 @@ _Roman household guardians — a homelab stack across three independent layers: 
 
 </div>
 
-**Cluster**
-&nbsp;
+<div align="center">
+
 [![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Ftalos_version&style=flat-square&logo=talos&logoColor=white&color=blue&label=Talos)](https://talos.dev)
 [![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fkubernetes_version&style=flat-square&logo=kubernetes&logoColor=white&color=blue&label=Kubernetes)](https://kubernetes.io)
 [![Nodes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_node_count&style=flat-square&logo=kubernetes&logoColor=white&label=Nodes)](https://github.com/kashalls/kromgo)
 [![Pods](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_pod_count&style=flat-square&logo=kubernetes&logoColor=white&label=Pods)](https://github.com/kashalls/kromgo)
 [![Alerts](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_alert_count&style=flat-square&logo=prometheus&logoColor=white&label=Alerts)](https://github.com/kashalls/kromgo)
 
-**Repo**
-&nbsp;
 [![License](https://img.shields.io/github/license/alexander-zimmermann/lares?style=flat-square&color=blue)](./LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/alexander-zimmermann/lares?style=flat-square&logo=github&logoColor=white)](https://github.com/alexander-zimmermann/lares/commits/main)
 [![Renovate](https://img.shields.io/badge/Renovate-enabled-brightgreen?style=flat-square&logo=renovatebot&logoColor=white)](https://docs.renovatebot.com/)
 [![GitOps](https://img.shields.io/badge/GitOps-Argo%20CD-EF7B4D?style=flat-square&logo=argo&logoColor=white)](https://argo-cd.readthedocs.io/)
 [![Provisioned by Omni](https://img.shields.io/badge/Provisioned%20by-Omni-ff7300?style=flat-square&logo=sidero&logoColor=white)](https://omni.siderolabs.com/)
 
+</div>
+
 ---
 
 ## About
 
-This is **Lares** — my personal homelab. In Roman religion, the *Lares* were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and (eventually) the AI agents that read and act on it all. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
+This is **Lares** — my personal homelab. In Roman religion, the _Lares_ were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and (eventually) the AI agents that read and act on it all. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
 
 What I care about most is that **everything is declarative end-to-end.** A git push is the only way state reaches the cluster. There is no `kubectl apply`, no `tofu apply` at 2 a.m. from my laptop, no snowflake tweaks. [Renovate](https://docs.renovatebot.com/) opens PRs when new versions drop, I merge them, [Argo CD](https://argo-cd.readthedocs.io/) rolls them out. It's boring. Boring is the point.
 
