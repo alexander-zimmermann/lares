@@ -1,11 +1,227 @@
 # NATS-subject -> KNX-GA write mappings consumed by knx-nats-bridge when
-# BRIDGE_WRITE_ENABLED=true. Empty by default: the bridge logs "writer
-# initialized, 0 mappings, idle" and the KNX bus stays untouched.
-# Actual mappings (UniFi triggers, EMS-ESP mirror, anomaly bus, ...) are
-# added in a follow-up PR once node-RED has been migrated to publish on
-# the corresponding subjects.
+# BRIDGE_WRITE_ENABLED=true.
 #
 # Schema: see write-mapping.schema.json in the knx-nats-bridge repo.
-# Each entry: subject (NATS), ga (KNX a/b/c), dpt (e.g. 1.001),
+# Each entry: subject (NATS), ga (KNX a/b/c), dpt (e.g. 1.005),
 # payload_path ($-prefixed dot-notation), optional description.
-mappings: []
+#
+# Publish contract (node-RED side):
+#   UniFi triggers must include `knx_value` at the root, set by the
+#   webhook flow AFTER resolving camera MAC -> name and the alarm-key
+#   -> KNX-value mapping:
+#     person / face_unknown          -> knx_value: 1     (DPT 1.005 trigger)
+#     face_known / face_of_interest  -> knx_value: <int 1..4>
+#   The rest of the trigger payload (sourceEvent, eventId, alarm meta)
+#   stays untouched so redpanda-connect can still archive everything into
+#   unifi_events.
+#
+#   Mirror subjects (ems-esp.*, warp.*, solaredge-*.*) are already
+#   published by the existing MQTT bridges and solaredge2mqtt --
+#   no node-RED change needed there.
+
+mappings:
+  # =========================================================================
+  # UniFi Protect -- Person triggers (4 cameras)
+  # GAs match the existing direct-KNX flow in node-RED, so both pipelines
+  # write the same GA during the parallel rollout. Basalte rules treat
+  # these as edge triggers, so a double-fire is idempotent.
+  # =========================================================================
+  - subject: "unifi.events.fassade.person"
+    ga: "14/3/1"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Fassade.Objekterkennung.Person"
+  - subject: "unifi.events.eingang.person"
+    ga: "14/3/41"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Eingang.Objekterkennung.Person"
+  - subject: "unifi.events.terrasse_wohnzimmer.person"
+    ga: "14/3/81"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Wohnzimmer.Objekterkennung.Person"
+  - subject: "unifi.events.terrasse_esszimmer.person"
+    ga: "14/3/121"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Esszimmer.Objekterkennung.Person"
+
+  # =========================================================================
+  # UniFi Protect -- Face-Known (DPT 5.010, int 1..4 per known person)
+  # =========================================================================
+  - subject: "unifi.events.fassade.face_known"
+    ga: "14/3/3"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Fassade.Gesichtserkennung.Gesicht-Bekannt"
+  - subject: "unifi.events.eingang.face_known"
+    ga: "14/3/43"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Eingang.Gesichtserkennung.Gesicht-Bekannt"
+  - subject: "unifi.events.terrasse_wohnzimmer.face_known"
+    ga: "14/3/83"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Wohnzimmer.Gesichtserkennung.Gesicht-Bekannt"
+  - subject: "unifi.events.terrasse_esszimmer.face_known"
+    ga: "14/3/123"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Esszimmer.Gesichtserkennung.Gesicht-Bekannt"
+
+  # =========================================================================
+  # UniFi Protect -- Face-Unknown (DPT 1.005 alarm trigger)
+  # =========================================================================
+  - subject: "unifi.events.fassade.face_unknown"
+    ga: "14/3/4"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Fassade.Gesichtserkennung.Gesicht-Unbekannt"
+  - subject: "unifi.events.eingang.face_unknown"
+    ga: "14/3/44"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Eingang.Gesichtserkennung.Gesicht-Unbekannt"
+  - subject: "unifi.events.terrasse_wohnzimmer.face_unknown"
+    ga: "14/3/84"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Wohnzimmer.Gesichtserkennung.Gesicht-Unbekannt"
+  - subject: "unifi.events.terrasse_esszimmer.face_unknown"
+    ga: "14/3/124"
+    dpt: "1.005"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Esszimmer.Gesichtserkennung.Gesicht-Unbekannt"
+
+  # =========================================================================
+  # UniFi Protect -- Face-of-Interest / "marked" (DPT 5.010 int)
+  # =========================================================================
+  - subject: "unifi.events.fassade.face_of_interest"
+    ga: "14/3/5"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Fassade.Gesichtserkennung.Gesicht-Markiert"
+  - subject: "unifi.events.eingang.face_of_interest"
+    ga: "14/3/45"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Eingang.Gesichtserkennung.Gesicht-Markiert"
+  - subject: "unifi.events.terrasse_wohnzimmer.face_of_interest"
+    ga: "14/3/85"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Wohnzimmer.Gesichtserkennung.Gesicht-Markiert"
+  - subject: "unifi.events.terrasse_esszimmer.face_of_interest"
+    ga: "14/3/125"
+    dpt: "5.010"
+    payload_path: "$.knx_value"
+    description: "Sicherheitstechnik.VUEA.Terrasse.Esszimmer.Gesichtserkennung.Gesicht-Markiert"
+
+  # =========================================================================
+  # EMS-ESP gas boiler mirrors (5 GAs in new 15/2 Gastherme middle-group).
+  # =========================================================================
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/0"
+    dpt: "1.011"
+    payload_path: "$.burngas"
+    description: "Versorgungstechnik.Gastherme.Brenner-Status (for Basalte burner_short_cycle)"
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/1"
+    dpt: "5.001"
+    payload_path: "$.curburnpow"
+    description: "Versorgungstechnik.Gastherme.Brenner-Modulation 0..100 %"
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/2"
+    dpt: "1.001"
+    payload_path: "$.heatingactive"
+    description: "Versorgungstechnik.Gastherme.Heizung-Aktiv"
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/10"
+    dpt: "9.001"
+    payload_path: "$.curflowtemp"
+    description: "Versorgungstechnik.Gastherme.Vorlauf-Temperatur °C"
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/11"
+    dpt: "9.001"
+    payload_path: "$.rettemp"
+    description: "Versorgungstechnik.Gastherme.Rücklauf-Temperatur °C"
+
+  # =========================================================================
+  # WARP wallbox state mirrors (6 GAs in new 15/6 Wallbox middle-group).
+  # State legends per WARP API reference (docs.warp-charger.com).
+  # =========================================================================
+  - subject: "warp.evse.state"
+    ga: "15/6/0"
+    dpt: "5.010"
+    payload_path: "$.charger_state"
+    description: "Versorgungstechnik.Wallbox.Charger-State 0..4"
+  - subject: "warp.evse.state"
+    ga: "15/6/1"
+    dpt: "5.010"
+    payload_path: "$.iec61851_state"
+    description: "Versorgungstechnik.Wallbox.IEC61851-State 0..4 (4=Error)"
+  - subject: "warp.evse.state"
+    ga: "15/6/2"
+    dpt: "5.010"
+    payload_path: "$.error_state"
+    description: "Versorgungstechnik.Wallbox.Error-State 0..5 (for Basalte wallbox_fault)"
+  - subject: "warp.evse.state"
+    ga: "15/6/3"
+    dpt: "5.010"
+    payload_path: "$.contactor_error"
+    description: "Versorgungstechnik.Wallbox.Contactor-Error 0..6"
+  - subject: "warp.evse.state"
+    ga: "15/6/4"
+    dpt: "5.010"
+    payload_path: "$.dc_fault_current_state"
+    description: "Versorgungstechnik.Wallbox.DC-Fault-Current-State 0..6"
+  - subject: "warp.evse.state"
+    ga: "15/6/10"
+    dpt: "7.012"
+    payload_path: "$.allowed_charging_current"
+    description: "Versorgungstechnik.Wallbox.Allowed-Charging-Current uint16 mA"
+
+  # =========================================================================
+  # SolarEdge PV mirrors (6 GAs in new 15/4 Photovoltaik middle-group).
+  # Sub-GA layout: 0..9 = system-wide (CT-meter readings, both inverters
+  # report identical values), 10..19 = inverter 1, 20..29 = inverter 2.
+  # =========================================================================
+
+  # System-wide (mirrored once from inverter 1's powerflow stream; both
+  # inverters' CTs report the same values).
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/0"
+    dpt: "14.056"
+    payload_path: "$.grid.power"
+    description: "Versorgungstechnik.Photovoltaik.Netz-Leistung W signed (+import, -export)"
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/1"
+    dpt: "14.056"
+    payload_path: "$.consumer.total"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt W"
+
+  # Inverter 1.
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/10"
+    dpt: "14.056"
+    payload_path: "$.pv_production"
+    description: "Versorgungstechnik.Photovoltaik.Inverter-1.Leistung W"
+  - subject: "solaredge-1.modbus.inverter"
+    ga: "15/4/11"
+    dpt: "9.001"
+    payload_path: "$.temperature"
+    description: "Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur °C"
+
+  # Inverter 2.
+  - subject: "solaredge-2.powerflow"
+    ga: "15/4/20"
+    dpt: "14.056"
+    payload_path: "$.pv_production"
+    description: "Versorgungstechnik.Photovoltaik.Inverter-2.Leistung W"
+  - subject: "solaredge-2.modbus.inverter"
+    ga: "15/4/21"
+    dpt: "9.001"
+    payload_path: "$.temperature"
+    description: "Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur °C"
