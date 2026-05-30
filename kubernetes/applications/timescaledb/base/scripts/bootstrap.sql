@@ -308,6 +308,32 @@ FROM warp_meter WHERE meter_id IS NOT NULL
 GROUP BY bucket, meter_id WITH NO DATA;
 
 -- =========================================================
+-- UniFi Protect Alarm Manager events
+-- (node-RED HTTP webhook /unifi-protect enriches each trigger in
+--  payload.alarm.triggers[] with alarm-level context, splits, and
+--  publishes one NATS message per trigger to
+--  unifi.events.<camera>.<detection_type>, where <camera> is the
+--  human-readable name resolved from the device MAC.)
+-- Typed columns for fields used in queries; everything else lives in raw.
+-- Only own property recorded → no retention policy.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS unifi_events (
+    time            TIMESTAMPTZ NOT NULL,
+    camera          TEXT        NOT NULL,    -- resolved name (fassade, eingang, terrasse_wohnzimmer, terrasse_esszimmer)
+    detection_type  TEXT        NOT NULL,    -- trigger.key: person, motion, line_crossed, face_known, vehicle, license_plate_*, audio_alarm_*, admin_geolocation
+    score           SMALLINT,                -- sourceEvent.score 0..100 (0 for plain motion)
+    event_type      TEXT,                    -- sourceEvent.type: motion, smartDetectZone, smartDetectLine, ...
+    value           TEXT,                    -- face name / license plate / geofence phrase; NULL for plain person/motion
+    event_id        TEXT,                    -- trigger.eventId (UUID, also sourceEvent.id)
+    event_link      TEXT,                    -- alarm.eventLocalLink (enriched onto trigger in node-RED before split)
+    raw             JSONB
+);
+SELECT create_hypertable('unifi_events', 'time', chunk_time_interval => INTERVAL '7 days');
+CREATE INDEX ON unifi_events (camera, time DESC);
+CREATE INDEX ON unifi_events (detection_type, time DESC);
+CREATE INDEX ON unifi_events (event_id, time DESC) WHERE event_id IS NOT NULL;
+
+-- =========================================================
 -- Continuous Aggregate Refresh Policies
 -- =========================================================
 SELECT add_continuous_aggregate_policy('knx_1h',
@@ -364,6 +390,9 @@ ALTER TABLE warp_charge_tracker SET (timescaledb.compress,
 ALTER TABLE warp_meter SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'meter_id',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE unifi_events SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'camera',
+    timescaledb.compress_orderby = 'time DESC');
 
 SELECT add_compression_policy('knx',                 INTERVAL '2 days');
 SELECT add_compression_policy('solaredge_inverter',  INTERVAL '2 days');
@@ -374,6 +403,7 @@ SELECT add_compression_policy('warp_evse',           INTERVAL '2 days');
 SELECT add_compression_policy('warp_charge_manager', INTERVAL '2 days');
 SELECT add_compression_policy('warp_charge_tracker', INTERVAL '2 days');
 SELECT add_compression_policy('warp_meter',          INTERVAL '2 days');
+SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 
 -- =========================================================
 -- Retention policies — 365d on every hot hypertable. Raw chunks past
