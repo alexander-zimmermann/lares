@@ -51,7 +51,7 @@ spec:
               done
           env:
             - name: BUCKETS
-              value: "authentik-backups longhorn-backups timescaledb-backups nats-archive influxdb-archive"
+              value: "authentik-backups longhorn-backups timescaledb-backups nats-archive influxdb-archive iot-mcp-bridge-models"
             - name: RCLONE_CONFIG_RUSTFS_TYPE
               value: s3
             - name: RCLONE_CONFIG_RUSTFS_PROVIDER
