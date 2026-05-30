@@ -30,6 +30,10 @@ deployment:
       value: /etc/knx-nats-bridge/knx-catalog.yaml
     KNX_NATS_UNMAPPED_POLICY:
       value: skip
+    BRIDGE_WRITE_ENABLED:
+      value: "true"
+    BRIDGE_WRITE_MAPPING_PATH:
+      value: /etc/knx-nats-bridge/write-mapping.yaml
     LOG_FORMAT:
       value: json
     METRICS_PORT:
@@ -41,6 +45,9 @@ deployment:
     catalog:
       configMap:
         name: knx-nats-bridge-catalog
+    write-mapping:
+      configMap:
+        name: knx-nats-bridge-write-mapping
     nats-credentials:
       secret:
         secretName: knx-nats-bridge-credentials
@@ -49,6 +56,9 @@ deployment:
     catalog:
       mountPath: /etc/knx-nats-bridge/knx-catalog.yaml
       subPath: knx-catalog.yaml
+    write-mapping:
+      mountPath: /etc/knx-nats-bridge/write-mapping.yaml
+      subPath: write-mapping.yaml
     nats-credentials:
       mountPath: /etc/knx-nats-bridge/nkey-seed
       subPath: nkey-seed

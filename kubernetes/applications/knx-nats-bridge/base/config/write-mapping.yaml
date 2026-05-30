@@ -1,0 +1,11 @@
+# NATS-subject -> KNX-GA write mappings consumed by knx-nats-bridge when
+# BRIDGE_WRITE_ENABLED=true. Empty by default: the bridge logs "writer
+# initialized, 0 mappings, idle" and the KNX bus stays untouched.
+# Actual mappings (UniFi triggers, EMS-ESP mirror, anomaly bus, ...) are
+# added in a follow-up PR once node-RED has been migrated to publish on
+# the corresponding subjects.
+#
+# Schema: see write-mapping.schema.json in the knx-nats-bridge repo.
+# Each entry: subject (NATS), ga (KNX a/b/c), dpt (e.g. 1.001),
+# payload_path ($-prefixed dot-notation), optional description.
+mappings: []
