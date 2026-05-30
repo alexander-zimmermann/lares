@@ -104,6 +104,10 @@ CREATE TABLE solaredge_powerflow (
 SELECT create_hypertable('solaredge_powerflow', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON solaredge_powerflow (inverter_id, time DESC);
 
+-- No battery installed → battery_charge/discharge are always 0; the original
+-- battery_net_avg column was dropped from the live CAGG. consumer_total_max/sum
+-- were added directly on the live cluster for peak-load / daily-cumulative
+-- dashboards; mirroring here so a fresh initdb lands at the same schema.
 CREATE MATERIALIZED VIEW solaredge_powerflow_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 hour', time) AS bucket, inverter_id,
@@ -113,7 +117,8 @@ SELECT time_bucket('1 hour', time) AS bucket, inverter_id,
        avg(grid_consumption) AS grid_consumption_avg,
        avg(grid_delivery) AS grid_delivery_avg,
        avg(consumer_total) AS consumer_total_avg,
-       avg(battery_charge - battery_discharge) AS battery_net_avg,
+       max(consumer_total) AS consumer_total_max,
+       sum(consumer_total) AS consumer_total_sum,
        count(*) AS sample_count
 FROM solaredge_powerflow GROUP BY bucket, inverter_id WITH NO DATA;
 
@@ -626,8 +631,15 @@ BEGIN
     FOR r IN SELECT view_name FROM timescaledb_information.continuous_aggregates LOOP
         EXECUTE format('ALTER MATERIALIZED VIEW public.%I OWNER TO homelab', r.view_name);
     END LOOP;
-    -- Plain views need their own loop — pg_views excludes hypertable views.
-    FOR r IN SELECT viewname FROM pg_views WHERE schemaname = 'public' LOOP
+    -- Plain views only — pg_views also lists continuous aggregates, but
+    -- ALTER VIEW errors on CAGGs (hint: "Use ALTER MATERIALIZED VIEW"), and
+    -- the unhandled error rolls back the entire DO block.
+    FOR r IN
+        SELECT viewname FROM pg_views WHERE schemaname = 'public'
+        AND viewname NOT IN (
+            SELECT view_name FROM timescaledb_information.continuous_aggregates
+        )
+    LOOP
         EXECUTE format('ALTER VIEW public.%I OWNER TO homelab', r.viewname);
     END LOOP;
 END$$;
