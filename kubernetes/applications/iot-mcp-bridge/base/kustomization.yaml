@@ -23,6 +23,7 @@ labels:
     pairs:
       homelab.app: iot-mcp-bridge
 
-# Wave 30 = after timescaledb (wave 3) and Kyverno-cloned secret is in place.
+# Wave 11 = after Kyverno (-4), timescaledb (3), nats-operator (9) and
+# knx-nats-bridge (10); aligns with the other consumer apps at wave 10.
 commonAnnotations:
-  argocd.argoproj.io/sync-wave: "30"
+  argocd.argoproj.io/sync-wave: "11"
