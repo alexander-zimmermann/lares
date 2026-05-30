@@ -157,12 +157,12 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png" height="18" /> | [Homepage](https://gethomepage.dev/)                            | Service start page                                  |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />   | [Wiki.js](https://js.wiki/)                                     | Knowledge base                                      |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                | Flow-based automation                               |
-|                                                                                                    | knx-nats-bridge                                                 | KNX bus ↔ NATS subjects (home automation gateway)   |
-|                                                                                                    | iot-mcp-bridge                                                  | MCP server exposing TimescaleDB / NATS to AI agents |
-|                                                                                                    | SolarEdge2MQTT                                                  | PV inverter → MQTT (consumed by Redpanda Connect)   |
-|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter) | Prometheus metrics from the Fritz!Box               |
-|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)            | Prometheus metrics from the UniFi controller        |
-|                                                                                                    | SMTPRelay                                                       | Outbound mail relay for cluster workloads           |
+|                                                                                                    | [knx-nats-bridge](https://github.com/alexander-zimmermann/knx-nats-bridge) | KNX bus ↔ NATS subjects (home automation gateway)   |
+|                                                                                                    | [iot-mcp-bridge](https://github.com/alexander-zimmermann/iot-mcp-bridge)   | MCP server exposing TimescaleDB / NATS to AI agents |
+|                                                                                                    | [SolarEdge2MQTT](https://github.com/DerOetzi/solaredge2mqtt)               | PV inverter → MQTT (consumed by Redpanda Connect)   |
+|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)            | Prometheus metrics from the Fritz!Box               |
+|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                       | Prometheus metrics from the UniFi controller        |
+|                                                                                                    | [SMTPRelay](https://github.com/grafana/smtprelay)                          | Outbound mail relay for cluster workloads           |
 
 ## Portability note
 
