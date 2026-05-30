@@ -19,7 +19,9 @@ BEGIN
     -- the materialisation table of every CAGG. A blanket grant on
     -- _timescaledb_internal would hit TS bookkeeping tables owned by the
     -- postgres superuser, so we enumerate CAGGs explicitly.
-    FOREACH ro_role IN ARRAY ARRAY['iot_mcp_bridge_ro', 'grafana_ro']
+    -- iot_mcp_bridge_rw also gets the same SELECT surface; write privileges
+    -- are added below for mcp_anomalies / mcp_forecasts only.
+    FOREACH ro_role IN ARRAY ARRAY['iot_mcp_bridge_ro', 'grafana_ro', 'iot_mcp_bridge_rw']
     LOOP
         IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = ro_role) THEN
             CONTINUE;
@@ -40,4 +42,16 @@ BEGIN
             EXECUTE format('GRANT SELECT ON %s TO %I', cagg.qname, ro_role);
         END LOOP;
     END LOOP;
+
+    -- Phase-2 writer — INSERT + UPDATE on mcp_anomalies / mcp_forecasts only.
+    -- UPDATE is needed for `INSERT … ON CONFLICT DO UPDATE` idempotency.
+    -- Production hypertables (knx, ems_esp, warp_*, solaredge_*) stay read-only.
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_rw')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'mcp_anomalies') THEN
+        GRANT INSERT, UPDATE ON mcp_anomalies TO iot_mcp_bridge_rw;
+    END IF;
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_rw')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'mcp_forecasts') THEN
+        GRANT INSERT, UPDATE ON mcp_forecasts TO iot_mcp_bridge_rw;
+    END IF;
 END$$;

@@ -415,6 +415,174 @@ SELECT k.time, k.ga, k.knx_main, k.knx_middle, k.knx_sub, k.dpt, k.value,
 FROM knx k LEFT JOIN knx_catalog n USING (ga);
 
 -- =========================================================
+-- TimescaleDB Toolkit — adds stats_agg / percentile_agg / rollup
+-- for Phase-2 anomaly-baseline aggregates.
+-- =========================================================
+CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit;
+
+-- =========================================================
+-- Baseline CAGGs (Phase 2 anomaly detection)
+-- One row per (day, hour_of_day, weekday) tuple, holding stats_agg
+-- and percentile_agg sketches. Detectors `rollup(...)` across the
+-- last N days at query time to derive the typical hour×weekday profile.
+-- Hierarchical CAGGs (built on top of the *_1h CAGGs) — both layers
+-- run with materialized_only = true.
+-- =========================================================
+CREATE MATERIALIZED VIEW ems_esp_boiler_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(curflowtemp_avg)                          AS curflowtemp_stats,
+       percentile_agg(curflowtemp_avg)                     AS curflowtemp_pct,
+       stats_agg(rettemp_avg)                              AS rettemp_stats,
+       percentile_agg(rettemp_avg)                         AS rettemp_pct,
+       stats_agg(outdoortemp_avg)                          AS outdoortemp_stats,
+       percentile_agg(outdoortemp_avg)                     AS outdoortemp_pct,
+       stats_agg(curburnpow_avg)                           AS curburnpow_stats,
+       percentile_agg(curburnpow_avg)                      AS curburnpow_pct,
+       stats_agg(heatingactive_samples::DOUBLE PRECISION)  AS heatingactive_stats,
+       percentile_agg(heatingactive_samples::DOUBLE PRECISION) AS heatingactive_pct
+FROM ems_esp_boiler_1h
+GROUP BY day, hour_of_day, weekday WITH NO DATA;
+
+CREATE MATERIALIZED VIEW ems_esp_dhw_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(curtemp_avg) AS curtemp_stats,
+       percentile_agg(curtemp_avg) AS curtemp_pct,
+       stats_agg(curflow_avg) AS curflow_stats,
+       percentile_agg(curflow_avg) AS curflow_pct,
+       stats_agg(settemp_avg) AS settemp_stats,
+       percentile_agg(settemp_avg) AS settemp_pct
+FROM ems_esp_dhw_1h
+GROUP BY day, hour_of_day, weekday WITH NO DATA;
+
+CREATE MATERIALIZED VIEW solaredge_inverter_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       inverter_id,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(ac_power_avg)    AS ac_power_stats,
+       percentile_agg(ac_power_avg) AS ac_power_pct,
+       stats_agg(temperature_avg) AS temperature_stats,
+       percentile_agg(temperature_avg) AS temperature_pct
+FROM solaredge_inverter_1h
+GROUP BY day, inverter_id, hour_of_day, weekday WITH NO DATA;
+
+CREATE MATERIALIZED VIEW solaredge_powerflow_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       inverter_id,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(pv_production_avg)  AS pv_production_stats,
+       percentile_agg(pv_production_avg) AS pv_production_pct,
+       stats_agg(consumer_total_avg) AS consumer_total_stats,
+       percentile_agg(consumer_total_avg) AS consumer_total_pct,
+       stats_agg(grid_power_avg)     AS grid_power_stats,
+       percentile_agg(grid_power_avg) AS grid_power_pct,
+       stats_agg(battery_net_avg)    AS battery_net_stats,
+       percentile_agg(battery_net_avg) AS battery_net_pct
+FROM solaredge_powerflow_1h
+GROUP BY day, inverter_id, hour_of_day, weekday WITH NO DATA;
+
+-- knx_1h has one row per (bucket, ga) → baseline is per (day, ga, hour, weekday).
+-- Many GAs are binary; detectors filter via knx_catalog (function/room) at query time.
+CREATE MATERIALIZED VIEW knx_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       ga,
+       knx_name,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(avg_value) AS value_stats,
+       percentile_agg(avg_value) AS value_pct
+FROM knx_1h
+GROUP BY day, ga, knx_name, hour_of_day, weekday WITH NO DATA;
+
+CREATE MATERIALIZED VIEW warp_meter_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       meter_id,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(power_total_avg) AS power_total_stats,
+       percentile_agg(power_total_avg) AS power_total_pct,
+       stats_agg(voltage_l1_avg)  AS voltage_l1_stats,
+       stats_agg(voltage_l2_avg)  AS voltage_l2_stats,
+       stats_agg(voltage_l3_avg)  AS voltage_l3_stats,
+       stats_agg(current_l1_avg)  AS current_l1_stats,
+       stats_agg(current_l2_avg)  AS current_l2_stats,
+       stats_agg(current_l3_avg)  AS current_l3_stats
+FROM warp_meter_1h
+GROUP BY day, meter_id, hour_of_day, weekday WITH NO DATA;
+
+SELECT add_continuous_aggregate_policy('ems_esp_boiler_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('ems_esp_dhw_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('solaredge_inverter_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('solaredge_powerflow_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('knx_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('warp_meter_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+
+-- =========================================================
+-- mcp_anomalies — every detected anomaly (zscore, iforest, mstl, forecast_solar)
+-- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS mcp_anomalies (
+    time        TIMESTAMPTZ      NOT NULL,
+    created_at  TIMESTAMPTZ      NOT NULL DEFAULT now(),
+    source      TEXT             NOT NULL,
+    metric      TEXT             NOT NULL,
+    detector    TEXT             NOT NULL,
+    severity    TEXT             NOT NULL CHECK (severity IN ('info','warning','critical')),
+    uc          TEXT,
+    actual      DOUBLE PRECISION,
+    expected    DOUBLE PRECISION,
+    score       DOUBLE PRECISION,
+    payload     JSONB,
+    PRIMARY KEY (time, source, metric, detector)
+);
+SELECT create_hypertable('mcp_anomalies', 'time', chunk_time_interval => INTERVAL '7 days');
+CREATE INDEX ON mcp_anomalies (severity, time DESC);
+CREATE INDEX ON mcp_anomalies (source, metric, time DESC);
+CREATE INDEX ON mcp_anomalies (uc, time DESC) WHERE uc IS NOT NULL;
+SELECT add_retention_policy('mcp_anomalies', INTERVAL '90 days');
+
+-- =========================================================
+-- mcp_forecasts — model predictions (statsforecast + Forecast.Solar)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS mcp_forecasts (
+    forecast_for    TIMESTAMPTZ      NOT NULL,
+    created_at      TIMESTAMPTZ      NOT NULL DEFAULT now(),
+    source          TEXT             NOT NULL,
+    metric          TEXT             NOT NULL,
+    model           TEXT             NOT NULL,
+    forecast_value  DOUBLE PRECISION,
+    forecast_lower  DOUBLE PRECISION,
+    forecast_upper  DOUBLE PRECISION,
+    PRIMARY KEY (forecast_for, source, metric, model)
+);
+SELECT create_hypertable('mcp_forecasts', 'forecast_for', chunk_time_interval => INTERVAL '7 days');
+CREATE INDEX ON mcp_forecasts (model, forecast_for DESC);
+SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
+
+-- =========================================================
 -- Transfer ownership from `postgres` (CNPG runs initdb as superuser)
 -- to the application user `homelab`, so it can issue table-level GRANTs.
 -- =========================================================

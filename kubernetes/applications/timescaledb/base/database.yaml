@@ -8,7 +8,7 @@ metadata:
 spec:
   instances: 1
 
-  imageName: ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb:18.3-ts2.26
+  imageName: ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb:18.3-ts2.26-tk
 
   primaryUpdateStrategy: unsupervised
 
@@ -48,13 +48,18 @@ spec:
         comment: "iot-mcp-bridge — SELECT only on hypertables and CAGGs"
         passwordSecret:
           name: timescaledb-db-iot-mcp-bridge-ro-secret
+      - name: iot_mcp_bridge_rw
+        ensure: present
+        login: true
+        comment: "iot-mcp-bridge-jobs — INSERT/SELECT on mcp_anomalies + mcp_forecasts + SELECT on baseline-CAGGs"
+        passwordSecret:
+          name: timescaledb-db-iot-mcp-bridge-rw-secret
       - name: grafana_ro
         ensure: present
         login: true
         comment: "Grafana — SELECT only on hypertables and CAGGs"
         passwordSecret:
           name: timescaledb-db-grafana-ro-secret
-
   postgresql:
     # Load TimescaleDB extension at server start
     shared_preload_libraries:
