@@ -7,6 +7,15 @@ streams:
 updateStrategy:
   type: Recreate
 
+# Expose the UniFi Protect webhook port (stream `unifi_webhook` binds 4196).
+# Service type is patched to LoadBalancer + Cilium BGP labels in kustomization.yaml.
+service:
+  extraPorts:
+    - name: unifi-webhook
+      port: 4196
+      targetPort: 4196
+      protocol: TCP
+
 env:
   # NATS user (cloned from nats namespace by Kyverno)
   - name: NATS_PASSWORD

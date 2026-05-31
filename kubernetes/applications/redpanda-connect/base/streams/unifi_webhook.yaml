@@ -1,0 +1,62 @@
+# UniFi Protect Alarm Manager webhook handler.
+# Fans the raw payload out to node-RED (Geofence tab still lives there),
+# splits alarm.triggers[], resolves camera MAC -> name, derives knx_value,
+# publishes one NATS message per trigger so knx-nats-bridge can write KNX.
+input:
+  http_server:
+    address: 0.0.0.0:4196
+    path: /unifi-protect
+    allowed_verbs: [POST]
+
+pipeline:
+  processors:
+    # Fan-out the raw payload to node-RED (Geofence tab).
+    - branch:
+        request_map: 'root = this'
+        processors:
+          - http:
+              url: http://node-red.node-red.svc.cluster.local:1880/unifi-protect
+              verb: POST
+
+    # Replace the message with the triggers[] array, then split.
+    - mapping: 'root = this.alarm.triggers'
+    - unarchive:
+        format: json_array
+
+    # Resolve camera, derive knx_value, set the NATS subject.
+    - mapping: |
+        let camera_map = {
+          "28704E15C2E2": "fassade",
+          "28704E153647": "eingang",
+          "1C6A1B83322C": "terrasse_wohnzimmer",
+          "28704E12AEEE": "terrasse_esszimmer",
+        }
+        let face_map = {
+          "Alexander Zimmermann": 1,
+          "Vanessa Zimmermann":   2,
+          "Luis Zimmermann":      3,
+          "Gregory Zimmermann":   4,
+        }
+        let plate_map = {}   # populate when 'Vehicle of Interest' plates exist
+
+        let camera = $camera_map.get(this.device).or("unknown")
+        let key    = this.key
+
+        let knx_value = if $key == "face_known" || $key == "face_of_interest" {
+            $face_map.get(this.value).or(0)
+          } else if $key == "license_plate_known" || $key == "license_plate_of_interest" {
+            $plate_map.get(this.value).or(0)
+          } else {
+            1
+          }
+
+        root = this.assign({"knx_value": $knx_value, "camera": $camera})
+        meta nats_subject = "unifi.events." + $camera + "." + $key
+
+output:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("nats_subject") }

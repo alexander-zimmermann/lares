@@ -26,6 +26,28 @@ configMapGenerator:
       - streams/warp_charge_tracker.yaml
       - streams/warp_meter.yaml
       - streams/unifi_events.yaml
+      - streams/unifi_webhook.yaml
+
+patches:
+  # Expose redpanda-connect service via Cilium/BGP-announced LoadBalancer so
+  # UniFi Protect can POST its Alarm Manager webhook to the unifi_webhook
+  # stream (extraPorts: 4196 in values.yaml).
+  - target:
+      kind: Service
+      name: redpanda-connect
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/labels/bgp.cilium.io~1ip-pool
+        value: default
+      - op: add
+        path: /metadata/labels/bgp.cilium.io~1advertise-service
+        value: default
+      - op: add
+        path: /metadata/annotations/coredns.io~1hostname
+        value: unifi-webhook.zimmermann.eu.com
 
 labels:
   - includeSelectors: false
