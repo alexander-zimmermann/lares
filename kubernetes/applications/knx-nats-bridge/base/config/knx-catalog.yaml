@@ -1943,6 +1943,26 @@
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Tagtarif-1
   room: Garage
+15/2/0:
+  dpt: '1.011'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Gastherme.Brenner-Status
+15/2/1:
+  dpt: '5.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Gastherme.Brenner-Modulation
+15/2/10:
+  dpt: '9.001'
+  function: Versorgungstechnik
+  name: 'Versorgungstechnik.Gastherme.Vorlauf-Temperatur '
+15/2/11:
+  dpt: '9.001'
+  function: Versorgungstechnik
+  name: 'Versorgungstechnik.Gastherme.Rücklauf-Temperatur '
+15/2/2:
+  dpt: '1.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung-Aktiv
 15/3/1:
   description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '5.010'
@@ -2099,6 +2119,30 @@
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Mittel
   room: Vorratsraum
+15/4/0:
+  dpt: '14.056'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Netz-Leistung
+15/4/1:
+  dpt: '14.056'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
+15/4/10:
+  dpt: '14.056'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Inverter-1.Leistung
+15/4/11:
+  dpt: '9.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur
+15/4/20:
+  dpt: '14.056'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Inverter-2.Leistung
+15/4/21:
+  dpt: '9.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur
 15/5/102:
   dpt: '1.011'
   function: Versorgungstechnik
@@ -2174,6 +2218,30 @@
   function: Versorgungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-9.Ein/Aus-Status
   room: Garten
+15/6/0:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Charger-State
+15/6/1:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.IEC61851-State
+15/6/10:
+  dpt: '7.012'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Allowed-Charging-Current
+15/6/2:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Error-State
+15/6/3:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Contactor-Error
+15/6/4:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.DC-Fault-Current-State
 16/0/20:
   dpt: '1.011'
   function: Informationstechnik
