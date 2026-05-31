@@ -14,14 +14,14 @@ pipeline:
     - mapping: |
         let subj = meta("nats_subject")
         let on  = this.value == true
-        meta("protect_action") = if $subj == "knx.14.1.25" && $on {
+        meta protect_action = if $subj == "knx.14.1.25" && $on {
           "enable"
         } else if $subj == "knx.14.1.20" && $on {
           "disable"
         } else {
           deleted()
         }
-        root = if meta("protect_action") != null { this } else { deleted() }
+        root = if meta("protect_action").or(null) != null { this } else { deleted() }
 
 output:
   switch:
