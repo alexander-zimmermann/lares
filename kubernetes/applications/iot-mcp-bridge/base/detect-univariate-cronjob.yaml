@@ -1,0 +1,99 @@
+# CronJob: scan every 1h-CAGG × metric pair against its
+# `<source>_baseline_30d` hour×weekday baseline and write z-score
+# anomalies into `mcp_anomalies`. Every 15 min — the source CAGGs
+# refresh once an hour, so the same row is re-scored 4× per hour,
+# but `INSERT … ON CONFLICT DO UPDATE` keeps the table idempotent.
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-mcp-bridge-detect-univariate
+  namespace: iot-mcp-bridge
+
+spec:
+  schedule: "*/15 * * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: detector
+              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.0
+              command: ["iot-mcp-bridge-jobs", "detect-univariate"]
+              env:
+                # Read-only DB user — required by Settings() even though
+                # the detector only writes via db_write_dsn.
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                # Write user — INSERT into mcp_anomalies.
+                - name: MCP_DB_WRITE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: username
+                - name: MCP_DB_WRITE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: password
+                # NATS — publish anomaly.<uc>.<severity>.
+                - name: MCP_NATS_SERVERS
+                  value: nats://nats.nats.svc.cluster.local:4222
+                - name: MCP_NATS_NKEY_SEED_FILE
+                  value: /etc/iot-mcp-bridge/nats/nkey-seed
+                - name: MCP_AUTH_ENABLED
+                  value: "false"
+                - name: TZ
+                  value: Europe/Berlin
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 96Mi
+                limits:
+                  cpu: 200m
+                  memory: 192Mi
+              volumeMounts:
+                - name: nats-credentials
+                  mountPath: /etc/iot-mcp-bridge/nats
+                  readOnly: true
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+          volumes:
+            - name: nats-credentials
+              secret:
+                secretName: iot-mcp-bridge-credentials
+                defaultMode: 0400
+                items:
+                  - key: nkey-seed
+                    path: nkey-seed

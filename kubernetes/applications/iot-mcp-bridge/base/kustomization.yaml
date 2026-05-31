@@ -7,6 +7,7 @@ resources:
   - ./certificate.yaml
   - ./ingress-route.yaml
   - ./import-knx-catalog-job.yaml
+  - ./detect-univariate-cronjob.yaml
 
 helmCharts:
   - name: application
