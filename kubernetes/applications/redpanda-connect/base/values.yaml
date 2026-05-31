@@ -45,6 +45,17 @@ env:
       secretKeyRef:
         name: rustfs-admin-credentials
         key: RUSTFS_SECRET_KEY
+  # UniFi Protect local API key + target arm-profile ID for the unifi_arm_alarm stream
+  - name: UNIFI_PROTECT_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: redpanda-connect-unifi-protect
+        key: UNIFI_PROTECT_API_KEY
+  - name: UNIFI_PROTECT_ARM_PROFILE_ID
+    valueFrom:
+      secretKeyRef:
+        name: redpanda-connect-unifi-protect
+        key: UNIFI_PROTECT_ARM_PROFILE_ID
 
 serviceMonitor:
   enabled: true

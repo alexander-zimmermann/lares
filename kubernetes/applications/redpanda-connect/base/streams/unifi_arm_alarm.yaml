@@ -1,0 +1,48 @@
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    subject: knx.14.1.*
+    durable: redpanda-connect-unifi-arm-alarm
+    deliver: new
+
+pipeline:
+  processors:
+    - mapping: |
+        let subj = meta("nats_subject")
+        let on  = this.value == true
+        meta("protect_action") = if $subj == "knx.14.1.25" && $on {
+          "enable"
+        } else if $subj == "knx.14.1.20" && $on {
+          "disable"
+        } else {
+          deleted()
+        }
+        root = if meta("protect_action") != null { this } else { deleted() }
+
+output:
+  switch:
+    cases:
+      - check: 'meta("protect_action") == "enable"'
+        output:
+          http_client:
+            url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/arm-profiles/enable?id=${UNIFI_PROTECT_ARM_PROFILE_ID}'
+            verb: POST
+            headers:
+              X-API-Key: "${UNIFI_PROTECT_API_KEY}"
+              Accept: "application/json"
+            tls:
+              skip_cert_verify: true
+      - check: 'meta("protect_action") == "disable"'
+        output:
+          http_client:
+            url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/arm-profiles/disable?id=${UNIFI_PROTECT_ARM_PROFILE_ID}'
+            verb: POST
+            headers:
+              X-API-Key: "${UNIFI_PROTECT_API_KEY}"
+              Accept: "application/json"
+            tls:
+              skip_cert_verify: true
