@@ -21,7 +21,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: importer
-          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.1
+          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.2
           command: ["python", "-m", "iot_mcp_bridge.cli.import_knx_catalog"]
           args:
             - --catalog-path=/etc/iot-mcp-bridge/knx-catalog.yaml
