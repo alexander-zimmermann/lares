@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: redpanda-connect
 resources:
   - ./namespace.yaml
+  - ./sealed-secret.yaml
 
 helmCharts:
   - name: connect
@@ -27,6 +28,7 @@ configMapGenerator:
       - streams/warp_meter.yaml
       - streams/unifi_events.yaml
       - streams/unifi_webhook.yaml
+      - streams/unifi_arm_alarm.yaml
 
 patches:
   # Expose redpanda-connect service via Cilium/BGP-announced LoadBalancer so
