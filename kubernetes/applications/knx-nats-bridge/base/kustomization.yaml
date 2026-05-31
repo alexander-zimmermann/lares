@@ -15,11 +15,17 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
+# disableNameSuffixHash: cross-namespace consumers (Kyverno clone,
+# iot-mcp-bridge import-knx-catalog-job) reference these by fixed name.
 configMapGenerator:
   - name: knx-nats-bridge-catalog
+    options:
+      disableNameSuffixHash: true
     files:
       - knx-catalog.yaml=config/knx-catalog.yaml
   - name: knx-nats-bridge-write-mapping
+    options:
+      disableNameSuffixHash: true
     files:
       - write-mapping.yaml=config/write-mapping.yaml
 
