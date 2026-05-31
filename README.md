@@ -175,7 +175,7 @@ The KNX bus loops back into the data pipeline: every telegram the writer puts on
 | Chassis    | Lenovo ThinkStation P3 Tiny Gen 2                              |
 | CPU        | Intel® Core™ Ultra 5 235T vPro® (14 cores, Arrow Lake-S, 35 W) |
 | Memory     | 64 GB DDR5-6400 (2× Kingston ValueRAM 32 GB)                   |
-| Storage    | 1 TB WD Black SN8100 NVMe (ZFS, `local-zfs`)                   |
+| Storage    | 1 TB Micron 7450 PRO NVMe (ZFS, `local-zfs`)                   |
 | Hypervisor | Proxmox VE 9                                                   |
 
 ### Talos VMs
@@ -199,8 +199,8 @@ All-Ubiquiti stack — one uplink per tier, 10 GbE between switches, PoE on the 
 | [USW Pro Max 48](https://ui.com/switching/usw-pro-max-48) | Aggregation switch (10 GbE uplink to USW Pro HD 24)  |
 | [USW Pro 48 PoE](https://ui.com/switching/usw-pro-48-poe) | Access switch (10 GbE uplink, PoE for APs & cameras) |
 | [USP-RPS](https://ui.com/power-backup/usp-rps)            | Redundant power supply for the rack                  |
-| 2× [U7 Pro](https://ui.com/wifi/flagship/u7-pro)          | Wi-Fi 7 APs (1× floor)                               |
-| 3× [U6-LR](https://ui.com/wifi/long-range/u6-long-range)  | Wi-Fi 6 long-range APs (ground floor + basement)     |
+| 3× [U7 Pro](https://ui.com/wifi/flagship/u7-pro)          | Wi-Fi 7 APs                                          |
+| 2× [U6-LR](https://ui.com/wifi/long-range/u6-long-range)  | Wi-Fi 6 long-range APs                               |
 
 ### Storage (shared)
 
