@@ -85,6 +85,10 @@ Standard CNCF Kubernetes manifests, grouped into `bootstrap/` (day-zero), `compo
 
 ## Architecture
 
+### Stack layers
+
+Three independent layers stacked bottom-up — Proxmox provisions VMs, Omni shapes them into a Talos cluster, Argo CD reconciles every app from `main`.
+
 ```mermaid
 flowchart TB
     subgraph L3["Layer 3: Apps — Argo CD + Manifests"]
@@ -149,12 +153,12 @@ flowchart TB
 
     bridge[knx-nats-bridge<br/>Reader + Writer]
     bridge -- pub knx.> --> nats
-    nats -- sub unifi.events.> · ems-esp.> · warp.> · solaredge-*.> --> bridge
+    nats -- sub --> bridge
     bridge <-- xknx TCP tunnel --> knx[KNX Bus]
     knx --> basalte[Basalte<br/>logic + notifications]
 
     ingest[redpanda-connect<br/>ingest streams]
-    nats -- sub knx.> · ems-esp.> · warp.> · solaredge-*.> · unifi.events.> --> ingest
+    nats -- sub --> ingest
     ingest --> tsdb[(TimescaleDB)]
     ingest --> rustfs[(rustfs<br/>parquet archive)]
 
