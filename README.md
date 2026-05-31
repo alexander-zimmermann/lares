@@ -123,6 +123,49 @@ flowchart TB
     mgmt -- hosts --> omni
 ```
 
+### Smart-Home data flow
+
+NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP.
+
+```mermaid
+flowchart TB
+    subgraph SRC[Sources]
+        direction LR
+        cam[UniFi Protect Cams]
+        ems[EMS-ESP]
+        warp[WARP Wallbox]
+        pv[solaredge2mqtt]
+    end
+
+    cam -- HTTP webhook --> webhook[redpanda-connect<br/>unifi_webhook stream]
+    webhook -. raw forward .-> nodered[node-RED<br/>Geofence tab]
+
+    ems -- MQTT --> nats
+    warp -- MQTT --> nats
+    pv -- MQTT --> nats
+    webhook -- publish --> nats
+
+    nats[(NATS JetStream<br/>KNX · EMS_ESP · WARP<br/>SOLAREDGE · UNIFI)]
+
+    bridge[knx-nats-bridge<br/>Reader + Writer]
+    bridge -- pub knx.> --> nats
+    nats -- sub mappings --> bridge
+    bridge <-- xknx TCP tunnel --> knx[KNX Bus]
+    knx --> basalte[Basalte<br/>logic + notifications]
+
+    ingest[redpanda-connect<br/>ingest streams]
+    nats -- subscribe --> ingest
+    ingest --> tsdb[(TimescaleDB)]
+    ingest --> rustfs[(rustfs<br/>parquet archive)]
+
+    mcp[iot-mcp-bridge<br/>MCP tools + batch jobs]
+    tsdb -- SELECT --> mcp
+    mcp -- publish anomaly.> --> nats
+    mcp -- MCP/HTTP --> claude((Claude.ai))
+```
+
+The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
+
 ## Hardware
 
 ### Compute
