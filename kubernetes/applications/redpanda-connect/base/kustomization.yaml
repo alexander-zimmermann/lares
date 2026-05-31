@@ -45,9 +45,6 @@ patches:
       - op: add
         path: /metadata/labels/bgp.cilium.io~1advertise-service
         value: default
-      - op: add
-        path: /metadata/annotations/coredns.io~1hostname
-        value: unifi-webhook.zimmermann.eu.com
 
 labels:
   - includeSelectors: false
