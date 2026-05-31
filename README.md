@@ -143,24 +143,24 @@ flowchart TB
     ems -- MQTT --> nats
     warp -- MQTT --> nats
     pv -- MQTT --> nats
-    webhook -- publish --> nats
+    webhook -- pub unifi.events.> --> nats
 
     nats[(NATS JetStream<br/>KNX · EMS_ESP · WARP<br/>SOLAREDGE · UNIFI)]
 
     bridge[knx-nats-bridge<br/>Reader + Writer]
     bridge -- pub knx.> --> nats
-    nats -- sub mappings --> bridge
+    nats -- sub unifi.events.> · ems-esp.> · warp.> · solaredge-*.> --> bridge
     bridge <-- xknx TCP tunnel --> knx[KNX Bus]
     knx --> basalte[Basalte<br/>logic + notifications]
 
     ingest[redpanda-connect<br/>ingest streams]
-    nats -- subscribe --> ingest
+    nats -- sub knx.> · ems-esp.> · warp.> · solaredge-*.> · unifi.events.> --> ingest
     ingest --> tsdb[(TimescaleDB)]
     ingest --> rustfs[(rustfs<br/>parquet archive)]
 
     mcp[iot-mcp-bridge<br/>MCP tools + batch jobs]
     tsdb -- SELECT --> mcp
-    mcp -- publish anomaly.> --> nats
+    mcp -- pub anomaly.> --> nats
     mcp -- MCP/HTTP --> claude((Claude.ai))
 ```
 
