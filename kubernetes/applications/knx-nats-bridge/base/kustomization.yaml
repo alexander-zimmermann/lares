@@ -17,13 +17,9 @@ helmCharts:
 
 configMapGenerator:
   - name: knx-nats-bridge-catalog
-    options:
-      disableNameSuffixHash: true
     files:
       - knx-catalog.yaml=config/knx-catalog.yaml
   - name: knx-nats-bridge-write-mapping
-    options:
-      disableNameSuffixHash: true
     files:
       - write-mapping.yaml=config/write-mapping.yaml
 
