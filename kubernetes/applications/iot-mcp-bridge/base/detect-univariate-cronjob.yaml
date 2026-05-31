@@ -77,7 +77,8 @@ spec:
                   memory: 192Mi
               volumeMounts:
                 - name: nats-credentials
-                  mountPath: /etc/iot-mcp-bridge/nats
+                  mountPath: /etc/iot-mcp-bridge/nats/nkey-seed
+                  subPath: nkey-seed
                   readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
@@ -93,7 +94,3 @@ spec:
             - name: nats-credentials
               secret:
                 secretName: iot-mcp-bridge-credentials
-                defaultMode: 0400
-                items:
-                  - key: nkey-seed
-                    path: nkey-seed
