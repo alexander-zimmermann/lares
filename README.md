@@ -123,6 +123,49 @@ flowchart TB
     mgmt -- hosts --> omni
 ```
 
+### Smart-Home data flow
+
+NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP.
+
+```mermaid
+flowchart TB
+    subgraph SRC[Sources]
+        direction LR
+        cam[UniFi Protect Cams]
+        ems[EMS-ESP]
+        warp[WARP Wallbox]
+        pv[solaredge2mqtt]
+    end
+
+    cam -- HTTP webhook --> webhook[redpanda-connect<br/>unifi_webhook stream]
+    webhook -. raw forward .-> nodered[node-RED<br/>Geofence tab]
+
+    ems -- MQTT --> nats
+    warp -- MQTT --> nats
+    pv -- MQTT --> nats
+    webhook -- publish --> nats
+
+    nats[(NATS JetStream<br/>KNX · EMS_ESP · WARP<br/>SOLAREDGE · UNIFI)]
+
+    bridge[knx-nats-bridge<br/>Reader + Writer]
+    bridge -- pub knx.> --> nats
+    nats -- sub mappings --> bridge
+    bridge <-- xknx TCP tunnel --> knx[KNX Bus]
+    knx --> basalte[Basalte<br/>logic + notifications]
+
+    ingest[redpanda-connect<br/>ingest streams]
+    nats -- subscribe --> ingest
+    ingest --> tsdb[(TimescaleDB)]
+    ingest --> rustfs[(rustfs<br/>parquet archive)]
+
+    mcp[iot-mcp-bridge<br/>MCP tools + batch jobs]
+    tsdb -- SELECT --> mcp
+    mcp -- publish anomaly.> --> nats
+    mcp -- MCP/HTTP --> claude((Claude.ai))
+```
+
+The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
+
 ## Hardware
 
 ### Compute
@@ -132,7 +175,7 @@ flowchart TB
 | Chassis    | Lenovo ThinkStation P3 Tiny Gen 2                              |
 | CPU        | Intel® Core™ Ultra 5 235T vPro® (14 cores, Arrow Lake-S, 35 W) |
 | Memory     | 64 GB DDR5-6400 (2× Kingston ValueRAM 32 GB)                   |
-| Storage    | 1 TB WD Black SN8100 NVMe (ZFS, `local-zfs`)                   |
+| Storage    | 1 TB Micron 7450 PRO NVMe (ZFS, `local-zfs`)                   |
 | Hypervisor | Proxmox VE 9                                                   |
 
 ### Talos VMs
@@ -156,8 +199,8 @@ All-Ubiquiti stack — one uplink per tier, 10 GbE between switches, PoE on the 
 | [USW Pro Max 48](https://ui.com/switching/usw-pro-max-48) | Aggregation switch (10 GbE uplink to USW Pro HD 24)  |
 | [USW Pro 48 PoE](https://ui.com/switching/usw-pro-48-poe) | Access switch (10 GbE uplink, PoE for APs & cameras) |
 | [USP-RPS](https://ui.com/power-backup/usp-rps)            | Redundant power supply for the rack                  |
-| 2× [U7 Pro](https://ui.com/wifi/flagship/u7-pro)          | Wi-Fi 7 APs (1× floor)                               |
-| 3× [U6-LR](https://ui.com/wifi/long-range/u6-long-range)  | Wi-Fi 6 long-range APs (ground floor + basement)     |
+| 3× [U7 Pro](https://ui.com/wifi/flagship/u7-pro)          | Wi-Fi 7 APs                                          |
+| 2× [U6-LR](https://ui.com/wifi/long-range/u6-long-range)  | Wi-Fi 6 long-range APs                               |
 
 ### Storage (shared)
 
