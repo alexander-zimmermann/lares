@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/iot-mcp-bridge
-    tag: 0.6.1
+    tag: 0.6.4
     pullPolicy: IfNotPresent
 
   replicas: 1
