@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: detector
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.1
+              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.2
               command: ["iot-mcp-bridge-jobs", "detect-univariate"]
               env:
                 # Read-only DB user — required by Settings() even though
