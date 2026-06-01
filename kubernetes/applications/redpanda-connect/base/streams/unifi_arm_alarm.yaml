@@ -34,9 +34,6 @@ output:
             headers:
               X-API-Key: "${UNIFI_PROTECT_API_KEY}"
               Accept: "application/json"
-            tls:
-              enabled: true
-              skip_cert_verify: true
       - check: 'meta("protect_action") == "disable"'
         output:
           http_client:
@@ -45,6 +42,3 @@ output:
             headers:
               X-API-Key: "${UNIFI_PROTECT_API_KEY}"
               Accept: "application/json"
-            tls:
-              enabled: true
-              skip_cert_verify: true
