@@ -1,5 +1,5 @@
 # PostSync Job that imports the KNX catalog (group address → name/room/
-# function/description) from the cloned knx-nats-bridge-catalog ConfigMap
+# function/description) from the cloned knx-nats-bridge-ga-catalog ConfigMap
 # into the `knx_catalog` Postgres table. Uses admin credentials (homelab
 # role) — the read-only role the MCP server runs with cannot write.
 # Idempotent: re-runs only update changed rows and purge stale ones.
@@ -24,7 +24,7 @@ spec:
           image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.6.4
           command: ["python", "-m", "iot_mcp_bridge.cli.import_knx_catalog"]
           args:
-            - --catalog-path=/etc/iot-mcp-bridge/knx-catalog.yaml
+            - --catalog-path=/etc/iot-mcp-bridge/ga-catalog.yaml
           env:
             - name: MCP_DB_HOST
               value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -54,12 +54,12 @@ spec:
               cpu: 200m
               memory: 256Mi
           volumeMounts:
-            - name: catalog
-              mountPath: /etc/iot-mcp-bridge/knx-catalog.yaml
-              subPath: knx-catalog.yaml
+            - name: ga-catalog
+              mountPath: /etc/iot-mcp-bridge/ga-catalog.yaml
+              subPath: ga-catalog.yaml
               readOnly: true
       volumes:
-        - name: catalog
+        - name: ga-catalog
           configMap:
-            name: knx-nats-bridge-catalog
+            name: knx-nats-bridge-ga-catalog
             defaultMode: 0444

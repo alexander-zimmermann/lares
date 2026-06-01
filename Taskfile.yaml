@@ -3,7 +3,7 @@ version: "3"
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
-  KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/knx-catalog.yaml"
+  KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml"
 
 includes:
   infra:
