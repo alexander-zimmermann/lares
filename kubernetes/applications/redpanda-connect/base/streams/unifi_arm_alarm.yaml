@@ -11,17 +11,27 @@ input:
 
 pipeline:
   processors:
+    # Filter to the two GAs we care about, regardless of value, so the log
+    # below shows the raw shape (subject + value type) for diagnostics.
     - mapping: |
         let subj = meta("nats_subject")
-        let on  = this.value == true
-        meta protect_action = if $subj == "knx.14.1.25" && $on {
-          "enable"
-        } else if $subj == "knx.14.1.20" && $on {
-          "disable"
+        root = if $subj == "knx.14.1.25" || $subj == "knx.14.1.20" {
+          this
         } else {
           deleted()
         }
-        root = if meta("protect_action").or(null) != null { this } else { deleted() }
+    - log:
+        level: INFO
+        message: 'unifi_arm_alarm: subject=${! meta("nats_subject") } value=${! this.value } value_type=${! this.value.type() } raw=${! content() }'
+    # Drop falsy values (button-release "0" pulse) and tag the action.
+    - mapping: |
+        let on = this.value.bool().or(false)
+        root = if $on { this } else { deleted() }
+        meta protect_action = if meta("nats_subject") == "knx.14.1.25" {
+          "enable"
+        } else {
+          "disable"
+        }
 
 output:
   switch:
