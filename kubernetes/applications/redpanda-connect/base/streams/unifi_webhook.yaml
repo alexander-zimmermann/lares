@@ -43,9 +43,11 @@ pipeline:
         let camera = $camera_map.get(this.device).or("unknown")
         let key    = this.key
 
-        let knx_value =
-          if $key == "face_known" || $key == "face_of_interest" ||
-             $key == "license_plate_known" || $key == "license_plate_of_interest" {
+        let person_keys = [
+          "face_known", "face_of_interest",
+          "license_plate_known", "license_plate_of_interest",
+        ]
+        let knx_value = if $person_keys.contains($key) {
             $person_map.get(this.value).or(0)
           } else {
             1
