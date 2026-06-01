@@ -31,21 +31,22 @@ pipeline:
           "1C6A1B83322C": "terrasse_wohnzimmer",
           "28704E12AEEE": "terrasse_esszimmer",
         }
-        let face_map = {
+        # UniFi reuses the same friendly name across face and license-plate
+        # of-interest/known triggers, so one person -> int lookup serves both.
+        let person_map = {
           "Alexander Zimmermann": 1,
           "Vanessa Zimmermann":   2,
           "Luis Zimmermann":      3,
           "Gregory Zimmermann":   4,
         }
-        let plate_map = {}   # populate when 'Vehicle of Interest' plates exist
 
         let camera = $camera_map.get(this.device).or("unknown")
         let key    = this.key
 
-        let knx_value = if $key == "face_known" || $key == "face_of_interest" {
-            $face_map.get(this.value).or(0)
-          } else if $key == "license_plate_known" || $key == "license_plate_of_interest" {
-            $plate_map.get(this.value).or(0)
+        let knx_value =
+          if $key == "face_known" || $key == "face_of_interest" ||
+             $key == "license_plate_known" || $key == "license_plate_of_interest" {
+            $person_map.get(this.value).or(0)
           } else {
             1
           }
