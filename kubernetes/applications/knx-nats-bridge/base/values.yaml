@@ -27,13 +27,13 @@ deployment:
     NATS_NKEY_SEED_FILE:
       value: /etc/knx-nats-bridge/nkey-seed
     KNX_NATS_CATALOG_PATH:
-      value: /etc/knx-nats-bridge/knx-catalog.yaml
+      value: /etc/knx-nats-bridge/ga-catalog.yaml
     KNX_NATS_UNMAPPED_POLICY:
       value: skip
     BRIDGE_WRITE_ENABLED:
       value: "true"
     BRIDGE_WRITE_MAPPING_PATH:
-      value: /etc/knx-nats-bridge/write-mapping.yaml
+      value: /etc/knx-nats-bridge/writer-rules.yaml
     LOG_FORMAT:
       value: json
     METRICS_PORT:
@@ -42,23 +42,23 @@ deployment:
       value: Europe/Berlin
 
   volumes:
-    catalog:
+    ga-catalog:
       configMap:
-        name: knx-nats-bridge-catalog
-    write-mapping:
+        name: knx-nats-bridge-ga-catalog
+    writer-rules:
       configMap:
-        name: knx-nats-bridge-write-mapping
+        name: knx-nats-bridge-writer-rules
     nats-credentials:
       secret:
         secretName: knx-nats-bridge-credentials
 
   volumeMounts:
-    catalog:
-      mountPath: /etc/knx-nats-bridge/knx-catalog.yaml
-      subPath: knx-catalog.yaml
-    write-mapping:
-      mountPath: /etc/knx-nats-bridge/write-mapping.yaml
-      subPath: write-mapping.yaml
+    ga-catalog:
+      mountPath: /etc/knx-nats-bridge/ga-catalog.yaml
+      subPath: ga-catalog.yaml
+    writer-rules:
+      mountPath: /etc/knx-nats-bridge/writer-rules.yaml
+      subPath: writer-rules.yaml
     nats-credentials:
       mountPath: /etc/knx-nats-bridge/nkey-seed
       subPath: nkey-seed

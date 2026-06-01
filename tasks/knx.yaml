@@ -7,7 +7,7 @@ version: "3"
 
 tasks:
   catalog:
-    desc: "rebuild knx-catalog.yaml from an ETS project export [path/to/project.knxproj]"
+    desc: "rebuild ga-catalog.yaml from an ETS project export [path/to/project.knxproj]"
     summary: |
       Run the full pipeline — extract the raw catalog from the .knxproj via
       xknxproject, then apply project-specific enrichment.
@@ -20,7 +20,7 @@ tasks:
       - task: enrich-catalog
 
   generate-catalog:
-    desc: "extract raw knx-catalog.yaml from an ETS project export (no enrichment) [path/to/project.knxproj]"
+    desc: "extract raw ga-catalog.yaml from an ETS project export (no enrichment) [path/to/project.knxproj]"
     summary: |
       Run knxproj-to-yaml against the supplied .knxproj and write the raw catalog into the ConfigMap
       source file.
@@ -41,7 +41,7 @@ tasks:
         {{if .KNXPROJ_PASSWORD}}--password '{{.KNXPROJ_PASSWORD}}'{{end}}
 
   enrich-catalog:
-    desc: "apply project-specific enrichment to knx-catalog.yaml"
+    desc: "apply project-specific enrichment to ga-catalog.yaml"
     summary: |
       Normalise ETS Building-style room names, backfill missing room/function from the dotted GA
       name, and drop ETS auto-generated descriptions. Configuration (floor tokens, regex) lives in
@@ -52,7 +52,7 @@ tasks:
       - "{{.ENRICH_SCRIPT}} {{.KNX_CATALOG_PATH}}"
 
   validate-catalog:
-    desc: "validate knx-catalog.yaml against the JSON-Schema"
+    desc: "validate ga-catalog.yaml against the JSON-Schema"
     summary: |
       Check the rendered ConfigMap source against the upstream JSON-Schema.
     vars:

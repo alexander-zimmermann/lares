@@ -18,16 +18,16 @@ helmCharts:
 # disableNameSuffixHash: cross-namespace consumers (Kyverno clone,
 # iot-mcp-bridge import-knx-catalog-job) reference these by fixed name.
 configMapGenerator:
-  - name: knx-nats-bridge-catalog
+  - name: knx-nats-bridge-ga-catalog
     options:
       disableNameSuffixHash: true
     files:
-      - knx-catalog.yaml=config/knx-catalog.yaml
-  - name: knx-nats-bridge-write-mapping
+      - ga-catalog.yaml=config/ga-catalog.yaml
+  - name: knx-nats-bridge-writer-rules
     options:
       disableNameSuffixHash: true
     files:
-      - write-mapping.yaml=config/write-mapping.yaml
+      - writer-rules.yaml=config/writer-rules.yaml
 
 labels:
   - includeSelectors: false
