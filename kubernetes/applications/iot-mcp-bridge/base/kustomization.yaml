@@ -8,6 +8,8 @@ resources:
   - ./ingress-route.yaml
   - ./import-knx-catalog-job.yaml
   - ./detect-univariate-cronjob.yaml
+  - ./train-iforest-cronjob.yaml
+  - ./score-iforest-cronjob.yaml
 
 helmCharts:
   - name: application
