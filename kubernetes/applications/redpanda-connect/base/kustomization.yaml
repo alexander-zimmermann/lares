@@ -29,6 +29,7 @@ configMapGenerator:
       - streams/unifi_events.yaml
       - streams/unifi_webhook.yaml
       - streams/unifi_arm_alarm.yaml
+      - streams/pv_surplus_to_warp.yaml
 
 patches:
   # Expose redpanda-connect service via Cilium/BGP-announced LoadBalancer so
