@@ -1,0 +1,16 @@
+# Durable consumer for the redpanda-connect unifi_events archive pipeline.
+# Subject filter covers both unifi.events.> (per-trigger camera detections)
+# and unifi.geofence.> (presence-change triggers).
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-unifi-events
+  namespace: nats
+spec:
+  streamName: UNIFI
+  durableName: redpanda-connect-unifi-events
+  filterSubject: unifi.>
+  deliverPolicy: all
+  ackPolicy: explicit
+  ackWait: 20m
+  maxAckPending: 5000

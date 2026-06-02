@@ -3,16 +3,15 @@
 # Gesamt") to the WARP wallbox so its Charge Manager can balance EV
 # charging against PV surplus.
 input:
+  # Consumer is declared as a CRD in nats/base/consumers/pv_surplus_to_warp.yaml.
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
     auth:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: KNX
-    subject: knx.15.1.24
     durable: redpanda-connect-pv-surplus-to-warp
-    deliver: new
-    max_ack_pending: 64
+    bind: true
 
 pipeline:
   processors:
