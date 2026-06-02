@@ -3,7 +3,7 @@
 # requires-python = ">=3.11"
 # dependencies = ["pyyaml>=6.0"]
 # ///
-"""Project-specific enrichment of the raw knx-catalog.yaml.
+"""Project-specific enrichment of the raw ga-catalog.yaml.
 
 The upstream `knxproj-to-yaml` tool (in the knx-nats-bridge repo) only
 emits what ETS itself defines. This post-processor adds the conventions
@@ -141,9 +141,9 @@ def enrich(catalog: dict[str, Any]) -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Apply project-specific enrichment to a raw knx-catalog.yaml"
+        description="Apply project-specific enrichment to a raw ga-catalog.yaml"
     )
-    parser.add_argument("path", type=Path, help="Path to knx-catalog.yaml (modified in place)")
+    parser.add_argument("path", type=Path, help="Path to ga-catalog.yaml (modified in place)")
     args = parser.parse_args(argv)
 
     raw = yaml.safe_load(args.path.read_text(encoding="utf-8")) or {}
