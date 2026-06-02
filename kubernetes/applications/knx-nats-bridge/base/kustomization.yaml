@@ -16,7 +16,7 @@ helmCharts:
       - monitoring.coreos.com/v1
 
 # disableNameSuffixHash: cross-namespace consumers (Kyverno clone,
-# iot-mcp-bridge import-knx-catalog-job) reference these by fixed name.
+# iot-mcp-bridge import-ga-catalog-job) reference these by fixed name.
 configMapGenerator:
   - name: knx-nats-bridge-ga-catalog
     options:

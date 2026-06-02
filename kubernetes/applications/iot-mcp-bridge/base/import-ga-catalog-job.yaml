@@ -1,4 +1,4 @@
-# PostSync Job that imports the KNX catalog (group address → name/room/
+# PostSync Job that imports the GA catalog (group address → name/room/
 # function/description) from the cloned knx-nats-bridge-ga-catalog ConfigMap
 # into the `knx_catalog` Postgres table. Uses admin credentials (homelab
 # role) — the read-only role the MCP server runs with cannot write.
@@ -7,7 +7,7 @@ apiVersion: batch/v1
 kind: Job
 
 metadata:
-  name: iot-mcp-bridge-import-knx-catalog
+  name: iot-mcp-bridge-import-ga-catalog
   namespace: iot-mcp-bridge
   annotations:
     argocd.argoproj.io/hook: PostSync
@@ -21,8 +21,8 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: importer
-          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.7.1
-          command: ["python", "-m", "iot_mcp_bridge.cli.import_knx_catalog"]
+          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.8.0
+          command: ["python", "-m", "iot_mcp_bridge.cli.import_ga_catalog"]
           args:
             - --catalog-path=/etc/iot-mcp-bridge/ga-catalog.yaml
           env:
