@@ -1,7 +1,8 @@
 # UniFi Protect Alarm Manager webhook handler.
-# Fans the raw payload out to node-RED (Geofence tab still lives there),
-# splits alarm.triggers[], resolves camera MAC -> name, derives knx_value,
+# Splits alarm.triggers[], resolves camera MAC -> name, derives knx_value,
 # publishes one NATS message per trigger so knx-nats-bridge can write KNX.
+# Geofence triggers (key=admin_geolocation) get their own subject so the
+# node-RED Geofence tab can subscribe via the NATS MQTT gateway.
 input:
   http_server:
     address: 0.0.0.0:4196
@@ -10,14 +11,6 @@ input:
 
 pipeline:
   processors:
-    # Fan-out the raw payload to node-RED (Geofence tab).
-    - branch:
-        request_map: 'root = this'
-        processors:
-          - http:
-              url: http://node-red.node-red.svc.cluster.local:1880/unifi-protect
-              verb: POST
-
     # Replace the message with the triggers[] array, then split.
     - mapping: 'root = this.alarm.triggers'
     - unarchive:
@@ -54,7 +47,14 @@ pipeline:
           }
 
         root = this.assign({"knx_value": $knx_value, "camera": $camera})
-        meta nats_subject = "unifi.events." + $camera + "." + $key
+        # admin_geolocation has no camera and no direction info — route it
+        # to a dedicated subject so the node-RED Geofence tab can subscribe
+        # via NATS MQTT gateway and enrich with the iCloud notification mail.
+        meta nats_subject = if $key == "admin_geolocation" {
+            "unifi.geofence.trigger"
+          } else {
+            "unifi.events." + $camera + "." + $key
+          }
 
 output:
   nats_jetstream:
