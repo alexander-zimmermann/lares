@@ -426,13 +426,13 @@ SELECT add_retention_policy('warp_charge_tracker', INTERVAL '365 days');
 SELECT add_retention_policy('warp_meter',          INTERVAL '365 days');
 
 -- =========================================================
--- KNX catalog — GA → name/room/function/description lookup,
--- populated by the iot-mcp-bridge import-knx-catalog Job from
--- the knx-nats-bridge ConfigMap. The `knx_catalog_view` view
+-- GA catalog — GA → name/room/function/description lookup,
+-- populated by the iot-mcp-bridge import-ga-catalog Job from
+-- the knx-nats-bridge ConfigMap. The `ga_catalog_view` view
 -- joins `knx` against the catalog so MCP tools can filter / group by
 -- room or function in plain SQL.
 -- =========================================================
-CREATE TABLE IF NOT EXISTS knx_catalog (
+CREATE TABLE IF NOT EXISTS ga_catalog (
     ga          TEXT PRIMARY KEY,
     name        TEXT NOT NULL,
     room        TEXT,
@@ -441,13 +441,13 @@ CREATE TABLE IF NOT EXISTS knx_catalog (
     dpt         TEXT NOT NULL,
     updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-CREATE INDEX IF NOT EXISTS knx_catalog_room_idx     ON knx_catalog (room) WHERE room IS NOT NULL;
-CREATE INDEX IF NOT EXISTS knx_catalog_function_idx ON knx_catalog (function);
+CREATE INDEX IF NOT EXISTS ga_catalog_room_idx     ON ga_catalog (room) WHERE room IS NOT NULL;
+CREATE INDEX IF NOT EXISTS ga_catalog_function_idx ON ga_catalog (function);
 
-CREATE OR REPLACE VIEW knx_catalog_view AS
+CREATE OR REPLACE VIEW ga_catalog_view AS
 SELECT k.time, k.ga, k.knx_main, k.knx_middle, k.knx_sub, k.dpt, k.value,
        n.name AS ga_name, n.room, n.function, n.description
-FROM knx k LEFT JOIN knx_catalog n USING (ga);
+FROM knx k LEFT JOIN ga_catalog n USING (ga);
 
 -- =========================================================
 -- TimescaleDB Toolkit — adds stats_agg / percentile_agg / rollup
@@ -526,7 +526,7 @@ FROM solaredge_powerflow_1h
 GROUP BY day, inverter_id, hour_of_day, weekday WITH NO DATA;
 
 -- knx_1h has one row per (bucket, ga) → baseline is per (day, ga, hour, weekday).
--- Many GAs are binary; detectors filter via knx_catalog (function/room) at query time.
+-- Many GAs are binary; detectors filter via ga_catalog (function/room) at query time.
 CREATE MATERIALIZED VIEW knx_baseline_30d
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 day', bucket) AS day,

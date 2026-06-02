@@ -28,7 +28,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: trainer
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.8.0
+              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.9.0
               command: ["iot-mcp-bridge-jobs", "train-iforest"]
               env:
                 - name: MCP_DB_HOST
