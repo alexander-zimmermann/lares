@@ -1,4 +1,4 @@
-# NATS-subject -> KNX-GA write mappings (schema: write-mapping.schema.json).
+# NATS-subject -> KNX-GA writer rules (schema: writer-rules.schema.json).
 # UniFi mappings rely on `knx_value` being set by the redpanda-connect
 # unifi_webhook stream (1 for boolean alarms, int 1..4 for face/plate lookups).
 
