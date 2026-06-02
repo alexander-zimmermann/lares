@@ -3,14 +3,11 @@ kind: Kustomization
 
 namespace: nats
 resources:
+  - ./streams/
+  - ./consumers/
   - ./certificate.yaml
   - ./ingress-route-tcp.yaml
   - ./sealed-secret.yaml
-  - ./streams/knx.yaml
-  - ./streams/solaredge.yaml
-  - ./streams/ems-esp.yaml
-  - ./streams/warp.yaml
-  - ./streams/unifi.yaml
 
 helmCharts:
   - name: nats

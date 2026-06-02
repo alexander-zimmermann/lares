@@ -1,15 +1,17 @@
 input:
+  # Consumer is declared as a CRD in nats/base/consumers/unifi_events.yaml
+  # (filter, deliver, ack_wait, max_ack_pending live there). bind: true tells
+  # redpanda-connect to attach only — no autocreate, so filter evolution
+  # goes through `kubectl apply` on the CRD instead of through a destructive
+  # consumer recreate.
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
     auth:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: UNIFI
-    subject: unifi.>
     durable: redpanda-connect-unifi-events
-    deliver: all
-    ack_wait: 20m
-    max_ack_pending: 5000
+    bind: true
 
 pipeline:
   processors:
