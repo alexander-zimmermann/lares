@@ -187,6 +187,9 @@ CREATE TABLE ems_esp (
 );
 SELECT create_hypertable('ems_esp', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON ems_esp (topic, time DESC);
+-- Idempotency for redpanda-connect ingest: same (time, topic) means same
+-- source NATS message — replay after a consumer reset must not duplicate.
+CREATE UNIQUE INDEX IF NOT EXISTS ems_esp_unique ON ems_esp (time, topic);
 
 CREATE MATERIALIZED VIEW ems_esp_boiler_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
@@ -223,6 +226,7 @@ CREATE TABLE warp_system (
 );
 SELECT create_hypertable('warp_system', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON warp_system (sub_topic, time DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS warp_system_unique ON warp_system (time, sub_topic);
 
 -- warp.evse.state, warp.evse.low_level_state
 -- Typed: 4 state/error fields used in energy-wallbox dashboard.
@@ -240,6 +244,7 @@ CREATE TABLE warp_evse (
 );
 SELECT create_hypertable('warp_evse', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON warp_evse (sub_topic, time DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS warp_evse_unique ON warp_evse (time, sub_topic);
 
 -- warp.charge_manager.{state, low_level_state, config, available_current, ...}
 CREATE TABLE warp_charge_manager (
@@ -248,6 +253,7 @@ CREATE TABLE warp_charge_manager (
 );
 SELECT create_hypertable('warp_charge_manager', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON warp_charge_manager (sub_topic, time DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS warp_charge_manager_unique ON warp_charge_manager (time, sub_topic);
 
 -- warp.charge_tracker.{state, current_charge, last_charges}
 -- Typed: 4 fields from energy-wallbox dashboard.
@@ -296,6 +302,9 @@ CREATE TABLE warp_meter (
 SELECT create_hypertable('warp_meter', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON warp_meter (sub_topic, time DESC);
 CREATE INDEX ON warp_meter (meter_id, time DESC) WHERE meter_id IS NOT NULL;
+-- NULLS NOT DISTINCT so warp.meter.all_values rows (meter_id IS NULL) still dedupe.
+CREATE UNIQUE INDEX IF NOT EXISTS warp_meter_unique
+    ON warp_meter (time, sub_topic, meter_id) NULLS NOT DISTINCT;
 
 CREATE MATERIALIZED VIEW warp_meter_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
@@ -337,6 +346,12 @@ SELECT create_hypertable('unifi_events', 'time', chunk_time_interval => INTERVAL
 CREATE INDEX ON unifi_events (camera, time DESC);
 CREATE INDEX ON unifi_events (detection_type, time DESC);
 CREATE INDEX ON unifi_events (event_id, time DESC) WHERE event_id IS NOT NULL;
+-- One UniFi alarm.eventId fans out to multiple triggers (e.g. line_crossed +
+-- person on the same camera), so the unique key includes detection_type.
+-- Partial index because event_id is nullable for legacy / smoke-test rows.
+CREATE UNIQUE INDEX IF NOT EXISTS unifi_events_unique
+    ON unifi_events (time, event_id, camera, detection_type)
+    WHERE event_id IS NOT NULL;
 
 -- =========================================================
 -- Continuous Aggregate Refresh Policies

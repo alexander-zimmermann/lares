@@ -118,6 +118,7 @@ output:
               ($43::numeric)::smallint, ($44::numeric)::smallint, ($45::numeric)::smallint, $46,
               $47
             )
+            ON CONFLICT (time, topic) DO NOTHING
           args_mapping: |
             root = [
               this.time,
