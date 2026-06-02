@@ -1,8 +1,7 @@
 # PV surplus forwarder: pushes the home-grid net power reading (KNX
-# 16/1/24, DPT 14.056 "Versorgungstechnik.Energiezähler.Strom.Wirkleistung-
+# 15/1/24, DPT 14.056 "Versorgungstechnik.Energiezähler.Strom.Wirkleistung-
 # Gesamt") to the WARP wallbox so its Charge Manager can balance EV
-# charging against PV surplus. Replaces a node-RED tab that did the same
-# KNX-to-MQTT translation.
+# charging against PV surplus.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -10,7 +9,7 @@ input:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: KNX
-    subject: knx.16.1.24
+    subject: knx.15.1.24
     durable: redpanda-connect-pv-surplus-to-warp
     deliver: new
     max_ack_pending: 64
