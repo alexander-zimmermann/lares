@@ -1,402 +1,257 @@
 0/0/100:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.KG.Szenen
 0/0/101:
   dpt: '1.003'
-  function: Allgemein
   name: Allgemein.Zentral.KG.Alles-Aus
 0/0/120:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.EG.Szenen
 0/0/121:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.EG.Alles-Aus
 0/0/140:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.OG.Szenen
 0/0/141:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.OG.Alles-Aus
 0/0/160:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.DG.Szenen
 0/0/161:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.DG.Alles-Aus
 0/0/180:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.A.Szenen
 0/0/181:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.A.Alles-Aus
 0/0/200:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.Zentral.Szenen
 0/0/201:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.Alles-Aus
 0/0/211:
   dpt: '1.011'
-  function: Allgemein
   name: Allgemein.Zentral.Anwesend.Alexander
 0/0/212:
   dpt: '1.011'
-  function: Allgemein
   name: Allgemein.Zentral.Anwesend.Vanessa
 0/0/213:
   dpt: '1.011'
-  function: Allgemein
   name: Allgemein.Zentral.Anwesend.Luis
 0/0/214:
   dpt: '1.011'
-  function: Allgemein
   name: Allgemein.Zentral.Anwesend.Gregory
 0/0/220:
   dpt: '10.001'
-  function: Allgemein
   name: Allgemein.Zentral.Uhrzeit
 0/0/221:
   dpt: '11.001'
-  function: Allgemein
   name: Allgemein.Zentral.Datum
 0/0/222:
   dpt: '19.001'
-  function: Allgemein
   name: Allgemein.Zentral.Datum-Uhrzeit
 0/0/230:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.Zentral.Tag/Nacht
 0/0/231:
   dpt: '1.024'
-  function: Allgemein
   name: Allgemein.Zentral.Nacht/Tag
 0/0/232:
   dpt: '1.002'
-  function: Allgemein
   name: Allgemein.Zentral.Sommer/Winter
 0/1/0:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.KG.Flur.Szenen
-  room: Flur
 0/1/1:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.KG.Flur.Alles-Aus
-  room: Flur
 0/1/20:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.KG.Garage.Szenen
-  room: Garage
 0/1/21:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.KG.Garage.Alles-Aus
-  room: Garage
 0/1/40:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.KG.Technikraum.Szenen
-  room: Technikraum
 0/1/41:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.KG.Technikraum.Alles-Aus
-  room: Technikraum
 0/1/60:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.KG.Vorratsraum.Szenen
-  room: Vorratsraum
 0/1/61:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.KG.Vorratsraum.Alles-Aus
-  room: Vorratsraum
 0/1/80:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.KG.Hauswirtschaftsraum.Szenen
-  room: Hauswirtschaftsraum
 0/1/81:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.KG.Hauswirtschaftsraum.Alles-Aus
-  room: Hauswirtschaftsraum
 0/2/0:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Flur.Szenen
-  room: Flur
 0/2/1:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Flur.Alles-Aus
-  room: Flur
 0/2/100:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Küche.Szenen
-  room: Küche
 0/2/101:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Küche.Alles-Aus
-  room: Küche
 0/2/20:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Gäste-WC.Szenen
-  room: Gäste-WC
 0/2/21:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Gäste-WC.Alles-Aus
-  room: Gäste-WC
 0/2/40:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Büro.Szenen
-  room: Büro
 0/2/41:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Büro.Alles-Aus
-  room: Büro
 0/2/42:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Büro.Alles-Aus-Trigger
-  room: Büro
 0/2/60:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Wohnzimmer.Szenen
-  room: Wohnzimmer
 0/2/61:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Wohnzimmer.Alles-Aus
-  room: Wohnzimmer
 0/2/62:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Wohnzimmer.Alles-Aus-Trigger
-  room: Wohnzimmer
 0/2/80:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.EG.Esszimmer.Szenen
-  room: Esszimmer
 0/2/81:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.EG.Esszimmer.Alles-Aus
-  room: Esszimmer
 0/3/0:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Flur.Szenen
-  room: Flur
 0/3/1:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Flur.Alles-Aus
-  room: Flur
 0/3/100:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Eltern.Szenen
-  room: Schlafzimmer-Eltern
 0/3/101:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Eltern.Alles-Aus
-  room: Schlafzimmer-Eltern
 0/3/102:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Eltern.Alles-Aus-Trigger
-  room: Schlafzimmer-Eltern
 0/3/120:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Begehbarer-Schrank.Szenen
-  room: Begehbarer-Schrank
 0/3/121:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Begehbarer-Schrank.Alles-Aus
-  room: Begehbarer-Schrank
 0/3/140:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Eltern.Szenen
-  room: Badezimmer-Eltern
 0/3/141:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Eltern.Alles-Aus
-  room: Badezimmer-Eltern
 0/3/142:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Eltern.Alles-Aus-Trigger
-  room: Badezimmer-Eltern
 0/3/20:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Abstellraum.Szenen
-  room: Abstellraum
 0/3/21:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Abstellraum.Alles-Aus
-  room: Abstellraum
 0/3/22:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Abstellraum.Alles-Aus-Trigger
-  room: Abstellraum
 0/3/40:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Kinder.Szenen
-  room: Badezimmer-Kinder
 0/3/41:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Kinder.Alles-Aus
-  room: Badezimmer-Kinder
 0/3/42:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Badezimmer-Kinder.Alles-Aus-Trigger
-  room: Badezimmer-Kinder
 0/3/60:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Gregory.Szenen
-  room: Schlafzimmer-Gregory
 0/3/61:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Gregory.Alles-Aus
-  room: Schlafzimmer-Gregory
 0/3/62:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Gregory.Alles-Aus-Trigger
-  room: Schlafzimmer-Gregory
 0/3/80:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Luis.Szenen
-  room: Schlafzimmer-Luis
 0/3/81:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Luis.Alles-Aus
-  room: Schlafzimmer-Luis
 0/3/82:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.OG.Schlafzimmer-Luis.Alles-Aus-Trigger
-  room: Schlafzimmer-Luis
 0/4/0:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.DG.Speicher.Szenen
-  room: Speicher
 0/4/1:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.DG.Speicher.Alles-Aus
-  room: Speicher
 0/5/0:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Fassade.Szenen
-  room: Fassade
 0/5/1:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Fassade.Alles-Aus
-  room: Fassade
 0/5/100:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Dach.Szenen
-  room: Dach
 0/5/101:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Dach.Alles-Aus
-  room: Dach
 0/5/20:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Eingang.Szenen
-  room: Eingang
 0/5/21:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Eingang.Alles-Aus
-  room: Eingang
 0/5/40:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Terrasse.Szenen
-  room: Terrasse
 0/5/41:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Terrasse.Alles-Aus
-  room: Terrasse
 0/5/60:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Balkon.Szenen
-  room: Balkon
 0/5/61:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Balkon.Alles-Aus
-  room: Balkon
 0/5/80:
   dpt: '17.001'
-  function: Allgemein
   name: Allgemein.A.Garten.Szenen
-  room: Garten
 0/5/81:
   dpt: '1.001'
-  function: Allgemein
   name: Allgemein.A.Garten.Alles-Aus
-  room: Garten
 10/0/100:
   dpt: '1.011'
-  function: Sicherheit
   name: Sicherheit.Zentral.KG.Fenster/Tür.Offen-Status
 10/0/120:
   dpt: '1.011'
-  function: Sicherheit
   name: Sicherheit.Zentral.EG.Fenster/Tür.Offen-Status
 10/0/140:
   dpt: '1.011'
-  function: Sicherheit
   name: Sicherheit.Zentral.OG.Fenster/Tür.Offen-Status
 10/1/1:
   dpt: '1.019'
@@ -730,99 +585,75 @@
   room: Badezimmer Eltern
 12/0/200:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Voreinstellung
 12/0/201:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Aktion
 12/0/202:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Wiederholung
 12/0/203:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Wiederholung-Status
 12/0/204:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Shuffle
 12/0/205:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Alexander.Shuffle-Status
 12/0/210:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Voreinstellung
 12/0/211:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Aktion
 12/0/212:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Wiederholung
 12/0/213:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Wiederholung-Status
 12/0/214:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Shuffle
 12/0/215:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Vanessa.Shuffle-Status
 12/0/220:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Voreinstellung
 12/0/221:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Aktion
 12/0/222:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Wiederholung
 12/0/223:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Wiederholung-Status
 12/0/224:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Shuffle
 12/0/225:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Luis.Shuffle-Status
 12/0/230:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Voreinstellung
 12/0/231:
   dpt: '5.010'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Aktion
 12/0/232:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Wiederholung
 12/0/233:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Wiederholung-Status
 12/0/234:
   dpt: '1.001'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Shuffle
 12/0/235:
   dpt: '1.011'
-  function: Multimedia
   name: Multimedia.Zentral.Stream.Gregory.Shuffle-Status
 12/2/101:
   dpt: '1.001'
@@ -1797,7 +1628,7 @@
   room: Garage
 15/1/24:
   description: 2 - Garage (K2) Energiezähler
-  dpt: '14.000'
+  dpt: '14.056'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Strom.Wirkleistung-Gesamt
   room: Garage
@@ -1945,23 +1776,18 @@
   room: Garage
 15/2/0:
   dpt: '1.011'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Gastherme.Brenner-Status
 15/2/1:
   dpt: '5.001'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Gastherme.Brenner-Modulation
 15/2/10:
   dpt: '9.001'
-  function: Versorgungstechnik
   name: 'Versorgungstechnik.Gastherme.Vorlauf-Temperatur '
 15/2/11:
   dpt: '9.001'
-  function: Versorgungstechnik
   name: 'Versorgungstechnik.Gastherme.Rücklauf-Temperatur '
 15/2/2:
   dpt: '1.001'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Gastherme.Heizung-Aktiv
 15/3/1:
   description: 4 - Vorratsraum (K4) Wohnraumlüftung
@@ -2121,27 +1947,21 @@
   room: Vorratsraum
 15/4/0:
   dpt: '14.056'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Netz-Leistung
 15/4/1:
   dpt: '14.056'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
 15/4/10:
   dpt: '14.056'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Inverter-1.Leistung
 15/4/11:
   dpt: '9.001'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur
 15/4/20:
   dpt: '14.056'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Inverter-2.Leistung
 15/4/21:
   dpt: '9.001'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur
 15/5/102:
   dpt: '1.011'
@@ -2220,147 +2040,111 @@
   room: Garten
 15/6/0:
   dpt: '5.010'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Charger-State
 15/6/1:
   dpt: '5.010'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.IEC61851-State
 15/6/10:
   dpt: '7.012'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Allowed-Charging-Current
 15/6/2:
   dpt: '5.010'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Error-State
 15/6/3:
   dpt: '5.010'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Contactor-Error
 15/6/4:
   dpt: '5.010'
-  function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.DC-Fault-Current-State
 16/0/20:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Monitor-Status
 16/2/104:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Postgres.Monitor-Status
 16/2/109:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Prometheus.Monitor-Status
 16/2/114:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Redis.Monitor-Status
 16/2/119:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Telegraf.Monitor-Status
 16/2/124:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Traefik.Monitor-Status
 16/2/129:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Unifi-poller.Monitor-Status
 16/2/134:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Watchtower.Monitor-Status
 16/2/139:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Whoami.Monitor-Status
 16/2/14:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Authelia.Monitor-Status
 16/2/19:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Bivac.Monitor-Status
 16/2/24:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Blackbox-exporter.Monitor-Status
 16/2/29:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Cadvisor.Monitor-Status
 16/2/34:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Crowdsec.Monitor-Status
 16/2/39:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Fritz-exporter.Monitor-Status
 16/2/4:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Alertmanager.Monitor-Status
 16/2/44:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Gollum.Monitor-Status
 16/2/49:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Grafana.Monitor-Status
 16/2/54:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Guacamole.Monitor-Status
 16/2/59:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Guacd.Monitor-Status
 16/2/64:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Heimdall.Monitor-Status
 16/2/69:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Influx.Monitor-Status
 16/2/74:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Loki.Monitor-Status
 16/2/79:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Minio.Monitor-Status
 16/2/84:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Mosquitto.Monitor-Status
 16/2/89:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Node-exporter.Monitor-Status
 16/2/9:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Alloy.Monitor-Status
 16/2/94:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Node-red.Monitor-Status
 16/2/99:
   dpt: '1.011'
-  function: Informationstechnik
   name: Informationstechnik.Container.Portainer.Monitor-Status
 2/0/200:
   dpt: '1.003'
-  function: Schalten
   name: Schalten.Zentral.Kilowattstunde-Löschen
 2/1/0:
   dpt: '1.001'
@@ -4054,259 +3838,195 @@
   room: Garten
 3/0/0:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Flur.Ein/Aus
 3/0/1:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Flur.Ein/Aus-Status
 3/0/10:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Flur.Ein/Aus
 3/0/100:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Ein/Aus
 3/0/101:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Ein/Aus-Status
 3/0/11:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Flur.Ein/Aus-Status
 3/0/12:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Gäste-WC.Ein/Aus
 3/0/120:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Ein/Aus
 3/0/121:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Ein/Aus-Status
 3/0/13:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Gäste-WC.Ein/Aus-Status
 3/0/14:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Büro.Ein/Aus
 3/0/140:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Ein/Aus
 3/0/141:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Ein/Aus-Status
 3/0/15:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Büro.Ein/Aus-Status
 3/0/16:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Wohnzimmer.Ein/Aus
 3/0/160:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.DG.Ein/Aus
 3/0/161:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.DG.Ein/Aus-Status
 3/0/17:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Wohnzimmer.Ein/Aus-Status
 3/0/18:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Esszimmer.Ein/Aus
 3/0/180:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Ein/Aus
 3/0/181:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Ein/Aus-Status
 3/0/19:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Esszimmer.Ein/Aus-Status
 3/0/2:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Garage.Ein/Aus
 3/0/20:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Küche.Ein/Aus
 3/0/200:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.Ein/Aus
 3/0/201:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.Ein/Aus-Status
 3/0/21:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Küche.Ein/Aus-Status
 3/0/22:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Flur.Ein/Aus
 3/0/23:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Flur.Ein/Aus-Status
 3/0/24:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Abstellraum.Ein/Aus
 3/0/25:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Abstellraum.Ein/Aus-Status
 3/0/26:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Badezimmer-Kinder.Ein/Aus
 3/0/27:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Badezimmer-Kinder.Ein/Aus-Status
 3/0/28:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Gregory.Ein/Aus
 3/0/29:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Gregory.Ein/Aus-Status
 3/0/3:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Garage.Ein/Aus-Status
 3/0/30:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Luis.Ein/Aus
 3/0/31:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Luis.Ein/Aus-Status
 3/0/32:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Eltern.Ein/Aus
 3/0/33:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Schlafzimmer-Eltern.Ein/Aus-Status
 3/0/34:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Begehbarer-Schrank.Ein/Aus
 3/0/35:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Begehbarer-Schrank.Ein/Aus-Status
 3/0/36:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Badezimmer-Eltern.Ein/Aus
 3/0/37:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Badezimmer-Eltern.Ein/Aus-Status
 3/0/38:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.DG.Speicher.Ein/Aus
 3/0/39:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.DG.Speicher.Ein/Aus-Status
 3/0/4:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Technikraum.Ein/Aus
 3/0/40:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Fassade.Ein/Aus
 3/0/41:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Fassade.Ein/Aus-Status
 3/0/42:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Eingang.Ein/Aus
 3/0/43:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Eingang.Ein/Aus-Status
 3/0/44:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Terrasse.Ein/Aus
 3/0/45:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Terrasse.Ein/Aus-Status
 3/0/46:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Balkon.Ein/Aus
 3/0/47:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Balkon.Ein/Aus-Status
 3/0/48:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Garten.Ein/Aus
 3/0/49:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Garten.Ein/Aus-Status
 3/0/5:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Technikraum.Ein/Aus-Status
 3/0/50:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Dach.Ein/Aus
 3/0/51:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.A.Dach.Ein/Aus-Status
 3/0/6:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Vorratsraum.Ein/Aus
 3/0/7:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Vorratsraum.Ein/Aus-Status
 3/0/8:
   dpt: '1.001'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Hauswirtschaftsraum.Ein/Aus
 3/0/9:
   dpt: '1.011'
-  function: Beleuchtung
   name: Beleuchtung.Zentral.KG.Hauswirtschaftsraum.Ein/Aus-Status
 3/1/0:
   dpt: '1.003'
@@ -6430,115 +6150,87 @@
   room: Schlafzimmer Luis
 5/0/120:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Innen.Fahren
 5/0/121:
   dpt: '1.007'
-  function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Innen.Stoppen
 5/0/122:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Außen.Fahren
 5/0/123:
   dpt: '1.007'
-  function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Außen.Stoppen
 5/0/140:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Innen.Fahren
 5/0/141:
   dpt: '1.007'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Innen.Stoppen
 5/0/142:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Außen.Fahren
 5/0/143:
   dpt: '1.007'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Außen.Stoppen
 5/0/144:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Vorhang.Fahren
 5/0/145:
   dpt: '1.017'
-  function: Beschattung
   name: Beschattung.Zentral.OG.Vorhang.Stoppen
 5/0/200:
   dpt: '1.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Sperren
 5/0/201:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Fahren
 5/0/202:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Position
 5/0/203:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Rotation
 5/0/204:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Helligkeitsschwelle
 5/0/205:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-1.Automatik.Dämmerungsschwelle
 5/0/210:
   dpt: '1.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Sperren
 5/0/211:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Fahren
 5/0/212:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Position
 5/0/213:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Rotation
 5/0/214:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Helligkeitsschwelle
 5/0/215:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Außen-2.Automatik.Dämmerungsschwelle
 5/0/220:
   dpt: '1.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Sperren
 5/0/221:
   dpt: '1.008'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Fahren
 5/0/222:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Position
 5/0/223:
   dpt: '5.001'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Rotation
 5/0/224:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Helligkeitsschwelle
 5/0/225:
   dpt: '9.004'
-  function: Beschattung
   name: Beschattung.Zentral.Raffstore.Innen.Automatik.Dämmerungsschwelle
 5/2/0:
   dpt: '1.003'
@@ -7472,11 +7164,9 @@
   room: Schlafzimmer Gregory
 6/0/200:
   dpt: '5.010'
-  function: Raumklima
   name: Raumklima.Zentral.KWL.Lüftermodi
 6/0/201:
   dpt: '5.010'
-  function: Raumklima
   name: Raumklima.Zentral.KWL.Lüftermodi-Status
 6/2/0:
   dpt: '1.003'
@@ -8110,11 +7800,9 @@
   room: Schlafzimmer Luis
 7/0/200:
   dpt: '1.001'
-  function: Bedienelemente
   name: Bedienelemente.Zentral.Schalter.Sperren
 7/0/201:
   dpt: '5.010'
-  function: Bedienelemente
   name: Bedienelemente.Zentral.Schalter.Farbe
 7/2/0:
   dpt: '1.001'
@@ -8653,19 +8341,15 @@
   room: Schlafzimmer Eltern
 8/0/180:
   dpt: '9.004'
-  function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-SO
 8/0/181:
   dpt: '9.004'
-  function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-NW
 8/0/182:
   dpt: '9.004'
-  function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-Alle
 8/0/183:
   dpt: '9.001'
-  function: Sensorik
   name: Sensorik.Zentral.A.Temperatur-Alle
 8/1/100:
   dpt: '1.005'
@@ -10915,7 +10599,7 @@
 9/3/161:
   dpt: '1.011'
   function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Schlafzimmer-Eltern.KNX..Sperren-Status
+  name: Bewegungsmelder.OG.Schlafzimmer-Eltern.KNX.Sperren-Status
   room: Schlafzimmer Eltern
 9/3/162:
   dpt: '1.001'
