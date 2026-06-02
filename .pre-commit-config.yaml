@@ -26,7 +26,7 @@ repos:
       - id: gitleaks
 
   - repo: https://github.com/tofuutils/pre-commit-opentofu
-    rev: v2.4.0
+    rev: v2.4.1
     hooks:
       - id: tofu_fmt
 
