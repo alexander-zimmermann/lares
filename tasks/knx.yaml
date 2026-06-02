@@ -56,7 +56,7 @@ tasks:
     summary: |
       Check the rendered ConfigMap source against the upstream JSON-Schema.
     vars:
-      SCHEMA: "{{.KNX_BRIDGE_DIR}}/src/knx_nats_bridge/_schemas/knx-catalog.schema.json"
+      SCHEMA: "{{.KNX_BRIDGE_DIR}}/src/knx_nats_bridge/_schemas/ga-catalog.schema.json"
     cmds:
       - >
         uv run --directory {{.KNX_BRIDGE_DIR}} python -c
