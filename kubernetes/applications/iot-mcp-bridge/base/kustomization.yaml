@@ -6,7 +6,7 @@ resources:
   - ./namespace.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
-  - ./import-knx-catalog-job.yaml
+  - ./import-ga-catalog-job.yaml
   - ./detect-univariate-cronjob.yaml
   - ./train-iforest-cronjob.yaml
   - ./score-iforest-cronjob.yaml
