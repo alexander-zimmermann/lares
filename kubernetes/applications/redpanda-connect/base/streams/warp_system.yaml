@@ -59,6 +59,7 @@ output:
           query: |
             INSERT INTO warp_system (time, sub_topic)
             VALUES ($1, $2)
+            ON CONFLICT (time, sub_topic) DO NOTHING
           args_mapping: |
             root = [
               this.time,

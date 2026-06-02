@@ -35,6 +35,7 @@ output:
           query: |
             INSERT INTO warp_charge_manager (time, sub_topic)
             VALUES ($1, $2)
+            ON CONFLICT (time, sub_topic) DO NOTHING
           args_mapping: |
             root = [
               this.time,
