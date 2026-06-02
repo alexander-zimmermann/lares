@@ -5,7 +5,7 @@ input:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: UNIFI
-    subject: unifi.events.>
+    subject: unifi.>
     durable: redpanda-connect-unifi-events
     deliver: all
     ack_wait: 20m
@@ -15,25 +15,26 @@ pipeline:
   processors:
     - mapping: |
         let evt = this
-        # Subject is "unifi.events.<camera>.<detection_type>"; pull both
-        # tokens from the subject rather than trusting payload duplicates,
-        # so a typo in node-RED is visible to whoever reads the row.
-        let parts = meta("nats_subject").split(".")
+        # camera + key/detection_type already populated by the unifi_webhook
+        # stream (camera resolved from device MAC, key = trigger.key). Same
+        # shape on both `unifi.events.*` and `unifi.geofence.trigger`, so we
+        # read from the payload rather than parsing the subject.
         # Use JetStream server-receive time as the canonical row time;
         # the original UniFi trigger.timestamp (ms epoch) stays in `raw`.
         let ts = meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z"))
         root = {
           "time":           $ts,
-          "camera":         $parts.index(2),
-          "detection_type": $parts.index(3),
+          "camera":         $evt.camera,
+          "detection_type": $evt.key,
           "score":          $evt.sourceEvent.score.or(null),
           "event_type":     $evt.sourceEvent.type.or(null),
-          # `value` is only set on face / license-plate triggers (e.g.
-          # "Alexander Zimmermann"). For plain person/motion it's absent.
+          # `value` is set on face / license-plate triggers (e.g.
+          # "Alexander Zimmermann") and on admin_geolocation (UniFi user-ID).
+          # For plain person/motion it's absent.
           "value":          $evt.value.or(null),
           "event_id":       $evt.eventId.or(null),
-          # event_link comes from alarm.eventLocalLink, which the node-RED
-          # flow enriches onto each trigger before splitting the alarm.
+          # event_link comes from alarm.eventLocalLink, which the unifi_webhook
+          # stream enriches onto each trigger before splitting the alarm.
           "event_link":     $evt.event_link.or(null),
           "raw":            $evt,
         }
