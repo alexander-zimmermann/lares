@@ -142,20 +142,27 @@ flowchart TB
     end
 
     cam -- HTTP webhook --> webhook[redpanda-connect<br/>unifi_webhook stream]
-    webhook -. raw forward .-> nodered[node-RED<br/>Geofence tab]
 
     ems -- MQTT --> nats
     warp -- MQTT --> nats
     pv -- MQTT --> nats
-    webhook -- pub unifi.events.> --> nats
+    webhook -- pub unifi.events.> / unifi.geofence.> --> nats
 
-    nats[(NATS JetStream<br/>KNX · EMS_ESP · WARP<br/>SOLAREDGE · UNIFI)]
+    nats[(NATS JetStream + MQTT gw<br/>KNX · EMS_ESP · WARP<br/>SOLAREDGE · UNIFI)]
 
     bridge[knx-nats-bridge<br/>Reader + Writer]
     bridge -- pub knx.> --> nats
     nats -- sub --> bridge
     bridge <-- xknx TCP tunnel --> knx[KNX Bus]
     knx --> basalte[Basalte<br/>logic + notifications]
+
+    nodered[node-RED<br/>Geofence · Feiertage · Miele]
+    nats -- sub unifi.geofence.> via MQTT --> nodered
+    nodered -- KNX-Ultimate --> knx
+
+    surplus[redpanda-connect<br/>pv_surplus_to_warp stream]
+    nats -- sub knx.15.1.24 --> surplus
+    surplus -- MQTT warp/meters/1/update --> warp
 
     ingest[redpanda-connect<br/>ingest streams]
     nats -- sub --> ingest
