@@ -21,7 +21,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: importer
-          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.9.0
+          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.10.0
           command: ["python", "-m", "iot_mcp_bridge.cli.import_ga_catalog"]
           args:
             - --catalog-path=/etc/iot-mcp-bridge/ga-catalog.yaml
