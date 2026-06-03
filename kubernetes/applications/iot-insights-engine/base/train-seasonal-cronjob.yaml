@@ -6,8 +6,8 @@ apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-train-seasonal
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-train-seasonal
+  namespace: iot-insights-engine
 
 spec:
   schedule: "30 3 * * *"
@@ -26,8 +26,8 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: trainer
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "train-seasonal"]
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "train-seasonal"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local

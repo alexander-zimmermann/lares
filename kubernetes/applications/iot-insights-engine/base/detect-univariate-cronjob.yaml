@@ -1,17 +1,17 @@
-# CronJob: hourly statsforecast forecast + anomaly-check per UC.
-# Loads the persisted seasonal model from rustfs, writes 24h ahead
-# into mcp_forecasts, compares the last completed bucket vs its
-# forecast, and emits anomaly + NATS publish on z > sigma_threshold.
-# Schedule :25 — past the CAGG refresh + train-iforest race window.
+# CronJob: scan every 1h-CAGG × metric pair against its
+# `<source>_baseline_30d` hour×weekday baseline and write z-score
+# anomalies into `mcp_anomalies`. Every 15 min — the source CAGGs
+# refresh once an hour, so the same row is re-scored 4× per hour,
+# but `INSERT … ON CONFLICT DO UPDATE` keeps the table idempotent.
 apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-score-seasonal
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-detect-univariate
+  namespace: iot-insights-engine
 
 spec:
-  schedule: "25 * * * *"
+  schedule: "*/15 * * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
@@ -26,10 +26,12 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: scorer
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "score-seasonal"]
+            - name: detector
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "detect-univariate"]
               env:
+                # Read-only DB user — required by Settings() even though
+                # the detector only writes via db_write_dsn.
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
                 - name: MCP_DB_PORT
@@ -46,6 +48,7 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-ro-secret
                       key: password
+                # Write user — INSERT into mcp_anomalies.
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -56,36 +59,25 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                - name: MCP_S3_ENDPOINT
-                  value: http://rustfs-svc.rustfs.svc.cluster.local:9000
-                - name: MCP_S3_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: rustfs-admin-credentials
-                      key: RUSTFS_ACCESS_KEY
-                - name: MCP_S3_SECRET_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: rustfs-admin-credentials
-                      key: RUSTFS_SECRET_KEY
+                # NATS — publish anomaly.<uc>.<severity>.
                 - name: MCP_NATS_SERVERS
                   value: nats://nats.nats.svc.cluster.local:4222
                 - name: MCP_NATS_NKEY_SEED_FILE
-                  value: /etc/iot-mcp-bridge/nats/nkey-seed
+                  value: /etc/iot-insights-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
                   value: Europe/Berlin
               resources:
                 requests:
-                  cpu: 50m
-                  memory: 256Mi
+                  cpu: 20m
+                  memory: 96Mi
                 limits:
-                  cpu: 500m
-                  memory: 512Mi
+                  cpu: 200m
+                  memory: 192Mi
               volumeMounts:
                 - name: nats-credentials
-                  mountPath: /etc/iot-mcp-bridge/nats/nkey-seed
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
                   subPath: nkey-seed
                   readOnly: true
               securityContext:
