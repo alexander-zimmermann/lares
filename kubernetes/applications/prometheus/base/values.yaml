@@ -9,7 +9,7 @@ grafana:
   enabled: false
 
 alertmanager:
-  # Alertmanager configuration with Pushover and Node-RED integrations
+  # Alertmanager configuration with Pushover integration
   config:
     global:
       resolve_timeout: 5m
@@ -33,10 +33,6 @@ alertmanager:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
             sound: siren
-        # Node-RED endpoint for container status events
-        webhook_configs:
-          - url: "http://node-red.zimmermann.eu.com:1880/container-status"
-            send_resolved: true
       - name: "watchdog-pushover"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/token
