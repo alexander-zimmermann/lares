@@ -148,22 +148,19 @@ flowchart TB
 
     nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP<br/>WARP · SOLAREDGE · UNIFI)]
 
-    webhook -- pub unifi.{events,geofence}.> --> nats
+    webhook -- pub unifi.> --> nats
     ems  -- MQTT --> nats
     pv   -- MQTT --> nats
     warp -- MQTT pub --> nats
-    nats -- MQTT pub warp/meters/1/update --> warp
 
     subgraph CTRL[Control consumers]
         direction LR
         bridge[knx-nats-bridge]
         nodered[node-RED]
-        surplus[redpanda-connect<br/>pv_surplus_to_warp]
     end
 
     nats <-- pub/sub knx.> --> bridge
-    nats -- sub unifi.geofence.> via MQTT --> nodered
-    nats -- sub knx.15.1.24 --> surplus
+    nats -- MQTT sub --> nodered
 
     bridge <-- xknx tunnel --> knx
     nodered -- KNX-Ultimate --> knx
