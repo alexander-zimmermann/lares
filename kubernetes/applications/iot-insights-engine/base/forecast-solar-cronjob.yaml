@@ -1,35 +1,34 @@
-# CronJob: nightly re-fit of IsolationForest models per (uc, group)
-# over the last `lookback_days` of source-CAGG rows. Persists one
-# joblib pickle per group into rustfs at
-# s3://iot-mcp-bridge-models/iforest/<uc>/<group>.joblib.
-# Schedule 02:30 UTC — well clear of the CAGG refresh storms at the
-# top of every hour and outside any user activity window.
+# CronJob: hourly Forecast.Solar pull. Personal-Plus tier with both
+# PV planes (east + west) in a single request → 24 calls/day, well
+# under the 150/day quota. Upserts into `mcp_forecasts` so the
+# Phase-4 get_pv_forecast MCP tool reads from TSDB.
+# Schedule :15 of every hour — past the CAGG refresh storms at :00.
 apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-train-iforest
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-forecast-solar
+  namespace: iot-insights-engine
 
 spec:
-  schedule: "30 2 * * *"
+  schedule: "15 * * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
-  startingDeadlineSeconds: 1800
+  startingDeadlineSeconds: 600
 
   jobTemplate:
     spec:
-      backoffLimit: 1
+      backoffLimit: 2
       ttlSecondsAfterFinished: 86400
       template:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: trainer
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "train-iforest"]
+            - name: fetcher
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "forecast-solar"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -37,6 +36,8 @@ spec:
                   value: "5432"
                 - name: MCP_DB_NAME
                   value: homelab
+                # Settings() requires read creds even though this job only
+                # writes via db_write_dsn.
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -47,9 +48,6 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-ro-secret
                       key: password
-                # Train reads from the source-CAGGs (SELECT-only), but
-                # Settings.db_write_dsn is required to construct the
-                # write_connection() the loader uses.
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -60,30 +58,34 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # rustfs — persist trained pipelines + thresholds.
-                - name: MCP_S3_ENDPOINT
-                  value: http://rustfs-svc.rustfs.svc.cluster.local:9000
-                - name: MCP_S3_ACCESS_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: rustfs-admin-credentials
-                      key: RUSTFS_ACCESS_KEY
-                - name: MCP_S3_SECRET_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: rustfs-admin-credentials
-                      key: RUSTFS_SECRET_KEY
+                # Forecast.Solar location (Steinroth 20, Eupen).
+                - name: MCP_FORECAST_SOLAR_LAT
+                  value: "50.62598"
+                - name: MCP_FORECAST_SOLAR_LON
+                  value: "6.02435"
+                # East (-51° from south, 6.175 kWp) + West (+129°, 6.435 kWp),
+                # both at 17° tilt. Saddle roof with ridge along NE-SW axis.
+                - name: MCP_FORECAST_SOLAR_PLANES
+                  value: |
+                    [{"dec":17,"az":-51,"kwp":6.175},{"dec":17,"az":129,"kwp":6.435}]
+                - name: MCP_FORECAST_SOLAR_API_KEY_FILE
+                  value: /etc/forecast-solar/api-key
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
                   value: Europe/Berlin
               resources:
                 requests:
-                  cpu: 50m
-                  memory: 256Mi
+                  cpu: 20m
+                  memory: 64Mi
                 limits:
-                  cpu: 500m
-                  memory: 512Mi
+                  cpu: 100m
+                  memory: 128Mi
+              volumeMounts:
+                - name: forecast-solar-credentials
+                  mountPath: /etc/forecast-solar/api-key
+                  subPath: api-key
+                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
@@ -94,3 +96,7 @@ spec:
                   drop: ["ALL"]
                 seccompProfile:
                   type: RuntimeDefault
+          volumes:
+            - name: forecast-solar-credentials
+              secret:
+                secretName: forecast-solar-credentials

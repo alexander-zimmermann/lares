@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: knx-nats-bridge
 resources:
   - ./namespace.yaml
+  - ./import-ga-catalog-job.yaml
 
 helmCharts:
   - name: application
@@ -15,8 +16,8 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-# disableNameSuffixHash: cross-namespace consumers (Kyverno clone,
-# iot-mcp-bridge import-ga-catalog-job) reference these by fixed name.
+# disableNameSuffixHash: the import-ga-catalog Job mounts the ConfigMap
+# by fixed name (subPath subPath ga-catalog.yaml).
 configMapGenerator:
   - name: knx-nats-bridge-ga-catalog
     options:

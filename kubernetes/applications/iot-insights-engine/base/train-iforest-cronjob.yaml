@@ -1,37 +1,35 @@
-# CronJob: rule-based detectors against per-room KNX-Joins
-# (knx_1h × ga_catalog). Two UCs:
-#   fbh_cold              — FBH open >50% and room stays >=1°C below
-#                           setpoint over 2h
-#   window_while_heating  — window open + FBH heating + outdoor <12°C
-# Idempotent INSERT into mcp_anomalies; NATS publish on new inserts.
-# Schedule */15 — same as detect-univariate; offset +10s of the hour
-# would gain nothing, the CAGG window doesn't shift mid-hour.
+# CronJob: nightly re-fit of IsolationForest models per (uc, group)
+# over the last `lookback_days` of source-CAGG rows. Persists one
+# joblib pickle per group into rustfs at
+# s3://iot-mcp-bridge-models/iforest/<uc>/<group>.joblib.
+# Schedule 02:30 UTC — well clear of the CAGG refresh storms at the
+# top of every hour and outside any user activity window.
 apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-detect-knx-join
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-train-iforest
+  namespace: iot-insights-engine
 
 spec:
-  schedule: "*/15 * * * *"
+  schedule: "30 2 * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
-  startingDeadlineSeconds: 600
+  startingDeadlineSeconds: 1800
 
   jobTemplate:
     spec:
-      backoffLimit: 2
+      backoffLimit: 1
       ttlSecondsAfterFinished: 86400
       template:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: detector
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "detect-knx-join"]
+            - name: trainer
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "train-iforest"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -49,6 +47,9 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-ro-secret
                       key: password
+                # Train reads from the source-CAGGs (SELECT-only), but
+                # Settings.db_write_dsn is required to construct the
+                # write_connection() the loader uses.
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -59,26 +60,30 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                - name: MCP_NATS_SERVERS
-                  value: nats://nats.nats.svc.cluster.local:4222
-                - name: MCP_NATS_NKEY_SEED_FILE
-                  value: /etc/iot-mcp-bridge/nats/nkey-seed
+                # rustfs — persist trained pipelines + thresholds.
+                - name: MCP_S3_ENDPOINT
+                  value: http://rustfs-svc.rustfs.svc.cluster.local:9000
+                - name: MCP_S3_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_ACCESS_KEY
+                - name: MCP_S3_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_SECRET_KEY
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
                   value: Europe/Berlin
               resources:
                 requests:
-                  cpu: 20m
-                  memory: 96Mi
+                  cpu: 50m
+                  memory: 256Mi
                 limits:
-                  cpu: 200m
-                  memory: 192Mi
-              volumeMounts:
-                - name: nats-credentials
-                  mountPath: /etc/iot-mcp-bridge/nats/nkey-seed
-                  subPath: nkey-seed
-                  readOnly: true
+                  cpu: 500m
+                  memory: 512Mi
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
@@ -89,7 +94,3 @@ spec:
                   drop: ["ALL"]
                 seccompProfile:
                   type: RuntimeDefault
-          volumes:
-            - name: nats-credentials
-              secret:
-                secretName: iot-mcp-bridge-credentials

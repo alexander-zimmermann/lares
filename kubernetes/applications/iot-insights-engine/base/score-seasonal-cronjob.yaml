@@ -1,17 +1,17 @@
-# CronJob: hourly Forecast.Solar pull. Personal-Plus tier with both
-# PV planes (east + west) in a single request → 24 calls/day, well
-# under the 150/day quota. Upserts into `mcp_forecasts` so the
-# Phase-4 get_pv_forecast MCP tool reads from TSDB.
-# Schedule :15 of every hour — past the CAGG refresh storms at :00.
+# CronJob: hourly statsforecast forecast + anomaly-check per UC.
+# Loads the persisted seasonal model from rustfs, writes 24h ahead
+# into mcp_forecasts, compares the last completed bucket vs its
+# forecast, and emits anomaly + NATS publish on z > sigma_threshold.
+# Schedule :25 — past the CAGG refresh + train-iforest race window.
 apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-forecast-solar
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-score-seasonal
+  namespace: iot-insights-engine
 
 spec:
-  schedule: "15 * * * *"
+  schedule: "25 * * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
@@ -26,9 +26,9 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: fetcher
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "forecast-solar"]
+            - name: scorer
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "score-seasonal"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -36,8 +36,6 @@ spec:
                   value: "5432"
                 - name: MCP_DB_NAME
                   value: homelab
-                # Settings() requires read creds even though this job only
-                # writes via db_write_dsn.
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -58,33 +56,37 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # Forecast.Solar location (Steinroth 20, Eupen).
-                - name: MCP_FORECAST_SOLAR_LAT
-                  value: "50.62598"
-                - name: MCP_FORECAST_SOLAR_LON
-                  value: "6.02435"
-                # East (-51° from south, 6.175 kWp) + West (+129°, 6.435 kWp),
-                # both at 17° tilt. Saddle roof with ridge along NE-SW axis.
-                - name: MCP_FORECAST_SOLAR_PLANES
-                  value: |
-                    [{"dec":17,"az":-51,"kwp":6.175},{"dec":17,"az":129,"kwp":6.435}]
-                - name: MCP_FORECAST_SOLAR_API_KEY_FILE
-                  value: /etc/forecast-solar/api-key
+                - name: MCP_S3_ENDPOINT
+                  value: http://rustfs-svc.rustfs.svc.cluster.local:9000
+                - name: MCP_S3_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_ACCESS_KEY
+                - name: MCP_S3_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_SECRET_KEY
+                - name: MCP_NATS_SERVERS
+                  value: nats://nats.nats.svc.cluster.local:4222
+                - name: MCP_NATS_NKEY_SEED_FILE
+                  value: /etc/iot-insights-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
                   value: Europe/Berlin
               resources:
                 requests:
-                  cpu: 20m
-                  memory: 64Mi
+                  cpu: 50m
+                  memory: 256Mi
                 limits:
-                  cpu: 100m
-                  memory: 128Mi
+                  cpu: 500m
+                  memory: 512Mi
               volumeMounts:
-                - name: forecast-solar-credentials
-                  mountPath: /etc/forecast-solar/api-key
-                  subPath: api-key
+                - name: nats-credentials
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
+                  subPath: nkey-seed
                   readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
@@ -97,6 +99,6 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
           volumes:
-            - name: forecast-solar-credentials
+            - name: nats-credentials
               secret:
-                secretName: forecast-solar-credentials
+                secretName: iot-mcp-bridge-credentials

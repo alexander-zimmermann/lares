@@ -1,14 +1,19 @@
 # PostSync Job that imports the GA catalog (group address → name/room/
-# function/description) from the cloned knx-nats-bridge-ga-catalog ConfigMap
-# into the `knx_catalog` Postgres table. Uses admin credentials (homelab
-# role) — the read-only role the MCP server runs with cannot write.
-# Idempotent: re-runs only update changed rows and purge stale ones.
+# function/description) into the `ga_catalog` Postgres table. Uses admin
+# credentials (homelab role) — the read-only role the MCP server runs
+# with cannot write. Idempotent: re-runs only update changed rows and
+# purge stale ones.
+#
+# Lives here (knx-nats-bridge namespace) after the iot-insights-engine
+# split: the catalog YAML is generated + consumed by this repo, so the
+# TSDB-side importer is a 2nd entrypoint on the same image rather than
+# a dependency of the MCP server.
 apiVersion: batch/v1
 kind: Job
 
 metadata:
-  name: iot-mcp-bridge-import-ga-catalog
-  namespace: iot-mcp-bridge
+  name: knx-nats-bridge-import-ga-catalog
+  namespace: knx-nats-bridge
   annotations:
     argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/hook-delete-policy: HookSucceeded
@@ -21,10 +26,10 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: importer
-          image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-          command: ["python", "-m", "iot_mcp_bridge.cli.import_ga_catalog"]
+          image: ghcr.io/alexander-zimmermann/knx-nats-bridge:0.7.0
+          command: ["knx-nats-bridge-import-catalog"]
           args:
-            - --catalog-path=/etc/iot-mcp-bridge/ga-catalog.yaml
+            - --catalog-path=/etc/knx-nats-bridge/ga-catalog.yaml
           env:
             - name: MCP_DB_HOST
               value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -42,8 +47,6 @@ spec:
                 secretKeyRef:
                   name: timescaledb-db-app
                   key: password
-            - name: MCP_AUTH_ENABLED
-              value: "false"
             - name: TZ
               value: Europe/Berlin
           resources:
@@ -55,7 +58,7 @@ spec:
               memory: 256Mi
           volumeMounts:
             - name: ga-catalog
-              mountPath: /etc/iot-mcp-bridge/ga-catalog.yaml
+              mountPath: /etc/knx-nats-bridge/ga-catalog.yaml
               subPath: ga-catalog.yaml
               readOnly: true
       volumes:

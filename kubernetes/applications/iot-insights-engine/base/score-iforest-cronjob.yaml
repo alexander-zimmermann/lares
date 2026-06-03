@@ -9,8 +9,8 @@ apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-mcp-bridge-score-iforest
-  namespace: iot-mcp-bridge
+  name: iot-insights-engine-score-iforest
+  namespace: iot-insights-engine
 
 spec:
   schedule: "5,20,35,50 * * * *"
@@ -29,8 +29,8 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: scorer
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
-              command: ["iot-mcp-bridge-jobs", "score-iforest"]
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.1.0
+              command: ["iot-insights-engine", "score-iforest"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -73,7 +73,7 @@ spec:
                 - name: MCP_NATS_SERVERS
                   value: nats://nats.nats.svc.cluster.local:4222
                 - name: MCP_NATS_NKEY_SEED_FILE
-                  value: /etc/iot-mcp-bridge/nats/nkey-seed
+                  value: /etc/iot-insights-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
@@ -87,7 +87,7 @@ spec:
                   memory: 256Mi
               volumeMounts:
                 - name: nats-credentials
-                  mountPath: /etc/iot-mcp-bridge/nats/nkey-seed
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
                   subPath: nkey-seed
                   readOnly: true
               securityContext:
