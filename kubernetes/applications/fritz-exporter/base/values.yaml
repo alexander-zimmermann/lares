@@ -38,26 +38,22 @@ deployment:
       containerPort: 9787
       protocol: TCP
 
-  # Consider the exporter ready when it serves the metrics endpoint.
+  # TCP probe only: probing /metrics triggers a live FritzBox scrape that
+  # serializes under load and kills a healthy-but-slow exporter.
   readinessProbe:
     enabled: true
-    httpGet:
-      path: /metrics
+    tcpSocket:
       port: metrics
-    initialDelaySeconds: 10
+    initialDelaySeconds: 20
     periodSeconds: 30
-    timeoutSeconds: 25
     failureThreshold: 3
 
-  # Restart if the metrics endpoint stops responding.
   livenessProbe:
     enabled: true
-    httpGet:
-      path: /metrics
+    tcpSocket:
       port: metrics
     initialDelaySeconds: 30
     periodSeconds: 60
-    timeoutSeconds: 25
     failureThreshold: 5
 
   resources:
@@ -99,4 +95,5 @@ serviceMonitor:
   endpoints:
     - port: metrics
       interval: 60s
-      scrapeTimeout: 20s
+      # A single live scrape already measures ~15s; headroom to avoid gaps.
+      scrapeTimeout: 30s
