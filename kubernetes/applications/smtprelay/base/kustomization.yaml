@@ -10,7 +10,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: smtprelay
-    version: 8.1.2
+    version: 9.0.0
     valuesFile: values.yaml
     namespace: smtprelay
 
