@@ -151,20 +151,19 @@ flowchart TB
     pv   -- MQTT --> nats
     warp -- MQTT pub --> nats
 
-    subgraph CTRL[Control consumers]
-        direction LR
+    subgraph KX[KNX]
+        direction TB
         bridge[knx-nats-bridge]
         nodered[node-RED]
+        knx[KNX Bus]
+        basalte[Basalte]
+        bridge <-- xknx tunnel --> knx
+        nodered -- KNX-Ultimate --> knx
+        knx --> basalte
     end
 
     nats <-- pub/sub knx.> --> bridge
     nats -- MQTT sub --> nodered
-
-    knx[KNX Bus]
-    basalte[Basalte]
-    bridge <-- xknx tunnel --> knx
-    nodered -- KNX-Ultimate --> knx
-    knx --> basalte
 
     subgraph ARCH[Archive + analytics]
         direction LR
