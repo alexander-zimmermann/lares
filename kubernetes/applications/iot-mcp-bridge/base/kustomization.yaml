@@ -7,10 +7,14 @@ resources:
   - ./certificate.yaml
   - ./ingress-route.yaml
   - ./import-ga-catalog-job.yaml
+  - ./sealed-secret.yaml
   - ./detect-univariate-cronjob.yaml
   - ./detect-knx-join-cronjob.yaml
   - ./train-iforest-cronjob.yaml
   - ./score-iforest-cronjob.yaml
+  - ./forecast-solar-cronjob.yaml
+  - ./train-seasonal-cronjob.yaml
+  - ./score-seasonal-cronjob.yaml
 
 helmCharts:
   - name: application
