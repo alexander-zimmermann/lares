@@ -132,9 +132,9 @@ flowchart TB
 NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP.
 
 ```mermaid
-flowchart LR
-    subgraph DEV[External devices]
-        direction TB
+flowchart TB
+    subgraph IOT[IoT]
+        direction LR
         cam[UniFi Protect Cams]
         ems[EMS-ESP]
         pv[solaredge2mqtt]
@@ -155,9 +155,9 @@ flowchart LR
     nats -- MQTT pub warp/meters/1/update --> warp
 
     subgraph CTRL[Control consumers]
-        direction TB
-        bridge[knx-nats-bridge<br/>Reader + Writer]
-        nodered[node-RED<br/>Geofence · Feiertage · Miele]
+        direction LR
+        bridge[knx-nats-bridge]
+        nodered[node-RED]
         surplus[redpanda-connect<br/>pv_surplus_to_warp]
     end
 
@@ -170,7 +170,7 @@ flowchart LR
     knx --> basalte
 
     subgraph ARCH[Archive + analytics]
-        direction TB
+        direction LR
         ingest[redpanda-connect<br/>ingest streams]
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
