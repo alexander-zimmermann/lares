@@ -30,7 +30,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: detector
-              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.10.0
+              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
               command: ["iot-mcp-bridge-jobs", "detect-knx-join"]
               env:
                 - name: MCP_DB_HOST
