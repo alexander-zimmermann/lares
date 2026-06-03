@@ -10,7 +10,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: solaredge2mqtt-1
-    version: 8.1.2
+    version: 8.2.0
     valuesFile: values.yaml
     namespace: solaredge2mqtt
     valuesInline:
@@ -24,7 +24,7 @@ helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
     releaseName: solaredge2mqtt-2
-    version: 8.1.2
+    version: 8.2.0
     valuesFile: values.yaml
     namespace: solaredge2mqtt
     valuesInline:
