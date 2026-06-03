@@ -139,8 +139,6 @@ flowchart TB
         ems[EMS-ESP]
         pv[solaredge2mqtt]
         warp[WARP Wallbox]
-        knx[KNX Bus]
-        basalte[Basalte]
     end
 
     webhook[redpanda-connect<br/>unifi_webhook]
@@ -162,6 +160,8 @@ flowchart TB
     nats <-- pub/sub knx.> --> bridge
     nats -- MQTT sub --> nodered
 
+    knx[KNX Bus]
+    basalte[Basalte]
     bridge <-- xknx tunnel --> knx
     nodered -- KNX-Ultimate --> knx
     knx --> basalte
