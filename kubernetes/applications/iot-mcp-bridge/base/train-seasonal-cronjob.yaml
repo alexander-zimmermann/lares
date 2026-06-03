@@ -1,0 +1,91 @@
+# CronJob: daily fit of statsforecast MSTL+AutoARIMA per registered
+# seasonal UC. Persists fitted pipeline + residual_stddev to rustfs
+# (s3://iot-mcp-bridge-models/seasonal/<uc>.joblib).
+# Schedule 03:30 UTC — outside CAGG refresh and user activity windows.
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-mcp-bridge-train-seasonal
+  namespace: iot-mcp-bridge
+
+spec:
+  schedule: "30 3 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 1800
+
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: trainer
+              image: ghcr.io/alexander-zimmermann/iot-mcp-bridge:0.11.0
+              command: ["iot-mcp-bridge-jobs", "train-seasonal"]
+              env:
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                - name: MCP_DB_WRITE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: username
+                - name: MCP_DB_WRITE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: password
+                # rustfs — persist fitted statsforecast pipelines.
+                - name: MCP_S3_ENDPOINT
+                  value: http://rustfs-svc.rustfs.svc.cluster.local:9000
+                - name: MCP_S3_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_ACCESS_KEY
+                - name: MCP_S3_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: rustfs-admin-credentials
+                      key: RUSTFS_SECRET_KEY
+                - name: MCP_AUTH_ENABLED
+                  value: "false"
+                - name: TZ
+                  value: Europe/Berlin
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 384Mi
+                limits:
+                  cpu: 1000m
+                  memory: 1Gi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
