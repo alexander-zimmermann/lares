@@ -153,7 +153,7 @@ flowchart TB
 
     subgraph KX[KNX]
         direction TB
-        bridge[knx-nats-bridge]
+        bridge[knx-nats-bridge<br/>bridge + ga-catalog importer]
         nodered[node-RED]
         knx[KNX Bus]
         basalte[Basalte]
@@ -170,16 +170,20 @@ flowchart TB
         ingest[redpanda-connect<br/>ingest streams]
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
-        mcp[iot-mcp-bridge<br/>MCP tools + jobs]
+        engine[iot-insights-engine<br/>anomaly + forecast jobs]
+        mcp[iot-mcp-bridge<br/>MCP read tools]
         claude((Claude.ai))
         ingest --> tsdb
         ingest --> rustfs
+        tsdb -- SELECT --> engine
+        engine -- INSERT mcp_anomalies + mcp_forecasts --> tsdb
         tsdb -- SELECT --> mcp
         mcp -- MCP/HTTP --> claude
     end
 
+    bridge -- INSERT ga_catalog --> tsdb
     nats -- sub --> ingest
-    mcp -- pub anomaly.> --> nats
+    engine -- pub anomaly.> --> nats
 ```
 
 The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
