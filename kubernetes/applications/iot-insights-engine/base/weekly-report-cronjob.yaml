@@ -1,0 +1,90 @@
+# CronJob: Monday 08:00 UTC Markdown anomaly digest sent via the
+# cluster-internal smtprelay. Aggregates last 7d of mcp_anomalies,
+# renders top-10 + counts + week-over-week delta, e-mails it to
+# admin@zimmermann.sh. Read-only against mcp_anomalies; no rustfs
+# or NATS dependency.
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-insights-engine-weekly-report
+  namespace: iot-insights-engine
+
+spec:
+  schedule: "0 8 * * 1"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: reporter
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:0.2.0
+              command: ["iot-insights-engine", "weekly-report"]
+              env:
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                # Settings.db_write_dsn isn't built — weekly_report uses
+                # write_connection() purely for the dict_row factory + autocommit
+                # convenience, but only SELECTs run. Reuse the RO secret here
+                # for the same reason: the job validates write creds at startup
+                # via require_db_write but doesn't need real INSERT/UPDATE.
+                - name: MCP_DB_WRITE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: username
+                - name: MCP_DB_WRITE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: password
+                - name: MCP_SMTP_HOST
+                  value: smtprelay.smtprelay.svc.cluster.local
+                - name: MCP_SMTP_PORT
+                  value: "25"
+                - name: MCP_SMTP_FROM
+                  value: admin@zimmermann.sh
+                - name: MCP_SMTP_TO
+                  value: admin@zimmermann.sh
+                - name: TZ
+                  value: Europe/Berlin
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 96Mi
+                limits:
+                  cpu: 200m
+                  memory: 192Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
