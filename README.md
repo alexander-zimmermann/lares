@@ -129,7 +129,7 @@ flowchart TB
 
 ### Smart-Home data flow
 
-NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP.
+NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP. For "what's happening right now?" the MCP server reads the last retained message per subject straight from JetStream, so live answers don't wait on the ingest cycle.
 
 ```mermaid
 flowchart TB
@@ -183,6 +183,7 @@ flowchart TB
 
     nats -- sub --> ingest
     engine -- pub anomaly.> --> nats
+    nats -- last-msg --> mcp
 ```
 
 The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
