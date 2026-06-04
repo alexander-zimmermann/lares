@@ -1,3 +1,6 @@
+# fritz_exporter 3.0.0 changed the default listen_address from 0.0.0.0 to 127.0.0.1.
+# Bind to all interfaces so kubelet probes and Prometheus can reach the pod port.
+listen_address: 0.0.0.0
 devices:
 - hostname: http://fritzbox.zimmermann.eu.com
   username: fritz-exporter
