@@ -153,7 +153,7 @@ flowchart TB
 
     subgraph KX[KNX]
         direction TB
-        bridge[knx-nats-bridge<br/>bridge + ga-catalog importer]
+        bridge[knx-nats-bridge]
         nodered[node-RED]
         knx[KNX Bus]
         basalte[Basalte]
@@ -176,12 +176,11 @@ flowchart TB
         ingest --> tsdb
         ingest --> rustfs
         tsdb -- SELECT --> engine
-        engine -- INSERT mcp_anomalies + mcp_forecasts --> tsdb
+        engine -- INSERT --> tsdb
         tsdb -- SELECT --> mcp
         mcp -- MCP/HTTP --> claude
     end
 
-    bridge -- INSERT ga_catalog --> tsdb
     nats -- sub --> ingest
     engine -- pub anomaly.> --> nats
 ```
