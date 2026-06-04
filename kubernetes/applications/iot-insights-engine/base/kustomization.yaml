@@ -12,6 +12,7 @@ resources:
   - ./forecast-solar-cronjob.yaml
   - ./train-seasonal-cronjob.yaml
   - ./score-seasonal-cronjob.yaml
+  - ./weekly-report-cronjob.yaml
 
 labels:
   - includeSelectors: false
