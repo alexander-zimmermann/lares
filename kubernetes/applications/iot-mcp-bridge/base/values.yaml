@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/iot-mcp-bridge
-    tag: 1.1.0
+    tag: 1.2.0
     pullPolicy: IfNotPresent
 
   replicas: 1
@@ -33,6 +33,11 @@ deployment:
       value: iot-mcp-bridge
     MCP_AUTH_RESOURCE_URL:
       value: PLACEHOLDER_AUTH_RESOURCE_URL
+    MCP_NATS_SERVERS:
+      value: nats://nats.nats.svc:4222
+    # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
+    MCP_NATS_NKEY_SEED_FILE:
+      value: /etc/iot-mcp-bridge/nats-nkey-seed
     MCP_LOG_FORMAT:
       value: json
     TZ:
@@ -51,6 +56,12 @@ deployment:
         items:
           - key: password
             path: password
+    nats-nkey-seed:
+      secret:
+        secretName: iot-mcp-bridge-nats-credentials
+        items:
+          - key: nkey-seed
+            path: nkey-seed
 
   volumeMounts:
     db-username:
@@ -60,6 +71,10 @@ deployment:
     db-password:
       mountPath: /etc/iot-mcp-bridge/db_password
       subPath: password
+      readOnly: true
+    nats-nkey-seed:
+      mountPath: /etc/iot-mcp-bridge/nats-nkey-seed
+      subPath: nkey-seed
       readOnly: true
 
   ports:
