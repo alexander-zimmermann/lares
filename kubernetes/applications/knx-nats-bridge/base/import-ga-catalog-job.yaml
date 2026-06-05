@@ -26,7 +26,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: importer
-          image: ghcr.io/alexander-zimmermann/knx-nats-bridge:0.7.0
+          image: ghcr.io/alexander-zimmermann/knx-nats-bridge:0.8.0
           command: ["knx-nats-bridge-import-catalog"]
           args:
             - --catalog-path=/etc/knx-nats-bridge/ga-catalog.yaml
