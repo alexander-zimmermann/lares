@@ -41,6 +41,10 @@ output:
             headers:
               X-API-Key: "${UNIFI_PROTECT_API_KEY}"
               Accept: "application/json"
+            # UniFi returns 400 when the profile is already in the target state
+            # ("Attempted to disarm the alarm when it is not armed"). Treat that
+            # as success so the message gets acked and we don't loop forever.
+            drop_on: [400]
       - check: 'meta("protect_action") == "disable"'
         output:
           http_client:
@@ -49,3 +53,7 @@ output:
             headers:
               X-API-Key: "${UNIFI_PROTECT_API_KEY}"
               Accept: "application/json"
+            # UniFi returns 400 when the profile is already in the target state
+            # ("Attempted to disarm the alarm when it is not armed"). Treat that
+            # as success so the message gets acked and we don't loop forever.
+            drop_on: [400]

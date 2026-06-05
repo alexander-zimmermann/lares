@@ -11,3 +11,9 @@ spec:
   filterSubject: knx.14.1.*
   deliverPolicy: new
   ackPolicy: explicit
+  # nats-operator default surfaces as 1ns, which causes immediate re-delivery
+  # of any message slower-than-instant to ack. 10s covers the http_client RTT
+  # comfortably without leaving wedged messages locked for long after a crash.
+  ackWait: 10s
+  # Drop after 5 attempts so a permanently-failing message can't loop forever.
+  maxDeliver: 5
