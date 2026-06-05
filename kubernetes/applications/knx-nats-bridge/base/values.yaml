@@ -19,6 +19,9 @@ deployment:
       value: knx-ip.zimmermann.eu.com
     KNX_GATEWAY_PORT:
       value: "3671"
+    # Cap writer-side bus telegrams to N/s so NATS bursts don't overload the TP1 bus
+    KNX_RATE_LIMIT:
+      value: "10"
     NATS_SERVERS:
       value: nats://nats.nats.svc.cluster.local:4222
     NATS_SUBJECT_PREFIX:

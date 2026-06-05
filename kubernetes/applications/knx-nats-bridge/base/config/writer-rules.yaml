@@ -297,26 +297,31 @@ mappings:
     dpt: "1.011"
     payload_path: "$.burngas"
     description: "Versorgungstechnik.Gastherme.Brenner-Status"
+    min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.boiler_data"
     ga: "15/2/1"
     dpt: "5.001"
     payload_path: "$.curburnpow"
     description: "Versorgungstechnik.Gastherme.Brenner-Modulation"
+    min_delta: 2  # percent
   - subject: "ems-esp.boiler_data"
     ga: "15/2/2"
     dpt: "1.001"
     payload_path: "$.heatingactive"
     description: "Versorgungstechnik.Gastherme.Heizung-Aktiv"
+    min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.boiler_data"
     ga: "15/2/10"
     dpt: "9.001"
     payload_path: "$.curflowtemp"
     description: "Versorgungstechnik.Gastherme.Vorlauf-Temperatur"
+    min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/11"
     dpt: "9.001"
     payload_path: "$.rettemp"
     description: "Versorgungstechnik.Gastherme.Rücklauf-Temperatur"
+    min_delta: 0.5  # °C
 
   # WARP wallbox
   - subject: "warp.evse.state"
@@ -324,31 +329,38 @@ mappings:
     dpt: "5.010"
     payload_path: "$.charger_state"
     description: "Versorgungstechnik.Wallbox.Charger-State"
+    min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/1"
     dpt: "5.010"
     payload_path: "$.iec61851_state"
     description: "Versorgungstechnik.Wallbox.IEC61851-State"
+    min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/2"
     dpt: "5.010"
     payload_path: "$.error_state"
     description: "Versorgungstechnik.Wallbox.Error-State"
+    min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/3"
     dpt: "5.010"
     payload_path: "$.contactor_error"
     description: "Versorgungstechnik.Wallbox.Contactor-Error"
+    min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/4"
     dpt: "5.010"
     payload_path: "$.dc_fault_current_state"
     description: "Versorgungstechnik.Wallbox.DC-Fault-Current-State"
+    min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/10"
     dpt: "7.012"
     payload_path: "$.allowed_charging_current"
     description: "Versorgungstechnik.Wallbox.Allowed-Charging-Current"
+    min_delta: 100  # mA
+    min_delta_pct: 2
 
   # SolarEdge PV (15/4: 0..9 system-wide, 10..19 inv 1, 20..29 inv 2)
   - subject: "solaredge-1.powerflow"
@@ -356,28 +368,38 @@ mappings:
     dpt: "14.056"
     payload_path: "$.grid.power"
     description: "Versorgungstechnik.Photovoltaik.Netz-Leistung"
+    min_delta: 25  # W
+    min_delta_pct: 2
   - subject: "solaredge-1.powerflow"
     ga: "15/4/1"
     dpt: "14.056"
     payload_path: "$.consumer.total"
     description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt"
+    min_delta: 25  # W
+    min_delta_pct: 2
   - subject: "solaredge-1.powerflow"
     ga: "15/4/10"
     dpt: "14.056"
     payload_path: "$.pv_production"
     description: "Versorgungstechnik.Photovoltaik.Inverter-1.Leistung"
+    min_delta: 25  # W
+    min_delta_pct: 2
   - subject: "solaredge-1.modbus.inverter"
     ga: "15/4/11"
     dpt: "9.001"
     payload_path: "$.temperature"
     description: "Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur"
+    min_delta: 0.5  # °C
   - subject: "solaredge-2.powerflow"
     ga: "15/4/20"
     dpt: "14.056"
     payload_path: "$.pv_production"
     description: "Versorgungstechnik.Photovoltaik.Inverter-2.Leistung"
+    min_delta: 25  # W
+    min_delta_pct: 2
   - subject: "solaredge-2.modbus.inverter"
     ga: "15/4/21"
     dpt: "9.001"
     payload_path: "$.temperature"
     description: "Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur"
+    min_delta: 0.5  # °C
