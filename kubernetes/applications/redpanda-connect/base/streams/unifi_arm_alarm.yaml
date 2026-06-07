@@ -11,17 +11,26 @@ input:
 
 pipeline:
   processors:
+    # First stage: filter to the two relevant GAs regardless of value, so
+    # the second stage runs on a known subject set and `meta` assignment
+    # never has to express "drop the message" via deleted().
     - mapping: |
         let subj = meta("nats_subject")
-        let on  = this.value == true
-        meta protect_action = if $subj == "knx.14.1.25" && $on {
-          "enable"
-        } else if $subj == "knx.14.1.20" && $on {
-          "disable"
+        root = if $subj == "knx.14.1.25" || $subj == "knx.14.1.20" {
+          this
         } else {
           deleted()
         }
-        root = if meta("protect_action").or(null) != null { this } else { deleted() }
+    # Second stage: drop the 0-half of the KNX command pulse, tag action.
+    # `.bool().or(false)` survives both bool and int payload shapes.
+    - mapping: |
+        let on = this.value.bool().or(false)
+        root = if $on { this } else { deleted() }
+        meta protect_action = if meta("nats_subject") == "knx.14.1.25" {
+          "enable"
+        } else {
+          "disable"
+        }
 
 output:
   switch:
