@@ -842,7 +842,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(setflowtemp) AS \"Soll Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND setflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(selflowtemp) AS \"Soll Temperatur\" FROM ems_esp WHERE $__timeFilter(time) AND selflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
               "refId": "Soll Temperatur"
             },
             {
