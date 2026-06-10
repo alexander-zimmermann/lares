@@ -32,6 +32,22 @@ SELECT time_bucket('1 hour', time) AS bucket, ga, knx_name,
        count(*) AS sample_count
 FROM knx GROUP BY bucket, ga, knx_name WITH NO DATA;
 
+-- Appliance power channels (`%Stromwert`) get a mode-aware hourly rollup so
+-- the bursty on/off load doesn't poison a stationary z-score. `idle_floor`
+-- (the hourly min) is the standby draw → standby-drift detector; `on_samples`
+-- counts samples above the standby valley (~100 native units; observed standby
+-- floors top out ~55) → "left on" / duty-cycle. A single fixed threshold is
+-- robust here only because the standby↔operation gap is huge for these loads.
+CREATE MATERIALIZED VIEW knx_appliance_1h
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 hour', time) AS bucket, ga, knx_name,
+       min(value)                          AS idle_floor,
+       count(*) FILTER (WHERE value > 100) AS on_samples,
+       count(*)                            AS total_samples
+FROM knx
+WHERE knx_name LIKE '%Stromwert'
+GROUP BY bucket, ga, knx_name WITH NO DATA;
+
 -- =========================================================
 -- SolarEdge Inverter (solaredge-{1,2}.modbus.inverter)
 -- Hot-path columns from energy-inverter dashboard.
@@ -359,6 +375,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS unifi_events_unique
 SELECT add_continuous_aggregate_policy('knx_1h',
     start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
     schedule_interval => INTERVAL '1 hour');
+SELECT add_continuous_aggregate_policy('knx_appliance_1h',
+    start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
+    schedule_interval => INTERVAL '1 hour');
 SELECT add_continuous_aggregate_policy('solaredge_inverter_1h',
     start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
     schedule_interval => INTERVAL '1 hour');
@@ -554,6 +573,20 @@ SELECT time_bucket('1 day', bucket) AS day,
 FROM knx_1h
 GROUP BY day, ga, knx_name, hour_of_day, weekday WITH NO DATA;
 
+-- Appliance idle-floor baseline (hour×weekday profile of the hourly standby
+-- draw). Feeds the `appliance_standby` z-score; the runtime/left-on rule reads
+-- knx_appliance_1h directly and needs no baseline here.
+CREATE MATERIALIZED VIEW knx_appliance_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       ga,
+       knx_name,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(idle_floor) AS idle_floor_stats
+FROM knx_appliance_1h
+GROUP BY day, ga, knx_name, hour_of_day, weekday WITH NO DATA;
+
 CREATE MATERIALIZED VIEW warp_meter_baseline_30d
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 day', bucket) AS day,
@@ -584,6 +617,9 @@ SELECT add_continuous_aggregate_policy('solaredge_powerflow_baseline_30d',
     start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
     schedule_interval => INTERVAL '6 hours');
 SELECT add_continuous_aggregate_policy('knx_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('knx_appliance_baseline_30d',
     start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
     schedule_interval => INTERVAL '6 hours');
 SELECT add_continuous_aggregate_policy('warp_meter_baseline_30d',
