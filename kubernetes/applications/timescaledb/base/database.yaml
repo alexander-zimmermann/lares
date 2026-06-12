@@ -125,10 +125,10 @@ spec:
     endpointURL: http://rustfs-svc.rustfs.svc.cluster.local:9000
     s3Credentials:
       accessKeyId:
-        name: rustfs-admin-credentials
+        name: rustfs-timescaledb-credentials
         key: RUSTFS_ACCESS_KEY
       secretAccessKey:
-        name: rustfs-admin-credentials
+        name: rustfs-timescaledb-credentials
         key: RUSTFS_SECRET_KEY
     wal:
       compression: bzip2
