@@ -88,7 +88,9 @@ deployment:
   livenessProbe:
     enabled: true
     httpGet:
-      path: /healthz
+      # /livez is process-only (always 200 while the app runs) — a TSDB outage
+      # must not restart the pod; /healthz stays DB-gated for readiness below.
+      path: /livez
       port: mcp
     initialDelaySeconds: 10
     periodSeconds: 30
