@@ -34,16 +34,17 @@ env:
       secretKeyRef:
         name: timescaledb-db-connect-secret
         key: password
-  # RustFS admin credentials for the cold-archive parquet output (cloned from rustfs namespace by Kyverno)
+  # RustFS per-app scoped credentials (write-only on nats-archive) for the
+  # cold-archive parquet output (cloned from rustfs namespace by Kyverno)
   - name: RUSTFS_ACCESS_KEY
     valueFrom:
       secretKeyRef:
-        name: rustfs-admin-credentials
+        name: rustfs-redpanda-connect-credentials
         key: RUSTFS_ACCESS_KEY
   - name: RUSTFS_SECRET_KEY
     valueFrom:
       secretKeyRef:
-        name: rustfs-admin-credentials
+        name: rustfs-redpanda-connect-credentials
         key: RUSTFS_SECRET_KEY
   # UniFi Protect local API key + target arm-profile ID for the unifi_arm_alarm stream
   - name: UNIFI_PROTECT_API_KEY
