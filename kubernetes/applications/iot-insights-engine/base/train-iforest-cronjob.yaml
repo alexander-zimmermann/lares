@@ -66,12 +66,12 @@ spec:
                 - name: MCP_S3_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: rustfs-admin-credentials
+                      name: rustfs-iot-insights-engine-credentials
                       key: RUSTFS_ACCESS_KEY
                 - name: MCP_S3_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
-                      name: rustfs-admin-credentials
+                      name: rustfs-iot-insights-engine-credentials
                       key: RUSTFS_SECRET_KEY
                 - name: MCP_AUTH_ENABLED
                   value: "false"

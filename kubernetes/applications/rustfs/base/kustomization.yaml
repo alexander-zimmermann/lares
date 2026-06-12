@@ -8,6 +8,7 @@ resources:
   - ./certificate.yaml
   - ./sealed-secret.yaml
   - ./initialize-buckets-job.yaml
+  - ./initialize-rustfs-users.yaml
   - ./nats-archive-compaction-cronjob.yaml
 
 helmCharts:
@@ -17,6 +18,13 @@ helmCharts:
     version: 0.8.0
     valuesFile: values.yaml
     namespace: rustfs
+
+configMapGenerator:
+  - name: rustfs-users-provisioner-script
+    options:
+      disableNameSuffixHash: true
+    files:
+      - scripts/initialize-rustfs-users.sh
 
 patches:
   # Expose RustFS service via Cilium/BGP-announced LoadBalancer
