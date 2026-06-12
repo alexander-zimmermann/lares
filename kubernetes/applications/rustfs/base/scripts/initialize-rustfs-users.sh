@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-# Provisions per-app, bucket-scoped RustFS IAM users (issue #1017). Each consumer
+# Provisions per-app, bucket-scoped RustFS IAM users. Each consumer
 # gets its own access key with a least-privilege policy limited to its own bucket;
 # the shared admin key stays only for in-namespace operators (bucket-init,
 # nats-archive compactor).
