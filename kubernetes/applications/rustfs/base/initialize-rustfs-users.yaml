@@ -1,5 +1,5 @@
-# Post-sync Job that provisions per-app, bucket-scoped RustFS IAM users
-# (issue #1017). Replaces the shared admin key for application tenants: every
+# Post-sync Job that provisions per-app, bucket-scoped RustFS IAM users.
+# Replaces the shared admin key for application tenants: every
 # consumer gets its own access key with a least-privilege policy limited to its
 # own bucket. The shared admin key stays only for in-namespace operators.
 #
