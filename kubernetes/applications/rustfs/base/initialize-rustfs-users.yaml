@@ -1,0 +1,94 @@
+# Post-sync Job that provisions per-app, bucket-scoped RustFS IAM users
+# (issue #1017). Replaces the shared admin key for application tenants: every
+# consumer gets its own access key with a least-privilege policy limited to its
+# own bucket. The shared admin key stays only for in-namespace operators.
+#
+# Provisioning logic lives in scripts/initialize-rustfs-users.sh (mounted via
+# configMapGenerator). Runs after every ArgoCD sync; the script is idempotent.
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: initialize-rustfs-users
+  namespace: rustfs
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      serviceAccountName: default
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: dhi-registry-secret
+      # Wait until RustFS is reachable
+      initContainers:
+        - name: wait-for-rustfs
+          image: dhi.io/curl:8-alpine3.23
+          command: ["curl"]
+          args:
+            - --silent
+            - --show-error
+            - --fail
+            - --retry-connrefused
+            - --retry-all-errors
+            - --retry=60
+            - --retry-delay=3
+            - --retry-max-time=300
+            - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
+      containers:
+        - name: rc
+          image: rustfs/rc:v0.1.21
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          command: ["/bin/sh", "/scripts/initialize-rustfs-users.sh"]
+          envFrom:
+            # Admin key (root) — authenticates the provisioning calls
+            - secretRef:
+                name: rustfs-admin-credentials
+              prefix: ADMIN_
+            # Per-app keypairs (source-of-truth secrets, cloned out by Kyverno)
+            - secretRef:
+                name: rustfs-authentik-credentials
+              prefix: AUTHENTIK_
+            - secretRef:
+                name: rustfs-wiki-js-credentials
+              prefix: WIKIJS_
+            - secretRef:
+                name: rustfs-timescaledb-credentials
+              prefix: TIMESCALEDB_
+            - secretRef:
+                name: rustfs-redpanda-connect-credentials
+              prefix: REDPANDA_
+            - secretRef:
+                name: rustfs-iot-insights-engine-credentials
+              prefix: IOTENGINE_
+          env:
+            - name: HOME
+              value: /tmp
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: scripts
+          configMap:
+            name: rustfs-users-provisioner-script
+            defaultMode: 0555
+        - name: tmp
+          emptyDir: {}
