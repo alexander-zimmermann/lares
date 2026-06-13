@@ -27,6 +27,12 @@ spec:
       containers:
         - name: importer
           image: ghcr.io/alexander-zimmermann/knx-nats-bridge:0.9.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
           command: ["knx-nats-bridge-import-catalog"]
           args:
             - --catalog-path=/etc/knx-nats-bridge/ga-catalog.yaml
