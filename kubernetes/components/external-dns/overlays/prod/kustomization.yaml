@@ -3,3 +3,24 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # external-dns: prod manages only the prod and internal zones; it keeps the
+  # historical owner ID so the existing TXT registry records stay owned
+  - target:
+      kind: Deployment
+      name: external-dns
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/args/8
+        value: --txt-owner-id=PLACEHOLDER_TXT_OWNER_ID
+      - op: replace
+        path: /spec/template/spec/containers/0/args/8
+        value: --txt-owner-id=homelab
+
+      - op: test
+        path: /spec/template/spec/containers/0/args/9
+        value: --domain-filter=PLACEHOLDER_EXTERNAL_DOMAIN
+      - op: replace
+        path: /spec/template/spec/containers/0/args/9
+        value: --domain-filter=zimmermann.sh

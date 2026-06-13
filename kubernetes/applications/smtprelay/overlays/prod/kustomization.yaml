@@ -5,7 +5,7 @@ resources:
   - ../../base
 
 patches:
-  # SMTPreplay service with static IP and BGP advertisement
+  # SMTPRelay service with static IP and BGP advertisement
   - target:
       kind: Service
       name: smtprelay

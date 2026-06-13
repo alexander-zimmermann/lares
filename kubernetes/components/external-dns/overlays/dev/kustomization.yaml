@@ -3,3 +3,24 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # external-dns: dev manages only the dev and internal zones, with its own
+  # registry owner ID so it cannot touch the prod cluster's records
+  - target:
+      kind: Deployment
+      name: external-dns
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/args/8
+        value: --txt-owner-id=PLACEHOLDER_TXT_OWNER_ID
+      - op: replace
+        path: /spec/template/spec/containers/0/args/8
+        value: --txt-owner-id=homelab-dev
+
+      - op: test
+        path: /spec/template/spec/containers/0/args/9
+        value: --domain-filter=PLACEHOLDER_EXTERNAL_DOMAIN
+      - op: replace
+        path: /spec/template/spec/containers/0/args/9
+        value: --domain-filter=zimmermann.phd

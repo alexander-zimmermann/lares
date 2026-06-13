@@ -38,6 +38,12 @@ spec:
             - --retry-delay=3
             - --retry-max-time=300
             - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
       containers:
         - name: rc
           image: rustfs/rc:v0.1.21

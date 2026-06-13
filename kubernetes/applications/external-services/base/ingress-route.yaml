@@ -393,7 +393,7 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
-    # higher failure tolerance for flaky ESP32 devices)
+    # alert only after several consecutive failures to tolerate brief device hiccups)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
       name: FRITZ!Box
@@ -444,7 +444,7 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
-    # higher failure tolerance for flaky ESP32 devices)
+    # alert only after several consecutive failures to tolerate brief device hiccups)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
       name: KNX-IP
