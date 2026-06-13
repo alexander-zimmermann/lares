@@ -188,7 +188,8 @@ setup_datastore() {
 setup_nfs_datastore() {
   local datastore_name="${1}"
   local datastore_path="${2}"
-  local temp_dir=$(mktemp -d)
+  local temp_dir
+  temp_dir=$(mktemp -d)
 
   ## Already registered in PBS — nothing to do
   if proxmox-backup-manager datastore list | grep -qw "${datastore_name}"; then
@@ -299,7 +300,7 @@ setup_sync() {
     return 0
   fi
 
-  ## Sync job form NVMe to NFS
+  ## Sync job from NVMe to NFS
   info "Creating sync job: Primary -> Secondary..."
   proxmox-backup-manager sync-job create "${job_id}" \
     --remote-store "${DATASTORE_PRIMARY_NAME}" \
@@ -307,7 +308,7 @@ setup_sync() {
     --remove-vanished true \
     --schedule "*-*-* 05:00" || die "Could not create sync job."
 
-  success "Sync job for between primary and secondary datastores set up successfully."
+  success "Sync job between primary and secondary datastores set up successfully."
 }
 
 ###############################################################################
@@ -400,6 +401,7 @@ info " Proxmox Backup Server Bootstrap "
 info "===================================="
 
 ## Load environment files
+# shellcheck source=/dev/null
 source "${PBS_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${PBS_BOOTSTRAP_CONF}."
 
 ## System configuration

@@ -92,7 +92,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   dynamic "efi_disk" {
     for_each = var.efi_disk_override ? [1] : []
     content {
-      datastore_id      = var.efi_datastore != null ? var.efi_datastore : disk.value.disk_datastore
+      datastore_id      = var.efi_datastore != null ? var.efi_datastore : try(var.disks[0].disk_datastore, var.ci_datastore)
       file_format       = var.efi_disk_format
       type              = var.efi_disk_type
       pre_enrolled_keys = var.efi_disk_pre_enrolled_keys

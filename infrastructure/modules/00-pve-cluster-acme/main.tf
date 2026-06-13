@@ -71,7 +71,7 @@ locals {
     trap 'printf "+ [%(%F %T)T] %s:%d: %s\n" -1 "$(basename -- "$BASH_SOURCE")" "$LINENO" "$BASH_COMMAND" >&2' DEBUG
 
     # Build Bash array from the domain list
-    local ACME_DOMAINS="${var.primary_domain}${length(var.san_domains) > 0 ? ",${join(",", var.san_domains)}" : ""}"
+    ACME_DOMAINS="${var.primary_domain}${length(var.san_domains) > 0 ? ",${join(",", var.san_domains)}" : ""}"
     readarray -t DOMAINS <<< "$(echo "$${ACME_DOMAINS}" | tr ',' '\n' | xargs -n1)"
 
     # Construct domain flags for certificate issuing
@@ -91,7 +91,7 @@ locals {
 }
 
 resource "terraform_data" "acme_order" {
-  ## Esure ACME account & plugin are created first
+  ## Ensure ACME account & plugin are created first
   depends_on = [
     proxmox_acme_account.this,
     proxmox_acme_dns_plugin.this

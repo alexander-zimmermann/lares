@@ -5,7 +5,7 @@ variable "pve_cluster_token_id" {
   description = <<EOT
     Identifier of the Proxmox API token used for authentication. Must follow
     the format `username!tokenname`, where `username` includes the realm (e.g.,
-    `admint@pam!mytoken`). Sensitive value.
+    `admin@pam!mytoken`). Sensitive value.
   EOT
   type        = string
   sensitive   = true

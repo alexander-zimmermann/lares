@@ -41,14 +41,14 @@ download_static_curl() {
   fi
 
   ## Check version using binary introspection
-  if [[ -x ${CURL_PATH} && ${curl_version} == ${CURL_VERSION} ]]; then
+  if [[ -x ${CURL_PATH} && ${curl_version} == "${CURL_VERSION}" ]]; then
     info "Static curl (${CURL_VERSION}) already exists. Skipping download."
     return 0
   fi
 
-  ## Downloading static curl
+  ## Downloading static curl (--fail so an HTTP error page is not saved as the binary)
   info "Downloading static curl for internal healthchecks..."
-  curl -L -s -o "/tmp/${CURL_TAR}" "${CURL_URL}" || die "Failed to download static curl."
+  curl -fL -s -o "/tmp/${CURL_TAR}" "${CURL_URL}" || die "Failed to download static curl."
 
   ## Extracting static curl
   info "Extracting static curl..."
@@ -60,7 +60,7 @@ download_static_curl() {
   ## Cleanup
   rm -rf "/tmp/${CURL_TAR}" "/tmp/curl-extract"
 
-  success "Static installed successfully at ${CURL_PATH}."
+  success "Static curl installed successfully at ${CURL_PATH}."
 }
 
 ###############################################################################
@@ -75,14 +75,14 @@ download_omnictl() {
   fi
 
   ## Check version using binary introspection
-  if [[ -x ${OMNICTL_PATH} && ${omnictl_version} == ${OMNICTL_VERSION} ]]; then
+  if [[ -x ${OMNICTL_PATH} && ${omnictl_version} == "${OMNICTL_VERSION}" ]]; then
     info "Omnictl (${OMNICTL_VERSION}) already exists. Skipping download."
     return 0
   fi
 
-  ## Downloading omnictl
+  ## Downloading omnictl (--fail so an HTTP error page is not saved as the binary)
   info "Installing omnictl (version ${OMNICTL_VERSION})..."
-  curl -L -s -o "${OMNICTL_PATH}" "${OMNICTL_URL}"
+  curl -fL -s -o "${OMNICTL_PATH}" "${OMNICTL_URL}" || die "Failed to download omnictl."
   chmod +x "${OMNICTL_PATH}"
 
   success "omnictl installed successfully at ${OMNICTL_PATH}."
@@ -154,8 +154,9 @@ setup_gpg() {
 
   ## Get key fingerprint
   info "Retrieving GPG key fingerprint..."
-  local list_keys=$(gpg --quiet --list-secret-keys --with-colons "${OMNI_PRIVATE_KEY_EMAIL}")
-  local key_fingerprint=$(echo "${list_keys}" | grep '^fpr:' | head -n1 | cut -d: -f10)
+  local list_keys key_fingerprint
+  list_keys=$(gpg --quiet --list-secret-keys --with-colons "${OMNI_PRIVATE_KEY_EMAIL}")
+  key_fingerprint=$(echo "${list_keys}" | grep '^fpr:' | head -n1 | cut -d: -f10)
   info "GPG key fingerprint: ${key_fingerprint}"
 
   ## Add encryption subkey
@@ -203,9 +204,12 @@ setup_infra_provider_key() {
     return 0
   fi
 
-  ## Generating infra provider key
+  ## Generating infra provider key.
+  ## Declare first, then assign — `local output=$(...)` would mask the command's
+  ## exit status (always 0 from `local`), so the `|| die` would never fire.
   info "Generating Proxmox InfraProvider Service Account inside Omni..."
-  local output=$(\
+  local output
+  output=$(\
     HOME="${HOME:-/root}" \
     OMNI_ENDPOINT="${OMNI_API_ENDPOINT}" \
     OMNI_SERVICE_ACCOUNT_KEY="$(< "${OMNI_SA_KEY_PATH}")" \
@@ -215,7 +219,8 @@ setup_infra_provider_key() {
   ) || die "Failed to generate infra provider key"
 
   ## Extract new key from output
-  local new_key=$(echo "${output}" | grep '^OMNI_SERVICE_ACCOUNT_KEY=' | cut -d= -f2-)
+  local new_key
+  new_key=$(echo "${output}" | grep '^OMNI_SERVICE_ACCOUNT_KEY=' | cut -d= -f2-)
 
   ## Validate that the new key was extracted
   if [[ -z "${new_key}" ]]; then
@@ -232,7 +237,8 @@ setup_infra_provider_key() {
 ## Helper: Central backup restore
 ###############################################################################
 restore_from_backup() {
-  local latest_backup=$(ls -t "${DOCKER_VOLUME_BACKUP_DIR}"/omni-backup-*.tar.gz 2>/dev/null | head -n 1 || true)
+  local latest_backup
+  latest_backup=$(ls -t "${DOCKER_VOLUME_BACKUP_DIR}"/omni-backup-*.tar.gz 2>/dev/null | head -n 1 || true)
   mkdir -p "${OMNI_PERSISTENCE_DATA_DIR}" "${DOCKER_VOLUME_BACKUP_DIR}"
 
   ## Check if Omni data already exists locally (db file is a good marker)
@@ -263,6 +269,7 @@ info "===================================="
 
 ## Load environment files
 info "Loading environment files..."
+# shellcheck source=/dev/null
 source "${OMNI_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${OMNI_BOOTSTRAP_CONF}."
 
 ## Restore all data from the latest tarball (if on a fresh node)

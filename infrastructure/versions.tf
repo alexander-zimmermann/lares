@@ -17,15 +17,5 @@ terraform {
       source  = "hashicorp/local"
       version = "2.9.0"
     }
-    random = {
-      ## https://search.opentofu.org/provider/hashicorp/random/latest
-      source  = "hashicorp/random"
-      version = "3.9.0"
-    }
-    tls = {
-      ## https://search.opentofu.org/provider/hashicorp/tls/latest
-      source  = "hashicorp/tls"
-      version = "4.3.0"
-    }
   }
 }
