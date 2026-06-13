@@ -1,5 +1,8 @@
 version: "3"
 
+vars:
+  MASTER_KEY: "kubernetes/components/sealed-secrets-controller/base/master-key.yaml"
+
 tasks:
   init:
     desc: "initialize cluster prerequisites"
@@ -11,8 +14,8 @@ tasks:
     preconditions:
       - sh: command -v kubectl
         msg: "kubectl is not installed"
-      - sh: test -f kubernetes/components/sealed-secrets-controller/base/master-key.yaml
-        msg: "kubernetes/components/sealed-secrets-controller/base/master-key.yaml not found. Cluster bootstrap requires sealed secrets key."
+      - sh: test -f {{.MASTER_KEY}}
+        msg: "{{.MASTER_KEY}} not found. Cluster bootstrap requires sealed secrets key."
       - sh: test -f kubernetes/components/sealed-secrets-controller/base/secret.yaml
         msg: "kubernetes/components/sealed-secrets-controller/base/secret.yaml not found. Cluster bootstrap requires DHI credentials."
     cmds:
@@ -21,7 +24,7 @@ tasks:
       # ensure namespace exists before injecting secrets
       - kubectl create namespace sealed-secrets-controller --dry-run=client -o yaml | kubectl apply -f -
       # inject sealed secrets master key
-      - kubectl apply -f kubernetes/components/sealed-secrets-controller/base/master-key.yaml
+      - kubectl apply -f {{.MASTER_KEY}}
       # inject dhi registry credentials (needed for sealed-secrets-controller bootstrap)
       - kubectl apply -f kubernetes/components/sealed-secrets-controller/base/secret.yaml
       - kubectl annotate secret dhi-registry-secret -n sealed-secrets-controller sealedsecrets.bitnami.com/managed="true" --overwrite
@@ -59,7 +62,10 @@ tasks:
           kubectl wait --for=delete ns/{{.NS}} --timeout=10s >/dev/null 2>&1 || true
           if kubectl get ns {{.NS}} >/dev/null 2>&1; then
             echo "Force removing finalizers for {{.NS}}..."
-            kubectl patch ns {{.NS}} -p '{"spec":{"finalizers":[]}}' --type=merge >/dev/null 2>&1
+            # namespace spec.finalizers can only be cleared via the /finalize subresource
+            kubectl get ns {{.NS}} -o json \
+              | jq '.spec.finalizers = []' \
+              | kubectl replace --raw "/api/v1/namespaces/{{.NS}}/finalize" -f - >/dev/null
           fi
       # system component cleanup
       - kubectl delete secret hubble-tls-cert -n default --ignore-not-found=true
@@ -101,7 +107,7 @@ tasks:
       DIR:
         sh: dirname "{{.INPUT}}"
       CERT:
-        sh: yq '.items[0].data["tls.crt"]' kubernetes/components/sealed-secrets-controller/base/master-key.yaml | base64 -d
+        sh: yq '.items[0].data["tls.crt"]' {{.MASTER_KEY}} | base64 -d
     requires:
       vars:
         - INPUT
@@ -110,13 +116,17 @@ tasks:
         msg: "kubeseal is not installed"
       - sh: command -v yq
         msg: "yq is not installed"
-      - sh: test -f kubernetes/components/sealed-secrets-controller/base/master-key.yaml
+      - sh: command -v gsed
+        msg: "gsed is not installed (brew install gnu-sed); BSD sed cannot run the cleanup expression"
+      - sh: test -f {{.MASTER_KEY}}
         msg: "master-key.yaml not found"
       - sh: test -f "{{.INPUT}}"
         msg: "'{{.INPUT}}' not found"
     cmds:
       - echo "{{.CERT}}" | kubeseal --cert /dev/stdin -f "{{.INPUT}}" -w "{{.DIR}}/sealed-secret.yaml"
-      - sed -i -e '1{/^---$/d}' -e '/^---$/i\\' -e '/^metadata:/i\\' -e '/^spec:/i\\' "{{.DIR}}/sealed-secret.yaml"
+      # reformat kubeseal output: drop the leading '---', insert blank lines before
+      # each document and before the metadata/spec sections (repo YAML style)
+      - gsed -i -e '1{/^---$/d}' -e '/^---$/i\\' -e '/^metadata:/i\\' -e '/^spec:/i\\' "{{.DIR}}/sealed-secret.yaml"
 
   unseal:
     desc: "unseal a sealed-secret.yaml [path/to/sealed-secret.yaml]"
@@ -140,7 +150,9 @@ tasks:
         msg: "kubeseal is not installed"
       - sh: command -v yq
         msg: "yq is not installed"
-      - sh: test -f kubernetes/components/sealed-secrets-controller/base/master-key.yaml
+      - sh: command -v gcsplit
+        msg: "gcsplit is not installed (brew install coreutils); BSD csplit lacks the -z/-b flags"
+      - sh: test -f {{.MASTER_KEY}}
         msg: "master-key.yaml not found"
       - sh: test -f "{{.INPUT}}"
         msg: "'{{.INPUT}}' not found"
@@ -150,9 +162,9 @@ tasks:
         KEY=$(mktemp -t sealed-unseal-key.XXXXXX)
         SPLIT=$(mktemp -d -t sealed-unseal-split.XXXXXX)
         trap 'rm -f "$KEY"; rm -rf "$SPLIT"' EXIT
-        yq '.items[0].data["tls.key"]' kubernetes/components/sealed-secrets-controller/base/master-key.yaml \
+        yq '.items[0].data["tls.key"]' {{.MASTER_KEY}} \
           | base64 -d > "$KEY"
-        csplit -sz -f "$SPLIT/doc_" -b "%02d.yaml" "{{.INPUT}}" '/^---$/' '{*}'
+        gcsplit -sz -f "$SPLIT/doc_" -b "%02d.yaml" "{{.INPUT}}" '/^---$/' '{*}'
         OUT="{{.DIR}}/secret.yaml"
         : > "$OUT"
         for f in "$SPLIT"/doc_*.yaml; do

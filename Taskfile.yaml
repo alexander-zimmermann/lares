@@ -42,7 +42,11 @@ tasks:
         nats-io/nats-tools/nsc
         actionlint
         yq
+        jq
         uv
+        kubeseal
+        gnu-sed
+        coreutils
     preconditions:
       - sh: command -v brew
         msg: |

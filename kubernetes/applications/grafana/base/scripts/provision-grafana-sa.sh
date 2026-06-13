@@ -1,5 +1,7 @@
 #!/bin/sh
-set -euo pipefail
+# POSIX sh (busybox ash in alpine/k8s); no pipefail — failed curls are caught by
+# the explicit empty/null checks on the values extracted from each response.
+set -eu
 
 # Provisions Grafana service accounts from a YAML config file.
 #
@@ -54,6 +56,11 @@ while [ "$i" -lt "$COUNT" ]; do
     -H "Content-Type: application/json" \
     "$GRAFANA_URL/api/serviceaccounts/$SA_ID/tokens" \
     -d "{\"name\":\"$TOKEN_NAME\"}" | jq -r '.key')
+
+  if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+    echo "ERROR: Failed to create token for service account '$SA_NAME'"
+    exit 1
+  fi
 
   # Store as Kubernetes Secret
   kubectl create secret generic "$SECRET_NAME" \

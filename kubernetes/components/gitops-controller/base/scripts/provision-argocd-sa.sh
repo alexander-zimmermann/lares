@@ -1,5 +1,7 @@
 #!/bin/sh
-set -euo pipefail
+# POSIX sh (busybox ash in alpine/k8s); no pipefail — failed curls are caught by
+# the explicit empty/null checks on the values extracted from each response.
+set -eu
 
 # Provisions ArgoCD account tokens from a YAML config file.
 #
