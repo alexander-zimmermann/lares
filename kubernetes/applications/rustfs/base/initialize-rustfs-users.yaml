@@ -40,7 +40,7 @@ spec:
             - http://rustfs-svc.rustfs.svc.cluster.local:9000/health
       containers:
         - name: rc
-          image: rustfs/rc:v0.1.21
+          image: rustfs/rc:v0.1.22
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
