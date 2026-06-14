@@ -37,6 +37,11 @@ deployment:
       value: "true"
     BRIDGE_WRITER_RULES_PATH:
       value: /etc/knx-nats-bridge/writer-rules.yaml
+    # Answer GroupValueRead for the written GAs with the last value on the bus,
+    # so a Basalte panel polling on startup gets a value for slow-changing
+    # datapoints (DHW setpoint, system pressure) instead of a default 0.
+    BRIDGE_READ_RESPONDER_ENABLED:
+      value: "true"
     LOG_FORMAT:
       value: json
     METRICS_PORT:
