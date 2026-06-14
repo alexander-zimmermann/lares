@@ -42,7 +42,7 @@ spec:
             readOnlyRootFilesystem: true
       containers:
         - name: provision
-          image: alpine/k8s:1.36.1
+          image: alpine/k8s:1.36.2
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
