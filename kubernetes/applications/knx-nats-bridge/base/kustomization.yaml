@@ -17,7 +17,7 @@ helmCharts:
       - monitoring.coreos.com/v1
 
 # disableNameSuffixHash: the import-ga-catalog Job mounts the ConfigMap
-# by fixed name (subPath subPath ga-catalog.yaml).
+# by fixed name (subPath ga-catalog.yaml).
 configMapGenerator:
   - name: knx-nats-bridge-ga-catalog
     options:

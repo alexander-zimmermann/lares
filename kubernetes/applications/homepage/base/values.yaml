@@ -98,6 +98,16 @@ deployment:
     initialDelaySeconds: 5
     periodSeconds: 15
 
+  # Chart disables the readiness probe by default; enable it so the pod only
+  # receives traffic once /api/healthcheck passes (homepage starts slowly).
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /api/healthcheck
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 15
+
   resources:
     requests:
       cpu: 50m

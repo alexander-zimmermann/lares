@@ -73,18 +73,37 @@ flowchart LR
 
 Secrets are encrypted with [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — the master key lives in `components/sealed-secrets-controller/base/master-key.yaml` and is **not** in git (it's seeded once per cluster via `task k8s:init`). Every `secret.yaml` in the tree has a matching `sealed-secret.yaml` that Argo applies; the controller decrypts it in-cluster.
 
+### Key material
+
+Two files are required for `task k8s:init` and exist only outside of git:
+
+- `components/sealed-secrets-controller/base/master-key.yaml` — the sealed-secrets master key. **Losing it makes every `sealed-secret.yaml` in this tree unrecoverable**; keep an offline copy in the password manager and treat it like a root credential.
+- `components/sealed-secrets-controller/base/secret.yaml` — the DHI registry pull credentials.
+
+When rebuilding from scratch, restore both files from the password manager before running `task k8s:init`. `task k8s:unseal -- <sealed-secret.yaml>` can regenerate any plain `secret.yaml` from the repo as long as the master key is present.
+
+### Domain conventions
+
+| Domain              | Use                                                            |
+| ------------------- | -------------------------------------------------------------- |
+| `zimmermann.sh`     | Production — public, proxied through Cloudflare                |
+| `zimmermann.phd`    | Development — public, proxied through Cloudflare               |
+| `zimmermann.eu.com` | Internal only — resolves to 192.168.x addresses, never proxied |
+
+Overlay patches set hostnames accordingly: `overlays/prod` uses `zimmermann.sh`, `overlays/dev` uses `zimmermann.phd`.
+
 ## Usage
 
 From the repo root (uses [go-task](https://taskfile.dev)):
 
-| Task                                         | What it does                                                                                                |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `task k8s:init`                              | Bootstrap sealed-secrets master key + DHI registry credentials. Run once, right after the cluster comes up. |
-| `task k8s:status`                            | Show nodes, pods (all namespaces), and Cilium status.                                                       |
-| `task k8s:show`                              | Print the Argo CD admin password.                                                                           |
-| `task k8s:seal path/to/secret.yaml`          | Encrypt a plain secret for git. Writes `sealed-secret.yaml` next to it.                                     |
-| `task k8s:unseal path/to/sealed-secret.yaml` | Decrypt back to `secret.yaml` (needs local master key).                                                     |
-| `task k8s:delete`                            | **Wipe every managed namespace** (prompted). Useful before re-bootstrapping.                                |
+| Task                                            | What it does                                                                                                |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `task k8s:init`                                 | Bootstrap sealed-secrets master key + DHI registry credentials. Run once, right after the cluster comes up. |
+| `task k8s:status`                               | Show nodes, pods (all namespaces), and Cilium status.                                                       |
+| `task k8s:show`                                 | Print the Argo CD admin password.                                                                           |
+| `task k8s:seal -- path/to/secret.yaml`          | Encrypt a plain secret for git. Writes `sealed-secret.yaml` next to it.                                     |
+| `task k8s:unseal -- path/to/sealed-secret.yaml` | Decrypt back to `secret.yaml` (needs local master key).                                                     |
+| `task k8s:delete`                               | **Wipe every managed namespace** (prompted). Useful before re-bootstrapping.                                |
 
 ## Adding a new app
 
@@ -93,7 +112,7 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 3. Create `overlays/{dev,prod}/kustomization.yaml` that reference `../../base` and apply env-specific patches (hostnames, replicas).
 4. Commit, push. The `applications` ApplicationSet picks it up within one sync interval.
 
-If your app needs secrets: write them as plain `secret.yaml`, then `task k8s:seal kubernetes/applications/<name>/base/secret.yaml`, commit only the `sealed-secret.yaml`.
+If your app needs secrets: write them as plain `secret.yaml`, then `task k8s:seal -- kubernetes/applications/<name>/base/secret.yaml`, commit only the `sealed-secret.yaml`.
 
 ## Catalog
 
@@ -101,16 +120,17 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 
 ### Platform
 
-|                                                                                                        | Component                                                        | Purpose                                                           |
-| :----------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />        | [Talos Linux](https://www.talos.dev/)                            | Immutable, API-managed Kubernetes OS                              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />        | [Omni](https://omni.siderolabs.com/)                             | SaaS control plane for Talos (auto-provisioning, machine classes) |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cilium.png" height="18" />       | [Cilium](https://cilium.io/)                                     | eBPF CNI (kube-proxy replacement, L2 announcements)               |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/traefik.png" height="18" />      | [Traefik](https://traefik.io/)                                   | Ingress with pre/post-auth middleware chains                      |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cert-manager.png" height="18" /> | [cert-manager](https://cert-manager.io/)                         | Automated TLS via Cloudflare DNS-01                               |
-|                                                                                                        | [external-dns](https://github.com/kubernetes-sigs/external-dns)  | Syncs ingress hostnames to Cloudflare                             |
-|                                                                                                        | [Kyverno](https://kyverno.io/)                                   | Policy engine (secret replication, admission)                     |
-|                                                                                                        | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Git-safe, cluster-decryptable secrets                             |
+|                                                                                                        | Component                                                        | Purpose                                                                         |
+| :----------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />     | [Talos Linux](https://www.talos.dev/)                            | Immutable, API-managed Kubernetes OS                                            |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />     | [Omni](https://omni.siderolabs.com/)                             | SaaS control plane for Talos (auto-provisioning, machine classes)               |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cilium.png" height="18" />    | [Cilium](https://cilium.io/)                                     | eBPF CNI (kube-proxy replacement, L2 announcements)                             |
+|   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/traefik.png" height="18" />    | [Traefik](https://traefik.io/)                                   | Ingress with pre/post-auth middleware chains                                    |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cert-manager.png" height="18" /> | [cert-manager](https://cert-manager.io/)                         | Automated TLS via Cloudflare DNS-01                                             |
+|                                                                                                        | [external-dns](https://github.com/kubernetes-sigs/external-dns)  | Syncs ingress hostnames to Cloudflare                                           |
+|                                                                                                        | external-services                                                | Ingress routes to out-of-cluster endpoints (Proxmox, PBS, FRITZ!Box, KNX-IP, …) |
+|                                                                                                        | [Kyverno](https://kyverno.io/)                                   | Policy engine (secret replication, admission)                                   |
+|                                                                                                        | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Git-safe, cluster-decryptable secrets                                           |
 
 ### GitOps & Automation
 
@@ -124,45 +144,47 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 |                                                                                                      | Component                                 | Purpose                                 |
 | :--------------------------------------------------------------------------------------------------: | ----------------------------------------- | --------------------------------------- |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/authentik.png" height="18" />  | [Authentik](https://goauthentik.io/)      | SSO / OIDC / forward-auth               |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/crowdsec.png" height="18" />   | [CrowdSec](https://www.crowdsec.net/)     | Behavior-based IPS on ingress           |
+|  <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/crowdsec.png" height="18" />  | [CrowdSec](https://www.crowdsec.net/)     | Behavior-based IPS on ingress           |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cloudflare.png" height="14" /> | [Cloudflare](https://www.cloudflare.com/) | WAF, rate-limiting, edge TLS, tunneling |
 
 ### Storage & Data
 
-|                                                                                                      | Component                                                                     | Purpose                                                   |
-| :--------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kubernetes.png" height="18" /> | CSI Block + NFS                                                               | Persistent volumes for workloads                          |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rustfs.png" height="12" />     | [RustFS](https://github.com/rustfs/rustfs)                                    | S3-compatible object storage                              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/postgresql.png" height="18" /> | [CloudNativePG](https://cloudnative-pg.io/) + [Barman](https://pgbarman.org/) | Postgres operator with S3 PITR backups                    |
-|                                                                                                      | [TimescaleDB](https://www.timescale.com/)                                     | Time-series Postgres for sensor & telemetry data          |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" height="18" />      | [Redis](https://redis.io/)                                                    | In-memory cache                                           |
-|                                                                                                      | [NATS](https://nats.io/) JetStream + [NACK](https://github.com/nats-io/nack)  | Message bus + KV/object stores; operator-managed          |
-|                                                                                                      | [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/)         | Stream pipelines (NATS → TimescaleDB / Parquet on RustFS) |
+|                                                                                                      | Component                                                                     | Purpose                                                            |
+| :--------------------------------------------------------------------------------------------------: | ----------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kubernetes.png" height="18" /> | CSI Block + NFS                                                               | Persistent volumes for workloads                                   |
+|   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/rustfs.png" height="12" />   | [RustFS](https://github.com/rustfs/rustfs)                                    | S3-compatible object storage                                       |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/postgresql.png" height="18" /> | [CloudNativePG](https://cloudnative-pg.io/) + [Barman](https://pgbarman.org/) | Postgres operator with S3 PITR backups (via `barman-cloud-plugin`) |
+|                                                                                                      | [TimescaleDB](https://www.timescale.com/)                                     | Time-series Postgres for sensor & telemetry data                   |
+|   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/redis.png" height="18" />    | [Redis](https://redis.io/)                                                    | In-memory cache                                                    |
+|                                                                                                      | [NATS](https://nats.io/) JetStream + [NACK](https://github.com/nats-io/nack)  | Message bus + KV/object stores; operator-managed                   |
+|                                                                                                      | [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/)         | Stream pipelines (NATS → TimescaleDB / Parquet on RustFS)          |
 
 ### Observability
 
-|                                                                                                      | Component                                    | Purpose                                     |
-| :--------------------------------------------------------------------------------------------------: | -------------------------------------------- | ------------------------------------------- |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png" height="18" /> | [Prometheus](https://prometheus.io/)         | Metrics & alerting                          |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png" height="18" />    | [Grafana](https://grafana.com/) + Operator   | Dashboards, dashboards-as-code              |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/loki.png" height="18" />       | [Loki](https://grafana.com/oss/loki/)        | Log aggregation                             |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/alloy.png" height="18" />      | [Alloy](https://grafana.com/docs/alloy/)     | Unified telemetry collector                 |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png" height="18" />      | [Gatus](https://gatus.io/)                   | Status page / synthetic probes              |
-|                                                                                                      | [kromgo](https://github.com/kashalls/kromgo) | PromQL → shields.io bridge (cluster badges) |
+|                                                                                                      | Component                                                  | Purpose                                       |
+| :--------------------------------------------------------------------------------------------------: | ---------------------------------------------------------- | --------------------------------------------- |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png" height="18" /> | [Prometheus](https://prometheus.io/)                       | Metrics & alerting                            |
+|  <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png" height="18" />   | [Grafana](https://grafana.com/) + Operator                 | Dashboards, dashboards-as-code                |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/loki.png" height="18" />    | [Loki](https://grafana.com/oss/loki/)                      | Log aggregation                               |
+|   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/alloy.png" height="18" />    | [Alloy](https://grafana.com/docs/alloy/)                   | Unified telemetry collector                   |
+|   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png" height="18" />    | [Gatus](https://gatus.io/)                                 | Status page / synthetic probes                |
+|                                                                                                      | [kromgo](https://github.com/kashalls/kromgo)               | PromQL → shields.io bridge (cluster badges)   |
+|                                                                                                      | [PBS Exporter](https://github.com/natrontech/pbs-exporter) | Prometheus metrics from Proxmox Backup Server |
 
 ### Applications
 
-|                                                                                                    | Component                                                       | Purpose                                             |
-| :------------------------------------------------------------------------------------------------: | --------------------------------------------------------------- | --------------------------------------------------- |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png" height="18" /> | [Homepage](https://gethomepage.dev/)                            | Service start page                                  |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />   | [Wiki.js](https://js.wiki/)                                     | Knowledge base                                      |
-| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                | Flow-based automation                               |
-|                                                                                                    | [knx-nats-bridge](https://github.com/alexander-zimmermann/knx-nats-bridge) | KNX bus ↔ NATS subjects (home automation gateway)   |
-|                                                                                                    | [iot-mcp-bridge](https://github.com/alexander-zimmermann/iot-mcp-bridge)   | MCP server exposing TimescaleDB / NATS to AI agents |
-|                                                                                                    | [SolarEdge2MQTT](https://github.com/DerOetzi/solaredge2mqtt)               | PV inverter → MQTT (consumed by Redpanda Connect)   |
-|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)            | Prometheus metrics from the Fritz!Box               |
-|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                       | Prometheus metrics from the UniFi controller        |
-|                                                                                                    | [SMTPRelay](https://github.com/grafana/smtprelay)                          | Outbound mail relay for cluster workloads           |
+|                                                                                                    | Component                                                                          | Purpose                                              |
+| :------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png" height="18" /> | [Homepage](https://gethomepage.dev/)                                               | Service start page                                   |
+|  <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />  | [Wiki.js](https://js.wiki/)                                                        | Knowledge base                                       |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                                   | Flow-based automation                                |
+|                                                                                                    | [knx-nats-bridge](https://github.com/alexander-zimmermann/knx-nats-bridge)         | KNX bus ↔ NATS subjects (home automation gateway)    |
+|                                                                                                    | [iot-mcp-bridge](https://github.com/alexander-zimmermann/iot-mcp-bridge)           | MCP server exposing TimescaleDB / NATS to AI agents  |
+|                                                                                                    | [iot-insights-engine](https://github.com/alexander-zimmermann/iot-insights-engine) | Anomaly-detection & forecast CronJobs on TimescaleDB |
+|                                                                                                    | [SolarEdge2MQTT](https://github.com/DerOetzi/solaredge2mqtt)                       | PV inverter → MQTT (consumed by Redpanda Connect)    |
+|                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)                    | Prometheus metrics from the Fritz!Box                |
+|                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                               | Prometheus metrics from the UniFi controller         |
+|                                                                                                    | [SMTPRelay](https://github.com/grafana/smtprelay)                                  | Outbound mail relay for cluster workloads            |
 
 ## Portability note
 

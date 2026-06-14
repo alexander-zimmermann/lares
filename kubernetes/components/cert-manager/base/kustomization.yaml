@@ -20,7 +20,9 @@ helmCharts:
       - monitoring.coreos.com/v1
 
 patches:
-  # https://github.com/cert-manager/cert-manager/pull/6192
+  # Drop the Helm instance label from the rendered CRDs — CRDs are cluster-scoped
+  # and must not be coupled to a single release (upstream later removed the label
+  # from its CRD templates for the same reason)
   - target:
       kind: CustomResourceDefinition
       labelSelector: app.kubernetes.io/instance=cert-manager

@@ -9,7 +9,7 @@ pve_cluster_password     = "YOUR_PVE_PASSWORD"
 ###############################################################################
 ## PVE cluster - user configuration
 ###############################################################################
-pve_user_passwords = {
+pve_cluster_user_passwords = {
   alice       = "YOUR_ALICE_PASSWORD"
   bob         = "YOUR_BOB_PASSWORD"
   ups_monitor = "YOUR_UPS_MONITOR_PASSWORD"

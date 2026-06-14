@@ -33,7 +33,7 @@ spec:
 
   # Declarative role lifecycle. CNPG creates the role, syncs the password
   # from the referenced Secret (keys: username/password) and reconciles drift.
-  # Table-level GRANTs are applied separately via the grant-connect Job.
+  # Table-level GRANTs are applied separately via the timescaledb-apply-grants Job.
   managed:
     roles:
       - name: connect

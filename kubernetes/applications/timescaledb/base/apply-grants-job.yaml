@@ -20,6 +20,12 @@ spec:
       containers:
         - name: psql
           image: ghcr.io/cloudnative-pg/postgresql:18.4
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 26
+            runAsGroup: 26
+            readOnlyRootFilesystem: true
           command: ["/bin/sh", "-c"]
           args:
             - |

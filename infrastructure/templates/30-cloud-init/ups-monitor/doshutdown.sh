@@ -12,6 +12,7 @@ set -euo pipefail
 APCUPSD_BOOTSTRAP_CONF="/etc/apcupsd/apcupsd-bootstrap.conf"
 
 ## Load configuration
+# shellcheck source=/dev/null
 source "${APCUPSD_BOOTSTRAP_CONF}" || exit 1
 
 logger -t apcupsd "CRITICAL: UPS battery critical — shutting down Proxmox node ${PVE_NODE_NAME}"

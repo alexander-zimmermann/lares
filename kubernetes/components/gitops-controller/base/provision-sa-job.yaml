@@ -34,6 +34,12 @@ spec:
             - --retry-delay=3
             - --retry-max-time=300
             - http://argocd-server.gitops-controller.svc.cluster.local/healthz
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
       containers:
         - name: provision
           image: alpine/k8s:1.36.1

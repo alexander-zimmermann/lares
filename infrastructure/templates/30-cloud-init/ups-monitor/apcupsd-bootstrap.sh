@@ -101,7 +101,7 @@ verify_ups() {
   local retries=30
 
   info "Waiting for USB HID device..."
-  for i in $(seq 1 ${retries}); do
+  for _ in $(seq 1 "${retries}"); do
     if [[ -e "${hiddev}" ]]; then
       success "USB HID device found at ${hiddev}."
       ## Restart apcupsd so it picks up the device
@@ -124,6 +124,7 @@ info " apcupsd UPS Monitor Bootstrap "
 info "===================================="
 
 ## Load environment files
+# shellcheck source=/dev/null
 source "${APCUPSD_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${APCUPSD_BOOTSTRAP_CONF}."
 
 ## Generate apcupsd configuration

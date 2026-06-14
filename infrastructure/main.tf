@@ -161,8 +161,10 @@ module "pve_node_core" {
   dns_servers       = local.pve_node.core[each.key].dns.servers
   dns_search_domain = local.pve_node.core[each.key].dns.search_domain
 
-  ## Subscription key & repository configuration
-  proxmox_subscription_key          = var.pve_node_core_subscription_keys[each.key]
+  ## Subscription key & repository configuration.
+  ## Default to "" for nodes absent from the map — the module treats "" as
+  ## "no subscription", matching the variable's documented contract.
+  proxmox_subscription_key          = try(var.pve_node_core_subscription_keys[each.key], "")
   enable_no_subscription_repository = try(local.pve_node.core[each.key].repositories.no_subscription, true)
   enable_enterprise_repository      = try(local.pve_node.core[each.key].repositories.enterprise, false)
   enable_ceph_repository            = try(local.pve_node.core[each.key].repositories.ceph, false)
@@ -457,6 +459,11 @@ module "template_vm" {
   ## Security and UEFI configuration (Windows 11 / modern OS)
   enable_tpm  = lookup(each.value, "enable_tpm", false)
   secure_boot = lookup(each.value, "secure_boot", false)
+
+  ## Network configuration
+  vnic_bridge = try(each.value.vnic_bridge, "vmbr0")
+  vnic_model  = try(each.value.vnic_model, "virtio")
+  vlan_tag    = try(each.value.vlan_tag, null)
 }
 
 module "template_lxc" {
@@ -542,7 +549,7 @@ module "fleet_lxc" {
   lxc_id    = each.value.lxc_id
   name      = each.value.container_name
 
-  ## Used vontainer template
+  ## Used container template
   template_id   = module.template_lxc[each.value.template_id].lxc_id
   template_node = module.template_lxc[each.value.template_id].node
 

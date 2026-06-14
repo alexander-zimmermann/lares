@@ -4,7 +4,7 @@
 [![Proxmox](https://img.shields.io/badge/Proxmox%20VE-9.0-E57000?style=flat-square&logo=proxmox&logoColor=white)](https://www.proxmox.com/)
 [![Provider](https://img.shields.io/badge/Provider-bpg%2Fproxmox-blue?style=flat-square)](https://github.com/bpg/terraform-provider-proxmox)
 
-> **Layer 1 of [the homelab stack](../README.md).** Pure Proxmox IaC — manages cluster-wide settings, nodes, images, templates, and the VM/LXC fleet. It has zero dependency on Kubernetes. I could rip out everything above this layer and still have a perfectly usable "IaC for Proxmox" setup.
+> **Layer 1 of [the Lares stack](../README.md).** Pure Proxmox IaC — manages cluster-wide settings, nodes, images, templates, and the VM/LXC fleet. It has zero dependency on Kubernetes. I could rip out everything above this layer and still have a perfectly usable "IaC for Proxmox" setup.
 
 ## What this does
 
@@ -21,7 +21,7 @@ Specials worth calling out:
 
 - **Deterministic MAC addresses** — `02:01:00:XX:XX:XX` for VMs, `02:02:00:XX:XX:XX` for LXCs (derived from their IDs). Stable DHCP leases across rebuilds.
 - **Windows 11 support** — UEFI, TPM 2.0, Secure Boot with pre-enrolled keys, Q35, VirtIO driver ISO.
-- **Omni host VM** — one of the VMs (`management-01`) runs [Omni](https://omni.siderolabs.com/) in Docker Compose via cloud-init. Talos VMs themselves are **not** provisioned here — Omni creates and manages them through its own Proxmox infra provider ([Layer 2](../cluster/README.md)).
+- **Omni host VM** — one of the VMs (`cluster_mgmt_01`) runs [Omni](https://omni.siderolabs.com/) in Docker Compose via cloud-init. Talos VMs themselves are **not** provisioned here — Omni creates and manages them through its own Proxmox infra provider ([Layer 2](../cluster/README.md)).
 
 ## Directory layout
 
@@ -31,6 +31,7 @@ infrastructure/
 ├── locals.tf               # Manifest merging + computed defaults
 ├── variables.tf            # Input variables (credentials, secrets)
 ├── outputs.tf
+├── providers.tf            # Provider configuration (PVE API endpoints)
 ├── versions.tf             # OpenTofu + provider versions
 ├── terraform.tfvars.example
 ├── manifest/               # YAML — the source of truth
@@ -83,7 +84,7 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 
 - **Proxmox VE 9.0+**, API reachable on port 8006.
 - **DHCP** on the VM network (MAC addresses are deterministic, IPs come from your router).
-- **OpenTofu** ≥ 1.11, **omnictl**, **talosctl** on your workstation.
+- **OpenTofu** ≥ 1.11 on your workstation (`omnictl`/`talosctl` are only needed from [Layer 2](../cluster/README.md) on).
 - **`terraform.tfvars`** with:
 
   ```hcl

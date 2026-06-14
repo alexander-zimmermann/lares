@@ -3,7 +3,7 @@
 #   archived by the unifi_events ingest stream into TimescaleDB.
 # - `unifi.geofence.trigger`                  — admin_geolocation triggers
 #   forwarded via the NATS MQTT gateway to the node-RED Geofence tab.
-# Retention 7d is the safety puffer for redpanda-connect → TimescaleDB
+# Retention 7d is the safety buffer for redpanda-connect → TimescaleDB
 # downtime; UniFi itself does not buffer Alarm Manager webhooks.
 apiVersion: jetstream.nats.io/v1beta2
 kind: Stream

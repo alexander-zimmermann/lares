@@ -122,7 +122,7 @@ locals {
 resource "terraform_data" "local_content_types" {
   ## Re-execute if any attribute changes
   triggers_replace = [
-    ## only re‑runs when the membership changes (not the order)
+    ## only re-runs when the membership changes (not the order)
     local.content_types
   ]
 

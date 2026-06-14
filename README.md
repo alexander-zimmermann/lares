@@ -59,7 +59,7 @@ The part I'm most proud of is how the repo is **split into three independent lay
 
 ### 🚀 Layer 2 — `cluster/` · Omni + Talos
 
-[![Talos](https://img.shields.io/badge/Talos-v1.12.6-blue?style=flat-square&logo=talos&logoColor=white)](https://www.talos.dev/)
+[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Ftalos_version&style=flat-square&logo=talos&logoColor=white&color=blue&label=Talos)](https://www.talos.dev/)
 [![Omni](https://img.shields.io/badge/Managed%20by-Omni-ff7300?style=flat-square&logo=sidero&logoColor=white)](https://omni.siderolabs.com/)
 
 Three YAML files describe the cluster: versions, machine shapes, system extensions. [Omni](https://omni.siderolabs.com/) does the rest — hands out Talos configs, bootstraps etcd, rotates certificates, tunnels the API server past my dynamic IP.
@@ -249,9 +249,12 @@ lares/
 ├── cluster/          # Layer 2 — Omni cluster templates + machine classes
 ├── kubernetes/       # Layer 3 — Argo CD-reconciled manifests
 │
-├── tasks/            # Taskfile includes (cluster/, infra/, kubernetes/)
+├── scripts/          # Helper scripts (KNX catalog enrichment)
+├── tasks/            # Taskfile includes (cluster, infra, kubernetes, knx)
 └── Taskfile.yaml     # Top-level entry point — `task --list`
 ```
+
+First-time setup: `task initialize` installs the whole toolchain via Homebrew (kubectl, kustomize, helm, opentofu, omnictl, kubeseal, GNU sed/coreutils, …) and registers the pre-commit hooks.
 
 Each of the three layer directories has its own detailed README:
 

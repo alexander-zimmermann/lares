@@ -28,7 +28,7 @@ Defined in [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml):
 - **Talos** v1.12.6, **Kubernetes** v1.34.6
 - **Disk encryption** enabled (LUKS)
 - **3× control plane**, **3× worker** — all auto-provisioned via machine classes
-- **System extensions**: `qemu-guest-agent`, `i915` (Intel iGPU), `intel-ucode`, `nvidia-open-gpu-kernel-modules-lts`, `iscsi-tools`, `zfs`
+- **System extensions**: `qemu-guest-agent`, `util-linux-tools`, `i915` (Intel iGPU), `intel-ucode`, `nvidia-open-gpu-kernel-modules-lts`, `iscsi-tools`, `zfs`
 
 ### Machine classes
 
@@ -38,6 +38,8 @@ Defined in [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml). Each 
 | -------------------- | ---- | ----- | ----- | ------------------------------ |
 | `control-plane-prod` | 4    | 4 GB  | 32 GB | —                              |
 | `data-plane-prod`    | 6    | 10 GB | 64 GB | 128 GB (storage) + 4 GB (swap) |
+| `control-plane-dev`  | 2    | 2 GB  | 32 GB | —                              |
+| `data-plane-dev`     | 4    | 4 GB  | 64 GB | 64 GB (storage) + 4 GB (swap)  |
 
 All go to `local-zfs` on my Proxmox host; NUMA, `host` CPU type, `q35` machine, `io_uring` async I/O.
 
@@ -61,9 +63,9 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 | Task                              | What it does                                                          |
 | --------------------------------- | --------------------------------------------------------------------- |
 | `task cluster:init`               | Register machine classes in Omni (run once, or after editing classes) |
-| `task cluster:create [dev\|prod]` | Sync the cluster template to Omni (default: `prod`)                   |
-| `task cluster:status [dev\|prod]` | Print current cluster status from Omni                                |
-| `task cluster:show [dev\|prod]`   | Download `kubeconfig` + `talosconfig` for the cluster                 |
+| `task cluster:create -- [dev\|prod]` | Sync the cluster template to Omni (default: `prod`)                |
+| `task cluster:status -- [dev\|prod]` | Print current cluster status from Omni                             |
+| `task cluster:show -- [dev\|prod]`   | Download `kubeconfig` + `talosconfig` for the cluster              |
 
 Underlying command for `create` is `omnictl cluster template sync --file homelab-cluster-prod.yaml`.
 

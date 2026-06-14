@@ -22,14 +22,15 @@ env:
 extraArgs:
   - --cloudflare-proxied
 
-# Unique identifier for this cluster's records
-txtOwnerId: homelab
+# Unique identifier for this cluster's records (per environment, replaced in
+# overlays so the two clusters can never adopt or prune each other's records)
+txtOwnerId: PLACEHOLDER_TXT_OWNER_ID
 
-# Domains managed by this instance
+# Domains managed by this instance; the public domain is per environment
+# (replaced in overlays), the internal domain is shared by both clusters
 domainFilters:
-  - zimmermann.sh
+  - PLACEHOLDER_EXTERNAL_DOMAIN
   - zimmermann.eu.com
-  - zimmermann.phd
 
 # Watch these resources for DNS annotations
 sources:

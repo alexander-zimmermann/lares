@@ -30,7 +30,7 @@ machine:
     extraArgs:
       rotate-server-certificates: "true" # Enable kubelet serving cert rotation
     extraConfig:
-      serverTLSBootstrap: true # Allow kubelet to request TLS certs)
+      serverTLSBootstrap: true # Allow kubelet to request TLS certs
       memorySwap: # Kubernetes swap support (K8s 1.32+)
         swapBehavior: LimitedSwap
 

@@ -3,7 +3,7 @@ deployment:
   replicas: 1
   image:
     repository: ghcr.io/deroetzi/solaredge2mqtt
-    tag: main
+    tag: 2.3.1
     pullPolicy: IfNotPresent
 
   # No API access required.
