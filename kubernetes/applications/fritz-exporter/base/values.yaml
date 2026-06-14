@@ -48,13 +48,19 @@ deployment:
     periodSeconds: 30
     failureThreshold: 3
 
+  # HTTP liveness so a wedged-but-listening exporter (TCP stays green while /metrics
+  # hangs on a stuck TR-064 call) gets restarted. Generous timeout + failureThreshold
+  # avoid false positives on a normal ~15s scrape. Readiness stays TCP-only so a slow
+  # scrape never drops the pod from Service endpoints (spurious TargetDown).
   livenessProbe:
     enabled: true
-    tcpSocket:
+    httpGet:
+      path: /metrics
       port: metrics
-    initialDelaySeconds: 30
-    periodSeconds: 60
-    failureThreshold: 5
+    initialDelaySeconds: 60
+    periodSeconds: 120
+    timeoutSeconds: 30
+    failureThreshold: 3
 
   resources:
     # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
