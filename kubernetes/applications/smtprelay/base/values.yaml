@@ -6,7 +6,7 @@ deployment:
   replicas: 1
   image:
     repository: grafana/smtprelay
-    tag: latest
+    tag: 2.5.1
     pullPolicy: IfNotPresent
 
   args:
