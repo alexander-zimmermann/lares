@@ -15,14 +15,11 @@ deployment:
     pullPolicy: IfNotPresent
 
   env:
-    # Required for Kubernetes liveness probes — pod IP must be in HOMEPAGE_ALLOWED_HOSTS.
-    MY_POD_IP:
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-    # Domain injected via overlay replacement (delimiter: ",", index: 1).
+    # Host validation: kubelet probes send a static "localhost:3000" Host header (set on the
+    # liveness/readinessProbe below), so a fixed entry suffices instead of the dynamic pod IP.
+    # The public domain is injected via overlay replacement (delimiter: ",", index: 1).
     HOMEPAGE_ALLOWED_HOSTS:
-      value: "$(MY_POD_IP):3000,PLACEHOLDER"
+      value: "localhost:3000,PLACEHOLDER"
     # Authentik API token — cloned from authentik namespace by Kyverno.
     HOMEPAGE_VAR_AUTHENTIK_KEY:
       valueFrom:
@@ -95,6 +92,10 @@ deployment:
     httpGet:
       path: /api/healthcheck
       port: http
+      # Static Host header so the request matches HOMEPAGE_ALLOWED_HOSTS instead of the pod IP.
+      httpHeaders:
+        - name: Host
+          value: localhost:3000
     initialDelaySeconds: 5
     periodSeconds: 15
 
@@ -105,6 +106,10 @@ deployment:
     httpGet:
       path: /api/healthcheck
       port: http
+      # Static Host header so the request matches HOMEPAGE_ALLOWED_HOSTS instead of the pod IP.
+      httpHeaders:
+        - name: Host
+          value: localhost:3000
     initialDelaySeconds: 5
     periodSeconds: 15
 
