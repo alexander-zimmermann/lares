@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: scorer
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.1.1
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.2.0
               command: ["iot-insights-engine", "score-seasonal"]
               env:
                 - name: MCP_DB_HOST
