@@ -293,61 +293,61 @@ mappings:
 
   # EMS-ESP boiler_data
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/0"
+    ga: "15/2/10"
     dpt: "1.011"
     payload_path: "$.burngas"
-    description: "Versorgungstechnik.Gastherme.Brenner-Status"
+    description: "Versorgungstechnik.Gastherme.Brenner.Status"
     min_delta: 0  # binary status: write only on change
-  - subject: "ems-esp.boiler_data"
-    ga: "15/2/1"
-    dpt: "5.001"
-    payload_path: "$.curburnpow"
-    description: "Versorgungstechnik.Gastherme.Brenner-Modulation"
-    min_delta: 2  # percent
-  - subject: "ems-esp.boiler_data"
-    ga: "15/2/2"
-    dpt: "1.001"
-    payload_path: "$.heatingactive"
-    description: "Versorgungstechnik.Gastherme.Heizung-Aktiv"
-    min_delta: 0  # binary status: write only on change
-  - subject: "ems-esp.boiler_data"
-    ga: "15/2/3"
-    dpt: "1.001"
-    payload_path: "$.heatingpump"
-    description: "Versorgungstechnik.Gastherme.Heizkreispumpe-Aktiv"
-    min_delta: 0  # binary status: write only on change
-  - subject: "ems-esp.boiler_data"
-    ga: "15/2/10"
-    dpt: "9.001"
-    payload_path: "$.curflowtemp"
-    description: "Versorgungstechnik.Gastherme.Vorlauf.Ist-Temperatur"
-    min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/11"
+    dpt: "5.001"
+    payload_path: "$.curburnpow"
+    description: "Versorgungstechnik.Gastherme.Brenner.Modulation"
+    min_delta: 2  # percent
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/20"
+    dpt: "1.001"
+    payload_path: "$.heatingactive"
+    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv"
+    min_delta: 0  # binary status: write only on change
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/28"
+    dpt: "1.001"
+    payload_path: "$.heatingpump"
+    description: "Versorgungstechnik.Gastherme.Heizung.Pumpe-Aktiv"
+    min_delta: 0  # binary status: write only on change
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/23"
+    dpt: "9.001"
+    payload_path: "$.curflowtemp"
+    description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur"
+    min_delta: 0.5  # °C
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/25"
     dpt: "9.001"
     payload_path: "$.selflowtemp"
-    description: "Versorgungstechnik.Gastherme.Vorlauf.Soll-Temperatur"
+    description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Soll-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/12"
+    ga: "15/2/26"
     dpt: "9.001"
     payload_path: "$.rettemp"
-    description: "Versorgungstechnik.Gastherme.Rücklauf.Ist-Temperatur"
+    description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/13"
+    ga: "15/2/30"
     dpt: "9.001"
     payload_path: "$.switchtemp"
     description: "Versorgungstechnik.Gastherme.Hydraulische-Weiche.Ist-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/18"
+    ga: "15/2/60"
     dpt: "9.001"
     payload_path: "$.outdoortemp"
     description: "Versorgungstechnik.Gastherme.Außen-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/20"
+    ga: "15/2/0"
     dpt: "9.006"
     payload_path: "$.syspress"
     description: "Versorgungstechnik.Gastherme.System-Druck"
@@ -355,25 +355,25 @@ mappings:
 
   # EMS-ESP boiler_data_dhw (domestic hot water)
   - subject: "ems-esp.boiler_data_dhw"
-    ga: "15/2/5"
+    ga: "15/2/50"
     dpt: "1.001"
     payload_path: "$.charging"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Bereitung-Aktiv"
     min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.boiler_data_dhw"
-    ga: "15/2/16"
+    ga: "15/2/53"
     dpt: "9.001"
     payload_path: "$.curtemp"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data_dhw"
-    ga: "15/2/17"
+    ga: "15/2/55"
     dpt: "9.001"
     payload_path: "$.settemp"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Soll-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data_dhw"
-    ga: "15/2/21"
+    ga: "15/2/51"
     dpt: "9.025"
     payload_path: "$.curflow"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Durchfluss"
@@ -381,25 +381,25 @@ mappings:
 
   # EMS-ESP mixer_data_hc1 (mixer / floor heating)
   - subject: "ems-esp.mixer_data_hc1"
-    ga: "15/2/4"
+    ga: "15/2/40"
     dpt: "1.001"
     payload_path: "$.pumpstatus"
     description: "Versorgungstechnik.Gastherme.Mischer.Pumpe-Aktiv"
     min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.mixer_data_hc1"
-    ga: "15/2/6"
+    ga: "15/2/41"
     dpt: "5.001"
     payload_path: "$.valvestatus"
     description: "Versorgungstechnik.Gastherme.Mischer.Stellung"
     min_delta: 2  # percent
   - subject: "ems-esp.mixer_data_hc1"
-    ga: "15/2/14"
+    ga: "15/2/42"
     dpt: "9.001"
     payload_path: "$.flowtemphc"
     description: "Versorgungstechnik.Gastherme.Mischer.Vorlauf.Ist-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.mixer_data_hc1"
-    ga: "15/2/15"
+    ga: "15/2/43"
     dpt: "9.001"
     payload_path: "$.flowsettemp"
     description: "Versorgungstechnik.Gastherme.Mischer.Vorlauf.Soll-Temperatur"
@@ -407,44 +407,44 @@ mappings:
 
   # WARP wallbox
   - subject: "warp.evse.state"
-    ga: "15/6/0"
-    dpt: "5.010"
-    payload_path: "$.charger_state"
-    description: "Versorgungstechnik.Wallbox.Charger-State"
-    min_delta: 0  # enum state: write only on change
-  - subject: "warp.evse.state"
     ga: "15/6/1"
     dpt: "5.010"
-    payload_path: "$.iec61851_state"
-    description: "Versorgungstechnik.Wallbox.IEC61851-State"
+    payload_path: "$.charger_state"
+    description: "Versorgungstechnik.Wallbox.Lade-Status"
     min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/2"
     dpt: "5.010"
-    payload_path: "$.error_state"
-    description: "Versorgungstechnik.Wallbox.Error-State"
+    payload_path: "$.iec61851_state"
+    description: "Versorgungstechnik.Wallbox.IEC61851-Status"
     min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
-    ga: "15/6/3"
+    ga: "15/6/0"
     dpt: "5.010"
-    payload_path: "$.contactor_error"
-    description: "Versorgungstechnik.Wallbox.Contactor-Error"
+    payload_path: "$.error_state"
+    description: "Versorgungstechnik.Wallbox.Fehler-Status"
     min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
     ga: "15/6/4"
     dpt: "5.010"
-    payload_path: "$.dc_fault_current_state"
-    description: "Versorgungstechnik.Wallbox.DC-Fault-Current-State"
+    payload_path: "$.contactor_error"
+    description: "Versorgungstechnik.Wallbox.Schütz-Fehler"
     min_delta: 0  # enum state: write only on change
   - subject: "warp.evse.state"
-    ga: "15/6/10"
+    ga: "15/6/3"
+    dpt: "5.010"
+    payload_path: "$.dc_fault_current_state"
+    description: "Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status"
+    min_delta: 0  # enum state: write only on change
+  - subject: "warp.evse.state"
+    ga: "15/6/11"
     dpt: "7.012"
     payload_path: "$.allowed_charging_current"
-    description: "Versorgungstechnik.Wallbox.Allowed-Charging-Current"
+    description: "Versorgungstechnik.Wallbox.Ladestrom-Erlaubt"
     min_delta: 100  # mA
     min_delta_pct: 2
 
-  # SolarEdge PV (15/4: 0..9 system-wide, 10..19 inv 1, 20..29 inv 2)
+  # SolarEdge PV (15/4: 0..3 system-wide, 20..24 Wechselrichter 1, 40..44 Wechselrichter 2)
   - subject: "solaredge-1.powerflow"
     ga: "15/4/0"
     dpt: "14.056"
@@ -453,35 +453,35 @@ mappings:
     min_delta: 25  # W
     min_delta_pct: 2
   - subject: "solaredge-1.powerflow"
-    ga: "15/4/1"
+    ga: "15/4/2"
     dpt: "14.056"
     payload_path: "$.consumer.total"
     description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt"
     min_delta: 25  # W
     min_delta_pct: 2
   - subject: "solaredge-1.powerflow"
-    ga: "15/4/10"
+    ga: "15/4/21"
     dpt: "14.056"
     payload_path: "$.pv_production"
-    description: "Versorgungstechnik.Photovoltaik.Inverter-1.Leistung"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung"
     min_delta: 25  # W
     min_delta_pct: 2
   - subject: "solaredge-1.modbus.inverter"
-    ga: "15/4/11"
+    ga: "15/4/23"
     dpt: "9.001"
     payload_path: "$.temperature"
-    description: "Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur"
     min_delta: 0.5  # °C
   - subject: "solaredge-2.powerflow"
-    ga: "15/4/20"
+    ga: "15/4/41"
     dpt: "14.056"
     payload_path: "$.pv_production"
-    description: "Versorgungstechnik.Photovoltaik.Inverter-2.Leistung"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung"
     min_delta: 25  # W
     min_delta_pct: 2
   - subject: "solaredge-2.modbus.inverter"
-    ga: "15/4/21"
+    ga: "15/4/43"
     dpt: "9.001"
     payload_path: "$.temperature"
-    description: "Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur"
     min_delta: 0.5  # °C

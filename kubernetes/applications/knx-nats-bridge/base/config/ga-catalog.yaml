@@ -8,106 +8,96 @@
   function: Allgemein
   name: Allgemein.Zentral.KG.Alles-Aus
   room: Kellergeschoss
-0/0/120:
+0/0/110:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.Zentral.EG.Szenen
   room: Erdgeschoss
-0/0/121:
+0/0/111:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.Zentral.EG.Alles-Aus
   room: Erdgeschoss
-0/0/140:
+0/0/120:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.Zentral.OG.Szenen
   room: Obergeschoss
-0/0/141:
+0/0/121:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.Zentral.OG.Alles-Aus
   room: Obergeschoss
-0/0/160:
+0/0/130:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.Zentral.DG.Szenen
   room: Dachgeschoss
-0/0/161:
+0/0/131:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.Zentral.DG.Alles-Aus
   room: Dachgeschoss
-0/0/180:
+0/0/140:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.Zentral.A.Szenen
-  room: 2 - Außen
-0/0/181:
+  room: Außenbereich
+0/0/141:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.Zentral.A.Alles-Aus
-  room: 2 - Außen
-0/0/200:
+  room: Außenbereich
+0/0/240:
   dpt: '17.001'
   function: Allgemein
-  name: Allgemein.Zentral.Szenen
-  room: Haus Steinroth 20
-0/0/201:
+  name: Allgemein.Zentral.Anwesen.Szenen
+  room: Anwesen Steinroth 20
+0/0/241:
   dpt: '1.001'
   function: Allgemein
-  name: Allgemein.Zentral.Alles-Aus
-  room: Haus Steinroth 20
-0/0/211:
-  dpt: '1.011'
-  function: Allgemein
-  name: Allgemein.Zentral.Anwesend.Alexander
-  room: Haus Steinroth 20
-0/0/212:
-  dpt: '1.011'
-  function: Allgemein
-  name: Allgemein.Zentral.Anwesend.Vanessa
-  room: Haus Steinroth 20
-0/0/213:
-  dpt: '1.011'
-  function: Allgemein
-  name: Allgemein.Zentral.Anwesend.Luis
-  room: Haus Steinroth 20
-0/0/214:
-  dpt: '1.011'
-  function: Allgemein
-  name: Allgemein.Zentral.Anwesend.Gregory
-  room: Haus Steinroth 20
-0/0/220:
+  name: Allgemein.Zentral.Anwesen.Alles-Aus
+  room: Anwesen Steinroth 20
+0/0/245:
   dpt: '10.001'
   function: Allgemein
-  name: Allgemein.Zentral.Uhrzeit
-  room: Haus Steinroth 20
-0/0/221:
+  name: Allgemein.Zentral.Anwesen.Uhrzeit
+  room: Anwesen Steinroth 20
+0/0/246:
   dpt: '11.001'
   function: Allgemein
-  name: Allgemein.Zentral.Datum
-  room: Haus Steinroth 20
-0/0/222:
+  name: Allgemein.Zentral.Anwesen.Datum
+  room: Anwesen Steinroth 20
+0/0/247:
   dpt: '19.001'
   function: Allgemein
-  name: Allgemein.Zentral.Datum-Uhrzeit
-  room: Haus Steinroth 20
-0/0/230:
-  dpt: '1.001'
-  function: Allgemein
-  name: Allgemein.Zentral.Tag/Nacht
-  room: Haus Steinroth 20
-0/0/231:
-  dpt: '1.024'
-  function: Allgemein
-  name: Allgemein.Zentral.Nacht/Tag
-  room: Haus Steinroth 20
-0/0/232:
+  name: Allgemein.Zentral.Anwesen.Datum-Uhrzeit
+  room: Anwesen Steinroth 20
+0/0/248:
   dpt: '1.002'
   function: Allgemein
-  name: Allgemein.Zentral.Sommer/Winter
-  room: Haus Steinroth 20
+  name: Allgemein.Zentral.Anwesen.Sommer/Winter
+  room: Anwesen Steinroth 20
+0/0/251:
+  dpt: '1.011'
+  function: Allgemein
+  name: Allgemein.Zentral.Anwesen.Präsenz.Alexander
+  room: Anwesen Steinroth 20
+0/0/252:
+  dpt: '1.011'
+  function: Allgemein
+  name: Allgemein.Zentral.Anwesen.Präsenz.Vanessa
+  room: Anwesen Steinroth 20
+0/0/253:
+  dpt: '1.011'
+  function: Allgemein
+  name: Allgemein.Zentral.Anwesen.Präsenz.Luis
+  room: Anwesen Steinroth 20
+0/0/254:
+  dpt: '1.011'
+  function: Allgemein
+  name: Allgemein.Zentral.Anwesen.Präsenz.Gregory
+  room: Anwesen Steinroth 20
 0/1/0:
   dpt: '17.001'
   function: Allgemein
@@ -358,67 +348,67 @@
   function: Allgemein
   name: Allgemein.A.Fassade.Alles-Aus
   room: Fassade
-0/5/100:
-  dpt: '17.001'
-  function: Allgemein
-  name: Allgemein.A.Dach.Szenen
-  room: Dach
-0/5/101:
-  dpt: '1.001'
-  function: Allgemein
-  name: Allgemein.A.Dach.Alles-Aus
-  room: Dach
 0/5/20:
-  dpt: '17.001'
-  function: Allgemein
-  name: Allgemein.A.Eingang.Szenen
-  room: Eingang
-0/5/21:
-  dpt: '1.001'
-  function: Allgemein
-  name: Allgemein.A.Eingang.Alles-Aus
-  room: Eingang
-0/5/40:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.A.Terrasse.Szenen
   room: Terrasse
-0/5/41:
+0/5/21:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.A.Terrasse.Alles-Aus
   room: Terrasse
-0/5/60:
+0/5/40:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.A.Balkon.Szenen
   room: Balkon
-0/5/61:
+0/5/41:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.A.Balkon.Alles-Aus
   room: Balkon
-0/5/80:
+0/5/60:
   dpt: '17.001'
   function: Allgemein
-  name: Allgemein.A.Garten.Szenen
-  room: Garten
-0/5/81:
+  name: Allgemein.A.Dach.Szenen
+  room: Dach
+0/5/61:
   dpt: '1.001'
   function: Allgemein
-  name: Allgemein.A.Garten.Alles-Aus
+  name: Allgemein.A.Dach.Alles-Aus
+  room: Dach
+0/6/20:
+  dpt: '17.001'
+  function: Allgemein
+  name: Allgemein.G.Eingang.Szenen
+  room: Eingang
+0/6/21:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.G.Eingang.Alles-Aus
+  room: Eingang
+0/6/40:
+  dpt: '17.001'
+  function: Allgemein
+  name: Allgemein.G.Garten.Szenen
+  room: Garten
+0/6/41:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.G.Garten.Alles-Aus
   room: Garten
 10/0/100:
   dpt: '1.011'
   function: Sicherheit
   name: Sicherheit.Zentral.KG.Fenster/Tür.Offen-Status
   room: Kellergeschoss
-10/0/120:
+10/0/110:
   dpt: '1.011'
   function: Sicherheit
   name: Sicherheit.Zentral.EG.Fenster/Tür.Offen-Status
   room: Erdgeschoss
-10/0/140:
+10/0/120:
   dpt: '1.011'
   function: Sicherheit
   name: Sicherheit.Zentral.OG.Fenster/Tür.Offen-Status
@@ -754,125 +744,149 @@
   name: Sicherheit.OG.Badezimmer-Eltern.Fenster.Stellung-Geöffnet-Status
   room: Badezimmer Eltern
 12/0/200:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Voreinstellung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Voreinstellung
+  room: Anwesen Steinroth 20
 12/0/201:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Aktion
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Aktion
+  room: Anwesen Steinroth 20
 12/0/202:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Wiederholung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Wiederholung
+  room: Anwesen Steinroth 20
 12/0/203:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Wiederholung-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Wiederholung-Status
+  room: Anwesen Steinroth 20
 12/0/204:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Shuffle
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Shuffle
+  room: Anwesen Steinroth 20
 12/0/205:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Alexander.Shuffle-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Alexander.Shuffle-Status
+  room: Anwesen Steinroth 20
 12/0/210:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Voreinstellung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Voreinstellung
+  room: Anwesen Steinroth 20
 12/0/211:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Aktion
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Aktion
+  room: Anwesen Steinroth 20
 12/0/212:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Wiederholung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Wiederholung
+  room: Anwesen Steinroth 20
 12/0/213:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Wiederholung-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Wiederholung-Status
+  room: Anwesen Steinroth 20
 12/0/214:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Shuffle
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Shuffle
+  room: Anwesen Steinroth 20
 12/0/215:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Vanessa.Shuffle-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Vanessa.Shuffle-Status
+  room: Anwesen Steinroth 20
 12/0/220:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Voreinstellung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Voreinstellung
+  room: Anwesen Steinroth 20
 12/0/221:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Aktion
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Aktion
+  room: Anwesen Steinroth 20
 12/0/222:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Wiederholung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Wiederholung
+  room: Anwesen Steinroth 20
 12/0/223:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Wiederholung-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Wiederholung-Status
+  room: Anwesen Steinroth 20
 12/0/224:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Shuffle
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Shuffle
+  room: Anwesen Steinroth 20
 12/0/225:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Luis.Shuffle-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Luis.Shuffle-Status
+  room: Anwesen Steinroth 20
 12/0/230:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Voreinstellung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Voreinstellung
+  room: Anwesen Steinroth 20
 12/0/231:
+  description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Aktion
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Aktion
+  room: Anwesen Steinroth 20
 12/0/232:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Wiederholung
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Wiederholung
+  room: Anwesen Steinroth 20
 12/0/233:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Wiederholung-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Wiederholung-Status
+  room: Anwesen Steinroth 20
 12/0/234:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.001'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Shuffle
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Shuffle
+  room: Anwesen Steinroth 20
 12/0/235:
+  description: Haus Steinroth 20 Entertainment
   dpt: '1.011'
   function: Entertainment
-  name: Entertainment.Zentral.Stream.Gregory.Shuffle-Status
-  room: Haus Steinroth 20
+  name: Entertainment.Zentral.Anwesen.Stream.Gregory.Shuffle-Status
+  room: Anwesen Steinroth 20
 12/2/101:
   dpt: '1.001'
   function: Entertainment
@@ -1510,17 +1524,17 @@
 14/3/126:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennnung.Fahrzeug-Bekannt
+  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennung.Fahrzeug-Bekannt
   room: Terrasse
 14/3/127:
   dpt: '1.005'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennnung.Fahrzeug-Unbekannt
+  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennung.Fahrzeug-Unbekannt
   room: Terrasse
 14/3/128:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennnung.Fahrzeug-Markiert
+  name: Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Nummerschilderkennung.Fahrzeug-Markiert
   room: Terrasse
 14/3/129:
   dpt: '1.005'
@@ -1605,17 +1619,17 @@
 14/3/46:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennnung.Fahrzeug-Bekannt
+  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennung.Fahrzeug-Bekannt
   room: Eingang
 14/3/47:
   dpt: '1.005'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennnung.Fahrzeug-Unbekannt
+  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennung.Fahrzeug-Unbekannt
   room: Eingang
 14/3/48:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennnung.Fahrzeug-Markiert
+  name: Sicherheitstechnik.VÜA.Eingang.Nummerschilderkennung.Fahrzeug-Markiert
   room: Eingang
 14/3/49:
   dpt: '1.005'
@@ -1655,17 +1669,17 @@
 14/3/6:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennnung.Fahrzeug-Bekannt
+  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennung.Fahrzeug-Bekannt
   room: Fassade
 14/3/7:
   dpt: '1.005'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennnung.Fahrzeug-Unbekannt
+  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennung.Fahrzeug-Unbekannt
   room: Fassade
 14/3/8:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennnung.Fahrzeug-Markiert
+  name: Sicherheitstechnik.VÜA.Fassade.Nummerschilderkennung.Fahrzeug-Markiert
   room: Fassade
 14/3/81:
   dpt: '1.005'
@@ -1695,17 +1709,17 @@
 14/3/86:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennnung.Fahrzeug-Bekannt
+  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennung.Fahrzeug-Bekannt
   room: Terrasse
 14/3/87:
   dpt: '1.005'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennnung.Fahrzeug-Unbekannt
+  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennung.Fahrzeug-Unbekannt
   room: Terrasse
 14/3/88:
   dpt: '5.010'
   function: Sicherheitstechnik
-  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennnung.Fahrzeug-Markiert
+  name: Sicherheitstechnik.VÜA.Terrasse.Wohnzimmer.Nummerschilderkennung.Fahrzeug-Markiert
   room: Terrasse
 14/3/89:
   dpt: '1.005'
@@ -1863,65 +1877,55 @@
   name: Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L1
   room: Garage
 15/1/40:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Zählerstand-Skala-1
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/41:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Zählerstand-Skala-2
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/42:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Stichwert-Skala-1
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/43:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Stichwert-Skala-2
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/44:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Verbrauchswert-Skala-1
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/45:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Verbrauchswert-Skala-2
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/46:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Gesamt
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/47:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-1
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/48:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '14.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-2
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/49:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '1.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-1-Alarm
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/5:
   description: 2 - Garage (K2) Energiezähler
   dpt: '14.056'
@@ -1929,65 +1933,55 @@
   name: Versorgungstechnik.Energiezähler.Strom.Netzbezug.Wirkleistung-L2
   room: Garage
 15/1/50:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '1.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-2-Alarm
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/51:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '1.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-1-Alarm-Erweitert
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/52:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '1.005'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Skala-2-Alarm-Erweitert
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/53:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Skalenumschaltung
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/54:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '11.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Letztes-Stichdatum
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/55:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '11.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Nächstes-Stichdatum
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/56:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '7.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Reset
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/57:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '10.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Reset-Uhrzeit
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/58:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '11.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Reset-Datum
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/59:
-  description: 4 - Vorratsraum (K4) Versorgungstechnik
   dpt: '16.000'
   function: Versorgungstechnik
   name: Versorgungstechnik.Energiezähler.Wasser.Seriennummer
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/1/6:
   description: 2 - Garage (K2) Energiezähler
   dpt: '14.056'
@@ -2013,395 +2007,474 @@
   name: Versorgungstechnik.Energiezähler.Strom.Einspeisung.Zählerstand-Tagtarif-1
   room: Garage
 15/2/0:
-  dpt: '1.011'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Brenner-Status
-  room: Haus Steinroth 20
-15/2/1:
-  dpt: '5.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Brenner-Modulation
-  room: Haus Steinroth 20
-15/2/10:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: 'Versorgungstechnik.Gastherme.Vorlauf.Ist-Temperatur '
-  room: Haus Steinroth 20
-15/2/11:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Vorlauf.Soll-Temperatur
-  room: Haus Steinroth 20
-15/2/12:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: 'Versorgungstechnik.Gastherme.Rücklauf.Ist-Temperatur '
-  room: Haus Steinroth 20
-15/2/13:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Hydraulische-Weiche.Ist-Temperatur
-  room: Haus Steinroth 20
-15/2/14:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Mischer.Vorlauf.Ist-Temperatur
-  room: Haus Steinroth 20
-15/2/15:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Mischer.Vorlauf.Soll-Temperatur
-  room: Haus Steinroth 20
-15/2/16:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur
-  room: Haus Steinroth 20
-15/2/17:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Warmwasser.Soll-Temperatur
-  room: Haus Steinroth 20
-15/2/18:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Außen-Temperatur
-  room: Haus Steinroth 20
-15/2/2:
-  dpt: '1.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Heizung-Aktiv
-  room: Haus Steinroth 20
-15/2/20:
   dpt: '9.006'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.System-Druck
-  room: Haus Steinroth 20
-15/2/21:
-  dpt: '9.025'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Warmwasser.Durchfluss
-  room: Haus Steinroth 20
-15/2/3:
-  dpt: '1.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Heizkreispumpe-Aktiv
-  room: Haus Steinroth 20
-15/2/4:
-  dpt: '1.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Mischer.Pumpe-Aktiv
-  room: Haus Steinroth 20
-15/2/5:
-  dpt: '1.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Gastherme.Warmwasser.Bereitung-Aktiv
-  room: Haus Steinroth 20
-15/2/6:
+  room: Technikraum
+15/2/1:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Anomalie-Gesamt
+  room: Technikraum
+15/2/10:
+  dpt: '1.011'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Brenner.Status
+  room: Technikraum
+15/2/11:
   dpt: '5.001'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Brenner.Modulation
+  room: Technikraum
+15/2/12:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Brenner.Modulation-Anomalie
+  room: Technikraum
+15/2/20:
+  dpt: '1.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Aktiv
+  room: Technikraum
+15/2/21:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Aktiv-Anomalie
+  room: Technikraum
+15/2/22:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Aktiv-Saisonal-Anomalie
+  room: Technikraum
+15/2/23:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur
+  room: Technikraum
+15/2/24:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie
+  room: Technikraum
+15/2/25:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Soll-Temperatur
+  room: Technikraum
+15/2/26:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur
+  room: Technikraum
+15/2/27:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie
+  room: Technikraum
+15/2/28:
+  dpt: '1.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Heizung.Pumpe-Aktiv
+  room: Technikraum
+15/2/30:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Hydraulische-Weiche.Ist-Temperatur
+  room: Technikraum
+15/2/40:
+  dpt: '1.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Mischer.Pumpe-Aktiv
+  room: Technikraum
+15/2/41:
+  dpt: '5.001'
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Mischer.Stellung
-  room: Haus Steinroth 20
+  room: Technikraum
+15/2/42:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Mischer.Vorlauf.Ist-Temperatur
+  room: Technikraum
+15/2/43:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Mischer.Vorlauf.Soll-Temperatur
+  room: Technikraum
+15/2/50:
+  dpt: '1.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Bereitung-Aktiv
+  room: Technikraum
+15/2/51:
+  dpt: '9.025'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Durchfluss
+  room: Technikraum
+15/2/52:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Durchfluss-Anomalie
+  room: Technikraum
+15/2/53:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur
+  room: Technikraum
+15/2/54:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur-Anomalie
+  room: Technikraum
+15/2/55:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Warmwasser.Soll-Temperatur
+  room: Technikraum
+15/2/60:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Gastherme.Außen-Temperatur
+  room: Technikraum
 15/3/1:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '5.010'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodi
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/10:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.011'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Mittel-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/11:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Hoch
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/12:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.011'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Hoch-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/2:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '5.010'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodi-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/20:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.002'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/21:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '5.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.ComfoConnect-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/22:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.002'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Wartungsmodus-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/23:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.002'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Filterwechsel-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/24:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '7.007'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Filter-Betriebsstunden
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/25:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '13.002'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Luftstrom
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/26:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Temperatur-Abluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/27:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Temperatur-Fortluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/28:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Temperatur-Außenluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/29:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Temperatur-Zuluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/3:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Auto
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/30:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.007'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Luftfeuchtigkeit-Abluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/31:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.007'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Luftfeuchtigkeit-Fortluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/32:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.007'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Luftfeuchtigkeit-Außenluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/33:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '9.007'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Luftfeuchtigkeit-Zuluft
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/4:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.011'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Auto-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/5:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Away
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/6:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.011'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Away-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/7:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Niedrig
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/8:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.011'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Niedrig-Status
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/3/9:
-  description: 4 - Vorratsraum (K4) Wohnraumlüftung
   dpt: '1.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.KWL.Lüftermodus-Mittel
-  room: Haus Steinroth 20
+  room: Vorratsraum
 15/4/0:
   dpt: '14.056'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Photovoltaik.Netz-Leistung
-  room: Haus Steinroth 20
+  room: Technikraum
 15/4/1:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Netz-Leistung-Anomalie
+  room: Technikraum
+15/4/2:
   dpt: '14.056'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
-  room: Haus Steinroth 20
-15/4/10:
-  dpt: '14.056'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Photovoltaik.Inverter-1.Leistung
-  room: Haus Steinroth 20
-15/4/11:
-  dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Photovoltaik.Inverter-1.Temperatur
-  room: Haus Steinroth 20
+  room: Technikraum
 15/4/20:
-  dpt: '14.056'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Photovoltaik.Inverter-2.Leistung
-  room: Haus Steinroth 20
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-1.Anomalie-Gesamt
+  room: Technikraum
 15/4/21:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung
+  room: Technikraum
+15/4/22:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung-Anomalie
+  room: Technikraum
+15/4/23:
   dpt: '9.001'
-  function: Versorgungstechnik
-  name: Versorgungstechnik.Photovoltaik.Inverter-2.Temperatur
-  room: Haus Steinroth 20
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur
+  room: Technikraum
+15/4/24:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur-Anomalie
+  room: Technikraum
+15/4/3:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie
+  room: Technikraum
+15/4/40:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Anomalie-Gesamt
+  room: Technikraum
+15/4/41:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung
+  room: Technikraum
+15/4/42:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung-Anomalie
+  room: Technikraum
+15/4/43:
+  dpt: '9.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur
+  room: Technikraum
+15/4/44:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur-Anomalie
+  room: Technikraum
 15/5/102:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-10.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/112:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-11.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/12:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-1.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/122:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-12.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/132:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-13.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/142:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-14.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/2:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-Master.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/22:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-2..Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/32:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-3.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/42:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-4.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/52:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-5.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/62:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-6.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/72:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-7.Ein/Aus-Staus
-  room: Garten
+  room: Technikraum
 15/5/82:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-8.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/5/92:
   dpt: '1.011'
-  function: Versorgungstechnik
+  function: Versorgerungstechnik
   name: Versorgungstechnik.Bewässerung.Kreislauf-9.Ein/Aus-Status
-  room: Garten
+  room: Technikraum
 15/6/0:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Charger-State
-  room: Haus Steinroth 20
+  name: Versorgungstechnik.Wallbox.Fehler-Status
+  room: Garage
 15/6/1:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.IEC61851-State
-  room: Haus Steinroth 20
+  name: Versorgungstechnik.Wallbox.Lade-Status
+  room: Garage
 15/6/10:
   dpt: '7.012'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Allowed-Charging-Current
-  room: Haus Steinroth 20
+  name: Versorgungstechnik.Wallbox.Ladestrom
+  room: Garage
+15/6/11:
+  dpt: '7.012'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ladestrom-Erlaubt
+  room: Garage
+15/6/12:
+  dpt: '14.056'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ladeleistung
+  room: Garage
+15/6/13:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ladeleistung-Anomalie
+  room: Garage
+15/6/14:
+  dpt: '13.013'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Geladene-Energie
+  room: Garage
 15/6/2:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Error-State
-  room: Haus Steinroth 20
+  name: Versorgungstechnik.Wallbox.IEC61851-Status
+  room: Garage
 15/6/3:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Contactor-Error
-  room: Haus Steinroth 20
+  name: Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status
+  room: Garage
 15/6/4:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.DC-Fault-Current-State
-  room: Haus Steinroth 20
-16/0/20:
+  name: Versorgungstechnik.Wallbox.Schütz-Fehler
+  room: Garage
+15/6/5:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Anomalie-Gesamt
+  room: Garage
+16/0/240:
   dpt: '1.011'
-  name: Informationstechnik.Kubernetes.Monitor-Status
-2/0/250:
+  name: Informationstechnik.Kubernetes.Alle.Status
+2/0/240:
   description: 1 - Innen Schalten
   dpt: '1.003'
   function: Schalten
-  name: Schalten.Zentral.Alle.Kilowattstunde-Löschen
-  room: Haus Steinroth 20
+  name: Schalten.Zentral.Anwesen.Kilowattstunde-Löschen
+  room: Anwesen Steinroth 20
 2/1/0:
   dpt: '1.001'
   function: Schalten
@@ -2476,7 +2549,17 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Vorratsraum.K1-L3.Entfeuchter.Stromwert
-  room: Vorratsraum
+  room: Technikraum
+2/1/118:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Vorratsraum.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/119:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Vorratsraum.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie
+  room: Technikraum
 2/1/12:
   dpt: '1.011'
   function: Schalten
@@ -2551,7 +2634,17 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Vorratsraum.K3-L1.Lüftung.Stromwert
-  room: Vorratsraum
+  room: Technikraum
+2/1/148:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Vorratsraum.K3-L1.Lüftung.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/149:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Vorratsraum.K3-L1.Lüftung.Stromwert-Dauerbetrieb-Anomalie
+  room: Technikraum
 2/1/150:
   dpt: '1.003'
   function: Schalten
@@ -2591,6 +2684,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Stromwert
+  room: Hauswirtschaftsraum
+2/1/158:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie
+  room: Hauswirtschaftsraum
+2/1/159:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie
   room: Hauswirtschaftsraum
 2/1/160:
   dpt: '1.001'
@@ -2663,9 +2766,14 @@
   name: Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Stromwert
   room: Hauswirtschaftsraum
 2/1/188:
-  dpt: '1.011'
+  dpt: '5.010'
   function: Schalten
-  name: Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Status
+  name: Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Stromwert-Standby-Anomalie
+  room: Hauswirtschaftsraum
+2/1/189:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Stromwert-Dauerbetrieb-Anomalie
   room: Hauswirtschaftsraum
 2/1/190:
   dpt: '1.003'
@@ -2708,9 +2816,14 @@
   name: Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Stromwert
   room: Hauswirtschaftsraum
 2/1/198:
-  dpt: '1.011'
+  dpt: '5.010'
   function: Schalten
-  name: Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Status
+  name: Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Stromwert-Standby-Anomalie
+  room: Hauswirtschaftsraum
+2/1/199:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Stromwert-Dauerbetrieb-Anomalie
   room: Hauswirtschaftsraum
 2/1/2:
   dpt: '1.011'
@@ -2756,6 +2869,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Garage.K1-L3.Entfeuchter.Stromwert
+  room: Garage
+2/1/28:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Garage.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie
+  room: Garage
+2/1/29:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Garage.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie
   room: Garage
 2/1/30:
   dpt: '1.001'
@@ -2827,6 +2950,16 @@
   function: Schalten
   name: Schalten.KG.Technikraum.K1-L1.Heizung.Stromwert
   room: Technikraum
+2/1/58:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K1-L1.Heizung.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/59:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K1-L1.Heizung.Stromwert-Dauerbetrieb-Anomalie
+  room: Technikraum
 2/1/60:
   dpt: '1.003'
   function: Schalten
@@ -2866,6 +2999,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Technikraum.K1-L2.Heizung.Stromwert
+  room: Technikraum
+2/1/68:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K1-L2.Heizung.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/69:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K1-L2.Heizung.Stromwert-Dauerbetrieb-Anomalie
   room: Technikraum
 2/1/70:
   dpt: '1.003'
@@ -2907,6 +3050,16 @@
   function: Schalten
   name: Schalten.KG.Technikraum.K2-L1.Netzwerkschrank.Stromwert
   room: Technikraum
+2/1/78:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K2-L1.Netzwerkschrank.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/79:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K2-L1.Netzwerkschrank.Stromwert-Dauerbetrieb-Anomalie
+  room: Technikraum
 2/1/80:
   dpt: '1.003'
   function: Schalten
@@ -2947,6 +3100,16 @@
   function: Schalten
   name: Schalten.KG.Technikraum.K2-L2.Netzwerkschrank.Stromwert
   room: Technikraum
+2/1/88:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K2-L2.Netzwerkschrank.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/89:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K2-L2.Netzwerkschrank.Stromwert-Dauerbetrieb-Anomalie
+  room: Technikraum
 2/1/90:
   dpt: '1.003'
   function: Schalten
@@ -2986,6 +3149,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.KG.Technikraum.K3-L3.Entfeuchter.Stromwert
+  room: Technikraum
+2/1/98:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K3-L3.Entfeuchter.Stromwert-Standby-Anomalie
+  room: Technikraum
+2/1/99:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.KG.Technikraum.K3-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie
   room: Technikraum
 2/2/0:
   dpt: '1.001'
@@ -3112,6 +3285,16 @@
   function: Schalten
   name: Schalten.EG.Küche.K4-L1.Geschirrspüler.Stromwert
   room: Küche
+2/2/148:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K4-L1.Geschirrspüler.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/149:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K4-L1.Geschirrspüler.Stromwert-Dauerbetrieb-Anomalie
+  room: Küche
 2/2/150:
   dpt: '1.003'
   function: Schalten
@@ -3151,6 +3334,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.EG.Küche.K5-L1.Haubenlüfter.Stromwert
+  room: Küche
+2/2/158:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K5-L1.Haubenlüfter.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/159:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K5-L1.Haubenlüfter.Stromwert-Dauerbetrieb-Anomalie
   room: Küche
 2/2/160:
   dpt: '1.003'
@@ -3192,6 +3385,16 @@
   function: Schalten
   name: Schalten.EG.Küche.K7-L1.Kühlschrank.Stromwert
   room: Küche
+2/2/168:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K7-L1.Kühlschrank.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/169:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K7-L1.Kühlschrank.Stromwert-Dauerbetrieb-Anomalie
+  room: Küche
 2/2/170:
   dpt: '1.003'
   function: Schalten
@@ -3231,6 +3434,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.EG.Küche.K9-L1.Backofen.Stromwert
+  room: Küche
+2/2/178:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K9-L1.Backofen.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/179:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K9-L1.Backofen.Stromwert-Dauerbetrieb-Anomalie
   room: Küche
 2/2/180:
   dpt: '1.003'
@@ -3272,6 +3485,16 @@
   function: Schalten
   name: Schalten.EG.Küche.K10-L1.Tellerwärmer.Stromwert
   room: Küche
+2/2/188:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K10-L1.Tellerwärmer.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/189:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K10-L1.Tellerwärmer.Stromwert-Dauerbetrieb-Anomalie
+  room: Küche
 2/2/190:
   dpt: '1.003'
   function: Schalten
@@ -3311,6 +3534,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert
+  room: Küche
+2/2/198:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/199:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert-Dauerbetrieb-Anomalie
   room: Küche
 2/2/2:
   dpt: '1.011'
@@ -3362,6 +3595,16 @@
   function: Schalten
   name: Schalten.EG.Küche.K13-L1.Kaffeemaschine.Stromwert
   room: Küche
+2/2/208:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K13-L1.Kaffeemaschine.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/209:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K13-L1.Kaffeemaschine.Stromwert-Dauerbetrieb-Anomalie
+  room: Küche
 2/2/21:
   dpt: '1.001'
   function: Schalten
@@ -3407,6 +3650,16 @@
   function: Schalten
   name: Schalten.EG.Küche.K14-L1.Dampfgarer.Stromwert
   room: Küche
+2/2/218:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K14-L1.Dampfgarer.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/219:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K14-L1.Dampfgarer.Stromwert-Dauerbetrieb-Anomalie
+  room: Küche
 2/2/22:
   dpt: '1.011'
   function: Schalten
@@ -3451,6 +3704,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert
+  room: Küche
+2/2/228:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Standby-Anomalie
+  room: Küche
+2/2/229:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Dauerbetrieb-Anomalie
   room: Küche
 2/2/30:
   dpt: '1.001'
@@ -3566,6 +3829,16 @@
   dpt: '7.012'
   function: Schalten
   name: Schalten.EG.Wohnzimmer.K4-L1.Ofen.Stromwert
+  room: Wohnzimmer
+2/2/88:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Wohnzimmer.K4-L1.Ofen.Stromwert-Standby-Anomalie
+  room: Wohnzimmer
+2/2/89:
+  dpt: '5.010'
+  function: Schalten
+  name: Schalten.EG.Wohnzimmer.K4-L1.Ofen.Stromwert-Dauerbetrieb-Anomalie
   room: Wohnzimmer
 2/2/90:
   dpt: '1.001'
@@ -3867,106 +4140,16 @@
   function: Schalten
   name: Schalten.A.Terrasse.K1-L1.Steckdose.Sperren
   room: Terrasse
-2/5/100:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K2-L3.Steckdose.Sperren
-  room: Garten
-2/5/101:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K2-L3.Steckdose.Ein/Aus
-  room: Garten
-2/5/102:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K2-L3.Steckdose.Ein/Aus-Status
-  room: Garten
 2/5/11:
   dpt: '1.001'
   function: Schalten
   name: Schalten.A.Terrasse.K1-L1.Steckdose.Ein/Aus
   room: Terrasse
-2/5/110:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L1.Steckdose.Sperren
-  room: Garten
-2/5/111:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L1.Steckdose.Ein/Aus
-  room: Garten
-2/5/112:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L1.Steckdose.Ein/Aus-Status
-  room: Garten
 2/5/12:
   dpt: '1.011'
   function: Schalten
   name: Schalten.A.Terrasse.K1-L1.Steckdose.Ein/Aus-Status
   room: Terrasse
-2/5/120:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L2.Steckdose.Sperren
-  room: Garten
-2/5/121:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L2.Steckdose.Ein/Aus
-  room: Garten
-2/5/122:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L2.Steckdose.Ein/Aus-Status
-  room: Garten
-2/5/130:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L3.Steckdose.Sperren
-  room: Garten
-2/5/131:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L3.Steckdose.Ein/Aus
-  room: Garten
-2/5/132:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L3.Steckdose.Ein/Aus-Status
-  room: Garten
-2/5/140:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L4.Steckdose.Sperren
-  room: Garten
-2/5/141:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L4.Steckdose.Ein/Aus
-  room: Garten
-2/5/142:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L4.Steckdose.Ein/Aus-Status
-  room: Garten
-2/5/150:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L5.Steckdose.Sperren
-  room: Garten
-2/5/151:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L5.Steckdose.Ein/Aus
-  room: Garten
-2/5/152:
-  dpt: '1.011'
-  function: Schalten
-  name: Schalten.A.Garten.K3-L5.Steckdose.Ein/Aus-Status
-  room: Garten
 2/5/2:
   dpt: '1.011'
   function: Schalten
@@ -4017,80 +4200,170 @@
   function: Schalten
   name: Schalten.A.Balkon.K1-L2.Steckdose.Ein/Aus-Status
   room: Balkon
-2/5/50:
+2/6/0:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K1-L1.Steckdose.Sperren
+  name: Schalten.G.Garten.K1-L1.Steckdose.Sperren
   room: Garten
-2/5/51:
+2/6/1:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K1-L1.Steckdose.Ein/Aus
+  name: Schalten.G.Garten.K1-L1.Steckdose.Ein/Aus
   room: Garten
-2/5/52:
+2/6/10:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K1-L2.Steckdose.Sperren
+  room: Garten
+2/6/100:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L5.Steckdose.Sperren
+  room: Garten
+2/6/101:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L5.Steckdose.Ein/Aus
+  room: Garten
+2/6/102:
   dpt: '1.011'
   function: Schalten
-  name: Schalten.A.Garten.K1-L1.Steckdose.Ein/Aus-Status
+  name: Schalten.G.Garten.K3-L5.Steckdose.Ein/Aus-Status
   room: Garten
-2/5/60:
+2/6/11:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K1-L2.Steckdose.Sperren
+  name: Schalten.G.Garten.K1-L2.Steckdose.Ein/Aus
   room: Garten
-2/5/61:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K1-L2.Steckdose.Ein/Aus
-  room: Garten
-2/5/62:
+2/6/12:
   dpt: '1.011'
   function: Schalten
-  name: Schalten.A.Garten.K1-L2.Steckdose.Ein/Aus-Status
+  name: Schalten.G.Garten.K1-L2.Steckdose.Ein/Aus-Status
   room: Garten
-2/5/70:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K1-L3.Steckdose.Sperren
-  room: Garten
-2/5/71:
-  dpt: '1.001'
-  function: Schalten
-  name: Schalten.A.Garten.K1-L3.Steckdose.Ein/Aus
-  room: Garten
-2/5/72:
+2/6/2:
   dpt: '1.011'
   function: Schalten
-  name: Schalten.A.Garten.K1-L3.Steckdose.Ein/Aus-Status
+  name: Schalten.G.Garten.K1-L1.Steckdose.Ein/Aus-Status
   room: Garten
-2/5/80:
+2/6/20:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K2-L1.Steckdose.Sperren
+  name: Schalten.G.Garten.K1-L3.Steckdose.Sperren
   room: Garten
-2/5/81:
+2/6/21:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K2-L1.Steckdose.Ein/Aus
+  name: Schalten.G.Garten.K1-L3.Steckdose.Ein/Aus
   room: Garten
-2/5/82:
+2/6/22:
   dpt: '1.011'
   function: Schalten
-  name: Schalten.A.Garten.K2-L1.Steckdose.Ein/Aus-Status
+  name: Schalten.G.Garten.K1-L3.Steckdose.Ein/Aus-Status
   room: Garten
-2/5/90:
+2/6/30:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K2-L2.Steckdose.Sperren
+  name: Schalten.G.Garten.K2-L1.Steckdose.Sperren
   room: Garten
-2/5/91:
+2/6/31:
   dpt: '1.001'
   function: Schalten
-  name: Schalten.A.Garten.K2-L2.Steckdose.Ein/Aus
+  name: Schalten.G.Garten.K2-L1.Steckdose.Ein/Aus
   room: Garten
-2/5/92:
+2/6/32:
   dpt: '1.011'
   function: Schalten
-  name: Schalten.A.Garten.K2-L2.Steckdose.Ein/Aus-Status
+  name: Schalten.G.Garten.K2-L1.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/40:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L2.Steckdose.Sperren
+  room: Garten
+2/6/41:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L2.Steckdose.Ein/Aus
+  room: Garten
+2/6/42:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L2.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/50:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L3.Steckdose.Sperren
+  room: Garten
+2/6/51:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L3.Steckdose.Ein/Aus
+  room: Garten
+2/6/52:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K2-L3.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/60:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L1.Steckdose.Sperren
+  room: Garten
+2/6/61:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L1.Steckdose.Ein/Aus
+  room: Garten
+2/6/62:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L1.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/70:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L2.Steckdose.Sperren
+  room: Garten
+2/6/71:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L2.Steckdose.Ein/Aus
+  room: Garten
+2/6/72:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L2.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/80:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L3.Steckdose.Sperren
+  room: Garten
+2/6/81:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L3.Steckdose.Ein/Aus
+  room: Garten
+2/6/82:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L3.Steckdose.Ein/Aus-Status
+  room: Garten
+2/6/90:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L4.Steckdose.Sperren
+  room: Garten
+2/6/91:
+  dpt: '1.001'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L4.Steckdose.Ein/Aus
+  room: Garten
+2/6/92:
+  dpt: '1.011'
+  function: Schalten
+  name: Schalten.G.Garten.K3-L4.Steckdose.Ein/Aus-Status
   room: Garten
 3/0/0:
   dpt: '1.001'
@@ -4122,6 +4395,16 @@
   function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Flur.Ein/Aus-Status
   room: Flur
+3/0/110:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.EG.Ein/Aus
+  room: Erdgeschoss
+3/0/111:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.EG.Ein/Aus-Status
+  room: Erdgeschoss
 3/0/12:
   dpt: '1.001'
   function: Beleuchtung
@@ -4130,18 +4413,28 @@
 3/0/120:
   dpt: '1.001'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.EG.Ein/Aus
-  room: Erdgeschoss
+  name: Beleuchtung.Zentral.OG.Ein/Aus
+  room: Obergeschoss
 3/0/121:
   dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.EG.Ein/Aus-Status
-  room: Erdgeschoss
+  name: Beleuchtung.Zentral.OG.Ein/Aus-Status
+  room: Obergeschoss
 3/0/13:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Gäste-WC.Ein/Aus-Status
   room: Gäste WC
+3/0/130:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.DG.Ein/Aus
+  room: Dachgeschoss
+3/0/131:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.DG.Ein/Aus-Status
+  room: Dachgeschoss
 3/0/14:
   dpt: '1.001'
   function: Beleuchtung
@@ -4149,14 +4442,10 @@
   room: Büro
 3/0/140:
   dpt: '1.001'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.OG.Ein/Aus
-  room: Obergeschoss
+  name: Beleuchtung.Zentral.A.Ein/Aus
 3/0/141:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.OG.Ein/Aus-Status
-  room: Obergeschoss
+  dpt: '1.001'
+  name: Beleuchtung.Zentral.A.Ein/Aus-Status
 3/0/15:
   dpt: '1.011'
   function: Beleuchtung
@@ -4167,16 +4456,6 @@
   function: Beleuchtung
   name: Beleuchtung.Zentral.EG.Wohnzimmer.Ein/Aus
   room: Wohnzimmer
-3/0/160:
-  dpt: '1.001'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.DG.Ein/Aus
-  room: Dachgeschoss
-3/0/161:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.DG.Ein/Aus-Status
-  room: Dachgeschoss
 3/0/17:
   dpt: '1.011'
   function: Beleuchtung
@@ -4204,10 +4483,14 @@
   room: Küche
 3/0/200:
   dpt: '1.001'
-  name: Beleuchtung.Zentral.Innen.Ein/Aus
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.Gebäude.Ein/Aus
+  room: 1 - Gebäude
 3/0/201:
   dpt: '1.011'
-  name: Beleuchtung.Zentral.Innen.Ein/Aus-Status
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.Gebäude.Ein/Aus-Status
+  room: 1 - Gebäude
 3/0/21:
   dpt: '1.011'
   function: Beleuchtung
@@ -4221,13 +4504,13 @@
 3/0/220:
   dpt: '1.001'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.Außen.Ein/Aus
-  room: 2 - Außen
+  name: Beleuchtung.Zentral.Garten.Ein/Aus
+  room: 2 - Garten
 3/0/221:
   dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.Außen.Ein/Aus-Status
-  room: 2 - Außen
+  name: Beleuchtung.Zentral.Garten.Ein/Aus-Status
+  room: 2 - Garten
 3/0/23:
   dpt: '1.011'
   function: Beleuchtung
@@ -4238,21 +4521,21 @@
   function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Abstellraum.Ein/Aus
   room: Abstellraum
+3/0/240:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.Anwesen.Ein/Aus
+  room: Anwesen Steinroth 20
+3/0/241:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.Anwesen.Ein/Aus-Status
+  room: Anwesen Steinroth 20
 3/0/25:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Zentral.OG.Abstellraum.Ein/Aus-Status
   room: Abstellraum
-3/0/250:
-  dpt: '1.001'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.Alle.Ein/Aus
-  room: Haus Steinroth 20
-3/0/251:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.Alle.Ein/Aus-Status
-  room: Haus Steinroth 20
 3/0/26:
   dpt: '1.001'
   function: Beleuchtung
@@ -4334,55 +4617,47 @@
   name: Beleuchtung.Zentral.KG.Technikraum.Ein/Aus
   room: Technikraum
 3/0/40:
+  description: 1 - Fassade (A1) Beleuchtung
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Fassade.Ein/Aus
-  room: Fassade
+  room: Außenbereich
 3/0/41:
+  description: 1 - Fassade (A1) Beleuchtung
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Fassade.Ein/Aus-Status
-  room: Fassade
+  room: Außenbereich
 3/0/42:
-  dpt: '1.001'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Eingang.Ein/Aus
-  room: Eingang
-3/0/43:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Eingang.Ein/Aus-Status
-  room: Eingang
-3/0/44:
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Terrasse.Ein/Aus
   room: Terrasse
-3/0/45:
+3/0/43:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Terrasse.Ein/Aus-Status
   room: Terrasse
-3/0/46:
+3/0/44:
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Balkon.Ein/Aus
   room: Balkon
-3/0/47:
+3/0/45:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Zentral.A.Balkon.Ein/Aus-Status
   room: Balkon
-3/0/48:
+3/0/46:
   dpt: '1.001'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Garten.Ein/Aus
-  room: Garten
-3/0/49:
+  name: Beleuchtung.Zentral.A.Dach.Ein/Aus
+  room: Dach
+3/0/47:
   dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Garten.Ein/Aus-Status
-  room: Garten
+  name: Beleuchtung.Zentral.A.Dach.Ein/Aus-Status
+  room: Dach
 3/0/5:
   dpt: '1.011'
   function: Beleuchtung
@@ -4391,13 +4666,23 @@
 3/0/50:
   dpt: '1.001'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Dach.Ein/Aus
-  room: Dach
+  name: Beleuchtung.Zentral.G.Eingang.Ein/Aus
+  room: Eingang
 3/0/51:
   dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.Zentral.A.Dach.Ein/Aus-Status
-  room: Dach
+  name: Beleuchtung.Zentral.G.Eingang.Ein/Aus-Status
+  room: Eingang
+3/0/52:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.G.Garten.Ein/Aus
+  room: Garten
+3/0/53:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.Zentral.G.Garten.Ein/Aus-Status
+  room: Garten
 3/0/6:
   dpt: '1.001'
   function: Beleuchtung
@@ -6239,184 +6524,190 @@
   name: Beleuchtung.DG.Speicher.Deckenleuchte.Dimmen-Status
   room: Speicher (S)
 3/5/0:
+  description: 1 - Fassade (A1) Beleuchtung
   dpt: '1.003'
   function: Beleuchtung
   name: Beleuchtung.A.Fassade.Front.Sperren
-  room: Fassade
+  room: Außenbereich
 3/5/1:
+  description: 1 - Fassade (A1) Beleuchtung
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.A.Fassade.Front.Ein/Aus
-  room: Fassade
+  room: Außenbereich
 3/5/10:
-  dpt: '1.003'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Sperren
-  room: Eingang
-3/5/11:
-  dpt: '1.001'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Ein/Aus
-  room: Eingang
-3/5/12:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Ein/Aus-Status
-  room: Eingang
-3/5/13:
-  dpt: '3.007'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Dimmen-Relativ
-  room: Eingang
-3/5/14:
-  dpt: '5.001'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Dimmen-Absolut
-  room: Eingang
-3/5/15:
-  dpt: '5.001'
-  function: Beleuchtung
-  name: Beleuchtung.A.Eingang.Briefkasten.Dimmen-Status
-  room: Eingang
-3/5/2:
-  dpt: '1.011'
-  function: Beleuchtung
-  name: Beleuchtung.A.Fassade.Front.Ein/Aus-Status
-  room: Fassade
-3/5/3:
-  dpt: '3.007'
-  function: Beleuchtung
-  name: Beleuchtung.A.Fassade.Front.Dimmen-Relativ
-  room: Fassade
-3/5/30:
   dpt: '1.003'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Sperren
   room: Terrasse
-3/5/31:
+3/5/11:
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Ein/Aus
   room: Terrasse
-3/5/32:
+3/5/12:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Ein/Aus-Status
   room: Terrasse
-3/5/33:
+3/5/13:
   dpt: '3.007'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Dimmen-Relativ
   room: Terrasse
-3/5/34:
+3/5/14:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Dimmen-Absolut
   room: Terrasse
-3/5/35:
+3/5/15:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Spots.Dimmen-Status
   room: Terrasse
-3/5/4:
-  dpt: '5.001'
+3/5/2:
+  description: 1 - Fassade (A1) Beleuchtung
+  dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.A.Fassade.Front.Dimmen-Absolut
-  room: Fassade
-3/5/40:
+  name: Beleuchtung.A.Fassade.Front.Ein/Aus-Status
+  room: Außenbereich
+3/5/20:
   dpt: '1.003'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Sperren
   room: Terrasse
-3/5/41:
+3/5/21:
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Ein/Aus
   room: Terrasse
-3/5/42:
+3/5/22:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Ein/Aus-Status
   room: Terrasse
-3/5/43:
+3/5/23:
   dpt: '3.007'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Dimmen-Relativ
   room: Terrasse
-3/5/44:
+3/5/24:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Dimmen-Absolut
   room: Terrasse
-3/5/45:
+3/5/25:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Terrasse.Stripe.Dimmen-Status
   room: Terrasse
-3/5/5:
-  dpt: '5.001'
+3/5/3:
+  description: 1 - Fassade (A1) Beleuchtung
+  dpt: '3.007'
   function: Beleuchtung
-  name: Beleuchtung.A.Fassade.Front.Dimmen-Status
-  room: Fassade
-3/5/50:
+  name: Beleuchtung.A.Fassade.Front.Dimmen-Relativ
+  room: Außenbereich
+3/5/30:
   dpt: '1.003'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Sperren
   room: Balkon
-3/5/51:
+3/5/31:
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Ein/Aus
   room: Balkon
-3/5/52:
+3/5/32:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Ein/Aus-Status
   room: Balkon
-3/5/53:
+3/5/33:
   dpt: '3.007'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Dimmen-Relativ
   room: Balkon
-3/5/54:
+3/5/34:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Dimmen-Absolut
   room: Balkon
-3/5/55:
+3/5/35:
   dpt: '5.001'
   function: Beleuchtung
   name: Beleuchtung.A.Balkon.Spots.Dimmen-Status
   room: Balkon
-3/5/60:
+3/5/4:
+  description: 1 - Fassade (A1) Beleuchtung
+  dpt: '5.001'
+  function: Beleuchtung
+  name: Beleuchtung.A.Fassade.Front.Dimmen-Absolut
+  room: Außenbereich
+3/5/5:
+  description: 1 - Fassade (A1) Beleuchtung
+  dpt: '5.001'
+  function: Beleuchtung
+  name: Beleuchtung.A.Fassade.Front.Dimmen-Status
+  room: Außenbereich
+3/6/20:
   dpt: '1.003'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Sperren
-  room: Garten
-3/5/61:
+  name: Beleuchtung.G.Eingang.Briefkasten.Sperren
+  room: Eingang
+3/6/21:
   dpt: '1.001'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Ein/Aus
-  room: Garten
-3/5/62:
+  name: Beleuchtung.G.Eingang.Briefkasten.Ein/Aus
+  room: Eingang
+3/6/22:
   dpt: '1.011'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Ein/Aus-Status
-  room: Garten
-3/5/63:
+  name: Beleuchtung.G.Eingang.Briefkasten.Ein/Aus-Status
+  room: Eingang
+3/6/23:
   dpt: '3.007'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Dimmen-Relativ
-  room: Garten
-3/5/64:
+  name: Beleuchtung.G.Eingang.Briefkasten.Dimmen-Relativ
+  room: Eingang
+3/6/24:
   dpt: '5.001'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Dimmen-Absolut
-  room: Garten
-3/5/65:
+  name: Beleuchtung.G.Eingang.Briefkasten.Dimmen-Absolut
+  room: Eingang
+3/6/25:
   dpt: '5.001'
   function: Beleuchtung
-  name: Beleuchtung.A.Garten.Hochbeet.Poller.Dimmen-Status
+  name: Beleuchtung.G.Eingang.Briefkasten.Dimmen-Status
+  room: Eingang
+3/6/30:
+  dpt: '1.003'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Sperren
+  room: Garten
+3/6/31:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Ein/Aus
+  room: Garten
+3/6/32:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Ein/Aus-Status
+  room: Garten
+3/6/33:
+  dpt: '3.007'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Dimmen-Relativ
+  room: Garten
+3/6/34:
+  dpt: '5.001'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Dimmen-Absolut
+  room: Garten
+3/6/35:
+  dpt: '5.001'
+  function: Beleuchtung
+  name: Beleuchtung.G.Garten.Hochbeet.Poller.Dimmen-Status
   room: Garten
 4/3/60:
   dpt: '1.003'
@@ -6538,52 +6829,52 @@
   function: Beleuchtung
   name: Beleuchtung.OG.Schlafzimmer-Luis.Stripe.Farbsteuerung-Status
   room: Schlafzimmer Luis
-5/0/120:
+5/0/110:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Innen.Fahren
   room: Erdgeschoss
-5/0/121:
+5/0/111:
   dpt: '1.007'
   function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Innen.Stoppen
   room: Erdgeschoss
-5/0/122:
+5/0/112:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Außen.Fahren
   room: Erdgeschoss
-5/0/123:
+5/0/113:
   dpt: '1.007'
   function: Beschattung
   name: Beschattung.Zentral.EG.Raffstore.Außen.Stoppen
   room: Erdgeschoss
-5/0/140:
+5/0/120:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Innen.Fahren
   room: Obergeschoss
-5/0/141:
+5/0/121:
   dpt: '1.007'
   function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Innen.Stoppen
   room: Obergeschoss
-5/0/142:
+5/0/122:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Außen.Fahren
   room: Obergeschoss
-5/0/143:
+5/0/123:
   dpt: '1.007'
   function: Beschattung
   name: Beschattung.Zentral.OG.Raffstore.Außen.Stoppen
   room: Obergeschoss
-5/0/144:
+5/0/124:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.OG.Vorhang.Fahren
   room: Obergeschoss
-5/0/145:
+5/0/125:
   dpt: '1.017'
   function: Beschattung
   name: Beschattung.Zentral.OG.Vorhang.Stoppen
@@ -6591,93 +6882,93 @@
 5/0/200:
   dpt: '1.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Sperren
-  room: 1 - Innen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Sperren
+  room: 1 - Gebäude
 5/0/201:
   dpt: '1.008'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Fahren
-  room: 1 - Innen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Fahren
+  room: 1 - Gebäude
 5/0/202:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Position
-  room: 1 - Innen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Position
+  room: 1 - Gebäude
 5/0/203:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Rotation
-  room: 1 - Innen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Rotation
+  room: 1 - Gebäude
 5/0/204:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Helligkeitsschwelle
-  room: 1 - Innen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Helligkeitsschwelle
+  room: 1 - Gebäude
 5/0/205:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Innen.Automatik.Dämmerungsschwelle
-  room: 1 - Innen
-5/0/220:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Dämmerungsschwelle
+  room: 1 - Gebäude
+5/0/206:
   dpt: '1.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Sperren
-  room: 2 - Außen
-5/0/221:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Sperren
+  room: 1 - Gebäude
+5/0/207:
   dpt: '1.008'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Fahren
-  room: 2 - Außen
-5/0/222:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Fahren
+  room: 1 - Gebäude
+5/0/208:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Position
-  room: 2 - Außen
-5/0/223:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Position
+  room: 1 - Gebäude
+5/0/209:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Rotation
-  room: 2 - Außen
-5/0/224:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Rotation
+  room: 1 - Gebäude
+5/0/210:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Helligkeitsschwelle
-  room: 2 - Außen
-5/0/225:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Helligkeitsschwelle
+  room: 1 - Gebäude
+5/0/211:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-1.Automatik.Dämmerungsschwelle
-  room: 2 - Außen
-5/0/226:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Dämmerungsschwelle
+  room: 1 - Gebäude
+5/0/212:
   dpt: '1.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Sperren
-  room: 2 - Außen
-5/0/227:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Sperren
+  room: 1 - Gebäude
+5/0/213:
   dpt: '1.008'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Fahren
-  room: 2 - Außen
-5/0/228:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Fahren
+  room: 1 - Gebäude
+5/0/214:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Position
-  room: 2 - Außen
-5/0/229:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Position
+  room: 1 - Gebäude
+5/0/215:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Rotation
-  room: 2 - Außen
-5/0/230:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Rotation
+  room: 1 - Gebäude
+5/0/216:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Helligkeitsschwelle
-  room: 2 - Außen
-5/0/231:
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Helligkeitsschwelle
+  room: 1 - Gebäude
+5/0/217:
   dpt: '9.004'
   function: Beschattung
-  name: Beschattung.Zentral.Raffstore.Außen.Zone-2.Automatik.Dämmerungsschwelle
-  room: 2 - Außen
+  name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Dämmerungsschwelle
+  room: 1 - Gebäude
 5/2/0:
   dpt: '1.003'
   function: Beschattung
@@ -7609,15 +7900,17 @@
   name: Beschattung.OG.Schlafzimmer-Gregory.Vorhang.Fahrzeit
   room: Schlafzimmer Gregory
 6/0/200:
+  description: 1 - Innen Raumklima
   dpt: '5.010'
   function: Raumklima
-  name: Raumklima.Zentral.KWL.Innen.Lüftermodi
-  room: 1 - Innen
+  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi
+  room: 1 - Gebäude
 6/0/201:
+  description: 1 - Innen Raumklima
   dpt: '5.010'
   function: Raumklima
-  name: Raumklima.Zentral.KWL.Innen.Lüftermodi-Status
-  room: 1 - Innen
+  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi-Status
+  room: 1 - Gebäude
 6/2/0:
   dpt: '1.003'
   function: Raumklima
@@ -7627,6 +7920,11 @@
   dpt: '5.001'
   function: Raumklima
   name: Raumklima.EG.Flur.FBH.Stellwert-Status
+  room: Flur
+6/2/10:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.EG.Flur.FBH.Diagnose
   room: Flur
 6/2/100:
   dpt: '1.003'
@@ -7669,6 +7967,16 @@
   name: Raumklima.EG.Küche.FBH.Aktiv
   room: Küche
 6/2/108:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Küche.FBH.Aktiv-Anomalie
+  room: Küche
+6/2/109:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Küche.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Küche
+6/2/110:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.EG.Küche.FBH.Diagnose
@@ -7719,15 +8027,25 @@
   name: Raumklima.EG.Gäste-WC.FBH.Aktiv
   room: Gäste WC
 6/2/28:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.EG.Gäste-WC.FBH.Diagnose
+  name: Raumklima.EG.Gäste-WC.FBH.Aktiv-Anomalie
+  room: Gäste WC
+6/2/29:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Gäste-WC.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Gäste WC
 6/2/3:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.EG.Flur.FBH.Soll-Temperatur-Status
   room: Flur
+6/2/30:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.EG.Gäste-WC.FBH.Diagnose
+  room: Gäste WC
 6/2/4:
   dpt: '9.002'
   function: Raumklima
@@ -7774,15 +8092,25 @@
   name: Raumklima.EG.Büro.FBH.Aktiv
   room: Büro
 6/2/48:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.EG.Büro.FBH.Diagnose
+  name: Raumklima.EG.Büro.FBH.Aktiv-Anomalie
+  room: Büro
+6/2/49:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Büro.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Büro
 6/2/5:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.EG.Flur.FBH.HVAC
   room: Flur
+6/2/50:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.EG.Büro.FBH.Diagnose
+  room: Büro
 6/2/6:
   dpt: '20.102'
   function: Raumklima
@@ -7829,19 +8157,29 @@
   name: Raumklima.EG.Wohnzimmer.FBH.Aktiv
   room: Wohnzimmer
 6/2/68:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.EG.Wohnzimmer.FBH.Diagnose
+  name: Raumklima.EG.Wohnzimmer.FBH.Aktiv-Anomalie
+  room: Wohnzimmer
+6/2/69:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Wohnzimmer.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Wohnzimmer
 6/2/7:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.EG.Flur.FBH.Aktiv
   room: Flur
-6/2/8:
+6/2/70:
   dpt: '16.000'
   function: Raumklima
-  name: Raumklima.EG.Flur.FBH.Diagnose
+  name: Raumklima.EG.Wohnzimmer.FBH.Diagnose
+  room: Wohnzimmer
+6/2/8:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Flur.FBH.Aktiv-Anomalie
   room: Flur
 6/2/80:
   dpt: '1.003'
@@ -7884,6 +8222,21 @@
   name: Raumklima.EG.Esszimmer.FBH.Aktiv
   room: Esszimmer
 6/2/88:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Esszimmer.FBH.Aktiv-Anomalie
+  room: Esszimmer
+6/2/89:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Esszimmer.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Esszimmer
+6/2/9:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.EG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Flur
+6/2/90:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.EG.Esszimmer.FBH.Diagnose
@@ -7897,6 +8250,11 @@
   dpt: '5.001'
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.Stellwert-Status
+  room: Flur
+6/3/10:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.OG.Flur.FBH.Diagnose
   room: Flur
 6/3/100:
   dpt: '1.003'
@@ -7926,22 +8284,32 @@
 6/3/105:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Eltern.HVAC
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.HVAC
   room: Schlafzimmer Eltern
 6/3/106:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Eltern.HVAC-Status
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.HVAC-Status
   room: Schlafzimmer Eltern
 6/3/107:
   dpt: '1.011'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Eltern.Aktiv
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv
   room: Schlafzimmer Eltern
 6/3/108:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Anomalie
+  room: Schlafzimmer Eltern
+6/3/109:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Schlafzimmer Eltern
+6/3/110:
   dpt: '16.000'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Eltern.Diagnose
+  name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Diagnose
   room: Schlafzimmer Eltern
 6/3/120:
   dpt: '1.003'
@@ -7984,6 +8352,16 @@
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv
   room: Begehbarer Schrank
 6/3/128:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Anomalie
+  room: Begehbarer Schrank
+6/3/129:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Begehbarer Schrank
+6/3/130:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Diagnose
@@ -8029,6 +8407,16 @@
   name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv
   room: Badezimmer Eltern
 6/3/148:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie
+  room: Badezimmer Eltern
+6/3/149:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Badezimmer Eltern
+6/3/150:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Badezimmer-Eltern.FBH.Diagnose
@@ -8079,15 +8467,25 @@
   name: Raumklima.OG.Abstellraum.FBH.Aktiv
   room: Abstellraum
 6/3/28:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.OG.Abstellraum.FBH.Diagnose
+  name: Raumklima.OG.Abstellraum.FBH.Aktiv-Anomalie
+  room: Abstellraum
+6/3/29:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Abstellraum.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Abstellraum
 6/3/3:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.Soll-Temperatur-Status
   room: Flur
+6/3/30:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.OG.Abstellraum.FBH.Diagnose
+  room: Abstellraum
 6/3/4:
   dpt: '9.002'
   function: Raumklima
@@ -8121,28 +8519,38 @@
 6/3/45:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Badezimmer-Kinder.HVAC
+  name: Raumklima.OG.Badezimmer-Kinder.FBH.HVAC
   room: Badezimmer Kinder
 6/3/46:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Badezimmer-Kinder.HVAC-Status
+  name: Raumklima.OG.Badezimmer-Kinder.FBH.HVAC-Status
   room: Badezimmer Kinder
 6/3/47:
   dpt: '1.011'
   function: Raumklima
-  name: Raumklima.OG.Badezimmer-Kinder.Aktiv
+  name: Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv
   room: Badezimmer Kinder
 6/3/48:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.OG.Badezimmer-Kinder.FBH.Diagnose
+  name: Raumklima.OG.Badezimmer-Kinder..FBHAktiv-Anomalie
+  room: Badezimmer Kinder
+6/3/49:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Badezimmer Kinder
 6/3/5:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.HVAC
   room: Flur
+6/3/50:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Kinder.FBH.Diagnose
+  room: Badezimmer Kinder
 6/3/6:
   dpt: '20.102'
   function: Raumklima
@@ -8176,32 +8584,42 @@
 6/3/65:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Gregory.HVAC
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.HVAC
   room: Schlafzimmer Gregory
 6/3/66:
   dpt: '20.102'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Gregory.HVAC-Status
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.HVAC-Status
   room: Schlafzimmer Gregory
 6/3/67:
   dpt: '1.011'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Gregory.Aktiv
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv
   room: Schlafzimmer Gregory
 6/3/68:
-  dpt: '16.000'
+  dpt: '5.010'
   function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Gregory.Diagnose
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Anomalie
+  room: Schlafzimmer Gregory
+6/3/69:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Schlafzimmer Gregory
 6/3/7:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.Aktiv
   room: Flur
-6/3/8:
+6/3/70:
   dpt: '16.000'
   function: Raumklima
-  name: Raumklima.OG.Flur.FBH.Diagnose
+  name: Raumklima.OG.Schlafzimmer-Gregory.FBH.Diagnose
+  room: Schlafzimmer Gregory
+6/3/8:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Flur.FBH.Aktiv-Anomalie
   room: Flur
 6/3/80:
   dpt: '1.003'
@@ -8244,20 +8662,37 @@
   name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv
   room: Schlafzimmer Luis
 6/3/88:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie
+  room: Schlafzimmer Luis
+6/3/89:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Schlafzimmer Luis
+6/3/9:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Flur
+6/3/90:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Luis.FBH.Diagnose
   room: Schlafzimmer Luis
 7/0/200:
+  description: 1 - Innen Bedienelemente
   dpt: '1.001'
   function: Bedienelemente
-  name: Bedienelemente.Zentral.Schalter.Innen.Sperren
-  room: 1 - Innen
+  name: Bedienelemente.Zentral.Gebäude.Schalter.Sperren
+  room: 1 - Gebäude
 7/0/201:
+  description: 1 - Innen Bedienelemente
   dpt: '5.010'
   function: Bedienelemente
-  name: Bedienelemente.Zentral.Schalter.Innen.Farbe
-  room: 1 - Innen
+  name: Bedienelemente.Zentral.Gebäude.Schalter.Farbe
+  room: 1 - Gebäude
 7/2/0:
   dpt: '1.001'
   function: Bedienelemente
@@ -8793,26 +9228,26 @@
   function: Bedienelemente
   name: Bedienelemente.OG.Schlafzimmer-Eltern.Schalter.Tag/Nacht
   room: Schlafzimmer Eltern
-8/0/180:
+8/0/140:
   dpt: '9.004'
   function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-SO
-  room: 2 - Außen
-8/0/181:
+  room: Außenbereich
+8/0/141:
   dpt: '9.004'
   function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-NW
-  room: 2 - Außen
-8/0/182:
+  room: Außenbereich
+8/0/142:
   dpt: '9.004'
   function: Sensorik
   name: Sensorik.Zentral.A.Helligkeit-Alle
-  room: 2 - Außen
-8/0/183:
+  room: Außenbereich
+8/0/143:
   dpt: '9.001'
   function: Sensorik
   name: Sensorik.Zentral.A.Temperatur-Alle
-  room: 2 - Außen
+  room: Außenbereich
 8/1/100:
   dpt: '1.005'
   function: Sensorik
