@@ -485,3 +485,62 @@ mappings:
     payload_path: "$.temperature"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur"
     min_delta: 0.5  # °C
+
+  # Anomaly detectors -> KNX (iot-insights-engine). The engine publishes the
+  # current tier as $.severity_level (0=ok, 1=info, 2=warning, 3=critical) and
+  # re-publishes 0 on auto-clear; a Basalte LUT turns it into a notification.
+  # Phase A: Gastherme (1:1 UCs, anomaly.<uc>) + Gefrierschrank-Dauerbetrieb.
+  - subject: "anomaly.heating_iforest"
+    ga: "15/2/1"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Anomalie-Gesamt"
+    min_delta: 0  # severity tier: write only on change
+  - subject: "anomaly.boiler_curburnpow"
+    ga: "15/2/12"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Brenner.Modulation-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.boiler_heatingactive"
+    ga: "15/2/21"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.heating_activity_seasonal"
+    ga: "15/2/22"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Saisonal-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.boiler_curflowtemp"
+    ga: "15/2/24"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.boiler_rettemp"
+    ga: "15/2/27"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.dhw_curflow"
+    ga: "15/2/52"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Warmwasser.Durchfluss-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.dhw_curtemp"
+    ga: "15/2/54"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.freezer_icing"
+    ga: "2/2/229"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Dauerbetrieb-Anomalie"
+    min_delta: 0
