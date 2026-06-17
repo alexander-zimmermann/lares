@@ -79,18 +79,16 @@ providers:
     # Allows IngressRoute to use ExternalName services as backends
     allowExternalNameServices: true
 
-logs:
-  # General Traefik logs (startup, configuration, events, shutdown, ...)
-  general:
-    format: json
-    level: WARN
-  # Access logs (HTTP requests)
-  access:
-    enabled: true
-    format: json
-    bufferingSize: 100
-    filters:
-      statuscodes: "400-599"
+# General Traefik logs (startup, configuration, events, shutdown, ...)
+log:
+  format: json
+  level: WARN
+# Access logs (HTTP requests)
+accessLog:
+  format: json
+  bufferingSize: 100
+  filters:
+    statusCodes: "400-599"
 
 metrics:
   # Prometheus Monitoring
