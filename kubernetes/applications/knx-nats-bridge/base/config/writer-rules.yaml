@@ -959,6 +959,12 @@ mappings:
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Abstellraum.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+  - subject: "anomaly.fbh_cold.og-badezimmer-kinder"
+    ga: "6/3/48"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv-Anomalie"
+    min_delta: 0
   - subject: "anomaly.window_while_heating.og-badezimmer-kinder"
     ga: "6/3/49"
     dpt: "5.010"
