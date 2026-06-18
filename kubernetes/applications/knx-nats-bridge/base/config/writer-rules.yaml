@@ -544,3 +544,67 @@ mappings:
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+
+  # Phase B1: Photovoltaik (per Wechselrichter via entity inv1/inv2; grid/
+  # consumer are house-level → no entity, needs engine >= 1.4.0) + Wallbox
+  # (single meter_id 0).
+  - subject: "anomaly.pv_iforest.inv1"
+    ga: "15/4/20"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Anomalie-Gesamt"
+    min_delta: 0
+  - subject: "anomaly.pv_production.inv1"
+    ga: "15/4/22"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.solar_inverter_temperature.inv1"
+    ga: "15/4/24"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.pv_iforest.inv2"
+    ga: "15/4/40"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Anomalie-Gesamt"
+    min_delta: 0
+  - subject: "anomaly.pv_production.inv2"
+    ga: "15/4/42"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.solar_inverter_temperature.inv2"
+    ga: "15/4/44"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.grid_power"
+    ga: "15/4/1"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Netz-Leistung-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.consumer_total"
+    ga: "15/4/3"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.wallbox_iforest.meter0"
+    ga: "15/6/5"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Wallbox.Anomalie-Gesamt"
+    min_delta: 0
+  - subject: "anomaly.wallbox_power_total.meter0"
+    ga: "15/6/13"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Wallbox.Ladeleistung-Anomalie"
+    min_delta: 0
