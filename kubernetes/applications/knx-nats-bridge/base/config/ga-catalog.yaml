@@ -2414,12 +2414,12 @@
 15/6/0:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Fehler-Status
+  name: Versorgungstechnik.Wallbox.Fehlerzustand-Status
   room: Garage
 15/6/1:
-  dpt: '5.010'
+  dpt: '16.001'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Lade-Status
+  name: Versorgungstechnik.Wallbox.Fehlerzustand-Statustext
   room: Garage
 15/6/10:
   dpt: '7.012'
@@ -2459,22 +2459,47 @@
 15/6/2:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.IEC61851-Status
+  name: Versorgungstechnik.Wallbox.Ladecontroller-Status
   room: Garage
-15/6/3:
+15/6/20:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status
+  name: Versorgungstechnik.Wallbox.Anomalie-Gesamt
+  room: Garage
+15/6/3:
+  dpt: '16.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ladecontroller-Statustext
   room: Garage
 15/6/4:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Schütz-Fehler
+  name: Versorgungstechnik.Wallbox.IEC61851-Status
   room: Garage
 15/6/5:
+  dpt: '16.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.IEC61851-Statustext
+  room: Garage
+15/6/6:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Anomalie-Gesamt
+  name: Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status
+  room: Garage
+15/6/7:
+  dpt: '16.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.DC-Fehlerstrom-Statustext
+  room: Garage
+15/6/8:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Schütz-Fehler
+  room: Garage
+15/6/9:
+  dpt: '16.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Schütz-Fehlertext
   room: Garage
 16/0/240:
   dpt: '1.011'
