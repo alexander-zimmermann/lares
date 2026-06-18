@@ -858,3 +858,170 @@ mappings:
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Standby-Anomalie"
     min_delta: 0
+
+  # Phase B3: Raumklima per-room (6/2 EG + 6/3 OG). entity = slug(floor +
+  # room) so EG/OG rooms with the same name (Flur) route distinctly. fbh_cold
+  # -> FBH.Aktiv-Anomalie, window_while_heating -> FBH.Aktiv-Fenster-Auf-Anomalie.
+  # Needs engine >= 1.5.0 (floor-qualified entity).
+  - subject: "anomaly.fbh_cold.eg-flur"
+    ga: "6/2/8"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Flur.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-flur"
+    ga: "6/2/9"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.eg-gaeste-wc"
+    ga: "6/2/28"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Gäste-WC.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-gaeste-wc"
+    ga: "6/2/29"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Gäste-WC.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.eg-buero"
+    ga: "6/2/48"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Büro.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-buero"
+    ga: "6/2/49"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Büro.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.eg-wohnzimmer"
+    ga: "6/2/68"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Wohnzimmer.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-wohnzimmer"
+    ga: "6/2/69"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Wohnzimmer.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.eg-esszimmer"
+    ga: "6/2/88"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Esszimmer.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-esszimmer"
+    ga: "6/2/89"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Esszimmer.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.eg-kueche"
+    ga: "6/2/108"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Küche.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.eg-kueche"
+    ga: "6/2/109"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.EG.Küche.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-flur"
+    ga: "6/3/8"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Flur.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-flur"
+    ga: "6/3/9"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-abstellraum"
+    ga: "6/3/28"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Abstellraum.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-abstellraum"
+    ga: "6/3/29"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Abstellraum.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-badezimmer-kinder"
+    ga: "6/3/49"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-schlafzimmer-gregory"
+    ga: "6/3/68"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-schlafzimmer-gregory"
+    ga: "6/3/69"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-schlafzimmer-luis"
+    ga: "6/3/88"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-schlafzimmer-luis"
+    ga: "6/3/89"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-schlafzimmer-eltern"
+    ga: "6/3/108"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-schlafzimmer-eltern"
+    ga: "6/3/109"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-begehbarer-schrank"
+    ga: "6/3/128"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-begehbarer-schrank"
+    ga: "6/3/129"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.fbh_cold.og-badezimmer-eltern"
+    ga: "6/3/148"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie"
+    min_delta: 0
+  - subject: "anomaly.window_while_heating.og-badezimmer-eltern"
+    ga: "6/3/149"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
+    min_delta: 0
