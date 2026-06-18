@@ -2444,7 +2444,17 @@
 15/6/14:
   dpt: '13.013'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Geladene-Energie
+  name: Versorgungstechnik.Wallbox.Energie.Geladen-Aktuell
+  room: Garage
+15/6/15:
+  dpt: '13.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell
+  room: Garage
+15/6/16:
+  dpt: '13.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Energie.Zählerstand-Ladebeginn
   room: Garage
 15/6/2:
   dpt: '5.010'

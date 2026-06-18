@@ -26,6 +26,7 @@ configMapGenerator:
       - streams/warp_charge_manager.yaml
       - streams/warp_charge_tracker.yaml
       - streams/warp_meter.yaml
+      - streams/warp_knx_republish.yaml
       - streams/unifi_events.yaml
       - streams/unifi_webhook.yaml
       - streams/unifi_arm_alarm.yaml

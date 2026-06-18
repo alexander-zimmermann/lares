@@ -1,0 +1,85 @@
+# Republishes WARP wallbox telemetry as named scalar fields for the
+# knx-nats-bridge writer. The raw WARP data is unusable by the bridge as-is:
+# `warp.meters.0.values` is a float ARRAY whose order is defined by
+# `warp.meters.0.value_ids` (the bridge can only read named JSON fields, no
+# array indices). This stream pulls the values we route to KNX out of the
+# array and onto two clean subjects.
+#
+# value_ids index -> MeterValueID (current Steinroth meter config):
+#   3/4/5 = 13/17/21 phase current L1/L2/L3 (A)
+#   12    = 74       total active power (W)
+#   14    = 209      active energy import since manufacture (kWh, lifetime)
+# If the meter is reconfigured the value_ids order changes — re-check the
+# indices against `warp.meters.0.value_ids` then.
+#
+# Charged energy of the current charge is NOT a WARP field; Basalte computes
+# it as (Zählerstand-Aktuell - Zählerstand-Ladebeginn). meter_start comes from
+# warp.charge_tracker.current_charge, hence the second input.
+input:
+  broker:
+    inputs:
+      - nats_jetstream:
+          urls: ["nats://nats.nats.svc:4222"]
+          auth:
+            user: redpanda-connect
+            password: ${NATS_PASSWORD}
+          stream: WARP
+          subject: warp.meters.0.values
+          durable: redpanda-connect-warp-knx-meter
+          deliver: last
+          ack_wait: 20m
+          max_ack_pending: 5000
+      - nats_jetstream:
+          urls: ["nats://nats.nats.svc:4222"]
+          auth:
+            user: redpanda-connect
+            password: ${NATS_PASSWORD}
+          stream: WARP
+          subject: warp.charge_tracker.current_charge
+          durable: redpanda-connect-warp-knx-charge
+          deliver: last
+          ack_wait: 20m
+          max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        let subj = meta("nats_subject")
+        let evt = this
+        root = if $subj == "warp.meters.0.values" {
+          # Length guard: partial arrays occur; index(14) on a short array
+          # would error and abort the mapping.
+          if $evt.type() == "array" && $evt.length() >= 15 {
+            {
+              # Phase current -> mA (DPT 7.012). max() = the active phase,
+              # works for both 1-phase (one leg) and 3-phase (balanced).
+              "ladestrom":            ([$evt.index(3), $evt.index(4), $evt.index(5)].max() * 1000).round(),
+              # Total active power -> W (DPT 14.056), no scaling.
+              "ladeleistung":         $evt.index(12),
+              # Lifetime energy kWh -> Wh (DPT 13.010) to keep sub-kWh
+              # resolution for the Basalte subtraction.
+              "zaehlerstand_aktuell": ($evt.index(14) * 1000).round(),
+            }
+          } else {
+            deleted()
+          }
+        } else if $subj == "warp.charge_tracker.current_charge" {
+          if $evt.meter_start != null {
+            { "zaehlerstand_ladebeginn": ($evt.meter_start * 1000).round() }
+          } else {
+            deleted()
+          }
+        } else {
+          deleted()
+        }
+        meta knx_subject = if $subj == "warp.meters.0.values" { "wallbox.knx.meter" } else { "wallbox.knx.charge" }
+
+output:
+  # Core NATS publish — the bridge writer uses a core subscription, and
+  # `wallbox.>` is not bound to any JetStream, so nothing archives it.
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("knx_subject") }

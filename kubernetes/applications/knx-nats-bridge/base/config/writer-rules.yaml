@@ -444,6 +444,37 @@ mappings:
     min_delta: 100  # mA
     min_delta_pct: 2
 
+  # WARP meter raw telemetry (republished by redpanda-connect
+  # warp_knx_republish from the warp.meters.0.values array). Charged energy of
+  # the current charge is computed in Basalte as Zählerstand-Aktuell minus
+  # Zählerstand-Ladebeginn — both raw counters published here in Wh.
+  - subject: "wallbox.knx.meter"
+    ga: "15/6/10"
+    dpt: "7.012"
+    payload_path: "$.ladestrom"
+    description: "Versorgungstechnik.Wallbox.Ladestrom"
+    min_delta: 100  # mA
+    min_delta_pct: 2
+  - subject: "wallbox.knx.meter"
+    ga: "15/6/12"
+    dpt: "14.056"
+    payload_path: "$.ladeleistung"
+    description: "Versorgungstechnik.Wallbox.Ladeleistung"
+    min_delta: 25  # W
+    min_delta_pct: 2
+  - subject: "wallbox.knx.meter"
+    ga: "15/6/15"
+    dpt: "13.010"
+    payload_path: "$.zaehlerstand_aktuell"
+    description: "Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell"
+    min_delta: 10  # Wh
+  - subject: "wallbox.knx.charge"
+    ga: "15/6/16"
+    dpt: "13.010"
+    payload_path: "$.zaehlerstand_ladebeginn"
+    description: "Versorgungstechnik.Wallbox.Energie.Zählerstand-Ladebeginn"
+    min_delta: 0  # changes only per charge: write on change
+
   # SolarEdge PV (15/4: 0..3 system-wide, 20..24 Wechselrichter 1, 40..44 Wechselrichter 2)
   - subject: "solaredge-1.powerflow"
     ga: "15/4/0"
