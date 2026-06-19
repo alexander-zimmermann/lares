@@ -1,0 +1,15 @@
+# Durable consumer for the redpanda-connect warp_charge_mode_from_knx forwarder.
+# Subscribes to the bridge publish of the Lademodus GA, which redpanda-connect
+# maps to WARP's power_manager/charge_mode_update (0=Schnell 1=Aus 2=PV 3=Min+PV).
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-warp-charge-mode-from-knx
+  namespace: nats
+spec:
+  streamName: KNX
+  durableName: redpanda-connect-warp-charge-mode-from-knx
+  filterSubject: knx.15.6.22
+  deliverPolicy: new
+  ackPolicy: explicit
+  maxAckPending: 64

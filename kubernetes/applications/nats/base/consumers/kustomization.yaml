@@ -5,3 +5,5 @@ resources:
   - unifi_events.yaml
   - pv_surplus_to_warp.yaml
   - unifi_arm_alarm.yaml
+  - warp_onoff_from_knx.yaml
+  - warp_charge_mode_from_knx.yaml

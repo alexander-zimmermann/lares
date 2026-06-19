@@ -1,0 +1,30 @@
+# Ein-Aus charge release: forwards the KNX Ein-Aus GA (15/6/20, DPT 1.001
+# "Versorgungstechnik.Wallbox.Ein-Aus") to the WARP wallbox as a charge
+# start/stop command — the equivalent of the WARP UI Start/Stop button.
+input:
+  # Consumer is declared as a CRD in nats/base/consumers/warp_onoff_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-warp-onoff-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    # knx-nats-bridge publishes {ga, name, value, dpt, ...}; DPT 1.001 decodes
+    # to bool. WARP toggles via two distinct command topics, payload ignored.
+    - mapping: |
+        meta topic = if this.value == true || this.value == 1 { "warp/evse/start_charging" } else { "warp/evse/stop_charging" }
+        root = null
+
+output:
+  mqtt:
+    urls: ["tcp://nats.nats.svc:1883"]
+    client_id: redpanda-connect-warp-onoff
+    user: redpanda-connect
+    password: ${NATS_PASSWORD}
+    topic: ${! meta("topic") }
+    qos: 0
