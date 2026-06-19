@@ -10,7 +10,7 @@ helmCharts:
   - name: csi-driver-nfs
     repo: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
     releaseName: csi-driver-nfs
-    version: 4.13.2
+    version: 4.13.3
     valuesFile: values.yaml
     namespace: csi-nfs-controller
     includeCRDs: true
