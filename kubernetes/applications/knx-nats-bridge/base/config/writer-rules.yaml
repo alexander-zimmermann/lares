@@ -484,13 +484,14 @@ mappings:
     min_delta: 0  # changes only per charge: write on change
 
   # WARP control feedback (KNX<-WARP). The command GAs (Ein-Aus 15/6/20,
-  # Lademodus 15/6/22) are driven KNX->WARP by redpanda-connect streams;
-  # these rules report the actual state back so Basalte reflects reality.
+  # Lademodi 15/6/22, per-mode buttons 15/6/25/27/29) are driven KNX->WARP by
+  # redpanda-connect streams; these rules report the actual state back so
+  # Basalte reflects reality.
   - subject: "warp.power_manager.charge_mode"
     ga: "15/6/23"
     dpt: "5.010"
     payload_path: "$.mode"  # 0=Schnell 1=Aus 2=PV 3=Min+PV
-    description: "Versorgungstechnik.Wallbox.Lademodus-Status"
+    description: "Versorgungstechnik.Wallbox.Lademodi-Status"
     min_delta: 0  # enum state: write only on change
   - subject: "wallbox.knx.charging"
     ga: "15/6/21"
@@ -498,6 +499,26 @@ mappings:
     payload_path: "$.on"  # derived in warp_charging_status (charger_state==2)
     description: "Versorgungstechnik.Wallbox.Ein-Aus-Status"
     min_delta: 0  # bool state: write only on change
+  # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
+  # Derived in warp_mode_flags from warp.power_manager.charge_mode.
+  - subject: "wallbox.knx.mode_flags"
+    ga: "15/6/26"
+    dpt: "1.011"
+    payload_path: "$.pv"  # mode == 2
+    description: "Versorgungstechnik.Wallbox.Lademodus-PV-Status"
+    min_delta: 0
+  - subject: "wallbox.knx.mode_flags"
+    ga: "15/6/28"
+    dpt: "1.011"
+    payload_path: "$.pvmin"  # mode == 3
+    description: "Versorgungstechnik.Wallbox.Lademodus-PV+Min-Status"
+    min_delta: 0
+  - subject: "wallbox.knx.mode_flags"
+    ga: "15/6/30"
+    dpt: "1.011"
+    payload_path: "$.fast"  # mode == 0
+    description: "Versorgungstechnik.Wallbox.Lademodus-Schnell-Status"
+    min_delta: 0
 
   # SolarEdge PV (15/4: 0..3 system-wide, 20..24 Wechselrichter 1, 40..44 Wechselrichter 2)
   - subject: "solaredge-1.powerflow"
@@ -652,7 +673,7 @@ mappings:
     description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie"
     min_delta: 0
   - subject: "anomaly.wallbox_iforest.meter0"
-    ga: "15/6/30"
+    ga: "15/6/40"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Wallbox.Anomalie-Gesamt"

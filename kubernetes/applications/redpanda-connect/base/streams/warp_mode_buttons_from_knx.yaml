@@ -1,0 +1,39 @@
+# Per-mode Lademodus buttons: forwards the three Basalte 1-bit button GAs to
+# the WARP charge mode. Each button GA, when pressed (value true), selects one
+# WARP charge mode via power_manager/charge_mode_update:
+#   knx.15.6.25 Lademodus-PV     -> mode 2 (PV)
+#   knx.15.6.27 Lademodus-PV+Min -> mode 3 (Min+PV)
+#   knx.15.6.29 Lademodus-Schnell-> mode 0 (Schnell)
+# "Aus" (mode 1) is not a button — that is the Ein-Aus GA (15/6/20).
+input:
+  # Consumer (filterSubjects on the three GAs) is declared as a CRD in
+  # nats/base/consumers/warp_mode_buttons_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-warp-mode-buttons-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    # Only a button press (value true/1) selects a mode; release (0) is ignored.
+    - mapping: |
+        let subj = meta("nats_subject")
+        root = if this.value == true || this.value == 1 {
+          if $subj == "knx.15.6.25" { {"mode": 2} }
+          else if $subj == "knx.15.6.27" { {"mode": 3} }
+          else if $subj == "knx.15.6.29" { {"mode": 0} }
+          else { deleted() }
+        } else { deleted() }
+
+output:
+  mqtt:
+    urls: ["tcp://nats.nats.svc:1883"]
+    client_id: redpanda-connect-warp-mode-buttons
+    user: redpanda-connect
+    password: ${NATS_PASSWORD}
+    topic: warp/power_manager/charge_mode_update
+    qos: 0
