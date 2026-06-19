@@ -2617,7 +2617,7 @@
 17/1/108:
   dpt: '5.010'
   function: Haushaltstechnik
-  name: Haushaltstechnik..Mikrowelle.Programm-Phase
+  name: Haushaltstechnik.Mikrowelle.Programm-Phase
   room: Küche
 17/1/109:
   dpt: '7.006'
@@ -2932,7 +2932,7 @@
 17/1/47:
   dpt: '9.002'
   function: Haushaltstechnik
-  name: Haushaltstechnik..Kühlschrank.Soll-Temperatur
+  name: Haushaltstechnik.Kühlschrank.Soll-Temperatur
   room: Küche
 17/1/48:
   dpt: '1.003'
@@ -3082,7 +3082,7 @@
 17/1/9:
   dpt: '1.005'
   function: Haushaltstechnik
-  name: Haushaltstechnik..Geschirrspüler.Hinweis-Fertig
+  name: Haushaltstechnik.Geschirrspüler.Hinweis-Fertig
   room: Küche
 2/0/240:
   description: 1 - Innen Schalten
