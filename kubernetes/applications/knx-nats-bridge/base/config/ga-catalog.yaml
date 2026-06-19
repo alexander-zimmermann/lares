@@ -2559,6 +2559,531 @@
 16/0/240:
   dpt: '1.011'
   name: Informationstechnik.Kubernetes.Alle.Status
+17/1/0:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Sperren
+  room: Küche
+17/1/1:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Ein/Aus
+  room: Küche
+17/1/10:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Salz-Füllstand
+  room: Küche
+17/1/100:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Sperren
+  room: Küche
+17/1/101:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Ein/Aus
+  room: Küche
+17/1/102:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Programm-Start
+  room: Küche
+17/1/103:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Licht
+  room: Küche
+17/1/104:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Status
+  room: Küche
+17/1/105:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Störung
+  room: Küche
+17/1/106:
+  dpt: '1.019'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Tür-Offen
+  room: Küche
+17/1/107:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Programm
+  room: Küche
+17/1/108:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik..Mikrowelle.Programm-Phase
+  room: Küche
+17/1/109:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Restzeit
+  room: Küche
+17/1/11:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Klarspüler-Füllstand
+  room: Küche
+17/1/110:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Startzeit
+  room: Küche
+17/1/111:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Ist-Temperatur
+  room: Küche
+17/1/112:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Soll-Temperatur
+  room: Küche
+17/1/113:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Hinweis
+  room: Küche
+17/1/114:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Fernsteuerung
+  room: Küche
+17/1/12:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Fernsteuerung
+  room: Küche
+17/1/120:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Sperren
+  room: Küche
+17/1/121:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Ein/Aus
+  room: Küche
+17/1/122:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Programm-Stop
+  room: Küche
+17/1/123:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Status
+  room: Küche
+17/1/124:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Störung
+  room: Küche
+17/1/125:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Programm
+  room: Küche
+17/1/126:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Programm-Phase
+  room: Küche
+17/1/127:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Hinweis
+  room: Küche
+17/1/128:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Entkalken-Fällig
+  room: Küche
+17/1/129:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Reinigen-Fällig
+  room: Küche
+17/1/130:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Milchsystem-Reinigen
+  room: Küche
+17/1/131:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Fernsteuerung
+  room: Küche
+17/1/140:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Sperren
+  room: Küche
+17/1/141:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Ein/Aus
+  room: Küche
+17/1/142:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Programm-Start
+  room: Küche
+17/1/143:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Licht
+  room: Küche
+17/1/144:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Status
+  room: Küche
+17/1/145:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Störung
+  room: Küche
+17/1/146:
+  dpt: '1.019'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Tür-Offen
+  room: Küche
+17/1/147:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Programm
+  room: Küche
+17/1/148:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Programm-Phase
+  room: Küche
+17/1/149:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Restzeit
+  room: Küche
+17/1/150:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Startzeit
+  room: Küche
+17/1/151:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Ist-Temperatur
+  room: Küche
+17/1/152:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Soll-Temperatur
+  room: Küche
+17/1/153:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Hinweis
+  room: Küche
+17/1/154:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Fernsteuerung
+  room: Küche
+17/1/160:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Sperren
+  room: Küche
+17/1/161:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Ein/Aus
+  room: Küche
+17/1/162:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.SuperGefrieren
+  room: Küche
+17/1/163:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Status
+  room: Küche
+17/1/164:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Störung
+  room: Küche
+17/1/165:
+  dpt: '1.019'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Tür-Offen
+  room: Küche
+17/1/166:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Ist-Temperatur
+  room: Küche
+17/1/167:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Soll-Temperatur
+  room: Küche
+17/1/168:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Fernsteuerung
+  room: Küche
+17/1/2:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Programm-Start
+  room: Küche
+17/1/20:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Sperren
+  room: Küche
+17/1/21:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Ein/Aus
+  room: Küche
+17/1/22:
+  dpt: '5.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Lüfterstufe
+  room: Küche
+17/1/23:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Licht
+  room: Küche
+17/1/24:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Status
+  room: Küche
+17/1/25:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Störung
+  room: Küche
+17/1/26:
+  dpt: '5.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Fettfilter
+  room: Küche
+17/1/27:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Fernsteuerung
+  room: Küche
+17/1/3:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Status
+  room: Küche
+17/1/4:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Störung
+  room: Küche
+17/1/40:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Sperren
+  room: Küche
+17/1/41:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Ein/Aus
+  room: Küche
+17/1/42:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.SuperKühlen
+  room: Küche
+17/1/43:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Status
+  room: Küche
+17/1/44:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Störung
+  room: Küche
+17/1/45:
+  dpt: '1.019'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Tür-Offen
+  room: Küche
+17/1/46:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Ist-Temperatur
+  room: Küche
+17/1/47:
+  dpt: '9.002'
+  function: Haushaltstechnik
+  name: Haushaltstechnik..Kühlschrank.Soll-Temperatur
+  room: Küche
+17/1/48:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Fernsteuerung
+  room: Küche
+17/1/5:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Programm
+  room: Küche
+17/1/6:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Programm-Phase
+  room: Küche
+17/1/60:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Sperren
+  room: Küche
+17/1/61:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Ein/Aus
+  room: Küche
+17/1/62:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Programm-Start
+  room: Küche
+17/1/63:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Licht
+  room: Küche
+17/1/64:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Status
+  room: Küche
+17/1/65:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Störung
+  room: Küche
+17/1/66:
+  dpt: '1.019'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Tür-Offen
+  room: Küche
+17/1/67:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Programm
+  room: Küche
+17/1/68:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Programm-Phase
+  room: Küche
+17/1/69:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Restzeit
+  room: Küche
+17/1/7:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Restzeit
+  room: Küche
+17/1/70:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Startzeit
+  room: Küche
+17/1/71:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Ist-Temperatur
+  room: Küche
+17/1/72:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Soll-Temperatur
+  room: Küche
+17/1/73:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Kern-Ist-Temperatur
+  room: Küche
+17/1/74:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Kern-Soll-Temperatur
+  room: Küche
+17/1/75:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Hinweis-Fertig
+  room: Küche
+17/1/76:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Fernsteuerung
+  room: Küche
+17/1/8:
+  dpt: '7.006'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Geschirrspüler.Startzeit
+  room: Küche
+17/1/80:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Sperren
+  room: Küche
+17/1/81:
+  dpt: '1.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Ein/Aus
+  room: Küche
+17/1/82:
+  dpt: '5.010'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Status
+  room: Küche
+17/1/83:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Störung
+  room: Küche
+17/1/84:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Ist-Temperatur
+  room: Küche
+17/1/85:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Soll-Temperatur
+  room: Küche
+17/1/86:
+  dpt: '1.003'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Fernsteuerung
+  room: Küche
+17/1/9:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik..Geschirrspüler.Hinweis-Fertig
+  room: Küche
 2/0/240:
   description: 1 - Innen Schalten
   dpt: '1.003'
