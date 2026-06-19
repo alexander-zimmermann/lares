@@ -2,15 +2,20 @@
 ## Control plane patches
 ###############################################################################
 cluster:
-  ## kube-apiserver memory tuning. CPs only have ~3.8 GiB RAM; without a
-  ## memory limit Go GC fills available memory and OOMs during RSS spikes
-  ## (e.g. OpenAPI schema rebuilds against large CRDs via ArgoCD diff).
-  ## Talos auto-injects GOMEMLIMIT=0.95*limit when resources.limits.memory
-  ## is set, so we only need to declare the limit.
+  ## kube-apiserver memory tuning. CPs only have ~3.8 GiB RAM and the
+  ## apiserver working set legitimately reaches ~2.4 GiB on the busiest CP.
+  ## A 3Gi limit was too loose: GOMEMLIMIT (=0.95*limit=2.85Gi) let RSS grow
+  ## until apiserver + etcd + system exceeded the 4 GiB VM and the kernel
+  ## triggered a node-global OOM that killed apiserver and took the whole
+  ## control plane down (e.g. OpenAPI schema rebuilds against large CRDs via
+  ## ArgoCD diff). Capping at 2.75Gi keeps GOMEMLIMIT (2.61Gi) and the cgroup
+  ## limit below the node ceiling, so a future spike is bounded by GC and, in
+  ## the worst case, OOM-killed cgroup-locally (apiserver restarts in seconds)
+  ## instead of taking the node — global OOM becomes a self-healing blip.
   apiServer:
     resources:
       limits:
-        memory: "3Gi"
+        memory: "2.75Gi"
   ## Expose metrics endpoints on all interfaces (default: 127.0.0.1)
   ## Required for Prometheus ServiceMonitor scraping from within the cluster
   controllerManager:
