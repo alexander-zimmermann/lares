@@ -1,0 +1,22 @@
+# DERIVED stream — NOT a primary data source. The `wallbox.knx.*` subjects are
+# republished by redpanda-connect from the primary `warp.*` data (renamed and
+# computed into the KNX-shaped fields the knx-nats-bridge writer consumes, e.g.
+# charging on/off derived from charger_state, charge-mode flags). This stream
+# exists only so the bridge's read responder can be seeded on startup for the
+# event-driven GAs (Ein-Aus-Status, Lademodus-Flags, Zählerstand-Ladebeginn);
+# without it those reads return no_value after a redeploy until the next change.
+# The cyclic meter subjects self-heal and don't need seeding, but are captured
+# too since the stream filter is the whole prefix.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: wallbox-knx
+  namespace: nats
+spec:
+  name: WALLBOX_KNX
+  subjects:
+    - wallbox.knx.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
