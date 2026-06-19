@@ -1,0 +1,18 @@
+# Durable consumer for the redpanda-connect warp_mode_buttons_from_knx
+# forwarder. Subscribes to the three per-mode Basalte button GAs, which
+# redpanda-connect maps to a WARP charge mode (PV=2, PV+Min=3, Schnell=0).
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-warp-mode-buttons-from-knx
+  namespace: nats
+spec:
+  streamName: KNX
+  durableName: redpanda-connect-warp-mode-buttons-from-knx
+  filterSubjects:
+    - knx.15.6.25  # Lademodus-PV
+    - knx.15.6.27  # Lademodus-PV+Min
+    - knx.15.6.29  # Lademodus-Schnell
+  deliverPolicy: new
+  ackPolicy: explicit
+  maxAckPending: 64

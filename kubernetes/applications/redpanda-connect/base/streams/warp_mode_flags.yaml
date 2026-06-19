@@ -1,0 +1,36 @@
+# Per-mode status bits: derives one boolean per charge mode from the WARP
+# charge mode and republishes them for the knx-nats-bridge writer, which maps
+# them to the Basalte per-mode status GAs (15/6/26/28/30, DPT 1.011).
+# Exactly one is true; all false when mode is Aus (1). The bridge cannot do
+# enum->bool, so the derivation lives here.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: WARP
+    subject: warp.power_manager.charge_mode
+    durable: redpanda-connect-warp-mode-flags
+    deliver: last
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "pv":    this.mode == 2,
+          "pvmin": this.mode == 3,
+          "fast":  this.mode == 0,
+        }
+
+output:
+  # Core NATS publish — the bridge writer uses a core subscription, and
+  # `wallbox.>` is not bound to any JetStream, so nothing archives it.
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: wallbox.knx.mode_flags
