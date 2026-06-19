@@ -405,37 +405,44 @@ mappings:
     description: "Versorgungstechnik.Gastherme.Mischer.Vorlauf.Soll-Temperatur"
     min_delta: 0.5  # °C
 
-  # WARP wallbox
+  # WARP wallbox. warp.evse.state is event-driven (published only on change),
+  # so seed_on_start primes the read responder from JetStream after a restart —
+  # otherwise reads return no_value until the next state change.
   - subject: "warp.evse.state"
     ga: "15/6/2"
     dpt: "5.010"
     payload_path: "$.charger_state"
     description: "Versorgungstechnik.Wallbox.Ladecontroller-Status"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/4"
     dpt: "5.010"
     payload_path: "$.iec61851_state"
     description: "Versorgungstechnik.Wallbox.IEC61851-Status"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/0"
     dpt: "5.010"
     payload_path: "$.error_state"
     description: "Versorgungstechnik.Wallbox.Fehlerzustand-Status"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/8"
     dpt: "5.010"
     payload_path: "$.contactor_error"
     description: "Versorgungstechnik.Wallbox.Schütz-Fehler"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/6"
     dpt: "5.010"
     payload_path: "$.dc_fault_current_state"
     description: "Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/11"
     dpt: "7.012"
@@ -443,6 +450,7 @@ mappings:
     description: "Versorgungstechnik.Wallbox.Ladestrom-Erlaubt"
     min_delta: 100  # mA
     min_delta_pct: 2
+    seed_on_start: true
 
   # WARP meter raw telemetry (republished by redpanda-connect
   # warp_knx_republish from the warp.meters.0.values array). Charged energy of
