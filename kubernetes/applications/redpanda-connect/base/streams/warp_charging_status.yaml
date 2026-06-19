@@ -1,0 +1,31 @@
+# Ein-Aus-Status feedback: derives a "charging active" boolean from the WARP
+# evse state and republishes it for the knx-nats-bridge writer, which maps it
+# to KNX 15/6/21 (DPT 1.001 "Versorgungstechnik.Wallbox.Ein-Aus-Status").
+# The bridge cannot transform an enum to a bool, so the derivation lives here.
+# charger_state == 2 means the WARP is actively charging.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: WARP
+    subject: warp.evse.state
+    durable: redpanda-connect-warp-charging-status
+    deliver: last
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: 'root = { "on": this.charger_state == 2 }'
+
+output:
+  # Core NATS publish — the bridge writer uses a core subscription, and
+  # `wallbox.>` is not bound to any JetStream, so nothing archives it.
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: wallbox.knx.charging

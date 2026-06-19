@@ -1,0 +1,28 @@
+# Lademodus control: forwards the KNX Lademodus GA (15/6/22, DPT 5.010
+# "Versorgungstechnik.Wallbox.Lademodus") to the WARP wallbox's charge mode.
+# The GA carries the WARP raw mode value directly: 0=Schnell 1=Aus 2=PV 3=Min+PV.
+input:
+  # Consumer is declared as a CRD in nats/base/consumers/warp_charge_mode_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-warp-charge-mode-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    # knx-nats-bridge publishes {ga, name, value, dpt, ...}; DPT 5.010 -> int.
+    # WARP expects power_manager/charge_mode_update payload {"mode": N}.
+    - mapping: 'root.mode = this.value'
+
+output:
+  mqtt:
+    urls: ["tcp://nats.nats.svc:1883"]
+    client_id: redpanda-connect-warp-charge-mode
+    user: redpanda-connect
+    password: ${NATS_PASSWORD}
+    topic: warp/power_manager/charge_mode_update
+    qos: 0

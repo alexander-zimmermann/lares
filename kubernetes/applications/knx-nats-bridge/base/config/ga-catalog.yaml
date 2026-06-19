@@ -2462,14 +2462,39 @@
   name: Versorgungstechnik.Wallbox.Ladecontroller-Status
   room: Garage
 15/6/20:
+  dpt: '1.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ein-Aus
+  room: Garage
+15/6/21:
+  dpt: '1.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Ein-Aus-Status
+  room: Garage
+15/6/22:
   dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Anomalie-Gesamt
+  name: Versorgungstechnik.Wallbox.Lademodus
+  room: Garage
+15/6/23:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Lademodus-Status
+  room: Garage
+15/6/24:
+  dpt: '16.001'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Lademodus-Statustext
   room: Garage
 15/6/3:
   dpt: '16.001'
   function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Ladecontroller-Statustext
+  room: Garage
+15/6/30:
+  dpt: '5.010'
+  function: Versorgungstechnik
+  name: Versorgungstechnik.Wallbox.Anomalie-Gesamt
   room: Garage
 15/6/4:
   dpt: '5.010'
