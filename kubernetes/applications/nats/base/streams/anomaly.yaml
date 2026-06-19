@@ -1,0 +1,19 @@
+# DERIVED stream — NOT a primary data source. The `anomaly.*` subjects carry
+# severity-level events emitted by the iot-insights-engine anomaly detectors.
+# They are event-driven (published only when a severity tier changes), so this
+# stream exists only so the knx-nats-bridge read responder can be seeded on
+# startup for the anomaly GAs; without it a read after a redeploy returns
+# no_value until the next anomaly state change (which may be days away).
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: anomaly
+  namespace: nats
+spec:
+  name: ANOMALY
+  subjects:
+    - anomaly.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1

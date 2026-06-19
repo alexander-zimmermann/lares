@@ -482,6 +482,7 @@ mappings:
     payload_path: "$.zaehlerstand_ladebeginn"
     description: "Versorgungstechnik.Wallbox.Energie.Zählerstand-Ladebeginn"
     min_delta: 0  # changes only per charge: write on change
+    seed_on_start: true
 
   # WARP control feedback (KNX<-WARP). The command GAs (Ein-Aus 15/6/20,
   # Lademodi 15/6/22, per-mode buttons 15/6/25/27/29) are driven KNX->WARP by
@@ -493,12 +494,14 @@ mappings:
     payload_path: "$.mode"  # 0=Schnell 1=Aus 2=PV 3=Min+PV
     description: "Versorgungstechnik.Wallbox.Lademodi-Status"
     min_delta: 0  # enum state: write only on change
+    seed_on_start: true
   - subject: "wallbox.knx.charging"
     ga: "15/6/21"
     dpt: "1.001"
     payload_path: "$.on"  # derived in warp_charging_status (charger_state==2)
     description: "Versorgungstechnik.Wallbox.Ein-Aus-Status"
     min_delta: 0  # bool state: write only on change
+    seed_on_start: true
   # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
   # Derived in warp_mode_flags from warp.power_manager.charge_mode.
   - subject: "wallbox.knx.mode_flags"
@@ -507,18 +510,21 @@ mappings:
     payload_path: "$.pv"  # mode == 2
     description: "Versorgungstechnik.Wallbox.Lademodus-PV-Status"
     min_delta: 0
+    seed_on_start: true
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/28"
     dpt: "1.011"
     payload_path: "$.pvmin"  # mode == 3
     description: "Versorgungstechnik.Wallbox.Lademodus-PV+Min-Status"
     min_delta: 0
+    seed_on_start: true
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/30"
     dpt: "1.011"
     payload_path: "$.fast"  # mode == 0
     description: "Versorgungstechnik.Wallbox.Lademodus-Schnell-Status"
     min_delta: 0
+    seed_on_start: true
 
   # SolarEdge PV (15/4: 0..3 system-wide, 20..24 Wechselrichter 1, 40..44 Wechselrichter 2)
   - subject: "solaredge-1.powerflow"
@@ -572,54 +578,63 @@ mappings:
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Anomalie-Gesamt"
     min_delta: 0  # severity tier: write only on change
+    seed_on_start: true
   - subject: "anomaly.boiler_curburnpow"
     ga: "15/2/12"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Brenner.Modulation-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.boiler_heatingactive"
     ga: "15/2/21"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.heating_activity_seasonal"
     ga: "15/2/22"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Saisonal-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.boiler_curflowtemp"
     ga: "15/2/24"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.boiler_rettemp"
     ga: "15/2/27"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.dhw_curflow"
     ga: "15/2/52"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Durchfluss-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.dhw_curtemp"
     ga: "15/2/54"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.freezer_icing"
     ga: "2/2/229"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
 
   # Phase B1: Photovoltaik (per Wechselrichter via entity inv1/inv2; grid/
   # consumer are house-level → no entity, needs engine >= 1.4.0) + Wallbox
@@ -630,60 +645,70 @@ mappings:
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Anomalie-Gesamt"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.pv_production.inv1"
     ga: "15/4/22"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.solar_inverter_temperature.inv1"
     ga: "15/4/24"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.pv_iforest.inv2"
     ga: "15/4/40"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Anomalie-Gesamt"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.pv_production.inv2"
     ga: "15/4/42"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.solar_inverter_temperature.inv2"
     ga: "15/4/44"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.grid_power"
     ga: "15/4/1"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Netz-Leistung-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.consumer_total"
     ga: "15/4/3"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.wallbox_iforest.meter0"
     ga: "15/6/40"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Wallbox.Anomalie-Gesamt"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.wallbox_power_total.meter0"
     ga: "15/6/13"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Wallbox.Ladeleistung-Anomalie"
     min_delta: 0
+    seed_on_start: true
 
   # Phase B2: appliance Stromwert anomalies (Schalten 2/1 KG + 2/2 EG).
   # appliance_standby (+8) + appliance_runtime (+9), entity = slug(Stromwert-GA).
@@ -694,246 +719,287 @@ mappings:
     payload_path: "$.severity_level"
     description: "Schalten.KG.Garage.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-27"
     ga: "2/1/29"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Garage.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-57"
     ga: "2/1/58"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K1-L1.Heizung.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-57"
     ga: "2/1/59"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K1-L1.Heizung.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-67"
     ga: "2/1/68"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K1-L2.Heizung.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-67"
     ga: "2/1/69"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K1-L2.Heizung.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-77"
     ga: "2/1/78"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K2-L1.Netzwerkschrank.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-77"
     ga: "2/1/79"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K2-L1.Netzwerkschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-87"
     ga: "2/1/88"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K2-L2.Netzwerkschrank.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-87"
     ga: "2/1/89"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K2-L2.Netzwerkschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-97"
     ga: "2/1/98"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K3-L3.Entfeuchter.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-97"
     ga: "2/1/99"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Technikraum.K3-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-117"
     ga: "2/1/118"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Vorratsraum.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-117"
     ga: "2/1/119"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Vorratsraum.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-147"
     ga: "2/1/148"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Vorratsraum.K3-L1.Lüftung.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-147"
     ga: "2/1/149"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Vorratsraum.K3-L1.Lüftung.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-157"
     ga: "2/1/158"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-157"
     ga: "2/1/159"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-187"
     ga: "2/1/188"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-187"
     ga: "2/1/189"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K3-L1.Trockner.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-1-197"
     ga: "2/1/198"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-1-197"
     ga: "2/1/199"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.KG.Hauswirtschaftsraum.K4-L1.Waschmaschine.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-87"
     ga: "2/2/88"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Wohnzimmer.K4-L1.Ofen.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-87"
     ga: "2/2/89"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Wohnzimmer.K4-L1.Ofen.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-147"
     ga: "2/2/148"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K4-L1.Geschirrspüler.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-147"
     ga: "2/2/149"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K4-L1.Geschirrspüler.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-157"
     ga: "2/2/158"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K5-L1.Haubenlüfter.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-157"
     ga: "2/2/159"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K5-L1.Haubenlüfter.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-167"
     ga: "2/2/168"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K7-L1.Kühlschrank.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-167"
     ga: "2/2/169"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K7-L1.Kühlschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-177"
     ga: "2/2/178"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K9-L1.Backofen.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-177"
     ga: "2/2/179"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K9-L1.Backofen.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-187"
     ga: "2/2/188"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K10-L1.Tellerwärmer.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-187"
     ga: "2/2/189"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K10-L1.Tellerwärmer.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-197"
     ga: "2/2/198"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-197"
     ga: "2/2/199"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K12-L1.Mikrowelle.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-207"
     ga: "2/2/208"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K13-L1.Kaffeemaschine.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-207"
     ga: "2/2/209"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K13-L1.Kaffeemaschine.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-217"
     ga: "2/2/218"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K14-L1.Dampfgarer.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_runtime.2-2-217"
     ga: "2/2/219"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K14-L1.Dampfgarer.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.appliance_standby.2-2-227"
     ga: "2/2/228"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Standby-Anomalie"
     min_delta: 0
+    seed_on_start: true
 
   # Phase B3: Raumklima per-room (6/2 EG + 6/3 OG). entity = slug(floor +
   # room) so EG/OG rooms with the same name (Flur) route distinctly. fbh_cold
@@ -945,165 +1011,193 @@ mappings:
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Flur.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-flur"
     ga: "6/2/9"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.eg-gaeste-wc"
     ga: "6/2/28"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Gäste-WC.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-gaeste-wc"
     ga: "6/2/29"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Gäste-WC.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.eg-buero"
     ga: "6/2/48"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Büro.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-buero"
     ga: "6/2/49"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Büro.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.eg-wohnzimmer"
     ga: "6/2/68"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Wohnzimmer.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-wohnzimmer"
     ga: "6/2/69"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Wohnzimmer.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.eg-esszimmer"
     ga: "6/2/88"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Esszimmer.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-esszimmer"
     ga: "6/2/89"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Esszimmer.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.eg-kueche"
     ga: "6/2/108"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Küche.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.eg-kueche"
     ga: "6/2/109"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.EG.Küche.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-flur"
     ga: "6/3/8"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Flur.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-flur"
     ga: "6/3/9"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-abstellraum"
     ga: "6/3/28"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Abstellraum.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-abstellraum"
     ga: "6/3/29"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Abstellraum.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-badezimmer-kinder"
     ga: "6/3/48"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-badezimmer-kinder"
     ga: "6/3/49"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Kinder.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-schlafzimmer-gregory"
     ga: "6/3/68"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-schlafzimmer-gregory"
     ga: "6/3/69"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Gregory.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-schlafzimmer-luis"
     ga: "6/3/88"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-schlafzimmer-luis"
     ga: "6/3/89"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-schlafzimmer-eltern"
     ga: "6/3/108"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-schlafzimmer-eltern"
     ga: "6/3/109"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-begehbarer-schrank"
     ga: "6/3/128"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-begehbarer-schrank"
     ga: "6/3/129"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.fbh_cold.og-badezimmer-eltern"
     ga: "6/3/148"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie"
     min_delta: 0
+    seed_on_start: true
   - subject: "anomaly.window_while_heating.og-badezimmer-eltern"
     ga: "6/3/149"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
+    seed_on_start: true
