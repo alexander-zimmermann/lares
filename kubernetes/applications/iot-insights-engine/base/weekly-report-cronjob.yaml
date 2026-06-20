@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: reporter
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.6.0
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.7.0
               command: ["iot-insights-engine", "weekly-report"]
               env:
                 - name: MCP_DB_HOST
