@@ -132,11 +132,46 @@ SELECT time_bucket('1 hour', time) AS bucket, inverter_id,
        avg(grid_power) AS grid_power_avg,
        avg(grid_consumption) AS grid_consumption_avg,
        avg(grid_delivery) AS grid_delivery_avg,
+       avg(consumer_used_pv_production) AS consumer_used_pv_production_avg,
+       avg(battery_charge) AS battery_charge_avg,
+       avg(consumer_used_battery_production) AS consumer_used_battery_production_avg,
        avg(consumer_total) AS consumer_total_avg,
        max(consumer_total) AS consumer_total_max,
        sum(consumer_total) AS consumer_total_sum,
        count(*) AS sample_count
 FROM solaredge_powerflow GROUP BY bucket, inverter_id WITH NO DATA;
+
+-- =========================================================
+-- SolarEdge Battery (solaredge-{1,2}.modbus.battery)
+-- Dormant until a storage unit is connected — solaredge2mqtt only emits the
+-- modbus.battery topic once a battery is present, so this table stays empty
+-- until then. Column set follows the solaredge2mqtt SunSpec battery model;
+-- verify field names against a live event at connect time.
+-- =========================================================
+CREATE TABLE solaredge_battery (
+    time             TIMESTAMPTZ      NOT NULL,
+    inverter_id      SMALLINT         NOT NULL,
+    state_of_charge  DOUBLE PRECISION,
+    state_of_health  DOUBLE PRECISION,
+    power            DOUBLE PRECISION,
+    current          DOUBLE PRECISION,
+    voltage          DOUBLE PRECISION,
+    temperature      DOUBLE PRECISION,
+    status           SMALLINT,
+    PRIMARY KEY (time, inverter_id)
+);
+SELECT create_hypertable('solaredge_battery', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON solaredge_battery (inverter_id, time DESC);
+
+CREATE MATERIALIZED VIEW solaredge_battery_1h
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 hour', time) AS bucket, inverter_id,
+       avg(state_of_charge) AS soc_avg,
+       min(state_of_charge) AS soc_min,
+       max(state_of_charge) AS soc_max,
+       avg(power) AS power_avg,
+       count(*) AS sample_count
+FROM solaredge_battery GROUP BY bucket, inverter_id WITH NO DATA;
 
 -- =========================================================
 -- EMS-ESP (6 topics: boiler_data, boiler_data_dhw, thermostat_data,
@@ -384,6 +419,9 @@ SELECT add_continuous_aggregate_policy('solaredge_inverter_1h',
 SELECT add_continuous_aggregate_policy('solaredge_powerflow_1h',
     start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
     schedule_interval => INTERVAL '1 hour');
+SELECT add_continuous_aggregate_policy('solaredge_battery_1h',
+    start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
+    schedule_interval => INTERVAL '1 hour');
 SELECT add_continuous_aggregate_policy('ems_esp_boiler_1h',
     start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
     schedule_interval => INTERVAL '1 hour');
@@ -411,6 +449,9 @@ ALTER TABLE solaredge_inverter SET (timescaledb.compress,
 ALTER TABLE solaredge_powerflow SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'inverter_id',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE solaredge_battery SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'inverter_id',
+    timescaledb.compress_orderby = 'time DESC');
 ALTER TABLE ems_esp SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'topic',
     timescaledb.compress_orderby = 'time DESC');
@@ -436,6 +477,7 @@ ALTER TABLE unifi_events SET (timescaledb.compress,
 SELECT add_compression_policy('knx',                 INTERVAL '2 days');
 SELECT add_compression_policy('solaredge_inverter',  INTERVAL '2 days');
 SELECT add_compression_policy('solaredge_powerflow', INTERVAL '2 days');
+SELECT add_compression_policy('solaredge_battery',   INTERVAL '2 days');
 SELECT add_compression_policy('ems_esp',             INTERVAL '2 days');
 SELECT add_compression_policy('warp_system',         INTERVAL '2 days');
 SELECT add_compression_policy('warp_evse',           INTERVAL '2 days');
@@ -452,6 +494,7 @@ SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 SELECT add_retention_policy('knx',                 INTERVAL '365 days');
 SELECT add_retention_policy('solaredge_inverter',  INTERVAL '365 days');
 SELECT add_retention_policy('solaredge_powerflow', INTERVAL '365 days');
+SELECT add_retention_policy('solaredge_battery',   INTERVAL '365 days');
 SELECT add_retention_policy('ems_esp',             INTERVAL '365 days');
 SELECT add_retention_policy('warp_system',         INTERVAL '365 days');
 SELECT add_retention_policy('warp_evse',           INTERVAL '365 days');
@@ -554,9 +597,34 @@ SELECT time_bucket('1 day', bucket) AS day,
        percentile_agg(consumer_total_avg) AS consumer_total_pct,
        stats_agg(grid_power_avg)     AS grid_power_stats,
        percentile_agg(grid_power_avg) AS grid_power_pct,
-       stats_agg(battery_net_avg)    AS battery_net_stats,
-       percentile_agg(battery_net_avg) AS battery_net_pct
+       stats_agg(grid_consumption_avg) AS grid_consumption_stats,
+       percentile_agg(grid_consumption_avg) AS grid_consumption_pct,
+       stats_agg(grid_delivery_avg)  AS grid_delivery_stats,
+       percentile_agg(grid_delivery_avg) AS grid_delivery_pct,
+       stats_agg(consumer_used_pv_production_avg) AS consumer_used_pv_production_stats,
+       percentile_agg(consumer_used_pv_production_avg) AS consumer_used_pv_production_pct,
+       stats_agg(battery_charge_avg) AS battery_charge_stats,
+       percentile_agg(battery_charge_avg) AS battery_charge_pct,
+       stats_agg(consumer_used_battery_production_avg) AS consumer_used_battery_production_stats,
+       percentile_agg(consumer_used_battery_production_avg) AS consumer_used_battery_production_pct
 FROM solaredge_powerflow_1h
+GROUP BY day, inverter_id, hour_of_day, weekday WITH NO DATA;
+
+-- Battery baseline (per day×hour×weekday) — feeds the battery_soc z-score
+-- detector. Empty until the storage unit is connected and solaredge_battery
+-- accumulates ~30 d of history; the battery detectors are silenced in the
+-- registry until then.
+CREATE MATERIALIZED VIEW solaredge_battery_baseline_30d
+WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
+SELECT time_bucket('1 day', bucket) AS day,
+       inverter_id,
+       EXTRACT(hour   FROM bucket)::smallint AS hour_of_day,
+       EXTRACT(isodow FROM bucket)::smallint AS weekday,
+       stats_agg(soc_avg)   AS soc_stats,
+       percentile_agg(soc_avg) AS soc_pct,
+       stats_agg(power_avg) AS power_stats,
+       percentile_agg(power_avg) AS power_pct
+FROM solaredge_battery_1h
 GROUP BY day, inverter_id, hour_of_day, weekday WITH NO DATA;
 
 -- knx_1h has one row per (bucket, ga) → baseline is per (day, ga, hour, weekday).
@@ -614,6 +682,9 @@ SELECT add_continuous_aggregate_policy('solaredge_inverter_baseline_30d',
     start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
     schedule_interval => INTERVAL '6 hours');
 SELECT add_continuous_aggregate_policy('solaredge_powerflow_baseline_30d',
+    start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
+    schedule_interval => INTERVAL '6 hours');
+SELECT add_continuous_aggregate_policy('solaredge_battery_baseline_30d',
     start_offset => INTERVAL '60 days', end_offset => INTERVAL '1 day',
     schedule_interval => INTERVAL '6 hours');
 SELECT add_continuous_aggregate_policy('knx_baseline_30d',
