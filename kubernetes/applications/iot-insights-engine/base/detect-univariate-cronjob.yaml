@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: detector
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.5.0
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.6.0
               command: ["iot-insights-engine", "detect-univariate"]
               env:
                 # Read-only DB user — required by Settings() even though
