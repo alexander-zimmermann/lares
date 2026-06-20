@@ -2276,10 +2276,15 @@
   function: Versorgerungstechnik
   name: Versorgungstechnik.Photovoltaik.Netz-Leistung-Anomalie
   room: Technikraum
+15/4/10:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.PV-Erzeugung-Gesamt
+  room: Technikraum
 15/4/2:
   dpt: '14.056'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
+  name: Versorgungstechnik.Photovoltaik.Netzbezug
   room: Technikraum
 15/4/20:
   dpt: '5.010'
@@ -2309,7 +2314,12 @@
 15/4/3:
   dpt: '5.010'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie
+  name: Versorgungstechnik.Photovoltaik.Netzbezug-Anomalie
+  room: Technikraum
+15/4/4:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Netzeinspeisung
   room: Technikraum
 15/4/40:
   dpt: '5.010'
@@ -2335,6 +2345,116 @@
   dpt: '5.010'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur-Anomalie
+  room: Technikraum
+15/4/5:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Netzeinspeisung-Anomalie
+  room: Technikraum
+15/4/50:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Anomalie-Gesamt
+  room: Technikraum
+15/4/51:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Ladeleistung
+  room: Technikraum
+15/4/52:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Ladeleistung-Anomalie
+  room: Technikraum
+15/4/53:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Entladeleistung
+  room: Technikraum
+15/4/54:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Entladeleistung-Anomalie
+  room: Technikraum
+15/4/55:
+  dpt: '5.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Ladestand
+  room: Technikraum
+15/4/56:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Batterie.Ladestand-Anomalie
+  room: Technikraum
+15/4/6:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Direktverbrauch
+  room: Technikraum
+15/4/60:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Erzeugung-Energie
+  room: Technikraum
+15/4/61:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Energie
+  room: Technikraum
+15/4/62:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Eigenverbrauch
+  room: Technikraum
+15/4/63:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Eigenversorgung
+  room: Technikraum
+15/4/64:
+  dpt: '5.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Eigenverbrauchsquote
+  room: Technikraum
+15/4/65:
+  dpt: '5.001'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Eigenversorgungsquote
+  room: Technikraum
+15/4/7:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Direktverbrauch-Anomalie
+  room: Technikraum
+15/4/70:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Heute
+  room: Technikraum
+15/4/71:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Rest-Heute
+  room: Technikraum
+15/4/72:
+  dpt: '13.013'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Morgen
+  room: Technikraum
+15/4/73:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Prognose.Leistung-Aktuell
+  room: Technikraum
+15/4/8:
+  dpt: '14.056'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
+  room: Technikraum
+15/4/9:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie
   room: Technikraum
 15/5/102:
   dpt: '1.011'
