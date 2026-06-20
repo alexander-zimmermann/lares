@@ -1,0 +1,90 @@
+# CronJob: hourly Open-Meteo weather pull. Keyless public API, DWD ICON
+# model (icon_seamless, ~2 km, covers Eupen). Upserts five hourly metrics
+# into `mcp_forecasts` (model=open_meteo) so the Phase-4 get_weather_forecast
+# MCP tool reads from TSDB. Backs heating recommendations + (later) the
+# seasonal model's weather exogenous variable.
+# Schedule :20 of every hour — staggered past forecast-solar (:15).
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-insights-engine-forecast-weather
+  namespace: iot-insights-engine
+
+spec:
+  schedule: "20 * * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: fetcher
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.6.0
+              command: ["iot-insights-engine", "forecast-weather"]
+              env:
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                # Settings() requires read creds even though this job only
+                # writes via db_write_dsn.
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                - name: MCP_DB_WRITE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: username
+                - name: MCP_DB_WRITE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: password
+                # Open-Meteo location (Steinroth 20, Eupen). Keyless — the job
+                # requests timezone=UTC, so no API key or local-tz handling.
+                - name: MCP_FORECAST_WEATHER_LAT
+                  value: "50.62598"
+                - name: MCP_FORECAST_WEATHER_LON
+                  value: "6.02435"
+                - name: MCP_FORECAST_WEATHER_MODEL
+                  value: icon_seamless
+                - name: MCP_FORECAST_WEATHER_FORECAST_HOURS
+                  value: "48"
+                - name: MCP_AUTH_ENABLED
+                  value: "false"
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 64Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
