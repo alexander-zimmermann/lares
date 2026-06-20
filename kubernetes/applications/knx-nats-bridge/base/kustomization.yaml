@@ -16,17 +16,15 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-# disableNameSuffixHash: the import-ga-catalog Job mounts the ConfigMap
-# by fixed name (subPath ga-catalog.yaml).
+# Content-hash suffix: a config change produces a new ConfigMap name, so the
+# references in the Deployment and the import-ga-catalog Job both update and
+# ArgoCD rolls the pod natively. kustomize rewrites the hashed name in the
+# Helm-rendered Deployment volume and the native Job volume alike.
 configMapGenerator:
   - name: knx-nats-bridge-ga-catalog
-    options:
-      disableNameSuffixHash: true
     files:
       - ga-catalog.yaml=config/ga-catalog.yaml
   - name: knx-nats-bridge-writer-rules
-    options:
-      disableNameSuffixHash: true
     files:
       - writer-rules.yaml=config/writer-rules.yaml
 
