@@ -2,6 +2,10 @@ applicationName: gatus
 
 deployment:
   enabled: true
+  # gatus-config uses a kustomize content-hash name (see kustomization.yaml), so a
+  # config change rolls the pod natively. The Stakater Reloader annotation is not
+  # used — there is no Reloader controller in the cluster.
+  reloadOnChange: false
   # gatus-sidecar reads IngressRoutes via the SA token; v7 flipped the chart default to false
   automountServiceAccountToken: true
   image:

@@ -20,10 +20,10 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
+# Content-hash suffix: an endpoints change produces a new ConfigMap name, so the
+# Deployment volume reference updates and ArgoCD rolls the pod natively.
 configMapGenerator:
   - name: gatus-config
-    options:
-      disableNameSuffixHash: true
     files:
       - config.yaml=config/endpoints.yaml
 
