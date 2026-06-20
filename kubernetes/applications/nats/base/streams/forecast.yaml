@@ -1,0 +1,20 @@
+# DERIVED stream — NOT a primary data source. The `forecast.*` subjects carry
+# PV-production forecast scalars published by the iot-insights-engine
+# forecast-solar batch job (one publish per CronJob run, ~hourly). Like
+# anomaly.>, they are low-frequency event-driven, so this stream exists only so
+# the knx-nats-bridge read responder can be seeded on startup for the forecast
+# GAs (15/4/70..73); without it a read after a redeploy returns no_value until
+# the next CronJob run.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: forecast
+  namespace: nats
+spec:
+  name: FORECAST
+  subjects:
+    - forecast.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
