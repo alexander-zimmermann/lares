@@ -1,5 +1,9 @@
 deployment:
   enabled: true
+  # ConfigMap uses a kustomize content-hash name, so a config change rolls the
+  # pod natively. The Stakater Reloader annotation is not used — there is no
+  # Reloader controller in the cluster.
+  reloadOnChange: false
   replicas: 1
   image:
     repository: ghcr.io/deroetzi/solaredge2mqtt

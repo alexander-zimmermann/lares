@@ -2,6 +2,9 @@ applicationName: iot-mcp-bridge
 
 deployment:
   enabled: true
+  # No ConfigMap is mounted, and there is no Stakater Reloader controller in the
+  # cluster — disable the chart's dead reloader.stakater.com/auto annotation.
+  reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/iot-mcp-bridge
     tag: 1.4.0
