@@ -20,6 +20,7 @@ configMapGenerator:
       - streams/knx.yaml
       - streams/solaredge_inverter.yaml
       - streams/solaredge_powerflow.yaml
+      - streams/solaredge_battery.yaml
       - streams/ems_esp.yaml
       - streams/warp_system.yaml
       - streams/warp_evse.yaml

@@ -1,0 +1,100 @@
+# SolarEdge battery (modbus) → TimescaleDB + archive. Dormant until a battery is
+# physically connected: solaredge2mqtt only emits `solaredge-N.modbus.battery`
+# once a storage unit is present, so this durable consumer sits idle (no messages)
+# until then. The battery field names below follow the solaredge2mqtt SunSpec
+# battery model — VERIFY them against a live event at connect time and adjust the
+# mapping / table if they differ (`nats stream get SOLAREDGE --last-for
+# solaredge-1.modbus.battery`). `state_of_charge` feeds KNX 15/4/55 via writer-rule.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: SOLAREDGE
+    subject: "*.modbus.battery"
+    durable: redpanda-connect-solaredge-battery
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        let evt = this
+        # Subject is "solaredge-N.modbus.battery"; pull N for inverter_id.
+        let subj = meta("nats_subject")
+        let inv_id = $subj.split(".").index(0).split("-").index(1).number()
+        root = {
+          "time":            $evt.timestamp,
+          "inverter_id":     $inv_id,
+          "state_of_charge": $evt.state_of_charge,
+          "state_of_health": $evt.state_of_health.or(null),
+          "power":           $evt.power.or(null),
+          "current":         $evt.current.or(null),
+          "voltage":         $evt.voltage.or(null),
+          "temperature":     $evt.temperature.or(null),
+          "status":          $evt.status.or(null),
+          "raw":             $evt,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO solaredge_battery (
+              time, inverter_id,
+              state_of_charge, state_of_health,
+              power, current, voltage, temperature, status
+            )
+            VALUES (
+              $1, $2,
+              $3, $4,
+              $5, $6, $7, $8, $9
+            )
+            ON CONFLICT (time, inverter_id) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.inverter_id,
+              this.state_of_charge,
+              this.state_of_health,
+              this.power,
+              this.current,
+              this.voltage,
+              this.temperature,
+              this.status,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: solaredge_battery/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }
