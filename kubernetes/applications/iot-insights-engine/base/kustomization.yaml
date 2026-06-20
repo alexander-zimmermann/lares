@@ -10,6 +10,7 @@ resources:
   - ./train-iforest-cronjob.yaml
   - ./score-iforest-cronjob.yaml
   - ./forecast-solar-cronjob.yaml
+  - ./forecast-weather-cronjob.yaml
   - ./score-seasonal-cronjob.yaml
   - ./weekly-report-cronjob.yaml
 
