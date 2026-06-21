@@ -1,0 +1,82 @@
+# CronJob: PV energy balance every 15 min. Reads today's authoritative meter
+# counters (inverter energytotal + KNX energy meter 15/1) from TSDB, computes the
+# daily kWh balance + ratios, and publishes them on energy.pv.* for the
+# knx-nats-bridge writer-rules → KNX 15/4/60..65. Read-only DB role (no writes).
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-insights-engine-energy-balance
+  namespace: iot-insights-engine
+
+spec:
+  schedule: "*/15 * * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: energy-balance
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.8.0
+              command: ["iot-insights-engine", "energy-balance"]
+              env:
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                # NATS — publish energy.pv.* scalars for the KNX bilanz GAs.
+                - name: MCP_NATS_SERVERS
+                  value: nats://nats.nats.svc.cluster.local:4222
+                - name: MCP_NATS_NKEY_SEED_FILE
+                  value: /etc/iot-insights-engine/nats/nkey-seed
+                - name: MCP_AUTH_ENABLED
+                  value: "false"
+                - name: TZ
+                  value: Europe/Berlin
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 64Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+              volumeMounts:
+                - name: nats-credentials
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
+                  subPath: nkey-seed
+                  readOnly: true
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+          volumes:
+            - name: nats-credentials
+              secret:
+                secretName: iot-mcp-bridge-credentials
