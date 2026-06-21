@@ -526,45 +526,16 @@ mappings:
     min_delta: 0
     seed_on_start: true
 
-  # SolarEdge PV (15/4: A=0..10 site-level momentary power, B=20..24 Wechselrichter 1,
-  # C=50..56 Batterie, D=40..44 Wechselrichter 2; E=60..65 Bilanz + F=70..73 Prognose
-  # are written by Basalte/forecast-solar). All site-level powers come from the same
-  # site-wide solaredge-1.powerflow event.
-  - subject: "solaredge-1.powerflow"
-    ga: "15/4/0"
-    dpt: "14.056"
-    payload_path: "$.grid.power"
-    description: "Versorgungstechnik.Photovoltaik.Netz-Leistung"
-    min_delta: 25  # W
-    min_delta_pct: 2
-  - subject: "solaredge-1.powerflow"
-    ga: "15/4/2"
-    dpt: "14.056"
-    payload_path: "$.grid.consumption"
-    description: "Versorgungstechnik.Photovoltaik.Netzbezug"
-    min_delta: 25  # W
-    min_delta_pct: 2
-  - subject: "solaredge-1.powerflow"
-    ga: "15/4/4"
-    dpt: "14.056"
-    payload_path: "$.grid.delivery"
-    description: "Versorgungstechnik.Photovoltaik.Netzeinspeisung"
-    min_delta: 25  # W
-    min_delta_pct: 2
-  - subject: "solaredge-1.powerflow"
-    ga: "15/4/6"
-    dpt: "14.056"
-    payload_path: "$.consumer.used_pv_production"
-    description: "Versorgungstechnik.Photovoltaik.Direktverbrauch"
-    min_delta: 25  # W
-    min_delta_pct: 2
-  - subject: "solaredge-1.powerflow"
-    ga: "15/4/8"
-    dpt: "14.056"
-    payload_path: "$.consumer.total"
-    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt"
-    min_delta: 25  # W
-    min_delta_pct: 2
+  # SolarEdge PV (15/4: A=0..10 site-level, B=20..24 Wechselrichter 1, C=50..56
+  # Batterie, D=40..44 Wechselrichter 2; E=60..65 Bilanz via iot-insights-engine
+  # energy.pv.* below, F=70..73 Prognose, 10 via Basalte).
+  #
+  # The site-level grid/consumer powers (15/4/0 Netz-Leistung, 2 Netzbezug,
+  # 4 Netzeinspeisung, 6 Direktverbrauch, 8 Verbrauch-Gesamt) have NO writer-rule:
+  # they come from the SolarEdge meter, which is offline until the battery + 400 V
+  # conversion. The real grid values live on the KNX energy meter 15/1 meanwhile;
+  # re-add these rules when the SolarEdge meter feeds the powerflow. Only the
+  # inverter-sourced values (pv_production, temperature) are valid today.
   - subject: "solaredge-1.powerflow"
     ga: "15/4/21"
     dpt: "14.056"
@@ -1331,5 +1302,52 @@ mappings:
     dpt: "14.056"
     payload_path: "$.value"
     description: "Versorgungstechnik.Photovoltaik.Prognose.Leistung-Aktuell"
+    min_delta: 0
+    seed_on_start: true
+
+  # Energiebilanz (15/4/60..65) — the iot-insights-engine energy-balance job
+  # publishes today's kWh + ratios on energy.pv.* (computed from inverter
+  # energytotal + KNX energy meter 15/1 counters). Low-frequency (CronJob),
+  # so seed_on_start keeps the GAs warm across bridge redeploys.
+  - subject: "energy.pv.generation_kwh"
+    ga: "15/4/60"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Erzeugung-Energie"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.consumption_kwh"
+    ga: "15/4/61"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Energie"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_consumption_kwh"
+    ga: "15/4/62"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenverbrauch"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_sufficiency_kwh"
+    ga: "15/4/63"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenversorgung"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_consumption_rate"
+    ga: "15/4/64"
+    dpt: "5.001"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenverbrauchsquote"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_sufficiency_rate"
+    ga: "15/4/65"
+    dpt: "5.001"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenversorgungsquote"
     min_delta: 0
     seed_on_start: true

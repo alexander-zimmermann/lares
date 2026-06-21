@@ -12,3 +12,4 @@ resources:
   - wallbox-knx.yaml
   - anomaly.yaml
   - forecast.yaml
+  - energy.yaml
