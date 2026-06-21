@@ -1,7 +1,9 @@
 # CronJob: hourly Forecast.Solar pull. Personal-Plus tier with both
 # PV planes (east + west) in a single request → 24 calls/day, well
 # under the 150/day quota. Upserts into `mcp_forecasts` so the
-# Phase-4 get_pv_forecast MCP tool reads from TSDB.
+# Phase-4 get_pv_forecast MCP tool reads from TSDB, and publishes four
+# derived scalars to forecast.pv.* (needs the NATS nkey below) for the
+# knx-nats-bridge writer-rules → KNX 15/4/70..73.
 # Schedule :15 of every hour — past the CAGG refresh storms at :00.
 apiVersion: batch/v1
 kind: CronJob
@@ -70,6 +72,11 @@ spec:
                     [{"dec":17,"az":-51,"kwp":6.175},{"dec":17,"az":129,"kwp":6.435}]
                 - name: MCP_FORECAST_SOLAR_API_KEY_FILE
                   value: /etc/forecast-solar/api-key
+                # NATS — publish forecast.pv.* scalars for the KNX prognosis GAs.
+                - name: MCP_NATS_SERVERS
+                  value: nats://nats.nats.svc.cluster.local:4222
+                - name: MCP_NATS_NKEY_SEED_FILE
+                  value: /etc/iot-insights-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
@@ -86,6 +93,10 @@ spec:
                   mountPath: /etc/forecast-solar/api-key
                   subPath: api-key
                   readOnly: true
+                - name: nats-credentials
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
+                  subPath: nkey-seed
+                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
@@ -100,3 +111,6 @@ spec:
             - name: forecast-solar-credentials
               secret:
                 secretName: forecast-solar-credentials
+            - name: nats-credentials
+              secret:
+                secretName: iot-mcp-bridge-credentials
