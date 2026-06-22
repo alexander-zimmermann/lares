@@ -732,7 +732,16 @@ mappings:
     ga: "15/4/9"
     dpt: "5.010"
     payload_path: "$.severity_level"
-    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Leistung-Anomalie"
+    min_delta: 0
+    seed_on_start: true
+  # PV-Gesamt-Anomalie: today's yield vs the forecast.solar expectation
+  # (detect-pv-underperformance job). Active — uses inverter + forecast, both live.
+  - subject: "anomaly.pv_underperformance"
+    ga: "15/4/11"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.Photovoltaik.Erzeugung-Leistung-Anomalie"
     min_delta: 0
     seed_on_start: true
   # Batterie-Anomalien (15/4/50..56) — engine detectors stay inactive until the
@@ -1313,14 +1322,14 @@ mappings:
     ga: "15/4/60"
     dpt: "13.013"
     payload_path: "$.value"
-    description: "Versorgungstechnik.Photovoltaik.Erzeugung-Energie"
+    description: "Versorgungstechnik.Photovoltaik.Erzeugung"
     min_delta: 0
     seed_on_start: true
   - subject: "energy.pv.consumption_kwh"
     ga: "15/4/61"
     dpt: "13.013"
     payload_path: "$.value"
-    description: "Versorgungstechnik.Photovoltaik.Verbrauch-Energie"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch"
     min_delta: 0
     seed_on_start: true
   - subject: "energy.pv.self_consumption_kwh"
