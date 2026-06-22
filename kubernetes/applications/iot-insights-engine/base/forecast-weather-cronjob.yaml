@@ -28,7 +28,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: fetcher
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.9.1
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.9.2
               command: ["iot-insights-engine", "forecast-weather"]
               env:
                 - name: MCP_DB_HOST
