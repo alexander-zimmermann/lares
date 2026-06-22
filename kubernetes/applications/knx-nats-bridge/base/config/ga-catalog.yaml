@@ -2279,7 +2279,12 @@
 15/4/10:
   dpt: '14.056'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.PV-Erzeugung-Gesamt
+  name: Versorgungstechnik.Photovoltaik.Erzeugung-Leistung
+  room: Technikraum
+15/4/11:
+  dpt: '5.010'
+  function: Versorgerungstechnik
+  name: Versorgungstechnik.Photovoltaik.Erzeugung-Leistung-Anomalie
   room: Technikraum
 15/4/2:
   dpt: '14.056'
@@ -2394,12 +2399,12 @@
 15/4/60:
   dpt: '13.013'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Erzeugung-Energie
+  name: Versorgungstechnik.Photovoltaik.Erzeugung
   room: Technikraum
 15/4/61:
   dpt: '13.013'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Verbrauch-Energie
+  name: Versorgungstechnik.Photovoltaik.Verbrauch
   room: Technikraum
 15/4/62:
   dpt: '13.013'
@@ -2449,12 +2454,12 @@
 15/4/8:
   dpt: '14.056'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Leistung
   room: Technikraum
 15/4/9:
   dpt: '5.010'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Photovoltaik.Verbrauch-Gesamt-Anomalie
+  name: Versorgungstechnik.Photovoltaik.Verbrauch-Leistung-Anomalie
   room: Technikraum
 15/5/102:
   dpt: '1.011'
