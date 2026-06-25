@@ -1,5 +1,10 @@
 # Durable consumer for the redpanda-connect unifi_arm_alarm pipeline.
-# Watches the KNX GAs in 14/1/* that the arming scenes write to.
+# Watches the EMA *status* feedback GAs (not the command GAs): disarm via
+# keypad/scene never emits the 14/1/20 command, only the status GAs change.
+# These are re-broadcast by the panel (~5 min heartbeat), so the sync is
+# self-healing — every heartbeat re-asserts the intended UniFi state.
+#   knx.14.1.26 Extern-Scharf-Status: 1 => ARM   (Abwesend enable)
+#   knx.14.1.21 Unscharf-Status:      1 => DISARM (Abwesend disable)
 apiVersion: jetstream.nats.io/v1beta2
 kind: Consumer
 metadata:
@@ -8,12 +13,14 @@ metadata:
 spec:
   streamName: KNX
   durableName: redpanda-connect-unifi-arm-alarm
-  filterSubject: knx.14.1.*
+  filterSubjects:
+    - knx.14.1.26  # Extern-Scharf-Status: 1 => ARM (Abwesend enable)
+    - knx.14.1.21  # Unscharf-Status:      1 => DISARM (Abwesend disable)
   deliverPolicy: new
   ackPolicy: explicit
   # nats-operator default surfaces as 1ns, which causes immediate re-delivery
-  # of any message slower-than-instant to ack. 10s covers the http_client RTT
-  # comfortably without leaving wedged messages locked for long after a crash.
-  ackWait: 10s
+  # of any message slower-than-instant to ack. 15s covers the POST + read-back
+  # GET round-trips comfortably without leaving wedged messages locked long.
+  ackWait: 15s
   # Drop after 5 attempts so a permanently-failing message can't loop forever.
   maxDeliver: 5

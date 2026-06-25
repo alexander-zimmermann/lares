@@ -1,5 +1,26 @@
+# Syncs the KNX alarm panel's armed state to the UniFi Protect "Abwesend"
+# arm-profile, and writes the *confirmed* UniFi state back onto KNX status GAs
+# so Basalte can show it (positive confirmation, mirroring the EMA).
+#
+# Triggers on the EMA STATUS GAs (not the command GAs): disarm via keypad/scene
+# never emits the 14/1/20 command — only the status GAs change. The panel
+# re-broadcasts them every ~5 min, so the sync is self-healing: every heartbeat
+# re-asserts the intended UniFi state and refreshes the confirmation + metric.
+#   knx.14.1.26 Extern-Scharf-Status: 1 => enable  (Abwesend)
+#   knx.14.1.21 Unscharf-Status:      1 => disable
+# Do NOT invert one GA: 14/1/26=0 is ambiguous with Intern-Scharf.
+#
+# Flow (sequential, so ordering is guaranteed without a race):
+#   1. POST enable/disable. Best-effort: a 400 ("already in target state") is
+#      harmless, and a genuine UDM outage also fails the read-back below, which
+#      rejects the message for JetStream redelivery.
+#   2. GET /nvrs and read armMode — the source of truth for what UniFi actually
+#      did. Compare to the intended action -> unifi_arm_sync_ok gauge.
+#   3. Publish both status polarities to NATS; the knx-nats-bridge writer rules
+#      map them to 14/3/200 (Scharf) and 14/3/201 (Unscharf) -> Basalte.
 input:
-  # Consumer is declared as a CRD in nats/base/consumers/unifi_arm_alarm.yaml.
+  # Consumer (filterSubjects 14.1.26 + 14.1.21) is a CRD in
+  # nats/base/consumers/unifi_arm_alarm.yaml.
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
     auth:
@@ -11,51 +32,91 @@ input:
 
 pipeline:
   processors:
-    # First stage: filter to the two relevant GAs regardless of value, so
-    # the second stage runs on a known subject set and `meta` assignment
-    # never has to express "drop the message" via deleted().
+    # Tag the intended action from the subject; drop the 0-half of the status
+    # pulse. `.bool().or(false)` survives both bool and int payload shapes.
     - mapping: |
         let subj = meta("nats_subject")
-        root = if $subj == "knx.14.1.25" || $subj == "knx.14.1.20" {
+        let on = this.value.bool().or(false)
+        root = if $on && ($subj == "knx.14.1.26" || $subj == "knx.14.1.21") {
           this
         } else {
           deleted()
         }
-    # Second stage: drop the 0-half of the KNX command pulse, tag action.
-    # `.bool().or(false)` survives both bool and int payload shapes.
-    - mapping: |
-        let on = this.value.bool().or(false)
-        root = if $on { this } else { deleted() }
-        meta protect_action = if meta("nats_subject") == "knx.14.1.25" {
-          "enable"
-        } else {
-          "disable"
-        }
+        meta protect_action = if $subj == "knx.14.1.26" { "enable" } else { "disable" }
+
+    # 1. POST the arm-profile enable/disable (side-effect only; response and any
+    #    error are discarded — the read-back is authoritative). The catch clears
+    #    the error flag a non-2xx (incl. 400) sets, so the read-back still runs.
+    - branch:
+        request_map: 'root = ""'
+        processors:
+          - http:
+              url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/arm-profiles/${! meta("protect_action") }?id=${UNIFI_PROTECT_ARM_PROFILE_ID}'
+              verb: POST
+              headers:
+                X-API-Key: "${UNIFI_PROTECT_API_KEY}"
+                Accept: "application/json"
+              retries: 0
+        result_map: 'root = deleted()'
+    - catch:
+        - mapping: 'root = this'
+
+    # 2. Read back the real NVR arm state. On failure the branch sets the error
+    #    flag, the result_map is skipped, and the message is rejected below for
+    #    JetStream redelivery (this is the retry path for a genuine UDM outage).
+    - branch:
+        request_map: 'root = ""'
+        processors:
+          - http:
+              url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/nvrs'
+              verb: GET
+              headers:
+                X-API-Key: "${UNIFI_PROTECT_API_KEY}"
+                Accept: "application/json"
+              retries: 2
+        result_map: |
+          let nvr = if this.type() == "array" { this.index(0) } else { this }
+          let mode = $nvr.armMode
+          let armed = $mode.armProfileId == "${UNIFI_PROTECT_ARM_PROFILE_ID}" &&
+                      $mode.status.or("") != "disabled" &&
+                      $mode.armedAt.or(null) != null
+          meta observed_status = $mode.status.or("unknown")
+          meta knx_scharf   = if $armed { "1" } else { "0" }
+          meta knx_unscharf = if $armed { "0" } else { "1" }
+          meta sync_ok = if $armed == (meta("protect_action").or("") == "enable") { "1" } else { "0" }
 
 output:
   switch:
     cases:
-      - check: 'meta("protect_action") == "enable"'
+      # Read-back failed (UDM unreachable) -> nack for JetStream redelivery.
+      - check: errored()
         output:
-          http_client:
-            url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/arm-profiles/enable?id=${UNIFI_PROTECT_ARM_PROFILE_ID}'
-            verb: POST
-            headers:
-              X-API-Key: "${UNIFI_PROTECT_API_KEY}"
-              Accept: "application/json"
-            # UniFi returns 204 on success and 400 when the profile is already
-            # in the target state ("Attempted to disarm the alarm when it is
-            # not armed"). Both are terminal for us — ack and move on.
-            successful_on: [200, 204, 400]
-      - check: 'meta("protect_action") == "disable"'
-        output:
-          http_client:
-            url: 'https://udm-pro.zimmermann.eu.com/proxy/protect/integration/v1/arm-profiles/disable?id=${UNIFI_PROTECT_ARM_PROFILE_ID}'
-            verb: POST
-            headers:
-              X-API-Key: "${UNIFI_PROTECT_API_KEY}"
-              Accept: "application/json"
-            # UniFi returns 204 on success and 400 when the profile is already
-            # in the target state ("Attempted to disarm the alarm when it is
-            # not armed"). Both are terminal for us — ack and move on.
-            successful_on: [200, 204, 400]
+          reject: 'unifi /nvrs read-back failed: ${! error() }'
+      # Confirmed: publish both polarities and emit the drift gauge.
+      - output:
+          broker:
+            pattern: fan_out
+            outputs:
+              - nats:
+                  urls: ["nats://nats.nats.svc:4222"]
+                  auth:
+                    user: redpanda-connect
+                    password: ${NATS_PASSWORD}
+                  subject: unifi.arm.scharf_status
+                processors:
+                  - mapping: 'root = {"knx_value": meta("knx_scharf").number()}'
+              - nats:
+                  urls: ["nats://nats.nats.svc:4222"]
+                  auth:
+                    user: redpanda-connect
+                    password: ${NATS_PASSWORD}
+                  subject: unifi.arm.unscharf_status
+                processors:
+                  - mapping: 'root = {"knx_value": meta("knx_unscharf").number()}'
+          processors:
+            - metric:
+                type: gauge
+                name: unifi_arm_sync_ok
+                value: ${! meta("sync_ok") }
+                labels:
+                  intended: ${! meta("protect_action") }

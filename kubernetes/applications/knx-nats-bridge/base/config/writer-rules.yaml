@@ -291,6 +291,26 @@ mappings:
     payload_path: "$.knx_value"
     description: "Sicherheitstechnik.VÜA.Terrasse.Esszimmer.Geräusch.Einbruch"
 
+  # UniFi Protect -- "Abwesend" arm-profile confirmation (read back from /nvrs by
+  # the unifi_arm_alarm stream). Mirrors the EMA status GAs so Basalte can show a
+  # notification once UniFi has actually reached the armed/disarmed state.
+  # seed_on_start keeps the read responder warm across restarts; min_delta 0
+  # writes only on change.
+  - subject: "unifi.arm.scharf_status"
+    ga: "14/3/200"
+    dpt: "1.011"
+    payload_path: "$.knx_value"
+    min_delta: 0
+    seed_on_start: true
+    description: "Sicherheitstechnik.VÜA.Abwesend.Scharf-Status"
+  - subject: "unifi.arm.unscharf_status"
+    ga: "14/3/201"
+    dpt: "1.011"
+    payload_path: "$.knx_value"
+    min_delta: 0
+    seed_on_start: true
+    description: "Sicherheitstechnik.VÜA.Abwesend.Unscharf-Status"
+
   # EMS-ESP boiler_data
   - subject: "ems-esp.boiler_data"
     ga: "15/2/10"
