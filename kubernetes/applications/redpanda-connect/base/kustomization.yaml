@@ -55,6 +55,17 @@ patches:
       - op: add
         path: /metadata/labels/bgp.cilium.io~1advertise-service
         value: default
+  # The connect chart's ServiceMonitor template hardcodes only the default
+  # app.kubernetes.io labels and ignores serviceMonitor.labels, so the
+  # `release: prometheus` label the Prometheus serviceMonitorSelector requires
+  # has to be injected here — otherwise the SM is never scraped.
+  - target:
+      kind: ServiceMonitor
+      name: redpanda-connect
+    patch: |-
+      - op: add
+        path: /metadata/labels/release
+        value: prometheus
 
 labels:
   - includeSelectors: false
