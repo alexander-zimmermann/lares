@@ -118,3 +118,26 @@ spec:
           annotations:
             summary: "RustFS drive op {{ $labels.op }} timing out"
             description: "Drive operation {{ $labels.op }} hit the per-op timeout — consider raising the matching RUSTFS_DRIVE_*_TIMEOUT_SECS env var."
+
+    - name: unifi-arm-sync-alerts
+      rules:
+        - alert: UnifiArmStateDrift
+          # unifi_arm_sync_ok is emitted by the redpanda-connect unifi_arm_alarm
+          # stream on every KNX status telegram (~5 min heartbeat): 1 = UniFi
+          # reached the KNX-requested state, 0 = it did not.
+          expr: min(unifi_arm_sync_ok) == 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "UniFi arm state out of sync with KNX"
+            description: "UniFi has not reached the state requested by KNX for >10m. The ~5min KNX status heartbeat re-asserts every cycle, so persistent drift means the POST is not taking effect — the house may be unprotected or falsely armed."
+
+        - alert: UnifiArmSyncStale
+          expr: absent(unifi_arm_sync_ok)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "UniFi arm-sync metric stale/absent"
+            description: "unifi_arm_sync_ok has not been reported for >15m (expected every ~5min via the KNX status heartbeat). The redpanda-connect stream, its JetStream consumer binding, or the scrape is stuck — drift detection is blind."

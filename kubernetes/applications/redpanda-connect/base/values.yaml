@@ -58,6 +58,12 @@ env:
         name: redpanda-connect-unifi-protect
         key: UNIFI_PROTECT_ARM_PROFILE_ID
 
+# Expose connect/benthos metrics (incl. custom `metric` processors such as
+# unifi_arm_sync_ok) in Prometheus format at :4195/metrics for the
+# ServiceMonitor below to scrape.
+metrics:
+  prometheus: {}
+
 serviceMonitor:
   enabled: true
   interval: 30s
