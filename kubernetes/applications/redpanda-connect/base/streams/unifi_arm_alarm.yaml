@@ -44,9 +44,12 @@ pipeline:
         }
         meta protect_action = if $subj == "knx.14.1.26" { "enable" } else { "disable" }
 
-    # 1. POST the arm-profile enable/disable (side-effect only; response and any
-    #    error are discarded — the read-back is authoritative). The catch clears
-    #    the error flag a non-2xx (incl. 400) sets, so the read-back still runs.
+    # 1. POST the arm-profile enable/disable (side-effect only; response is
+    #    discarded — the read-back is authoritative). 204 = applied, 400 =
+    #    "already in target state"; both are success, so the ~5 min heartbeat
+    #    re-POSTing the steady state stays silent instead of logging a 400 every
+    #    cycle. A genuine 5xx/network error still sets the error flag, which the
+    #    catch clears so the read-back below can determine the real state.
     - branch:
         request_map: 'root = ""'
         processors:
@@ -57,6 +60,7 @@ pipeline:
                 X-API-Key: "${UNIFI_PROTECT_API_KEY}"
                 Accept: "application/json"
               retries: 0
+              successful_on: [200, 204, 400]
         result_map: 'root = deleted()'
     - catch:
         - mapping: 'root = this'

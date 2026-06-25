@@ -67,6 +67,6 @@ metrics:
 serviceMonitor:
   enabled: true
   interval: 30s
-  labels:
-    # Prometheus Operator label (Opt-In)
-    release: prometheus
+  # NOTE: the chart's ServiceMonitor template ignores serviceMonitor.labels, so
+  # the `release: prometheus` selector label is injected via a kustomize patch
+  # in kustomization.yaml instead.
