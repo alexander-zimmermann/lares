@@ -14,6 +14,24 @@ additionalEnvVars:
   # In-cluster Prometheus query endpoint for the prometheus/metrics toolset
   - name: PROMETHEUS_URL
     value: http://prometheus-prometheus.prometheus.svc.cluster.local:9090
+  # Writable HOME (read-only rootfs; agent caches under $HOME/.holmes)
+  - name: HOME
+    value: /tmp
+
+# Satisfy the namespace's restricted Pod Security Standard (image defaults to root).
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
 
 toolsets:
   # Robusta SaaS platform toolset — no Robusta account here, so it would be inert
