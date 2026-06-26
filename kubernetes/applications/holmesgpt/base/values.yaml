@@ -37,3 +37,8 @@ toolsets:
   # Robusta SaaS platform toolset — no Robusta account here, so it would be inert
   robusta:
     enabled: false
+  # Historical logs (14d) — direct to in-cluster Loki (auth_enabled: false)
+  grafana/loki:
+    enabled: true
+    config:
+      api_url: http://loki.loki.svc.cluster.local:3100
