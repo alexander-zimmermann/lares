@@ -15,7 +15,7 @@ spec:
       # Resource allocation
       sockets: 1
       cores: 4
-      memory: 4096
+      memory: 5120
       disk_size: 32
 
       # CPU & memory optimizations
