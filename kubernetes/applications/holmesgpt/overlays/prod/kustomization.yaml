@@ -5,9 +5,7 @@ resources:
   - ../../base
 
 patches:
-  # Holmes investigation server — memory floor trimmed from the 2Gi chart
-  # default (cluster is RAM-constrained); 2Gi limit keeps headroom for agent
-  # loops with large tool outputs.
+  # Sized from observed usage (~428Mi steady, flat through investigations).
   - target:
       kind: Deployment
       name: holmes-holmes
@@ -20,6 +18,6 @@ patches:
         value:
           requests:
             cpu: 50m
-            memory: 1Gi
+            memory: 512Mi
           limits:
-            memory: 2Gi
+            memory: 1Gi
