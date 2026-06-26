@@ -1,0 +1,21 @@
+# Only overrides — chart defaults provide the read-only ClusterRole
+# (createServiceAccount + k8sRBAC=false) and the default investigation toolsets.
+
+# LLM backend: Claude Sonnet 4.6 via litellm. The API key comes from the
+# SealedSecret; MODEL selects the default model for every investigation.
+additionalEnvVars:
+  - name: MODEL
+    value: anthropic/claude-sonnet-4-6
+  - name: ANTHROPIC_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: holmesgpt-llm
+        key: anthropic-api-key
+  # In-cluster Prometheus query endpoint for the prometheus/metrics toolset
+  - name: PROMETHEUS_URL
+    value: http://prometheus-prometheus.prometheus.svc.cluster.local:9090
+
+toolsets:
+  # Robusta SaaS platform toolset — no Robusta account here, so it would be inert
+  robusta:
+    enabled: false
