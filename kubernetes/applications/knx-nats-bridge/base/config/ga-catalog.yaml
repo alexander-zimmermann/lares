@@ -1581,6 +1581,16 @@
   function: Sicherheitstechnik
   name: Sicherheitstechnik.VÜA.Fassade.Objekterkennung.Fahrzeug
   room: Fassade
+14/3/200:
+  dpt: '1.011'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.VÜA.Abwesend.Scharf-Status
+  room: Technikraum
+14/3/201:
+  dpt: '1.011'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.VÜA.Abwesend.Unscharf-Status
+  room: Technikraum
 14/3/3:
   dpt: '5.010'
   function: Sicherheitstechnik
