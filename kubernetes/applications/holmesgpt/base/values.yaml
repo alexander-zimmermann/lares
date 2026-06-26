@@ -17,6 +17,16 @@ additionalEnvVars:
   # Writable HOME (read-only rootfs; agent caches under $HOME/.holmes)
   - name: HOME
     value: /tmp
+  # ArgoCD read-only token (Kyverno-cloned) + in-cluster server for the argocd/core toolset
+  - name: ARGOCD_AUTH_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: argocd-holmes-token
+        key: token
+  - name: ARGOCD_SERVER
+    value: argocd-server.gitops-controller.svc.cluster.local:80
+  - name: ARGOCD_OPTS
+    value: --plaintext --grpc-web
 
 # Satisfy the namespace's restricted Pod Security Standard (image defaults to root).
 podSecurityContext:
@@ -42,3 +52,6 @@ toolsets:
     enabled: true
     config:
       api_url: http://loki.loki.svc.cluster.local:3100
+  # GitOps state/drift/sync status (read-only token; default role:readonly)
+  argocd/core:
+    enabled: true

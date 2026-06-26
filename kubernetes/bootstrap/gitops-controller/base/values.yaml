@@ -16,6 +16,8 @@ configs:
           - "*"
     # Homepage service account – read-only API key for the homepage widget
     accounts.homepage: apiKey
+    # HolmesGPT service account – read-only API key for the AIOps agent's argocd toolset
+    accounts.holmes: apiKey
     # ArgoCD server URL – PLACEHOLDER is replaced per environment via overlay replacements
     url: https://argocd.PLACEHOLDER
     # OIDC via bundled Dex with Authentik upstream — PLACEHOLDER replaced per env
