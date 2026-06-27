@@ -6,6 +6,15 @@ resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
   - ./scheduled-healthchecks.yaml
+  - ./rbac.yaml
+  - ./alert-bridge-cronjob.yaml
+
+configMapGenerator:
+  - name: holmes-alert-bridge-script
+    options:
+      disableNameSuffixHash: true
+    files:
+      - scripts/alert-bridge.sh
 
 helmCharts:
   - name: holmes
