@@ -67,11 +67,14 @@ prometheus:
     # Required for remote_write receiver (e.g. for agent-based ingestion)
     enableRemoteWriteReceiver: true
 
-    # Opt-In Model: Only scrape ServiceMonitors/PodMonitors with 'release: prometheus'
+    # Opt-In Model: Only scrape ServiceMonitors/PodMonitors/ScrapeConfigs with 'release: prometheus'
     serviceMonitorSelector:
       matchLabels:
         release: prometheus
     podMonitorSelector:
+      matchLabels:
+        release: prometheus
+    scrapeConfigSelector:
       matchLabels:
         release: prometheus
 
@@ -171,13 +174,10 @@ kubeScheduler:
         sourceLabels: [__name__]
         regex: (scheduler_framework_extension_point_duration_seconds_(sum|count)|scheduler_scheduling_attempt_duration_seconds_(sum|count)|process_resident_memory_bytes|process_cpu_seconds_total|go_goroutines|kubernetes_build_info)
 
-# Component scraping etcd
+# etcd is scraped via a dynamic ScrapeConfig (Node discovery → CP nodes :2381),
+# not the chart's selector-based service (no component=etcd pod on Talos).
 kubeEtcd:
-  serviceMonitor:
-    metricRelabelings:
-      - action: keep
-        sourceLabels: [__name__]
-        regex: (etcd_server_has_leader|etcd_server_proposals_committed_total|etcd_server_proposals_applied_total|etcd_disk_wal_fsync_duration_seconds_(sum|count)|etcd_mvcc_db_total_size_in_use_bytes|process_resident_memory_bytes|process_cpu_seconds_total|go_goroutines|kubernetes_build_info)
+  enabled: false
 
 # Disable exporters/components that are provided via alloy
 nodeExporter:
