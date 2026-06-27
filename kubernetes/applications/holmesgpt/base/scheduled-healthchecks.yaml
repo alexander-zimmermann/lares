@@ -2,24 +2,6 @@ apiVersion: holmesgpt.dev/v1alpha1
 kind: ScheduledHealthCheck
 
 metadata:
-  name: pod-health
-  namespace: holmesgpt
-
-spec:
-  schedule: "7 * * * *"
-  enabled: true
-  mode: monitor
-  timeout: 300
-  query: >-
-    Are any pods across the cluster crash-looping, OOMKilled, or stuck not-Ready
-    right now? For each, give the namespace, pod, and the most likely root cause
-    from logs, events and metrics.
-
----
-apiVersion: holmesgpt.dev/v1alpha1
-kind: ScheduledHealthCheck
-
-metadata:
   name: argocd-sync
   namespace: holmesgpt
 
@@ -29,23 +11,50 @@ spec:
   mode: monitor
   timeout: 300
   query: >-
-    Are all ArgoCD applications Synced and Healthy? List any that are OutOfSync,
-    Degraded, Progressing or Missing, with the most likely reason.
+    Report FAIL only if an ArgoCD application's sync status is not Synced, or its
+    health status is not Healthy, right now. List those applications with the most
+    likely reason. If all applications are Synced and Healthy, report PASS.
 
 ---
 apiVersion: holmesgpt.dev/v1alpha1
 kind: ScheduledHealthCheck
 
 metadata:
-  name: control-plane-pressure
+  name: config-coherence
   namespace: holmesgpt
 
 spec:
-  schedule: "37 * * * *"
+  schedule: "42 * * * *"
   enabled: true
   mode: monitor
   timeout: 300
   query: >-
-    Are the control-plane nodes under memory pressure (>85% of allocatable), or
-    are any leader-election controllers (kube-scheduler, kube-controller-manager,
-    operators) restarting due to lease-renewal timeouts? Summarize with evidence.
+    Report FAIL only if you find a currently misconfigured or orphaned resource:
+    a PVC stuck Pending or unbound, a Service whose selector has no Ready
+    endpoints, an Ingress or Traefik IngressRoute whose backend Service has no
+    endpoints, a Certificate that is not Ready, or a custom resource whose
+    selector matches nothing (e.g. a GrafanaDashboard with no matching Grafana
+    instance). List each with its namespace, name, and the problem. If you find
+    none, report PASS.
+
+---
+apiVersion: holmesgpt.dev/v1alpha1
+kind: ScheduledHealthCheck
+
+metadata:
+  name: log-anomaly
+  namespace: holmesgpt
+
+spec:
+  schedule: "2 * * * *"
+  enabled: true
+  mode: monitor
+  timeout: 300
+  query: >-
+    Using Loki, scan the last hour of logs across the cluster for any application
+    producing a recurring abnormal error pattern — repeated panics, stack traces,
+    bursts of 5xx, or fatal/connection errors — that is not normal steady-state
+    noise. Report FAIL only if at least one application shows such a recurring
+    pattern in the last hour; name the application and quote one representative
+    line. Ignore single or occasional errors and known steady-state noise. If
+    nothing abnormal stands out, report PASS.
