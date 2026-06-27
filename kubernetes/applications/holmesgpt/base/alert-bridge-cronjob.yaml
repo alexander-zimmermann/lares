@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: holmes-alert-bridge
+  namespace: holmesgpt
+
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          serviceAccountName: holmes-alert-bridge
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: bridge
+              image: alpine/k8s:1.36.2
+              command: ["/bin/sh", "/scripts/alert-bridge.sh"]
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop:
+                    - ALL
+              env:
+                - name: HOME
+                  value: /tmp
+                - name: PUSHOVER_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: holmesgpt-pushover
+                      key: PUSHOVER_APP_TOKEN
+                - name: PUSHOVER_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: holmesgpt-pushover
+                      key: PUSHOVER_USER_KEY
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
+                limits:
+                  memory: 128Mi
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: scripts
+              configMap:
+                name: holmes-alert-bridge-script
+            - name: tmp
+              emptyDir:
+                sizeLimit: 64Mi

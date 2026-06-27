@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ServiceAccount
+
+metadata:
+  name: holmes-alert-bridge
+  namespace: holmesgpt
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+
+metadata:
+  name: holmes-alert-bridge
+  namespace: holmesgpt
+
+rules:
+  # Read failed HealthChecks and mark them notified via an annotation
+  - apiGroups: ["holmesgpt.dev"]
+    resources: ["healthchecks"]
+    verbs: ["get", "list", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+
+metadata:
+  name: holmes-alert-bridge
+  namespace: holmesgpt
+
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: holmes-alert-bridge
+subjects:
+  - kind: ServiceAccount
+    name: holmes-alert-bridge
+    namespace: holmesgpt
