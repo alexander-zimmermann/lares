@@ -1,0 +1,30 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+
+metadata:
+  name: etcd
+  labels:
+    release: prometheus
+
+spec:
+  # Discover nodes from the Kubernetes API and keep only the control plane —
+  # etcd runs as a Talos host service, so there is no pod/IP to hardcode.
+  kubernetesSDConfigs:
+    - role: Node
+  scheme: HTTP
+  relabelings:
+    - sourceLabels: [__meta_kubernetes_node_labelpresent_node_role_kubernetes_io_control_plane]
+      action: keep
+      regex: "true"
+    - sourceLabels: [__meta_kubernetes_node_address_InternalIP]
+      targetLabel: __address__
+      regex: (.*)
+      replacement: "${1}:2381"
+    - sourceLabels: [__meta_kubernetes_node_name]
+      targetLabel: node
+    - targetLabel: job
+      replacement: etcd
+  metricRelabelings:
+    - action: keep
+      sourceLabels: [__name__]
+      regex: (etcd_server_has_leader|etcd_server_proposals_committed_total|etcd_server_proposals_applied_total|etcd_disk_wal_fsync_duration_seconds_(sum|count)|etcd_mvcc_db_total_size_in_use_bytes|process_resident_memory_bytes|process_cpu_seconds_total|go_goroutines|kubernetes_build_info)
