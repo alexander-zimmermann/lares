@@ -868,6 +868,10 @@ spec:
                   {
                     "id": "unit",
                     "value": "time: DD MMM Y"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Datum"
                   }
                 ]
               },
@@ -1026,6 +1030,10 @@ spec:
                   {
                     "id": "unit",
                     "value": "time: DD MMM Y"
+                  },
+                  {
+                    "id": "displayName",
+                    "value": "Datum"
                   }
                 ]
               },
