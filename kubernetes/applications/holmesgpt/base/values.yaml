@@ -56,3 +56,7 @@ toolsets:
   # GitOps state/drift/sync status (read-only token; default role:readonly)
   argocd/core:
     enabled: true
+
+# Phase 2: operator runs ScheduledHealthChecks against the holmes server (read-only)
+operator:
+  enabled: true
