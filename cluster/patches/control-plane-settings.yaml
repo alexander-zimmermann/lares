@@ -24,6 +24,11 @@ cluster:
   scheduler:
     extraArgs:
       bind-address: "0.0.0.0"
+  ## etcd runs as a Talos host service (no component=etcd pod), so expose its
+  ## metrics on all interfaces for Prometheus to scrape the CP nodes on :2381
+  etcd:
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
 
 machine:
   features:
