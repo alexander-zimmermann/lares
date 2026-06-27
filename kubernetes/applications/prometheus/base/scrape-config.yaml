@@ -27,4 +27,4 @@ spec:
   metricRelabelings:
     - action: keep
       sourceLabels: [__name__]
-      regex: (etcd_server_has_leader|etcd_server_proposals_committed_total|etcd_server_proposals_applied_total|etcd_disk_wal_fsync_duration_seconds_(sum|count)|etcd_mvcc_db_total_size_in_use_bytes|process_resident_memory_bytes|process_cpu_seconds_total|go_goroutines|kubernetes_build_info)
+      regex: (etcd_server_has_leader|etcd_server_leader_changes_seen_total|etcd_server_proposals_committed_total|etcd_server_proposals_applied_total|etcd_disk_wal_fsync_duration_seconds_(sum|count|bucket)|etcd_mvcc_db_total_size_in_bytes|process_resident_memory_bytes|process_cpu_seconds_total|go_goroutines|kubernetes_build_info)
