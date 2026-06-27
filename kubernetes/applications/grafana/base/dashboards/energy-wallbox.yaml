@@ -495,7 +495,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time_bucket_gapfill('1 hour', time, date_trunc('hour', now()) - INTERVAL '12 hours', date_trunc('hour', now())) AS time, locf(last(error_state, time), prev => (SELECT error_state FROM warp_evse WHERE error_state IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS \"error_state\", locf(last(contactor_error, time), prev => (SELECT contactor_error FROM warp_evse WHERE contactor_error IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS \"contactor_error\", locf(last(dc_fault_current_state, time), prev => (SELECT dc_fault_current_state FROM warp_evse WHERE dc_fault_current_state IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS \"dc_fault_current_state\" FROM warp_evse WHERE time >= date_trunc('hour', now()) - INTERVAL '12 hours' AND time < date_trunc('hour', now()) GROUP BY 1 ORDER BY 1;",
+              "rawSql": "WITH bucketed AS (SELECT time_bucket_gapfill('1 hour', time, date_trunc('hour', now()) - INTERVAL '12 hours', date_trunc('hour', now())) AS b, last(error_state, time) FILTER (WHERE error_state IS NOT NULL) AS es, last(contactor_error, time) FILTER (WHERE contactor_error IS NOT NULL) AS ce, last(dc_fault_current_state, time) FILTER (WHERE dc_fault_current_state IS NOT NULL) AS dc FROM warp_evse WHERE time >= date_trunc('hour', now()) - INTERVAL '12 hours' AND time < date_trunc('hour', now()) GROUP BY 1), grouped AS (SELECT b, es, ce, dc, count(es) OVER (ORDER BY b) AS es_grp, count(ce) OVER (ORDER BY b) AS ce_grp, count(dc) OVER (ORDER BY b) AS dc_grp FROM bucketed) SELECT b AS time, coalesce(first_value(es) OVER (PARTITION BY es_grp ORDER BY b), (SELECT error_state FROM warp_evse WHERE error_state IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS error_state, coalesce(first_value(ce) OVER (PARTITION BY ce_grp ORDER BY b), (SELECT contactor_error FROM warp_evse WHERE contactor_error IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS contactor_error, coalesce(first_value(dc) OVER (PARTITION BY dc_grp ORDER BY b), (SELECT dc_fault_current_state FROM warp_evse WHERE dc_fault_current_state IS NOT NULL AND time < date_trunc('hour', now()) - INTERVAL '12 hours' ORDER BY time DESC LIMIT 1)) AS dc_fault_current_state FROM grouped ORDER BY b;",
               "refId": "A"
             }
           ],
@@ -862,7 +862,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Time"
+                  "options": "_time"
                 },
                 "properties": [
                   {
@@ -874,7 +874,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "charge_duration"
+                  "options": "_duration"
                 },
                 "properties": [
                   {
@@ -907,7 +907,7 @@ spec:
                   },
                   {
                     "id": "unit",
-                    "value": "kwatt"
+                    "value": "kwatth"
                   },
                   {
                     "id": "custom.width",
@@ -1020,7 +1020,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Time"
+                  "options": "_time"
                 },
                 "properties": [
                   {
@@ -1032,7 +1032,7 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "charge_duration"
+                  "options": "_duration"
                 },
                 "properties": [
                   {
@@ -1065,7 +1065,7 @@ spec:
                   },
                   {
                     "id": "unit",
-                    "value": "kwatt"
+                    "value": "kwatth"
                   },
                   {
                     "id": "custom.width",
