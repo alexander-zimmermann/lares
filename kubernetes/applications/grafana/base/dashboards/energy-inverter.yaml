@@ -1393,7 +1393,7 @@ spec:
                   }
                 ]
               },
-              "unit": "watt"
+              "unit": "short"
             },
             "overrides": [
               {
@@ -1408,6 +1408,10 @@ spec:
                       "fixedColor": "dark-red",
                       "mode": "fixed"
                     }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "watt"
                   }
                 ]
               },
@@ -1423,6 +1427,10 @@ spec:
                       "fixedColor": "dark-yellow",
                       "mode": "fixed"
                     }
+                  },
+                  {
+                    "id": "unit",
+                    "value": "watt"
                   }
                 ]
               }
