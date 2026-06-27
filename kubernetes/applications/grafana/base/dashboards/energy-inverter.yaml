@@ -111,7 +111,7 @@ spec:
                   }
                 ]
               },
-              "unit": "kwatth"
+              "unit": "watth"
             },
             "overrides": [
               {
@@ -280,7 +280,7 @@ spec:
                   }
                 ]
               },
-              "unit": "kwatth"
+              "unit": "watth"
             },
             "overrides": [
               {
@@ -790,7 +790,7 @@ spec:
                   }
                 ]
               },
-              "unit": "kwatth"
+              "unit": "watth"
             },
             "overrides": [
               {
@@ -1131,7 +1131,7 @@ spec:
                   }
                 ]
               },
-              "unit": "kwatth"
+              "unit": "watth"
             },
             "overrides": [
               {
@@ -1257,8 +1257,6 @@ spec:
                 }
               },
               "mappings": [],
-              "max": 100,
-              "min": 0,
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
@@ -1272,9 +1270,40 @@ spec:
                   }
                 ]
               },
-              "unit": "percent"
+              "unit": "watt"
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Laden"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "dark-green",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Entladen"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "dark-orange",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 8,
@@ -1311,7 +1340,7 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT NULL::timestamptz AS _time, NULL::numeric AS _value WHERE false;",
+              "rawSql": "SELECT time_bucket('${agg}'::interval, time) - INTERVAL '1 second' AS _time, avg(battery_charge) AS \"Laden\", avg(battery_discharge) AS \"Entladen\" FROM solaredge_powerflow WHERE $__timeFilter(time) AND inverter_id = ${inverter_id} GROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -1364,7 +1393,7 @@ spec:
                   }
                 ]
               },
-              "unit": "short"
+              "unit": "watt"
             },
             "overrides": [
               {
@@ -1495,7 +1524,7 @@ spec:
                   }
                 ]
               },
-              "unit": "kwatth"
+              "unit": "watth"
             },
             "overrides": [
               {
