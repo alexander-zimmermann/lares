@@ -141,3 +141,27 @@ spec:
           annotations:
             summary: "UniFi arm-sync metric stale/absent"
             description: "unifi_arm_sync_ok has not been reported for >15m (expected every ~5min via the KNX status heartbeat). The redpanda-connect stream, its JetStream consumer binding, or the scrape is stuck — drift detection is blind."
+
+    - name: kubernetes-pods
+      rules:
+        - alert: PodCrashLooping
+          # Restart-rate based — also catches transient crash-loops (count persists in the window)
+          expr: increase(kube_pod_container_status_restarts_total[15m]) >= 3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.namespace }}/{{ $labels.pod }} crash-looping"
+            description: "Container {{ $labels.container }} restarted {{ $value | humanize }} times in the last 15m."
+
+        - alert: ContainerOOMKilled
+          expr: |
+            (increase(kube_pod_container_status_restarts_total[10m]) >= 1)
+            and on(namespace, pod, container)
+            (kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1)
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Container {{ $labels.namespace }}/{{ $labels.pod }} OOMKilled"
+            description: "Container {{ $labels.container }} was OOMKilled and restarted in the last 10m."
