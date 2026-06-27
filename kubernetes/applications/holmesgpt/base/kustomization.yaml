@@ -5,6 +5,7 @@ namespace: holmesgpt
 resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
+  - ./scheduled-healthchecks.yaml
 
 helmCharts:
   - name: holmes
@@ -13,6 +14,7 @@ helmCharts:
     version: 0.33.0
     valuesFile: values.yaml
     namespace: holmesgpt
+    includeCRDs: true
 
 labels:
   - includeSelectors: false

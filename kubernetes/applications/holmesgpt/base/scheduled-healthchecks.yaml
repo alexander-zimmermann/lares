@@ -1,0 +1,51 @@
+apiVersion: holmesgpt.dev/v1alpha1
+kind: ScheduledHealthCheck
+
+metadata:
+  name: pod-health
+  namespace: holmesgpt
+
+spec:
+  schedule: "7 * * * *"
+  enabled: true
+  mode: monitor
+  timeout: 300
+  query: >-
+    Are any pods across the cluster crash-looping, OOMKilled, or stuck not-Ready
+    right now? For each, give the namespace, pod, and the most likely root cause
+    from logs, events and metrics.
+
+---
+apiVersion: holmesgpt.dev/v1alpha1
+kind: ScheduledHealthCheck
+
+metadata:
+  name: argocd-sync
+  namespace: holmesgpt
+
+spec:
+  schedule: "22 * * * *"
+  enabled: true
+  mode: monitor
+  timeout: 300
+  query: >-
+    Are all ArgoCD applications Synced and Healthy? List any that are OutOfSync,
+    Degraded, Progressing or Missing, with the most likely reason.
+
+---
+apiVersion: holmesgpt.dev/v1alpha1
+kind: ScheduledHealthCheck
+
+metadata:
+  name: control-plane-pressure
+  namespace: holmesgpt
+
+spec:
+  schedule: "37 * * * *"
+  enabled: true
+  mode: monitor
+  timeout: 300
+  query: >-
+    Are the control-plane nodes under memory pressure (>85% of allocatable), or
+    are any leader-election controllers (kube-scheduler, kube-controller-manager,
+    operators) restarting due to lease-renewal timeouts? Summarize with evidence.
