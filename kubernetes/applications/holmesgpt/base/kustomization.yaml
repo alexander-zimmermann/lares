@@ -15,6 +15,10 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - scripts/alert-bridge.sh
+  # Hash on: Deployment mounts this, so the holmes pod rolls when a skill changes.
+  - name: holmes-skills-custom
+    files:
+      - skills/SKILL.md
 
 helmCharts:
   - name: holmes
