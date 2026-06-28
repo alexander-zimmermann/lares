@@ -7,12 +7,21 @@ resources:
   - ./sealed-secret.yaml
 
 helmCharts:
-  - name: unpoller
-    repo: https://unpoller.github.io/helm-chart
+  - name: application
+    repo: https://stakater.github.io/stakater-charts
     releaseName: unpoller
-    version: 2.1.0
+    version: 9.0.0
     valuesFile: values.yaml
     namespace: unifi-poller
+    apiVersions:
+      - monitoring.coreos.com/v1
+
+# Content-hash suffix: a config change produces a new ConfigMap name, so the
+# Deployment volume reference updates and ArgoCD rolls the pod natively.
+configMapGenerator:
+  - name: unpoller-config
+    files:
+      - up.conf=config/up.conf
 
 labels:
   - includeSelectors: false
