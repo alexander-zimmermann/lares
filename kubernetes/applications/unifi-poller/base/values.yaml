@@ -1,67 +1,70 @@
-# Enable ServiceMonitor (Prometheus Operator) for metrics scraping
-serviceMonitor:
+applicationName: unpoller
+
+deployment:
   enabled: true
-  labels:
-    # Prometheus Operator label (Opt-In)
-    release: prometheus
+  # ConfigMap uses a kustomize content-hash name, so a config change rolls the
+  # pod natively. No Stakater Reloader controller in the cluster.
+  reloadOnChange: false
+  image:
+    repository: ghcr.io/unpoller/unpoller
+    tag: v3.3.1
+    pullPolicy: IfNotPresent
 
-# Keep PodMonitor explicitly off (we rely on ServiceMonitor)
-podMonitor:
-  enabled: false
+  env:
+    TZ:
+      value: Europe/Berlin
 
-# Expose the metrics port inside the cluster
+  volumes:
+    config:
+      configMap:
+        name: unpoller-config
+    unifi-creds:
+      secret:
+        secretName: unpoller-unifi-credentials
+
+  volumeMounts:
+    config:
+      mountPath: /etc/unpoller/up.conf
+      subPath: up.conf
+    unifi-creds:
+      mountPath: /etc/unifi-poller/secrets/unifi-api-key
+      subPath: unifi-api-key
+
+  ports:
+    - containerPort: 9130
+      name: metrics
+      protocol: TCP
+
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 60
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 30
+
 service:
   enabled: true
   type: ClusterIP
-  port: 9130
+  ports:
+    - port: 9130
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
 
-# Use Grafana Operator dashboards, but target an existing Grafana instance
-dashboards:
-  grafana:
-    create: false
-    selectorLabels:
-      homelab.app: grafana
-
-# Unpoller configuration
-upConfig: |
-  [poller]
-    debug = false
-    quiet = false
-    plugins = []
-  [prometheus]
-    disable = false
-    http_listen = "0.0.0.0:9130"
-    report_errors = false
-  [loki]
-    disable = false
-    url = "http://loki-gateway.loki.svc:80"
-    verify_ssl = false
-  [datadog]
-    disable = true
-  [webserver]
-    enable = false
-  [unifi]
-    dynamic = false
-  [[unifi.controller]]
-    url = "https://udm-pro.zimmermann.eu.com"
-    user = "unifi-poller"
-    pass = "file:///etc/unifi-poller/secrets/unifi-password"
-    sites = ["all"]
-    save_ids = false
-    save_events = false
-    save_alarms = false
-    save_anomalies = false
-    save_dpi = false
-    save_rogue = false
-    verify_ssl = false
-
-# Mount credentials secret into the container
-extraVolumes:
-  - name: unifi-creds
-    secret:
-      secretName: unpoller-unifi-credentials
-
-extraVolumeMounts:
-  - name: unifi-creds
-    mountPath: /etc/unifi-poller/secrets
-    readOnly: true
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 60s
+      path: /metrics
