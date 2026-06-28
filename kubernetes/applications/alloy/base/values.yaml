@@ -69,6 +69,10 @@ collectors:
 
   # Alloy Receiver: Opens receivers for external data sources (syslog, OTLP)
   alloy-receiver:
+    # Single writer: VIP-fronted push receiver must not fan remote_write across pods (out-of-order rejects)
+    controller:
+      type: deployment
+      replicas: 1
     # Include loki for syslog forwarding and prometheus for OTLP metric forwarding
     includeDestinations:
       - loki
