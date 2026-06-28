@@ -75,3 +75,16 @@ toolsets:
 # Phase 2: operator runs ScheduledHealthChecks against the holmes server (read-only)
 operator:
   enabled: true
+
+# Custom skills as real .md files (kustomize ConfigMap) — a reusable registry of known-benign
+# log noise so investigations (esp. log-anomaly) don't escalate steady-state patterns.
+customSkillPaths:
+  - /etc/holmes/skills-custom
+additionalVolumes:
+  - name: holmes-skills-custom
+    configMap:
+      name: holmes-skills-custom
+additionalVolumeMounts:
+  - name: holmes-skills-custom
+    mountPath: /etc/holmes/skills-custom
+    readOnly: true
