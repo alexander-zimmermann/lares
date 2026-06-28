@@ -10,6 +10,12 @@ deployment:
     tag: v3.3.1
     pullPolicy: IfNotPresent
 
+  # The unpoller image runs as root and writes at runtime; override the chart's
+  # hardened defaults (runAsNonRoot + readOnlyRootFilesystem) that block start.
+  containerSecurityContext:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+
   env:
     TZ:
       value: Europe/Berlin
