@@ -4,7 +4,7 @@
 #   knx.15.6.25 Lademodus-PV     -> mode 2 (PV)
 #   knx.15.6.27 Lademodus-PV+Min -> mode 3 (Min+PV)
 #   knx.15.6.29 Lademodus-Schnell-> mode 0 (Schnell)
-# "Aus" (mode 1) is not a button — that is the Ein-Aus GA (15/6/20).
+# "Aus" (mode 1) is not a button — that is the Freigabe GA (15/6/20).
 input:
   # Consumer (filterSubjects on the three GAs) is declared as a CRD in
   # nats/base/consumers/warp_mode_buttons_from_knx.yaml.

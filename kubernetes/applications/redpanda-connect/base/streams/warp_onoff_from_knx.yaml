@@ -1,6 +1,7 @@
-# Ein-Aus charge release: forwards the KNX Ein-Aus GA (15/6/20, DPT 1.001
-# "Versorgungstechnik.Wallbox.Ein-Aus") to the WARP wallbox as a charge
+# Charge release: forwards the KNX Freigabe GA (15/6/20, DPT 1.001
+# "Versorgungstechnik.Wallbox.Freigabe") to the WARP wallbox as a charge
 # start/stop command — the equivalent of the WARP UI Start/Stop button.
+# true => start_charging (Slot 4 released), false => stop_charging (blocked).
 input:
   # Consumer is declared as a CRD in nats/base/consumers/warp_onoff_from_knx.yaml.
   nats_jetstream:
