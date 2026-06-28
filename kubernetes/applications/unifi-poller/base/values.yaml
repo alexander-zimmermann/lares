@@ -10,11 +10,20 @@ deployment:
     tag: v3.3.1
     pullPolicy: IfNotPresent
 
-  # The unpoller image runs as root and writes at runtime; override the chart's
-  # hardened defaults (runAsNonRoot + readOnlyRootFilesystem) that block start.
+  # unpoller is a static distroless binary that writes nothing to disk; run it
+  # as the distroless nonroot user (65532) with a read-only root filesystem.
   containerSecurityContext:
-    runAsNonRoot: false
-    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 65532
+    runAsGroup: 65532
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    fsGroup: 65532
 
   env:
     TZ:
