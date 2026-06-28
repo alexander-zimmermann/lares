@@ -36,6 +36,12 @@ spec:
       database: wikijs
       owner: wikijs
 
+  # Single-instance cluster has no replicas — drop the never-routable read-only (-ro) Service
+  managed:
+    services:
+      disabledDefaultServices:
+        - ro
+
   postgresql:
     parameters:
       # Memory settings

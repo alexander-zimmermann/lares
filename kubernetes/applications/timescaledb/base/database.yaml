@@ -60,6 +60,10 @@ spec:
         comment: "Grafana — SELECT only on hypertables and CAGGs"
         passwordSecret:
           name: timescaledb-db-grafana-ro-secret
+    # Single-instance cluster has no replicas — drop the never-routable read-only (-ro) Service
+    services:
+      disabledDefaultServices:
+        - ro
   postgresql:
     # Load TimescaleDB extension at server start
     shared_preload_libraries:
