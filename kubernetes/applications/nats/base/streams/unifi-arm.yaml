@@ -1,0 +1,19 @@
+# DERIVED stream — NOT a primary data source. The `unifi.arm.*` subjects are
+# republished by the redpanda-connect unifi_arm_alarm stream (UniFi "Abwesend"
+# arm/disarm state, confirmed by the /nvrs read-back). This stream exists only
+# so the knx-nats-bridge read responder can be seeded on startup for the
+# Scharf-/Unscharf-Status GAs (14/3/200, 14/3/201); without it those reads
+# return no_value after a redeploy until the next ~5-min status heartbeat.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: unifi-arm
+  namespace: nats
+spec:
+  name: UNIFI_ARM
+  subjects:
+    - unifi.arm.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
