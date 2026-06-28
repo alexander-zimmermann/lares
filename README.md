@@ -36,7 +36,7 @@ _Roman household guardians — a homelab stack across three independent layers: 
 
 ## About
 
-This is **Lares** — my personal homelab. In Roman religion, the _Lares_ were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and (eventually) the AI agents that read and act on it all. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
+This is **Lares** — my personal homelab. In Roman religion, the _Lares_ were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and the AI agents that read the cluster today and — eventually — act on it all. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
 
 What I care about most is that **everything is declarative end-to-end.** A git push is the only way state reaches the cluster. There is no `kubectl apply`, no `tofu apply` at 2 a.m. from my laptop, no snowflake tweaks. [Renovate](https://docs.renovatebot.com/) opens PRs when new versions drop, I merge them, [Argo CD](https://argo-cd.readthedocs.io/) rolls them out. It's boring. Boring is the point.
 
@@ -240,6 +240,7 @@ A quick taste of what's running — full catalog in [`kubernetes/README.md`](kub
 - **Data plane** — [CloudNativePG](https://cloudnative-pg.io/) with Barman S3 PITR backups, [TimescaleDB](https://www.timescale.com/) for sensor time-series, [Redis](https://redis.io/), [RustFS](https://github.com/rustfs/rustfs) for S3-compatible object storage.
 - **Streaming & agents** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus protocol bridges (KNX, solar) and an MCP bridge that exposes the data to AI agents.
 - **Observability** — [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), [Loki](https://grafana.com/oss/loki/), [Alloy](https://grafana.com/docs/alloy/), [Gatus](https://gatus.io/), plus [kromgo](https://github.com/kashalls/kromgo) powering the badges above.
+- **AIOps** — [HolmesGPT](https://github.com/robusta-dev/holmesgpt) as an in-cluster SRE agent: investigates Prometheus alerts, answers plain-language questions over the live cluster, Loki logs and Argo CD state, and runs scheduled health-checks — all read-only.
 
 ## Repository structure
 
