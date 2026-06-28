@@ -1,8 +1,9 @@
-# Ein-Aus-Status feedback: derives a "charging active" boolean from the WARP
-# evse state and republishes it for the knx-nats-bridge writer, which maps it
-# to KNX 15/6/21 (DPT 1.001 "Versorgungstechnik.Wallbox.Ein-Aus-Status").
-# The bridge cannot transform an enum to a bool, so the derivation lives here.
-# charger_state == 2 means the WARP is actively charging.
+# Freigabe-Status feedback: mirrors the charge release the Freigabe switch
+# (15/6/20 start/stop_charging) toggles = WARP "Slot 4". Blocked (active &&
+# max_current == 0) => off; otherwise => on. Tracks only the release intent,
+# independent of car presence or current draw — unlike charger_state, which is
+# 0 whenever no car is plugged in. The bridge can't index an array, so the bool
+# is derived here for the writer (KNX 15/6/21, DPT 1.001 …Wallbox.Freigabe-Status).
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -10,15 +11,16 @@ input:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: WARP
-    subject: warp.evse.state
-    durable: redpanda-connect-warp-charging-status
+    subject: warp.evse.slots
+    durable: redpanda-connect-warp-charging-status-slot4
     deliver: last
     ack_wait: 20m
     max_ack_pending: 5000
 
 pipeline:
   processors:
-    - mapping: 'root = { "on": this.charger_state == 2 }'
+    # Slot 4 = manual/button charge release; blocked == active && max_current 0.
+    - mapping: 'root = { "on": !(this.index(4).active && this.index(4).max_current == 0) }'
 
 output:
   # Core NATS publish — the bridge writer uses a core subscription, and

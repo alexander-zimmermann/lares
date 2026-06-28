@@ -2599,12 +2599,12 @@
 15/6/20:
   dpt: '1.001'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Ein-Aus
+  name: Versorgungstechnik.Wallbox.Freigabe
   room: Garage
 15/6/21:
   dpt: '1.001'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Ein-Aus-Status
+  name: Versorgungstechnik.Wallbox.Freigabe-Status
   room: Garage
 15/6/22:
   dpt: '5.010'

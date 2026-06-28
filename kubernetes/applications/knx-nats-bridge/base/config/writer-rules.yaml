@@ -504,7 +504,7 @@ mappings:
     min_delta: 0  # changes only per charge: write on change
     seed_on_start: true
 
-  # WARP control feedback (KNX<-WARP). The command GAs (Ein-Aus 15/6/20,
+  # WARP control feedback (KNX<-WARP). The command GAs (Freigabe 15/6/20,
   # Lademodi 15/6/22, per-mode buttons 15/6/25/27/29) are driven KNX->WARP by
   # redpanda-connect streams; these rules report the actual state back so
   # Basalte reflects reality.
@@ -518,8 +518,8 @@ mappings:
   - subject: "wallbox.knx.charging"
     ga: "15/6/21"
     dpt: "1.001"
-    payload_path: "$.on"  # derived in warp_charging_status (charger_state==2)
-    description: "Versorgungstechnik.Wallbox.Ein-Aus-Status"
+    payload_path: "$.on"  # derived in warp_charging_status from WARP Slot 4 release
+    description: "Versorgungstechnik.Wallbox.Freigabe-Status"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
