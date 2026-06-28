@@ -1,6 +1,21 @@
 # Only overrides — chart defaults provide the read-only ClusterRole
 # (createServiceAccount + k8sRBAC=false) and the default investigation toolsets.
 
+# Extend the chart's read-only ClusterRole with CRD groups it omits (traefik/grafana/cert-manager/cnpg).
+customClusterRoleRules:
+  - apiGroups: ["traefik.io"]
+    resources: [ingressroutes, ingressroutetcps, ingressrouteudps, middlewares, traefikservices, tlsoptions, serverstransports]
+    verbs: [get, list, watch]
+  - apiGroups: ["grafana.integreatly.org"]
+    resources: [grafanas, grafanadashboards, grafanadatasources, grafanafolders]
+    verbs: [get, list, watch]
+  - apiGroups: ["cert-manager.io"]
+    resources: [certificates, certificaterequests, issuers, clusterissuers]
+    verbs: [get, list, watch]
+  - apiGroups: ["postgresql.cnpg.io"]
+    resources: [clusters, poolers, backups, scheduledbackups]
+    verbs: [get, list, watch]
+
 # LLM backend: Claude Sonnet 4.6 via the E.ON LiteLLM gateway (OpenAI-compatible).
 additionalEnvVars:
   - name: MODEL
