@@ -23,8 +23,9 @@ pipeline:
     - mapping: 'root = { "on": !(this.index(4).active && this.index(4).max_current == 0) }'
 
 output:
-  # Core NATS publish — the bridge writer uses a core subscription, and
-  # `wallbox.>` is not bound to any JetStream, so nothing archives it.
+  # Core NATS publish for live delivery (the bridge writer subscribes core).
+  # The WALLBOX_KNX JetStream (wallbox.knx.>) still archives it, so the writer's
+  # seed_on_start can prime the read-responder from the last value on restart.
   nats:
     urls: ["nats://nats.nats.svc:4222"]
     auth:
