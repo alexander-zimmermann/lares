@@ -24,3 +24,14 @@ Shape: `grpc: addrConn.createTransport failed to connect to {Addr: "127.0.0.1:23
   alarms, or raft lag — and the cluster degrades. Verify via `/healthz/etcd` and
   `talosctl etcd alarm list` before escalating.
 - Action: ignore. High volume is expected, not a signal.
+
+### Transient readiness/liveness probe failures during a rollout
+Shape: `Readiness probe failed: Get "http://<pod-ip>:<port>/ready": context deadline exceeded`
+or `Liveness/Readiness probe failed: ... connect: connection refused`, clustered around a Deployment rollout.
+- Source: any app mid-rollout — the OLD pod failing readiness while it terminates, or the NEW
+  pod failing liveness/readiness for a few seconds before its port is open.
+- Why it is noise: expected rollout churn. The events cluster at the rollout timestamp and stop
+  once the new pod reports Ready.
+- NOT covered — escalate: a pod that keeps failing probes after the rollout settles, is
+  CrashLooping/restarting, or a Deployment that never reaches Available. That is a real failure.
+- Action: ignore ONLY if the new ReplicaSet's pod is now Ready and the failures have stopped.
