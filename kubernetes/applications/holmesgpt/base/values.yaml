@@ -84,6 +84,11 @@ additionalVolumes:
   - name: holmes-skills-custom
     configMap:
       name: holmes-skills-custom
+      # Project into a <skill-name>/SKILL.md subdir (the canonical layout the
+      # 2-level customSkillPaths scan expects; skill name then matches the dir).
+      items:
+        - key: SKILL.md
+          path: known-log-noise/SKILL.md
 additionalVolumeMounts:
   - name: holmes-skills-custom
     mountPath: /etc/holmes/skills-custom

@@ -18,7 +18,7 @@ configMapGenerator:
   # Hash on: Deployment mounts this, so the holmes pod rolls when a skill changes.
   - name: holmes-skills-custom
     files:
-      - skills/SKILL.md
+      - skills/known-log-noise/SKILL.md
 
 helmCharts:
   - name: holmes
