@@ -848,7 +848,10 @@ spec:
         }
       ],
       "schemaVersion": 39,
-      "tags": [],
+      "tags": [
+        "timescaledb",
+        "knx"
+      ],
       "templating": {
         "list": []
       },
