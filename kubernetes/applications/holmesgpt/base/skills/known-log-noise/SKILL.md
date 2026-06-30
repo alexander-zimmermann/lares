@@ -30,8 +30,9 @@ false alarms on patterns that look like failures but are normal in this cluster.
 ## Known-benign catalog
 
 ### kube-apiserver → etcd "operation was canceled"
-- Pattern: `grpc: addrConn.createTransport failed to connect to {Addr: "127.0.0.1:2379" ...}` /
-  `dial tcp 127.0.0.1:2379: operation was canceled`, W-level, on all
+- Pattern: `grpc: addrConn.createTransport failed to connect to {Addr: "127.0.0.1:2379" ...}`,
+  ending in `operation was canceled` / `context canceled` /
+  `authentication handshake failed: context canceled`, W-level, on all
   control-plane nodes (talos-cp-01/02/03), ~every 30s, continuous.
 - Why benign: the apiserver's own etcd clientv3 gRPC balancer cancels redundant
   dials. "operation was canceled" is a self-cancelled context, not etcd down.
@@ -50,6 +51,42 @@ false alarms on patterns that look like failures but are normal in this cluster.
 - Confirm still benign: the new ReplicaSet's pod is now Ready and the failures
   have stopped. A pod that keeps failing probes after the rollout settles, is
   CrashLooping, or a Deployment that never reaches Available is NOT this — escalate.
+
+### ArgoCD application-controller "DiffFromCache: cache: key is missing"
+- Pattern: `DiffFromCache error: error getting managed resources for app <name>: cache: key is missing`,
+  error-level, from `argocd-application-controller-0` (gitops-controller), low
+  rate but recurring across many apps over hours.
+- Why benign: ArgoCD's managed-resources diff cache (in argocd-redis) misses or
+  expires entries (TTL/eviction); the controller falls back to a live diff and
+  logs the miss at error level. Apps still reconcile correctly.
+- Confirm still benign: `argocd-redis` and `argocd-application-controller-0` are
+  Running with no recent restarts/OOM, AND every ArgoCD Application is
+  Synced + Healthy (the live-diff fallback works). A real fault instead shows
+  apps going OutOfSync/Unknown, redis CrashLooping/OOM, or a high and rising
+  miss rate.
+
+### kube-controller-manager CronJob "the object has been modified"
+- Pattern: `"Unhandled Error" err="error syncing CronJobController <ns>/<name>: Operation cannot be fulfilled on cronjobs.batch ...: the object has been modified"`,
+  error-level, every ~5-10 min across multiple CronJobs.
+- Why benign: optimistic-concurrency retry — the CronJob controller updates
+  `.status` while another writer (e.g. an ArgoCD reconcile) touches the same
+  object; the controller logs the conflict and requeues, succeeding on retry.
+  The cadence tracks the CronJob schedules.
+- Confirm still benign: the affected CronJobs still fire on schedule
+  (`.status.lastScheduleTime` advancing, their Jobs completing). A real fault
+  would be a tight hot-loop (many conflicts per second on one object) or
+  CronJobs that stop scheduling — neither is this.
+
+### solaredge2mqtt "Unreadable register" at night
+- Pattern: `ERROR | solaredge2mqtt.services.modbus:_read_from_modbus:... - Unreadable register <n>`
+  (e.g. 40071), every ~5s on both solaredge2mqtt pods, during night / no-production hours.
+- Why benign: the SolarEdge inverter (SE3680H) stops serving its production registers
+  when it is not generating (night), so the poller logs the register as unreadable. It
+  reads normally again once production resumes at sunrise.
+- Confirm still benign: the errors are confined to no-production hours AND the app logs
+  successful reads during daylight (e.g. `_map_inverter ... AC <n> W`); pods are not
+  restarting. Escalate if "Unreadable register" occurs during daytime production, the
+  app stops publishing powerflow, or the pods CrashLoop.
 
 ## Synthesize findings
 
