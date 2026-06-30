@@ -77,17 +77,6 @@ false alarms on patterns that look like failures but are normal in this cluster.
   would be a tight hot-loop (many conflicts per second on one object) or
   CronJobs that stop scheduling — neither is this.
 
-### solaredge2mqtt "Unreadable register" at night
-- Pattern: `ERROR | solaredge2mqtt.services.modbus:_read_from_modbus:... - Unreadable register <n>`
-  (e.g. 40071), every ~5s on both solaredge2mqtt pods, during night / no-production hours.
-- Why benign: the SolarEdge inverter (SE3680H) stops serving its production registers
-  when it is not generating (night), so the poller logs the register as unreadable. It
-  reads normally again once production resumes at sunrise.
-- Confirm still benign: the errors are confined to no-production hours AND the app logs
-  successful reads during daylight (e.g. `_map_inverter ... AC <n> W`); pods are not
-  restarting. Escalate if "Unreadable register" occurs during daytime production, the
-  app stops publishing powerflow, or the pods CrashLoop.
-
 ## Synthesize findings
 
 - Matched + Confirm passes → report the pattern as expected steady-state noise;
