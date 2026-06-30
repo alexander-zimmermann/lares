@@ -54,9 +54,9 @@ spec:
     Using Loki, scan the last hour of logs across the cluster for any application
     producing a recurring abnormal error pattern — repeated panics, stack traces,
     bursts of 5xx, or fatal/connection errors — that is not normal steady-state
-    noise. Before reporting FAIL on any recurring connection, gRPC, 5xx, or
-    probe error, fetch the `known-log-noise` skill and exclude every pattern
-    that matches an entry there. Report FAIL only if at least one application
+    noise. Before reporting FAIL on any recurring error, always fetch the
+    `known-log-noise` skill and exclude every pattern that matches an entry
+    there. Report FAIL only if at least one application
     shows such a recurring pattern in the last hour after those exclusions; name
     the application and quote one representative line. Ignore single or occasional
     errors and known steady-state noise. If nothing abnormal stands out, report
