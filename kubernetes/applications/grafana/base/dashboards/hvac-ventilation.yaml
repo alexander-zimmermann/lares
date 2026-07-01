@@ -120,7 +120,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Lüftermodi-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Lüftermodi-Status' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -182,7 +182,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filter-Betriebsstunden' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filter-Betriebsstunden' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -262,7 +262,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filterwechsel-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Filterwechsel-Status' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -342,7 +342,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Wartungsmodus-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Wartungsmodus-Status' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -422,7 +422,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.Status' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -512,7 +512,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.ComfoConnect-Status' AND time > now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE knx_name = 'Versorgungstechnik.KWL.ComfoConnect-Status' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
