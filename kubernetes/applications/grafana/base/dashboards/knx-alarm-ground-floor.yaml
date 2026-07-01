@@ -111,12 +111,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 10°"
@@ -143,12 +143,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 25°"
@@ -265,12 +265,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 40%"
@@ -297,12 +297,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 65%"
@@ -419,12 +419,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "800 ppm"
@@ -451,12 +451,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1000 ppm"
@@ -483,12 +483,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1400 ppm"
@@ -589,12 +589,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
@@ -728,12 +728,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 10°"
@@ -760,12 +760,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 25°"
@@ -882,12 +882,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 40%"
@@ -914,12 +914,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 65%"
@@ -1036,12 +1036,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "800 ppm"
@@ -1068,12 +1068,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1000 ppm"
@@ -1100,12 +1100,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1400 ppm"
@@ -1206,12 +1206,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
@@ -1338,12 +1338,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 10°"
@@ -1370,12 +1370,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 25°"
@@ -1485,12 +1485,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 40%"
@@ -1517,12 +1517,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 65%"
@@ -1632,12 +1632,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "800 ppm"
@@ -1664,12 +1664,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1000 ppm"
@@ -1696,12 +1696,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1400 ppm"
@@ -1796,12 +1796,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
@@ -1927,12 +1927,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 10°"
@@ -1959,12 +1959,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 25°"
@@ -2074,12 +2074,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 40%"
@@ -2106,12 +2106,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 65%"
@@ -2221,12 +2221,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "800 ppm"
@@ -2253,12 +2253,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1000 ppm"
@@ -2285,12 +2285,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1400 ppm"
@@ -2385,12 +2385,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
@@ -2516,12 +2516,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 10°"
@@ -2548,12 +2548,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 25°"
@@ -2663,12 +2663,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "< 40%"
@@ -2695,12 +2695,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "> 65%"
@@ -2810,12 +2810,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "800 ppm"
@@ -2842,12 +2842,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1000 ppm"
@@ -2874,12 +2874,12 @@ spec:
                     "value": [
                       {
                         "options": {
-                          "false": {
+                          "0": {
                             "color": "dark-green",
                             "index": 0,
                             "text": "Normal"
                           },
-                          "true": {
+                          "1": {
                             "color": "dark-red",
                             "index": 1,
                             "text": "1400 ppm"
@@ -2974,12 +2974,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
