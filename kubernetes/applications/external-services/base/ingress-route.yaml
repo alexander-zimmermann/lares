@@ -42,7 +42,7 @@ spec:
           scheme: https
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - kind: Service
@@ -94,7 +94,7 @@ spec:
           scheme: https
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: backup
@@ -146,7 +146,7 @@ spec:
           serversTransport: insecure-transport
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: omni
@@ -372,7 +372,7 @@ spec:
           passHostHeader: false
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: ems-esp
@@ -424,7 +424,7 @@ spec:
           port: 80
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: fritzbox
@@ -476,7 +476,7 @@ spec:
           passHostHeader: false
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: knx-ip
