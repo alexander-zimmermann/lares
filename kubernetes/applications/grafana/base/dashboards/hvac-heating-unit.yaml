@@ -1584,7 +1584,10 @@ spec:
       ],
       "preload": false,
       "schemaVersion": 40,
-      "tags": [],
+      "tags": [
+        "timescaledb",
+        "knx"
+      ],
       "templating": {
         "list": []
       },
