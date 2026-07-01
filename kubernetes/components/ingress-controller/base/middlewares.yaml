@@ -161,6 +161,8 @@ spec:
   forwardAuth:
     address: "http://authentik-server.authentik.svc.cluster.local/outpost.goauthentik.io/auth/traefik"
     trustForwardHeader: true
+    # Bound auth-server response body; silences Traefik's unlimited-body DoS warning.
+    maxResponseBodySize: 1048576
     authResponseHeaders:
       - "Remote-User"
       - "Remote-Groups"
