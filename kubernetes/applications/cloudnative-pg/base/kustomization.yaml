@@ -9,7 +9,7 @@ helmCharts:
   - name: cloudnative-pg-chart
     repo: oci://ghcr.io/alexander-zimmermann/charts
     releaseName: cloudnative-pg
-    version: 0.28.3
+    version: 0.29.0
     valuesFile: values.yaml
     namespace: cloudnative-pg
 
