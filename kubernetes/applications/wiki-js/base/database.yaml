@@ -76,7 +76,7 @@ metadata:
   namespace: wiki-js
 
 spec:
-  schedule: "0 0 2 * * *"
+  schedule: "0 0 0 * * *"
   immediate: false
   backupOwnerReference: cluster
   cluster:

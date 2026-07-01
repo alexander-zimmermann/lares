@@ -6,7 +6,7 @@ metadata:
   namespace: csi-block-storage-controller
 
 spec:
-  cron: "0 2 * * *" # Every day at 2am
+  cron: "0 4 * * *" # Every day at 4am
   task: backup
   groups:
     - default
@@ -36,7 +36,7 @@ metadata:
   namespace: csi-block-storage-controller
 
 spec:
-  cron: "0 5 * * *" # Every day at 5am, after backup-daily (02:00)
+  cron: "0 5 * * *" # Every day at 5am, after backup-daily (04:00)
   task: snapshot-cleanup
   groups:
     - default
