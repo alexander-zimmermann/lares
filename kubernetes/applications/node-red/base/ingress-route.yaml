@@ -8,7 +8,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Homepage Service Discovery
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: "Smart Home Integration"
