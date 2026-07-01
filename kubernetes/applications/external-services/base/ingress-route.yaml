@@ -7,7 +7,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -42,7 +41,7 @@ spec:
           scheme: https
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - kind: Service
@@ -62,7 +61,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -94,7 +92,7 @@ spec:
           scheme: https
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: backup
@@ -113,7 +111,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -146,7 +143,7 @@ spec:
           serversTransport: insecure-transport
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: omni
@@ -166,7 +163,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -195,7 +191,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -224,7 +219,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -253,7 +247,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -282,7 +275,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -311,7 +303,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
@@ -339,7 +330,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
     # higher failure tolerance for flaky ESP32 devices)
     gatus.home-operations.com/enabled: "true"
@@ -372,7 +362,7 @@ spec:
           passHostHeader: false
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: ems-esp
@@ -391,7 +381,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
     # alert only after several consecutive failures to tolerate brief device hiccups)
     gatus.home-operations.com/enabled: "true"
@@ -424,7 +413,7 @@ spec:
           port: 80
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: fritzbox
@@ -442,7 +431,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token;
     # alert only after several consecutive failures to tolerate brief device hiccups)
     gatus.home-operations.com/enabled: "true"
@@ -476,7 +464,7 @@ spec:
           passHostHeader: false
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - name: knx-ip
@@ -495,7 +483,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:
@@ -524,7 +511,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
 
 spec:
   entryPoints:

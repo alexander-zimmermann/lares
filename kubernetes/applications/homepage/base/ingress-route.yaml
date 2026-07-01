@@ -8,7 +8,6 @@ metadata:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    kubernetes.io/ingress.class: traefik
     # Homepage Service Discovery
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: "Productivity"
@@ -49,7 +48,7 @@ spec:
           port: 3000
     # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeadersRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
       services:
         - kind: Service
