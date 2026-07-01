@@ -24,7 +24,7 @@ metadata:
   namespace: holmesgpt
 
 spec:
-  schedule: "42 * * * *"
+  schedule: "42 */4 * * *"
   enabled: true
   mode: monitor
   timeout: 300
