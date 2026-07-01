@@ -1,6 +1,6 @@
 pve_cluster_backup_jobs:
   daily-backup:
-    schedule: "*-*-* 04:00"
+    schedule: "*-*-* 23:00"
     storage: pbs-primary
     mode: snapshot
     compress: zstd
