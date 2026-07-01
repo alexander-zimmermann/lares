@@ -12,8 +12,12 @@ spec:
   timeout: 300
   query: >-
     Report FAIL only if an ArgoCD application's sync status is not Synced, or its
-    health status is not Healthy, right now. List those applications with the most
-    likely reason. If all applications are Synced and Healthy, report PASS.
+    health status is not Healthy, right now. If all applications are Synced and
+    Healthy, report PASS.
+    On FAIL, keep the summary to a single sentence naming the affected
+    application(s) and whether they are out of sync, unhealthy, or both; put the
+    per-application detail and most likely reason only in the detailed rationale,
+    and do not repeat it in the summary.
 
 ---
 apiVersion: holmesgpt.dev/v1alpha1
@@ -24,7 +28,7 @@ metadata:
   namespace: holmesgpt
 
 spec:
-  schedule: "42 * * * *"
+  schedule: "42 */4 * * *"
   enabled: true
   mode: monitor
   timeout: 300
@@ -34,8 +38,10 @@ spec:
     endpoints, an Ingress or Traefik IngressRoute whose backend Service has no
     endpoints, a Certificate that is not Ready, or a custom resource whose
     selector matches nothing (e.g. a GrafanaDashboard with no matching Grafana
-    instance). List each with its namespace, name, and the problem. If you find
-    none, report PASS.
+    instance). If you find none, report PASS.
+    On FAIL, keep the summary to a single sentence stating how many resources are
+    affected and their kind(s); put each resource's namespace, name, and specific
+    problem only in the detailed rationale, and do not repeat it in the summary.
 
 ---
 apiVersion: holmesgpt.dev/v1alpha1
@@ -46,18 +52,21 @@ metadata:
   namespace: holmesgpt
 
 spec:
-  schedule: "2 * * * *"
+  schedule: "2 */12 * * *"
   enabled: true
   mode: monitor
   timeout: 300
   query: >-
-    Using Loki, scan the last hour of logs across the cluster for any application
+    Using Loki, scan the last 12 hours of logs across the cluster for any application
     producing a recurring abnormal error pattern — repeated panics, stack traces,
     bursts of 5xx, or fatal/connection errors — that is not normal steady-state
     noise. Before reporting FAIL on any recurring error, always fetch the
     `known-log-noise` skill and exclude every pattern that matches an entry
     there. Report FAIL only if at least one application
-    shows such a recurring pattern in the last hour after those exclusions; name
-    the application and quote one representative line. Ignore single or occasional
-    errors and known steady-state noise. If nothing abnormal stands out, report
-    PASS.
+    shows such a recurring pattern in the last 12 hours after those exclusions.
+    Ignore single or occasional errors and known steady-state noise. If nothing
+    abnormal stands out, report PASS.
+    On FAIL, keep the summary to a single sentence naming the application and the
+    problem; put all evidence — one representative log line, affected
+    namespace/pods, rough frequency, and the likely cause — only in the detailed
+    rationale, and do not repeat it in the summary.

@@ -77,6 +77,23 @@ false alarms on patterns that look like failures but are normal in this cluster.
   would be a tight hot-loop (many conflicts per second on one object) or
   CronJobs that stop scheduling — neither is this.
 
+### Loki querier ↔ query-scheduler "EOF" / "context canceled"
+- Pattern: `error notifying scheduler about finished query" err=EOF` and
+  `error processing requests from scheduler err="rpc error: code = Canceled
+  desc = context canceled"`, error-level, from `loki-0` (loki namespace),
+  recurring every few seconds while queries are running.
+- Why benign: normal query lifecycle. When a query finishes or its client
+  (Grafana, HolmesGPT) disconnects/cancels, the querier's gRPC stream to the
+  in-process query-scheduler closes and Loki logs that close as EOF /
+  context-canceled at error level — the query itself still succeeded. The rate
+  tracks query volume, so HolmesGPT's own scheduled Loki scans amplify it, and
+  it falls silent when query load is idle.
+- Confirm still benign: `loki-0` is Running with no recent restarts/OOM and
+  queries still return results (Grafana Explore or the Holmes loki toolset
+  answer normally). A real fault instead shows client-facing 5xx/timeouts,
+  `panic`, rejected writes (`too many outstanding requests`), or the pod
+  CrashLooping.
+
 ## Synthesize findings
 
 - Matched + Confirm passes → report the pattern as expected steady-state noise;
