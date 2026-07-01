@@ -12,7 +12,7 @@ helmCharts:
   - name: argo-cd
     repo: oci://ghcr.io/argoproj/argo-helm
     releaseName: argocd
-    version: 9.7.1
+    version: 10.1.0
     valuesFile: values.yaml
     namespace: gitops-controller
     apiVersions:
