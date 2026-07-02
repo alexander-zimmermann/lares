@@ -4,5 +4,9 @@ pve_cluster_backup_jobs:
     storage: pbs-primary
     mode: snapshot
     compress: zstd
+    # Throttle host CPU/IO so the vzdump doesn't starve etcd on the shared node
+    zstd: 1
+    max_workers: 2
+    ionice: 8
     vmids:
       - 1100 # windows_01
