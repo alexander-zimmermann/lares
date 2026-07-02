@@ -1,0 +1,38 @@
+---
+# Import the chart-generated Cilium dashboards via the Grafana Operator so they
+# land in the operator-managed "Kubernetes" folder (configMapRef keeps the chart
+# as the JSON source — no copied JSON, updates still flow with the chart).
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+
+metadata:
+  name: cilium-agent
+  namespace: cilium
+
+spec:
+  folder: "Kubernetes"
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      homelab.app: grafana
+  configMapRef:
+    name: cilium-dashboard
+    key: cilium-dashboard.json
+
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+
+metadata:
+  name: cilium-operator
+  namespace: cilium
+
+spec:
+  folder: "Kubernetes"
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      homelab.app: grafana
+  configMapRef:
+    name: cilium-operator-dashboard
+    key: cilium-operator-dashboard.json

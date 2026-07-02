@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: cilium
 resources:
   - ./namespace.yaml
+  - ./grafana-dashboards.yaml
 
 helmCharts:
   - name: cilium
@@ -15,6 +16,22 @@ helmCharts:
     includeCRDs: true
     apiVersions:
       - monitoring.coreos.com/v1
+
+patches:
+  # These dashboards are imported via the Grafana Operator (grafana-dashboards.yaml) into the
+  # "Kubernetes" folder. Drop the sidecar label so they are not also auto-imported into "General".
+  - target:
+      kind: ConfigMap
+      name: cilium-dashboard
+    patch: |-
+      - op: remove
+        path: /metadata/labels/grafana_dashboard
+  - target:
+      kind: ConfigMap
+      name: cilium-operator-dashboard
+    patch: |-
+      - op: remove
+        path: /metadata/labels/grafana_dashboard
 
 labels:
   - includeSelectors: false

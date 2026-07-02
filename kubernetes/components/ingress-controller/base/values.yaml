@@ -133,6 +133,12 @@ ports:
       default: false
       internal: true
 
+  # Prometheus metrics (Port 9100) – only exposed on internal ClusterIP service for the ServiceMonitor
+  metrics:
+    expose:
+      default: false
+      internal: true
+
   # Web entry point (Port 80)
   web:
     exposedPort: 80
