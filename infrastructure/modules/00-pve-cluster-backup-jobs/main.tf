@@ -21,4 +21,13 @@ resource "proxmox_backup_job" "this" {
   vmid     = var.vmids
   mode     = var.mode
   compress = var.compress
+
+  ## Host CPU/IO throttling — null keeps the Proxmox defaults
+  zstd    = var.zstd
+  ionice  = var.ionice
+  bwlimit = var.bwlimit
+
+  performance = var.max_workers == null ? null : {
+    max_workers = var.max_workers
+  }
 }

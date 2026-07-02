@@ -102,6 +102,12 @@ module "pve_cluster_backup_jobs" {
   ## Backup options
   mode     = try(each.value.mode, "snapshot")
   compress = try(each.value.compress, "zstd")
+
+  ## Host CPU/IO throttling (optional)
+  zstd        = try(each.value.zstd, null)
+  max_workers = try(each.value.max_workers, null)
+  ionice      = try(each.value.ionice, null)
+  bwlimit     = try(each.value.bwlimit, null)
 }
 
 
