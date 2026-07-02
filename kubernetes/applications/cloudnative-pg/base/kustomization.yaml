@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: cloudnative-pg
 resources:
   - ./namespace.yaml
+  - ./grafana-dashboard.yaml
 
 helmCharts:
   - name: cloudnative-pg-chart
@@ -12,6 +13,16 @@ helmCharts:
     version: 0.29.0
     valuesFile: values.yaml
     namespace: cloudnative-pg
+
+patches:
+  # The dashboard is imported via the Grafana Operator (grafana-dashboard.yaml) into the
+  # "Kubernetes" folder. Drop the sidecar label so it is not also auto-imported into "General".
+  - target:
+      kind: ConfigMap
+      name: cnpg-grafana-dashboard
+    patch: |-
+      - op: remove
+        path: /metadata/labels/grafana_dashboard
 
 labels:
   - includeSelectors: false

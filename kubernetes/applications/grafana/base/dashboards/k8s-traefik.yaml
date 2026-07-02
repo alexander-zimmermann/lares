@@ -6,7 +6,7 @@ metadata:
   namespace: grafana
 
 spec:
-  folder: "Netzwerk"
+  folder: "Kubernetes"
   instanceSelector:
     matchLabels:
       homelab.app: grafana
