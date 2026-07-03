@@ -283,13 +283,13 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-standard
+        - name: chain-mfa-auth
           namespace: ingress-controller
       services:
         - name: dali-1
           port: 443
           scheme: https
-          serversTransport: insecure-transport
+          serversTransport: no-reuse-transport
   tls:
     secretName: dali-1-tls-cert
 
@@ -316,7 +316,7 @@ spec:
         - name: dali-2
           port: 443
           scheme: https
-          serversTransport: insecure-transport
+          serversTransport: no-reuse-transport
   tls:
     secretName: dali-2-tls-cert
 
