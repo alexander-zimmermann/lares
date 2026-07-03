@@ -8,6 +8,8 @@ monitoring:
   # Prometheus Operator label (Opt-In)
   podMonitorAdditionalLabels:
     release: prometheus
-  # Grafana Dashboard
+  # Grafana Dashboard — imported via the Grafana Operator (configMapRef), so drop the
+  # sidecar label (empty overrides the chart default) to avoid a duplicate import into "General".
   grafanaDashboard:
     create: true
+    sidecarLabel: ""

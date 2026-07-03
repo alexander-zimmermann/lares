@@ -106,10 +106,11 @@ hubble:
     enabled: true
     label: grafana_dashboard
 
-# Grafana Dashboards for Cilium Agent
+# Grafana Dashboards for Cilium Agent — imported via the Grafana Operator (configMapRef),
+# so drop the sidecar label to avoid a duplicate import into Grafana's "General" folder.
 dashboards:
   enabled: true
-  label: grafana_dashboard
+  label: null
 
 # Prometheus: Enable metrics for Cilium agent and create ServiceMonitor
 prometheus:
@@ -132,7 +133,8 @@ operator:
       labels:
         release: prometheus
 
-  # Grafana Dashboards for Operator
+  # Grafana Dashboards for Operator — imported via the Grafana Operator (configMapRef),
+  # so drop the sidecar label to avoid a duplicate import into Grafana's "General" folder.
   dashboards:
     enabled: true
-    label: grafana_dashboard
+    label: null
