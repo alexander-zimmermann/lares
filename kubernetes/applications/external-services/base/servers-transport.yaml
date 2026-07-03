@@ -6,3 +6,15 @@ metadata:
 
 spec:
   insecureSkipVerify: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+
+metadata:
+  name: no-reuse-transport
+
+spec:
+  insecureSkipVerify: true
+  # MDT DALI gateways bind their login token to the TCP connection; never pool upstream connections
+  maxIdleConnsPerHost: -1
