@@ -289,7 +289,7 @@ spec:
         - name: dali-1
           port: 443
           scheme: https
-          serversTransport: no-reuse-transport
+          serversTransport: short-idle-transport
   tls:
     secretName: dali-1-tls-cert
 
@@ -316,7 +316,7 @@ spec:
         - name: dali-2
           port: 443
           scheme: https
-          serversTransport: no-reuse-transport
+          serversTransport: short-idle-transport
   tls:
     secretName: dali-2-tls-cert
 

@@ -12,9 +12,12 @@ apiVersion: traefik.io/v1alpha1
 kind: ServersTransport
 
 metadata:
-  name: no-reuse-transport
+  name: short-idle-transport
 
 spec:
   insecureSkipVerify: true
-  # MDT DALI gateways bind their login token to the TCP connection; never pool upstream connections
-  maxIdleConnsPerHost: -1
+  # MDT DALI gateways: pool hot connections (slow embedded TLS collapses under parallel handshakes),
+  # drop idle ones before the device's 5s keep-alive cap and stale login-token bindings can bite
+  maxIdleConnsPerHost: 10
+  forwardingTimeouts:
+    idleConnTimeout: 3s
