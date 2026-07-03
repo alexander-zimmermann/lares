@@ -134,7 +134,7 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`)
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-standard
           namespace: ingress-controller
       services:
         - name: omni

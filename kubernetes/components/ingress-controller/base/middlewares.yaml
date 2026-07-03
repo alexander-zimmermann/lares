@@ -51,15 +51,17 @@ spec:
     browserXssFilter: true
     referrerPolicy: 'same-origin'
     permissionsPolicy: 'accelerometer=(), autoplay=(self), camera=(), encrypted-media=(), fullscreen=(), geolocation=(self), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), usb=()'
+    # Auth0 tenant in connect-src/frame-src: Omni public login (token exchange + silent-auth iframe)
     contentSecurityPolicy: >
       default-src 'self' *.zimmermann.sh;
       frame-ancestors https://*.zimmermann.sh;
+      frame-src 'self' *.zimmermann.sh dev-und3se8p6egpmqec.eu.auth0.com;
       script-src 'self' 'unsafe-inline' 'unsafe-eval' traefik.github.io static.cloudflareinsights.com ajax.cloudflare.com www.gstatic.com;
       img-src 'self' grafana.com data:;
       style-src 'self' 'unsafe-inline' www.gstatic.com blob:;
       font-src 'self' data:;
       object-src 'none';
-      connect-src 'self' cloudflareinsights.com grafana.com
+      connect-src 'self' cloudflareinsights.com grafana.com dev-und3se8p6egpmqec.eu.auth0.com;
       worker-src 'self' blob:
     customResponseHeaders:
       X-Robots-Tag: 'none,noarchive,nosnippet,notranslate,noimageindex'
