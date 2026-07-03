@@ -52,6 +52,24 @@ false alarms on patterns that look like failures but are normal in this cluster.
   have stopped. A pod that keeps failing probes after the rollout settles, is
   CrashLooping, or a Deployment that never reaches Available is NOT this — escalate.
 
+### Isolated liveness/readiness probe blips on a stable pod (no rollout)
+- Pattern: a low count of `Unhealthy` events (`Liveness/Readiness probe failed:
+  ... context deadline exceeded`) incrementing slowly (single digits over many
+  hours) on a pod that is NOT rolling out — e.g. authentik-server. The pod stays
+  `1/1 Ready`, does not restart, and the app logs show the health route 200-ing.
+- Why benign: an occasional kubelet→pod probe is delayed past its short timeout
+  by a transient node/CNI/scheduling hiccup, so the kubelet records one Unhealthy
+  event. The failures are isolated (never failureThreshold in a row), so the pod
+  never restarts and the endpoint itself is healthy. authentik probes use a 3s
+  timeout / failureThreshold 3 → 30s of continuous failure is required to restart.
+- Confirm still benign: the pod is Ready with NO restart in the window
+  (`restartCount` unchanged, `state.running.startedAt` older than the window),
+  the Unhealthy `count` rises only by single digits over hours (not a burst), and
+  the app logs show health 200s (`kubectl logs … | grep '/-/health/' | grep -v
+  '"status": 200'` is empty; max runtime ≪ the probe timeout). A real fault
+  instead restarts the pod (`restartCount` climbing), CrashLoops, flaps the
+  Service endpoints, or logs 5xx/timeouts on the health route.
+
 ### ArgoCD application-controller "DiffFromCache: cache: key is missing"
 - Pattern: `DiffFromCache error: error getting managed resources for app <name>: cache: key is missing`,
   error-level, from `argocd-application-controller-0` (gitops-controller), low
