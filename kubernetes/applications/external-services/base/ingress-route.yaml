@@ -285,6 +285,8 @@ spec:
       middlewares:
         - name: chain-mfa-auth
           namespace: ingress-controller
+        # gateway drops fresh TLS handshakes under load; retry transparently before failing with 502
+        - name: retry-transient
       services:
         - name: dali-1
           port: 443
@@ -312,6 +314,8 @@ spec:
       middlewares:
         - name: chain-mfa-auth
           namespace: ingress-controller
+        # gateway drops fresh TLS handshakes under load; retry transparently before failing with 502
+        - name: retry-transient
       services:
         - name: dali-2
           port: 443
