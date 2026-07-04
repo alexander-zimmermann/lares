@@ -85,10 +85,13 @@ log:
   level: WARN
 # Access logs (HTTP requests)
 accessLog:
+  enabled: true
   format: json
   bufferingSize: 100
   filters:
     statusCodes: "400-599"
+    # Also log requests that only succeeded after a retry (e.g. dali retry-transient)
+    retryAttempts: true
 
 metrics:
   # Prometheus Monitoring
