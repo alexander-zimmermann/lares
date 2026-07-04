@@ -18,8 +18,9 @@ kubectl get healthcheck -n "$NS" -o json \
   | while IFS= read -r hc; do
       name=$(printf '%s' "$hc" | jq -r '.metadata.name')
       result=$(printf '%s' "$hc" | jq -r '.status.result // "fail"')
-      summary=$(printf '%s' "$hc" | jq -r '.status.message // "(no summary)"')
       detail=$(printf '%s' "$hc" | jq -r '.status.rationale // "(no detail)"')
+      # Holmes has no summary field; check queries lead the rationale with a one-line TL;DR.
+      summary=$(printf '%s' "$detail" | head -n 1)
       started=$(printf '%s' "$hc" | jq -r '.status.startTime // "-"')
       date=$(date -u +'%a, %d %b %Y %H:%M:%S +0000')
 
