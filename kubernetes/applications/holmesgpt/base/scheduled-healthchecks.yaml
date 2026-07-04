@@ -14,10 +14,10 @@ spec:
     Report FAIL only if an ArgoCD application's sync status is not Synced, or its
     health status is not Healthy, right now. If all applications are Synced and
     Healthy, report PASS.
-    On FAIL, keep the summary to a single sentence naming the affected
-    application(s) and whether they are out of sync, unhealthy, or both; put the
-    per-application detail and most likely reason only in the detailed rationale,
-    and do not repeat it in the summary.
+    On FAIL, begin your rationale with a single-sentence TL;DR line naming the
+    affected application(s) and whether they are out of sync, unhealthy, or
+    both, followed by a blank line and then the per-application detail and most
+    likely reason.
 
 ---
 apiVersion: holmesgpt.dev/v1alpha1
@@ -39,9 +39,9 @@ spec:
     endpoints, a Certificate that is not Ready, or a custom resource whose
     selector matches nothing (e.g. a GrafanaDashboard with no matching Grafana
     instance). If you find none, report PASS.
-    On FAIL, keep the summary to a single sentence stating how many resources are
-    affected and their kind(s); put each resource's namespace, name, and specific
-    problem only in the detailed rationale, and do not repeat it in the summary.
+    On FAIL, begin your rationale with a single-sentence TL;DR line stating how
+    many resources are affected and their kind(s), followed by a blank line and
+    then each resource's namespace, name, and specific problem.
 
 ---
 apiVersion: holmesgpt.dev/v1alpha1
@@ -66,7 +66,7 @@ spec:
     shows such a recurring pattern in the last 12 hours after those exclusions.
     Ignore single or occasional errors and known steady-state noise. If nothing
     abnormal stands out, report PASS.
-    On FAIL, keep the summary to a single sentence naming the application and the
-    problem; put all evidence — one representative log line, affected
-    namespace/pods, rough frequency, and the likely cause — only in the detailed
-    rationale, and do not repeat it in the summary.
+    On FAIL, begin your rationale with a single-sentence TL;DR line naming the
+    application and the problem, followed by a blank line and then all evidence:
+    one representative log line, affected namespace/pods, rough frequency, and
+    the likely cause.

@@ -153,7 +153,7 @@ notifications:
       - description: Application syncing has failed
         send:
           - app-sync-failed
-        when: app.status.operationState.phase in ['Error', 'Failed']
+        when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
     trigger.on-health-degraded: |
       - description: Application has degraded
         send:
