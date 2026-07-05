@@ -24,6 +24,8 @@ spec:
         argocd.argoproj.io/sync-wave: '{{ index .commonAnnotations "argocd.argoproj.io/sync-wave" | default "0" }}'
         argocd.argoproj.io/compare-options: '{{ index .commonAnnotations "argocd.argoproj.io/compare-options" | default "" }}'
         argocd.argoproj.io/sync-options: '{{ index .commonAnnotations "argocd.argoproj.io/sync-options" | default "" }}'
+        # Only re-render manifests when files under the component directory changed (default ../.. = component root)
+        argocd.argoproj.io/manifest-generate-paths: '{{ index .commonAnnotations "argocd.argoproj.io/manifest-generate-paths" | default "../.." }}'
     spec:
       project: default
       source:
