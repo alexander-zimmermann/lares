@@ -2,8 +2,8 @@ configs:
   cm:
     # Allows Argo CD to render Kustomize projects that use `helmCharts:`
     kustomize.buildOptions: --enable-helm
-    # Homelab optimization: reduce refresh frequency to save RAM/CPU
-    timeout.reconciliation: 15m
+    # GitHub webhook triggers instant refresh; polling is only the fallback
+    timeout.reconciliation: 1h
     timeout.reconciliation.jitter: 5m
     # Exclude noisy resources from tracking to reduce memory footprint
     resource.exclusions: |
@@ -45,6 +45,10 @@ configs:
     policy.csv: |
       g, platform-admins, role:admin
     scopes: "[groups, email]"
+
+  secret:
+    # GitHub webhook HMAC – reference resolved from the SealedSecret-managed argocd-webhook-secret
+    githubSecret: $argocd-webhook-secret:webhook.github.secret
 
   params:
     # TLS is terminated externally via Ingress / reverse proxy.

@@ -5,3 +5,5 @@ namespace: kube-system
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-5"
+  # Overlay also renders the bootstrap directory, so track it for change detection
+  argocd.argoproj.io/manifest-generate-paths: ../..;/kubernetes/bootstrap/talos-ccm
