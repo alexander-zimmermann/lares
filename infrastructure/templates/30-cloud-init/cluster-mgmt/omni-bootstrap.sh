@@ -94,9 +94,9 @@ download_omnictl() {
 setup_certificates() {
   mkdir -p "${OMNI_CERT_DIR}"
 
-  ## Check if certificates exist locally (either from backup extraction or previous run)
-  if [[ -f "${OMNI_TLS_CERT_PATH}" ]]; then
-    info "Certificates found in local cert directory. Skipping generation."
+  ## Reuse local certificates only if still valid for at least 30 more days
+  if [[ -f "${OMNI_TLS_CERT_PATH}" ]] && openssl x509 -checkend 2592000 -noout -in "${OMNI_TLS_CERT_PATH}" &> /dev/null; then
+    info "Valid certificates found in local cert directory. Skipping generation."
     return 0
   fi
 
@@ -109,16 +109,17 @@ setup_certificates() {
     domain_flags+=("--domains=${domain}")
   done
 
-  ## Running lego to generate certificates
-  info "Certificates not found. Generating new certificates via Let's Encrypt..."
+  ## Running lego to generate certificates (v5 CLI: flags are subcommand options)
+  info "No valid certificates found. Generating new certificates via Let's Encrypt..."
+  ## Fixed propagation wait: outbound :53 is blocked and split-DNS hides the TXT record from the local resolver
   CLOUDFLARE_DNS_API_TOKEN="${ACME_CF_TOKEN}" \
   CLOUDFLARE_EMAIL="${ACME_EMAIL}" \
-  lego \
+  lego run \
     --email="${ACME_EMAIL}" \
     --dns="cloudflare" \
+    --dns.propagation.wait 30s \
     --accept-tos \
-    "${domain_flags[@]}" \
-    run &> /dev/null || die "Failed to generate certificates for ${ACME_DOMAINS}."
+    "${domain_flags[@]}" || die "Failed to generate certificates for ${ACME_DOMAINS}."
 
   ## Copy certificates into local cert directory
   info "Copying new certificates to ${OMNI_CERT_DIR}..."

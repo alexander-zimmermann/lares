@@ -53,7 +53,7 @@ ci_vendor_config:
           "storage.zimmermann.eu.com:/var/nfs/shared/omni",
           "/mnt/backup",
           "nfs",
-          "defaults,_netdev,noauto,nofail,vers=3,rw,nolock,x-systemd.after=cloud-init-network.service",
+          "defaults,_netdev,noauto,nofail,x-systemd.automount,vers=3,rw,nolock,x-systemd.after=cloud-init-network.service",
           "0",
           "0",
         ]
@@ -69,6 +69,8 @@ ci_vendor_config:
       ## Symlinks for snap packages
       - ["ln", "-s", "/snap/bin/lego", "/usr/local/bin/lego"]
       - ["ln", "-s", "/snap/bin/task", "/usr/local/bin/task"]
+      ## Hold lego snap so auto-refresh cannot introduce breaking CLI changes
+      - ["snap", "refresh", "--hold", "lego"]
       ## Manually mount NFS share (after nfs-common install)
       - ["mount", "/mnt/backup"]
       ## Set permissions for data disk and config directory

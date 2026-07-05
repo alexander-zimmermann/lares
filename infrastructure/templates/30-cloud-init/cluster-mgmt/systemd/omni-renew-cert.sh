@@ -29,29 +29,36 @@ die() {
 ###############################################################################
 ## Main Script
 ###############################################################################
-## Construct domain flags for running lego
+## Construct domain flags for running lego (xargs trims whitespace around commas)
 info "Configuring domains..."
 domain_flags=("--domains=${ACME_PRIMARY_DOMAIN}")
-IFS=',' read -ra domains_arr <<< "${ACME_SAN_DOMAINS:-}"
+readarray -t domains_arr <<< "$(echo "${ACME_SAN_DOMAINS:-}" | tr ',' '\n' | xargs -n1)"
 for domain in "${domains_arr[@]}"; do
-  domain_flags+=("--domains=${domain}")
+  if [[ -n "${domain}" ]]; then
+    domain_flags+=("--domains=${domain}")
+  fi
 done
 
-## Define Renew Hook. Copies renewed certs to the Omni cert dir and restarts Omni
-hook_cmd="cp \"${LEGO_CERT_DIR}/\"* \"${OMNI_CERT_DIR}\" && \
-          chown -R \"${OMNI_OWNER}\" \"${OMNI_CERT_DIR}\" && \
-          docker restart omni"
-
-## Run lego renew. This runs ONLY if the certificate is actually renewed
+## Run lego (v5 merged renew into run: renews only when due, ARI/lifetime-based)
 info "Checking for SSL renewal..."
+before_mtime=$(stat -c %Y "${LEGO_CERT_DIR}/${ACME_PRIMARY_DOMAIN}.crt" 2>/dev/null || echo 0)
+## Fixed propagation wait: outbound :53 is blocked and split-DNS hides the TXT record from the local resolver
 CLOUDFLARE_DNS_API_TOKEN="${ACME_CF_TOKEN}" \
 CLOUDFLARE_EMAIL="${ACME_EMAIL}" \
-lego \
+lego run \
   --email="${ACME_EMAIL}" \
   --dns="cloudflare" \
+  --dns.propagation.wait 30s \
   --accept-tos \
-  "${domain_flags[@]}" \
-  renew \
-  --renew-hook "${hook_cmd}" || die "Failed to renew SSL certificate for ${ACME_PRIMARY_DOMAIN}."
+  "${domain_flags[@]}" || die "Failed to renew SSL certificate for ${ACME_PRIMARY_DOMAIN}."
+
+## Deploy to Omni only when the certificate actually changed
+after_mtime=$(stat -c %Y "${LEGO_CERT_DIR}/${ACME_PRIMARY_DOMAIN}.crt" 2>/dev/null || echo 0)
+if [[ "${after_mtime}" != "${before_mtime}" ]]; then
+  info "Certificate renewed. Deploying to Omni..."
+  cp "${LEGO_CERT_DIR}/"* "${OMNI_CERT_DIR}"
+  chown -R "${OMNI_OWNER}" "${OMNI_CERT_DIR}"
+  docker restart omni
+fi
 
 success "SSL renewal check completed."
