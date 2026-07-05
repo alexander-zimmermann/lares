@@ -10,6 +10,7 @@ resources:
   - ./bgp-peer-config.yaml
   - ./bgp-advertisement.yaml
   - ./bgp-lb-ip-pool.yaml
+  - ./egress-gateway-policy.yaml
 
 labels:
   - includeSelectors: false

@@ -1,0 +1,23 @@
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+
+metadata:
+  name: dali-stable-egress
+
+spec:
+  # MDT DALI gateways bind their web session to the client source IP; with multiple
+  # traefik replicas the SNAT source flips between nodes and the device rejects
+  # requests mid-session. Route all traefik egress to the gateways via one node
+  # (lexically first worker; survives node renames, no hostname pinning).
+  selectors:
+    - podSelector:
+        matchLabels:
+          io.kubernetes.pod.namespace: ingress-controller
+          app.kubernetes.io/name: traefik
+  destinationCIDRs:
+    - 192.168.1.191/32 # dali-1
+    - 192.168.1.179/32 # dali-2
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        node-role.kubernetes.io/worker: ""

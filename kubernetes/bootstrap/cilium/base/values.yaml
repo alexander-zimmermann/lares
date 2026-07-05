@@ -17,6 +17,11 @@ kubeProxyReplacement: true
 bpf:
   masquerade: true
 
+# Egress gateway: route selected pod egress via a fixed node for a stable source IP
+# (requires kubeProxyReplacement, bpf.masquerade and native routing — all set above)
+egressGateway:
+  enabled: true
+
 # Enable BGP control plane for network peering; utilize the central 'cilium'
 # namespace for peering secrets to avoid namespace sprawl
 bgpControlPlane:
