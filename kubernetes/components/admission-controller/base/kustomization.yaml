@@ -11,7 +11,7 @@ helmCharts:
   - name: kyverno
     repo: oci://ghcr.io/kyverno/charts
     releaseName: kyverno
-    version: 3.8.1
+    version: 3.8.2
     valuesFile: values.yaml
     namespace: admission-controller
     includeCRDs: true
