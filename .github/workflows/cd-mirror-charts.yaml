@@ -24,7 +24,7 @@ jobs:
       matrix: ${{ steps.make-matrix.outputs.matrix }}
     steps:
       - name: Install ORAS CLI
-        uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2
+        uses: oras-project/setup-oras@1d808f7d7f6995cc68b7bf507bfe5c5446e1dc9d # v2
 
       - name: Login dhi.io
         run: oras login dhi.io -u "${{ secrets.DHI_USER }}" -p "${{ secrets.DHI_PASS }}"
@@ -100,7 +100,7 @@ jobs:
       matrix: ${{ fromJson(needs.discover-tags.outputs.matrix) }}
     steps:
       - name: Install ORAS CLI
-        uses: oras-project/setup-oras@38de303aac69abb66f3e6255b7198bff35f323e3 # v2
+        uses: oras-project/setup-oras@1d808f7d7f6995cc68b7bf507bfe5c5446e1dc9d # v2
 
       - name: Login dhi.io
         run: oras login dhi.io -u "${{ secrets.DHI_USER }}" -p "${{ secrets.DHI_PASS }}"
