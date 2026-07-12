@@ -5,7 +5,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/dyson-nats-bridge
-    tag: 0.1.0
+    tag: 0.2.0
     pullPolicy: IfNotPresent
 
   # The on-device MQTT broker tolerates very few concurrent clients; never run two replicas.
