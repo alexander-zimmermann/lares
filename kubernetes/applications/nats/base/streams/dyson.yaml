@@ -1,0 +1,16 @@
+# Dyson purifier fan state/environment published by dyson-nats-bridge
+# (dyson.<device>.state|environment). Backs the knx-nats-bridge read-responder
+# seeding and the TimescaleDB/parquet archive; command subjects stay core-only.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: dyson
+  namespace: nats
+spec:
+  name: DYSON
+  subjects:
+    - dyson.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
