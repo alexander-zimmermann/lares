@@ -1,0 +1,114 @@
+applicationName: dyson-nats-bridge
+
+deployment:
+  enabled: true
+  reloadOnChange: false
+  image:
+    repository: ghcr.io/alexander-zimmermann/dyson-nats-bridge
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+  # The on-device MQTT broker tolerates very few concurrent clients; never run two replicas.
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  env:
+    DYSON_HOST:
+      value: ventilator-1.zimmermann.eu.com
+    DYSON_SERIAL:
+      value: 9HC-EU-VEA7652A
+    DYSON_PRODUCT_TYPE:
+      value: 438M
+    DYSON_DEVICE_NAME:
+      value: ventilator-1
+    DYSON_CREDENTIAL_FILE:
+      value: /etc/dyson-nats-bridge/credential
+    NATS_SERVERS:
+      value: nats://nats.nats.svc.cluster.local:4222
+    # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
+    NATS_NKEY_SEED_FILE:
+      value: /etc/dyson-nats-bridge/nkey-seed
+    LOG_FORMAT:
+      value: json
+    METRICS_PORT:
+      value: "9090"
+    TZ:
+      value: Europe/Berlin
+
+  volumes:
+    nats-credentials:
+      secret:
+        secretName: dyson-nats-bridge-credentials
+    device-credential:
+      secret:
+        secretName: dyson-nats-bridge-device-credential
+
+  volumeMounts:
+    nats-credentials:
+      mountPath: /etc/dyson-nats-bridge/nkey-seed
+      subPath: nkey-seed
+    device-credential:
+      mountPath: /etc/dyson-nats-bridge/credential
+      subPath: credential
+
+  ports:
+    - containerPort: 9090
+      name: metrics
+      protocol: TCP
+
+  # Liveness deliberately excludes the device connection: an unplugged fan
+  # surfaces via the dyson_connected metric instead of a pod restart loop.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: [ALL]
+
+  securityContext:
+    fsGroup: 1000
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 9090
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
