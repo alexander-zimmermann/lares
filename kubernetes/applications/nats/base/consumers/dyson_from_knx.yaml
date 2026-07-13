@@ -1,0 +1,27 @@
+# Durable consumer for the redpanda-connect dyson_from_knx pipeline.
+# Watches the Luftreiniger command GAs (written by Basalte):
+#   knx.6.3.111 Ein/Aus     (1.001)
+#   knx.6.3.113 Lüfterstufe (5.010, 0 = Automatik, 1..10 manual)
+#   knx.6.3.115 Drehmodus   (5.010 enum: 0=Aus, 1=45°, 2=90°, 3=180°, 4=350°)
+#   knx.6.3.117 Nachtmodus  (1.001)
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-dyson-from-knx
+  namespace: nats
+spec:
+  streamName: KNX
+  durableName: redpanda-connect-dyson-from-knx
+  filterSubjects:
+    - knx.6.3.111
+    - knx.6.3.113
+    - knx.6.3.115
+    - knx.6.3.117
+  deliverPolicy: new
+  ackPolicy: explicit
+  # nats-operator default surfaces as 1ns, which causes immediate re-delivery
+  # of any message slower-than-instant to ack. 15s covers the core republish
+  # comfortably without leaving wedged messages locked long.
+  ackWait: 15s
+  # Drop after 5 attempts so a permanently-failing message can't loop forever.
+  maxDeliver: 5

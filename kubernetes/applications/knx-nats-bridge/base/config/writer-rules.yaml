@@ -1380,3 +1380,37 @@ mappings:
     description: "Versorgungstechnik.Photovoltaik.Eigenversorgungsquote"
     min_delta: 0
     seed_on_start: true
+
+  # Luftreiniger (Dyson PC1) status feedback (KNX<-NATS). The command GAs
+  # (6/3/111/113/115/117) are driven KNX->device by the redpanda-connect
+  # dyson_from_knx stream; these rules report the actual device state back
+  # so Basalte reflects reality. Lüfterstufe 0 = Automatik; Drehmodus enum
+  # 0=Aus 1=45° 2=90° 3=180° 4=350°.
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/112"
+    dpt: "1.011"
+    payload_path: "$.power"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/114"
+    dpt: "5.010"
+    payload_path: "$.speed"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/116"
+    dpt: "5.010"
+    payload_path: "$.oscillation_mode"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/118"
+    dpt: "1.011"
+    payload_path: "$.night"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
