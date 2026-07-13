@@ -2582,7 +2582,7 @@
   name: Versorgungstechnik.Wallbox.Energie.Geladen-Aktuell
   room: Garage
 15/6/15:
-  dpt: '13.010'
+  dpt: '13.000'
   function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell
   room: Garage
@@ -2599,12 +2599,12 @@
 15/6/20:
   dpt: '1.001'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Freigabe
+  name: Versorgungstechnik.Wallbox.Ein-Freigabe
   room: Garage
 15/6/21:
   dpt: '1.001'
   function: Versorgungstechnik
-  name: Versorgungstechnik.Wallbox.Freigabe-Status
+  name: Versorgungstechnik.Wallbox.Ein-Freigabe-Status
   room: Garage
 15/6/22:
   dpt: '5.010'
@@ -9060,6 +9060,46 @@
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Diagnose
+  room: Schlafzimmer Eltern
+6/3/111:
+  dpt: '1.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus
+  room: Schlafzimmer Eltern
+6/3/112:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus-Status
+  room: Schlafzimmer Eltern
+6/3/113:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe
+  room: Schlafzimmer Eltern
+6/3/114:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe-Status
+  room: Schlafzimmer Eltern
+6/3/115:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus
+  room: Schlafzimmer Eltern
+6/3/116:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus-Status
+  room: Schlafzimmer Eltern
+6/3/117:
+  dpt: '1.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus
+  room: Schlafzimmer Eltern
+6/3/118:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status
   room: Schlafzimmer Eltern
 6/3/120:
   dpt: '1.003'

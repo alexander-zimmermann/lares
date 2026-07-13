@@ -1,0 +1,42 @@
+# Luftreiniger control: forwards the Basalte command GAs to the
+# dyson-nats-bridge command subjects (core NATS; the bridge subscribes core,
+# nothing archives commands).
+#   knx.6.3.111 Ein/Aus     -> dyson.ventilator-1.command.power       {"value": bool}
+#   knx.6.3.113 Lüfterstufe -> dyson.ventilator-1.command.speed       {"value": 0..10, 0 = auto}
+#   knx.6.3.115 Drehmodus   -> dyson.ventilator-1.command.oscillation {"value": 0..4}
+#   knx.6.3.117 Nachtmodus  -> dyson.ventilator-1.command.night       {"value": bool}
+input:
+  # Consumer (filterSubjects on the four GAs) is declared as a CRD in
+  # nats/base/consumers/dyson_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-dyson-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    - mapping: |
+        let subj = meta("nats_subject")
+        root = if $subj == "knx.6.3.113" || $subj == "knx.6.3.115" {
+          {"value": this.value.number()}
+        } else {
+          {"value": this.value == true || this.value == 1}
+        }
+        meta dyson_subject = "dyson.ventilator-1.command." + (
+          if $subj == "knx.6.3.111" { "power" }
+          else if $subj == "knx.6.3.113" { "speed" }
+          else if $subj == "knx.6.3.115" { "oscillation" }
+          else { "night" }
+        )
+
+output:
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("dyson_subject") }

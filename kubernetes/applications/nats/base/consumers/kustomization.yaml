@@ -8,3 +8,4 @@ resources:
   - warp_onoff_from_knx.yaml
   - warp_charge_mode_from_knx.yaml
   - warp_mode_buttons_from_knx.yaml
+  - dyson_from_knx.yaml
