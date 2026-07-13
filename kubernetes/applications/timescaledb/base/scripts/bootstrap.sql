@@ -405,6 +405,21 @@ CREATE UNIQUE INDEX IF NOT EXISTS unifi_events_unique
     WHERE event_id IS NOT NULL;
 
 -- =========================================================
+-- Dyson Luftreiniger (dyson-nats-bridge → dyson.<device>.environment)
+-- Own bridge, schema is under our control. Entry-level PC1 carries only
+-- the particulate sensor; sleeping sensors omit their field → NULL.
+-- =========================================================
+CREATE TABLE dyson_environment (
+    time    TIMESTAMPTZ NOT NULL,
+    device  TEXT        NOT NULL,
+    pm25    SMALLINT,
+    pm10    SMALLINT,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('dyson_environment', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON dyson_environment (device, time DESC);
+
+-- =========================================================
 -- Continuous Aggregate Refresh Policies
 -- =========================================================
 SELECT add_continuous_aggregate_policy('knx_1h',
@@ -470,6 +485,9 @@ ALTER TABLE warp_charge_tracker SET (timescaledb.compress,
 ALTER TABLE warp_meter SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'meter_id',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE dyson_environment SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
 ALTER TABLE unifi_events SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'camera',
     timescaledb.compress_orderby = 'time DESC');
@@ -484,6 +502,7 @@ SELECT add_compression_policy('warp_evse',           INTERVAL '2 days');
 SELECT add_compression_policy('warp_charge_manager', INTERVAL '2 days');
 SELECT add_compression_policy('warp_charge_tracker', INTERVAL '2 days');
 SELECT add_compression_policy('warp_meter',          INTERVAL '2 days');
+SELECT add_compression_policy('dyson_environment',   INTERVAL '2 days');
 SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 
 -- =========================================================
@@ -501,6 +520,7 @@ SELECT add_retention_policy('warp_evse',           INTERVAL '365 days');
 SELECT add_retention_policy('warp_charge_manager', INTERVAL '365 days');
 SELECT add_retention_policy('warp_charge_tracker', INTERVAL '365 days');
 SELECT add_retention_policy('warp_meter',          INTERVAL '365 days');
+SELECT add_retention_policy('dyson_environment',   INTERVAL '365 days');
 
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,
