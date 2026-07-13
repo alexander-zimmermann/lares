@@ -1,0 +1,75 @@
+# Dyson Luftreiniger sensor telemetry -> TimescaleDB + parquet cold archive.
+# The bridge normalizes upstream (dyson.<device>.environment, flat scalars);
+# entry-level models (PC1) carry only the particulate sensor, and sleeping
+# sensors omit their field entirely -> typed columns stay NULL.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: DYSON
+    subject: dyson.*.environment
+    durable: redpanda-connect-dyson-environment
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "time":   meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "device": meta("nats_subject").split(".").index(1),
+          "pm25":   this.pm25 | null,
+          "pm10":   this.pm10 | null,
+          "raw":    this,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO dyson_environment (time, device, pm25, pm10)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (time, device) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.device,
+              this.pm25,
+              this.pm10,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: dyson/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }
