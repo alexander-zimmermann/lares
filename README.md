@@ -134,22 +134,21 @@ NATS is the universal event bus. Every external source publishes there, the brid
 ```mermaid
 flowchart TB
     subgraph IOT[IoT]
-        direction LR
-        cam[UniFi Protect Cams]
+        direction TB
+        cam[UniFi Protect Cams] -- HTTP --> webhook[redpanda-connect<br/>unifi_webhook]
         ems[EMS-ESP]
         pv[solaredge2mqtt]
         warp[WARP Wallbox]
+        fan[Dyson PC1] <-- local MQTT --> dysonb[dyson-nats-bridge]
     end
 
-    webhook[redpanda-connect<br/>unifi_webhook]
-    cam -- HTTP --> webhook
-
-    nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP<br/>WARP · SOLAREDGE · UNIFI)]
+    nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP · DYSON<br/>WARP · SOLAREDGE · UNIFI)]
 
     webhook -- pub unifi.> --> nats
     ems  -- MQTT --> nats
     pv   -- MQTT --> nats
     warp -- MQTT pub --> nats
+    dysonb <-- pub/sub dyson.> --> nats
 
     subgraph KX[KNX]
         direction TB
@@ -182,8 +181,13 @@ flowchart TB
     end
 
     nats -- sub --> ingest
-    engine -- pub anomaly.> --> nats
+    %% Undirected on purpose: an engine->nats arrow makes dagre rank the whole
+    %% archive block above nats. The label carries the direction instead.
+    nats -. "engine pub anomaly.>" .- engine
     nats -- last-msg --> mcp
+
+    %% Invisible edge: pins the archive band below the KNX block.
+    KX ~~~ ARCH
 ```
 
 The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
