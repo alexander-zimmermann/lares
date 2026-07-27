@@ -142,6 +142,38 @@ spec:
             summary: "UniFi arm-sync metric stale/absent"
             description: "unifi_arm_sync_ok has not been reported for >15m (expected every ~5min via the KNX status heartbeat). The redpanda-connect stream, its JetStream consumer binding, or the scrape is stuck — drift detection is blind."
 
+    - name: argocd-alerts
+      rules:
+        - alert: ArgoCDAppOutOfSync
+          # Level-triggered: ArgoCD's own notifications only fire on a failed sync operation,
+          # so an app that just sits OutOfSync never raises one.
+          expr: argocd_app_info{sync_status!="Synced"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ArgoCD application {{ $labels.name }} out of sync"
+            description: "{{ $labels.name }} has been {{ $labels.sync_status }} for more than 15m — no sync operation failed, so no ArgoCD notification was sent."
+
+        - alert: ArgoCDAppNotHealthy
+          # ArgoCD notifies only on health=Degraded; Progressing/Missing/Unknown stay silent.
+          expr: argocd_app_info{health_status!="Healthy"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ArgoCD application {{ $labels.name }} not healthy"
+            description: "{{ $labels.name }} health is {{ $labels.health_status }} for more than 15m."
+
+        - alert: ArgoCDMetricsAbsent
+          expr: absent(argocd_app_info)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ArgoCD application metrics absent"
+            description: "argocd_app_info has not been scraped for more than 15m — sync/health drift detection is blind."
+
     - name: kubernetes-pods
       rules:
         - alert: PodCrashLooping
