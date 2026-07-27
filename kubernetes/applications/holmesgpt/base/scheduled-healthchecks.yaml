@@ -2,28 +2,6 @@ apiVersion: holmesgpt.dev/v1alpha1
 kind: ScheduledHealthCheck
 
 metadata:
-  name: argocd-sync
-  namespace: holmesgpt
-
-spec:
-  schedule: "22 * * * *"
-  enabled: true
-  mode: monitor
-  timeout: 300
-  query: >-
-    Report FAIL only if an ArgoCD application's sync status is not Synced, or its
-    health status is not Healthy, right now. If all applications are Synced and
-    Healthy, report PASS.
-    On FAIL, begin your rationale with a single-sentence TL;DR line naming the
-    affected application(s) and whether they are out of sync, unhealthy, or
-    both, followed by a blank line and then the per-application detail and most
-    likely reason.
-
----
-apiVersion: holmesgpt.dev/v1alpha1
-kind: ScheduledHealthCheck
-
-metadata:
   name: config-coherence
   namespace: holmesgpt
 

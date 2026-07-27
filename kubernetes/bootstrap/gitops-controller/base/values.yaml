@@ -65,7 +65,8 @@ controller:
     enabled: true
     serviceMonitor:
       enabled: true
-      labels:
+      # Chart key is additionalLabels; a plain `labels` block is silently ignored.
+      additionalLabels:
         release: prometheus
 
 # Repo server renders manifests; livenessProbe default 1s is too tight for /healthz?full=true
