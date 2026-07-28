@@ -157,8 +157,15 @@ jobs:
           crane: v0.19.0
           kyverno: v1.13.3
 
-      - name: Login to DHI
-        run: crane auth login dhi.io -u "${{ secrets.DHI_USER }}" -p "${{ secrets.DHI_PASS }}"
+      - name: Login to Registries
+        env:
+          REGISTRY_USER: ${{ secrets.DHI_USER }}
+          REGISTRY_PASS: ${{ secrets.DHI_PASS }}
+        run: |
+          # Hub-backed hosts share one anonymous pull quota per runner IP
+          for host in dhi.io docker.io registry-1.docker.io docker.redpanda.com; do
+            crane auth login "$host" -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+          done
 
       - name: Render Overlay (kustomize)
         run: |
