@@ -6,7 +6,7 @@ metadata:
   namespace: holmesgpt
 
 spec:
-  schedule: "42 */4 * * *"
+  schedule: "42 */12 * * *"
   enabled: true
   mode: monitor
   timeout: 300
@@ -30,18 +30,18 @@ metadata:
   namespace: holmesgpt
 
 spec:
-  schedule: "2 */12 * * *"
+  schedule: "2 0 * * *"
   enabled: true
   mode: monitor
   timeout: 300
   query: >-
-    Using Loki, scan the last 12 hours of logs across the cluster for any application
+    Using Loki, scan the last 24 hours of logs across the cluster for any application
     producing a recurring abnormal error pattern — repeated panics, stack traces,
     bursts of 5xx, or fatal/connection errors — that is not normal steady-state
     noise. Before reporting FAIL on any recurring error, always fetch the
     `known-log-noise` skill and exclude every pattern that matches an entry
     there. Report FAIL only if at least one application
-    shows such a recurring pattern in the last 12 hours after those exclusions.
+    shows such a recurring pattern in the last 24 hours after those exclusions.
     Ignore single or occasional errors and known steady-state noise. If nothing
     abnormal stands out, report PASS.
     On FAIL, begin your rationale with a single-sentence TL;DR line naming the
