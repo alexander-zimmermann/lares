@@ -1,10 +1,11 @@
-# Luftreiniger control: forwards the Basalte command GAs to the
-# dyson-nats-bridge command subjects (core NATS; the bridge subscribes core,
-# nothing archives commands).
+# Luftreiniger control: Basalte command GAs -> dyson-nats-bridge.
+#
 #   knx.6.3.111 Ein/Aus     -> dyson.ventilator-1.command.power       {"value": bool}
 #   knx.6.3.113 Lüfterstufe -> dyson.ventilator-1.command.speed       {"value": 0..10, 0 = auto}
 #   knx.6.3.115 Drehmodus   -> dyson.ventilator-1.command.oscillation {"value": 0..4}
 #   knx.6.3.117 Nachtmodus  -> dyson.ventilator-1.command.night       {"value": bool}
+#
+# Core NATS only; the bridge subscribes core and nothing archives commands.
 input:
   # Consumer (filterSubjects on the four GAs) is declared as a CRD in
   # nats/base/consumers/dyson_from_knx.yaml.

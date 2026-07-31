@@ -1,3 +1,7 @@
+# UniFi Protect detections and geofence events -> TimescaleDB + parquet archive.
+#
+#   unifi.events.>   -> unifi_events
+#   unifi.geofence.> -> unifi_events
 input:
   # Consumer is declared as a CRD in nats/base/consumers/unifi_events.yaml
   # (filter, deliver, ack_wait, max_ack_pending live there). bind: true tells

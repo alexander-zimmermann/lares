@@ -1,6 +1,8 @@
-# Durable consumer for the redpanda-connect warp_onoff_from_knx forwarder.
-# Subscribes to the bridge publish of the Ein-Aus charge-release GA, which
-# redpanda-connect maps to WARP's evse/start_charging|stop_charging.
+# Durable consumer for the redpanda-connect warp_onoff_from_knx pipeline.
+#
+#   knx.15.6.20 Freigabe (1.001)
+#
+# redpanda-connect maps it to WARP's evse/start_charging | stop_charging.
 apiVersion: jetstream.nats.io/v1beta2
 kind: Consumer
 metadata:

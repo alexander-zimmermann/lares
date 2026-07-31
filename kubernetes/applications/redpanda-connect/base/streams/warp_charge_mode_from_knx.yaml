@@ -1,6 +1,9 @@
-# Lademodus control: forwards the KNX Lademodus GA (15/6/22, DPT 5.010
-# "Versorgungstechnik.Wallbox.Lademodus") to the WARP wallbox's charge mode.
-# The GA carries the WARP raw mode value directly: 0=Schnell 1=Aus 2=PV 3=Min+PV.
+# Lademodus control: KNX Lademodus GA -> WARP charge mode.
+#
+#   knx.15.6.22 Lademodus (5.010) -> power_manager/charge_mode_update
+#
+# The GA carries the WARP raw mode value directly:
+# 0=Schnell 1=Aus 2=PV 3=Min+PV.
 input:
   # Consumer is declared as a CRD in nats/base/consumers/warp_charge_mode_from_knx.yaml.
   nats_jetstream:

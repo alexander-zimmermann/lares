@@ -1,3 +1,9 @@
+# KNX bus telegrams -> TimescaleDB + parquet cold archive.
+#
+#   knx.> -> knx
+#
+# Only DPT-1 booleans and numeric payloads are ingested; datetime and other
+# non-numeric DPTs are dropped, raw included.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

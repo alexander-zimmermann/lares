@@ -1,7 +1,10 @@
 # Dyson Luftreiniger sensor telemetry -> TimescaleDB + parquet cold archive.
-# The bridge normalizes upstream (dyson.<device>.environment, flat scalars);
-# entry-level models (PC1) carry only the particulate sensor, and sleeping
-# sensors omit their field entirely -> typed columns stay NULL.
+#
+#   dyson.<device>.environment -> dyson_environment
+#
+# The bridge normalizes upstream (flat scalars); entry-level models (PC1) carry
+# only the particulate sensor, and sleeping sensors omit their field entirely
+# -> typed columns stay NULL.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

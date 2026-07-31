@@ -1,9 +1,9 @@
-# Republishes WARP wallbox telemetry as named scalar fields for the
-# knx-nats-bridge writer. The raw WARP data is unusable by the bridge as-is:
-# `warp.meters.0.values` is a float ARRAY whose order is defined by
-# `warp.meters.0.value_ids` (the bridge can only read named JSON fields, no
-# array indices). This stream pulls the values we route to KNX out of the
-# array and onto two clean subjects.
+# WARP telemetry -> named scalar fields the knx-nats-bridge writer can read.
+#
+# The raw WARP data is unusable by the bridge as-is: `warp.meters.0.values` is a
+# float ARRAY whose order is defined by `warp.meters.0.value_ids`, and the
+# bridge can only read named JSON fields, no array indices. This stream pulls
+# the values we route to KNX out of the array and onto two clean subjects.
 #
 # value_ids index -> MeterValueID (current Steinroth meter config):
 #   3/4/5 = 13/17/21 phase current L1/L2/L3 (A)

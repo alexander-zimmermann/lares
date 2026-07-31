@@ -1,3 +1,6 @@
+# WARP wallbox EVSE telemetry -> TimescaleDB + parquet cold archive.
+#
+#   warp.evse.> -> warp_evse
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

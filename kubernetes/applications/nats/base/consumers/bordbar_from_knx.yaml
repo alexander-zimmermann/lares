@@ -1,13 +1,14 @@
 # Durable consumer for the redpanda-connect bordbar_from_knx pipeline.
 #
-# Watches the Bordbar command GAs (written by Basalte):
 #   knx.4.2.61 Ein/Aus                 (1.001)
 #   knx.4.2.63 Helligkeit-Schritt      (1.007, true = heller)
 #   knx.4.2.64 Farbe-Schritt           (1.007)
 #   knx.4.2.65 Modus-Schritt           (1.007)
 #   knx.4.2.66 Geschwindigkeit-Schritt (1.007)
 #   knx.4.2.67 Reset                   (1.015, only 1 acts)
-# 4/2/62 and 4/2/68 are status GAs driven the other way by the writer rules.
+#
+# The Bordbar command GAs, written by Basalte. 4/2/62 and 4/2/68 are status GAs
+# driven the other way by the writer rules.
 apiVersion: jetstream.nats.io/v1beta2
 kind: Consumer
 metadata:

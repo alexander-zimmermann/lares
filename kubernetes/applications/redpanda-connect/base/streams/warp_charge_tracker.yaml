@@ -1,3 +1,6 @@
+# WARP charge-tracker telemetry -> TimescaleDB + parquet cold archive.
+#
+#   warp.charge_tracker.> -> warp_charge_tracker
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -44,7 +47,7 @@ pipeline:
 output:
   broker:
     # Both outputs must succeed before the NATS message is acked.
-    # If RustFS is down, NATS will retry → TS-Insert is also delayed.
+    # If RustFS is down, NATS will retry -> TS-Insert is also delayed.
     # That is the desired behavior: cold archive must keep up with TS.
     pattern: fan_out
     outputs:

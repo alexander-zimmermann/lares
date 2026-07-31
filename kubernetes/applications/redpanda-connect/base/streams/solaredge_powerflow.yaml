@@ -1,3 +1,6 @@
+# SolarEdge powerflow readings -> TimescaleDB + parquet cold archive.
+#
+#   *.powerflow -> solaredge_powerflow
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

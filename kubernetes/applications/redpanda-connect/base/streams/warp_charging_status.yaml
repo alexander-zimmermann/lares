@@ -1,9 +1,12 @@
-# Freigabe-Status feedback: mirrors the charge release the Freigabe switch
-# (15/6/20 start/stop_charging) toggles = WARP "Slot 4". Blocked (active &&
-# max_current == 0) => off; otherwise => on. Tracks only the release intent,
-# independent of car presence or current draw — unlike charger_state, which is
-# 0 whenever no car is plugged in. The bridge can't index an array, so the bool
-# is derived here for the writer (KNX 15/6/21, DPT 1.001 …Wallbox.Freigabe-Status).
+# Freigabe-Status feedback: WARP charge release -> KNX Freigabe status GA.
+#
+#   WARP Slot 4 release -> wallbox.knx.charging $.on -> knx.15.6.21 (1.001)
+#
+# Mirrors the charge release that the Freigabe switch (15/6/20
+# start/stop_charging) toggles. Blocked (active && max_current == 0) => off;
+# otherwise => on. Tracks only the release intent, independent of car presence
+# or current draw — unlike charger_state, which is 0 whenever no car is plugged
+# in. The bridge can't index an array, so the bool is derived here.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

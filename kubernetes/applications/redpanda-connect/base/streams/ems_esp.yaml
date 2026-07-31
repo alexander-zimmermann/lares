@@ -1,3 +1,6 @@
+# EMS-ESP heating telemetry -> TimescaleDB + parquet cold archive.
+#
+#   ems-esp.> -> ems_esp
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
