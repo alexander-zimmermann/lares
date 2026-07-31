@@ -1,0 +1,21 @@
+# Bordbar LED state published by the ESP32 via the MQTT gateway
+# (bordbar.state|availability). Backs the knx-nats-bridge writer-rule seeding
+# on restart.
+#
+# Command subjects are deliberately excluded: archived commands could be
+# redelivered to a reconnecting MQTT session and switch the light — or reboot
+# the device — unprompted.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: bordbar
+  namespace: nats
+spec:
+  name: BORDBAR
+  subjects:
+    - bordbar.state
+    - bordbar.availability
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
