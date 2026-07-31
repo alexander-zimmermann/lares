@@ -38,6 +38,9 @@ spec:
 
   postgresql:
     parameters:
+      # Connection limit sized to fit the container memory limit
+      max_connections: "50"
+
       # Memory settings
       shared_buffers: "128MB"
       effective_cache_size: "512MB"
