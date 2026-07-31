@@ -1,3 +1,6 @@
+# SolarEdge inverter modbus readings -> TimescaleDB + parquet cold archive.
+#
+#   *.modbus.inverter -> solaredge_inverter
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

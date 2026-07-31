@@ -1,10 +1,14 @@
-# SolarEdge battery (modbus) → TimescaleDB + archive. Dormant until a battery is
-# physically connected: solaredge2mqtt only emits `solaredge-N.modbus.battery`
-# once a storage unit is present, so this durable consumer sits idle (no messages)
-# until then. The battery field names below follow the solaredge2mqtt SunSpec
-# battery model — VERIFY them against a live event at connect time and adjust the
-# mapping / table if they differ (`nats stream get SOLAREDGE --last-for
-# solaredge-1.modbus.battery`). `state_of_charge` feeds KNX 15/4/55 via writer-rule.
+# SolarEdge battery modbus readings -> TimescaleDB + parquet cold archive.
+#
+#   *.modbus.battery -> solaredge_battery
+#
+# Dormant until a battery is physically connected: solaredge2mqtt only emits
+# `solaredge-N.modbus.battery` once a storage unit is present, so this durable
+# consumer sits idle (no messages) until then. The battery field names below
+# follow the solaredge2mqtt SunSpec battery model — VERIFY them against a live
+# event at connect time and adjust the mapping / table if they differ
+# (`nats stream get SOLAREDGE --last-for solaredge-1.modbus.battery`).
+# `state_of_charge` feeds KNX 15/4/55 via writer-rule.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]

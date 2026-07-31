@@ -1,6 +1,8 @@
-# Durable consumer for the redpanda-connect pv_surplus_to_warp forwarder.
-# Subscribes to the bridge publish of one specific KNX GA — the grid net
-# power reading that the WARP wallbox uses for surplus charging.
+# Durable consumer for the redpanda-connect pv_surplus_to_warp pipeline.
+#
+#   knx.15.1.24 Wirkleistung-Gesamt (14.056)
+#
+# The grid net power reading the WARP wallbox uses for surplus charging.
 apiVersion: jetstream.nats.io/v1beta2
 kind: Consumer
 metadata:

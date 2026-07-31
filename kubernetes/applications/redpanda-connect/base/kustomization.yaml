@@ -39,6 +39,7 @@ configMapGenerator:
       - streams/warp_mode_flags.yaml
       - streams/dyson_from_knx.yaml
       - streams/dyson_environment.yaml
+      - streams/bordbar_from_knx.yaml
 
 patches:
   # Expose redpanda-connect service via Cilium/BGP-announced LoadBalancer so

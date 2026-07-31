@@ -1,3 +1,6 @@
+# WARP wallbox meter telemetry -> TimescaleDB + parquet cold archive.
+#
+#   warp.meters.> -> warp_meter
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -25,7 +28,7 @@ pipeline:
         #  - payload is an array with at least 9 elements (V/A/W per phase).
         # Some warp.meters.<N>.values messages carry partial / 1-element arrays;
         # without the length guard, $evt.index(1) errors and aborts the whole
-        # root mapping → time + sub_topic + raw never get set → NULL-time INSERT.
+        # root mapping -> time + sub_topic + raw never get set -> NULL-time INSERT.
         let is_indexed_values = $parts.length() == 4 && $parts.index(3) == "values"
         let is_full_array = $is_indexed_values && $evt.type() == "array" && $evt.length() >= 9
         root = {

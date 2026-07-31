@@ -1,6 +1,9 @@
-# Per-mode status bits: derives one boolean per charge mode from the WARP
-# charge mode and republishes them for the knx-nats-bridge writer, which maps
-# them to the Basalte per-mode status GAs (15/6/26/28/30, DPT 1.011).
+# Per-mode status bits: WARP charge mode -> KNX Lademodus status GAs.
+#
+#   mode 2 (PV)      -> wallbox.knx.mode_flags $.pv    -> knx.15.6.26 (1.011)
+#   mode 3 (Min+PV)  -> wallbox.knx.mode_flags $.pvmin -> knx.15.6.28 (1.011)
+#   mode 0 (Schnell) -> wallbox.knx.mode_flags $.fast  -> knx.15.6.30 (1.011)
+#
 # Exactly one is true; all false when mode is Aus (1). The bridge cannot do
 # enum->bool, so the derivation lives here.
 input:

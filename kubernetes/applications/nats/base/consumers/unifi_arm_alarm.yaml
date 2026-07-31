@@ -1,10 +1,12 @@
 # Durable consumer for the redpanda-connect unifi_arm_alarm pipeline.
-# Watches the EMA *status* feedback GAs (not the command GAs): disarm via
-# keypad/scene never emits the 14/1/20 command, only the status GAs change.
-# These are re-broadcast by the panel (~5 min heartbeat), so the sync is
-# self-healing — every heartbeat re-asserts the intended UniFi state.
-#   knx.14.1.26 Extern-Scharf-Status: 1 => ARM   (Abwesend enable)
+#
+#   knx.14.1.26 Extern-Scharf-Status: 1 => ARM    (Abwesend enable)
 #   knx.14.1.21 Unscharf-Status:      1 => DISARM (Abwesend disable)
+#
+# The EMA *status* feedback GAs, not the command GAs: disarm via keypad/scene
+# never emits the 14/1/20 command, only the status GAs change. These are
+# re-broadcast by the panel (~5 min heartbeat), so the sync is self-healing —
+# every heartbeat re-asserts the intended UniFi state.
 apiVersion: jetstream.nats.io/v1beta2
 kind: Consumer
 metadata:

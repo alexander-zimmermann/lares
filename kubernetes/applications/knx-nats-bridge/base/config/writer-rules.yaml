@@ -1414,3 +1414,23 @@ mappings:
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
+
+  # Bordbar LED status feedback (KNX<-NATS). The command GAs (4/2/61/63-67) are
+  # driven KNX->device by the redpanda-connect bordbar_from_knx stream. The
+  # on/off status is what the firmware *assumes* — the LED controller has no
+  # feedback channel — and availability comes from the MQTT last will, so a dead
+  # ESP32 is visible instead of a stale status.
+  - subject: "bordbar.state"
+    ga: "4/2/62"
+    dpt: "1.011"
+    payload_path: "$.power"
+    description: "Beleuchtung.EG.Wohnzimmer.Bordbar.Ein/Aus-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "bordbar.availability"
+    ga: "4/2/68"
+    dpt: "1.011"
+    payload_path: "$.online"
+    description: "Beleuchtung.EG.Wohnzimmer.Bordbar.Verbindung-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true

@@ -1,3 +1,8 @@
+# WARP wallbox system telemetry -> TimescaleDB + parquet cold archive.
+#
+#   warp.rtc.>   -> warp_system
+#   warp.esp32.> -> warp_system
+#   warp.ntp.>   -> warp_system
 input:
   broker:
     inputs:

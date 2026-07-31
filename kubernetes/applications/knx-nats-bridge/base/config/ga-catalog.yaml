@@ -7459,6 +7459,51 @@
   function: Beleuchtung
   name: Beleuchtung.G.Garten.Hochbeet.Poller.Dimmen-Status
   room: Garten
+4/2/60:
+  dpt: '1.003'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Sperren
+  room: Wohnzimmer
+4/2/61:
+  dpt: '1.001'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Ein/Aus
+  room: Wohnzimmer
+4/2/62:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Ein/Aus-Status
+  room: Wohnzimmer
+4/2/63:
+  dpt: '1.007'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Helligkeit-Schritt
+  room: Wohnzimmer
+4/2/64:
+  dpt: '1.007'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Farbe-Schritt
+  room: Wohnzimmer
+4/2/65:
+  dpt: '1.007'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Modus-Schritt
+  room: Wohnzimmer
+4/2/66:
+  dpt: '1.007'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Geschwindigkeit-Schritt
+  room: Wohnzimmer
+4/2/67:
+  dpt: '1.015'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Reset
+  room: Wohnzimmer
+4/2/68:
+  dpt: '1.011'
+  function: Beleuchtung
+  name: Beleuchtung.EG.Wohnzimmer.Bordbar.Verbindung-Status
+  room: Wohnzimmer
 4/3/60:
   dpt: '1.003'
   function: Beleuchtung

@@ -1,0 +1,60 @@
+# Bordbar LED control: Basalte command GAs -> bordbar-nats-bridge.
+#
+#   knx.4.2.61 Ein/Aus                 -> bordbar.command.power      {"value": bool}
+#   knx.4.2.63 Helligkeit-Schritt      -> bordbar.command.brightness {"value": 1|-1}
+#   knx.4.2.64 Farbe-Schritt           -> bordbar.command.color      {"value": 1|-1}
+#   knx.4.2.65 Modus-Schritt           -> bordbar.command.mode       {"value": 1|-1}
+#   knx.4.2.66 Geschwindigkeit-Schritt -> bordbar.command.speed      {"value": 1|-1}
+#   knx.4.2.67 Reset                   -> bordbar.command.reset      {}
+#
+# Core NATS only; the ESP32 subscribes through the MQTT gateway and nothing
+# archives commands.
+input:
+  # Consumer (filterSubjects on the six GAs) is declared as a CRD in
+  # nats/base/consumers/bordbar_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-bordbar-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    - mapping: |
+        # DPT 1.015 defines 0 as "no action" — only a 1 triggers the reset.
+        # Dropping it here keeps the reset branch below free of the special case.
+        root = if meta("nats_subject") == "knx.4.2.67" && !(this.value == true || this.value == 1) {
+          deleted()
+        } else {
+          this
+        }
+    - mapping: |
+        let subj = meta("nats_subject")
+        # Unmapped GAs are published raw as 0/1, so accept both forms.
+        let on = this.value == true || this.value == 1
+        root = if $subj == "knx.4.2.61" {
+          {"value": $on}
+        } else if $subj == "knx.4.2.67" {
+          {}
+        } else {
+          {"value": if $on { 1 } else { -1 }}
+        }
+        meta bordbar_subject = "bordbar.command." + (
+          if $subj == "knx.4.2.61" { "power" }
+          else if $subj == "knx.4.2.63" { "brightness" }
+          else if $subj == "knx.4.2.64" { "color" }
+          else if $subj == "knx.4.2.65" { "mode" }
+          else if $subj == "knx.4.2.66" { "speed" }
+          else { "reset" }
+        )
+
+output:
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("bordbar_subject") }

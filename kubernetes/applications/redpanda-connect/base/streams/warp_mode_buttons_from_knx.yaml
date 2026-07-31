@@ -1,10 +1,12 @@
-# Per-mode Lademodus buttons: forwards the three Basalte 1-bit button GAs to
-# the WARP charge mode. Each button GA, when pressed (value true), selects one
-# WARP charge mode via power_manager/charge_mode_update:
-#   knx.15.6.25 Lademodus-PV     -> mode 2 (PV)
-#   knx.15.6.27 Lademodus-PV+Min -> mode 3 (Min+PV)
-#   knx.15.6.29 Lademodus-Schnell-> mode 0 (Schnell)
-# "Aus" (mode 1) is not a button — that is the Freigabe GA (15/6/20).
+# Lademodus buttons: the three Basalte 1-bit button GAs -> WARP charge mode.
+#
+#   knx.15.6.25 Lademodus-PV      -> mode 2 (PV)
+#   knx.15.6.27 Lademodus-PV+Min  -> mode 3 (Min+PV)
+#   knx.15.6.29 Lademodus-Schnell -> mode 0 (Schnell)
+#
+# Each button selects its mode when pressed (value true) via
+# power_manager/charge_mode_update. "Aus" (mode 1) is not a button — that is the
+# Freigabe GA (15/6/20).
 input:
   # Consumer (filterSubjects on the three GAs) is declared as a CRD in
   # nats/base/consumers/warp_mode_buttons_from_knx.yaml.

@@ -1,7 +1,8 @@
-# PV surplus forwarder: pushes the home-grid net power reading (KNX
-# 15/1/24, DPT 14.056 "Versorgungstechnik.Energiezähler.Strom.Wirkleistung-
-# Gesamt") to the WARP wallbox so its Charge Manager can balance EV
-# charging against PV surplus.
+# PV surplus forwarder: KNX grid net power -> WARP Charge Manager.
+#
+#   knx.15.1.24 Wirkleistung-Gesamt (14.056) -> charge_manager external power
+#
+# Lets the wallbox balance EV charging against PV surplus.
 input:
   # Consumer is declared as a CRD in nats/base/consumers/pv_surplus_to_warp.yaml.
   nats_jetstream:

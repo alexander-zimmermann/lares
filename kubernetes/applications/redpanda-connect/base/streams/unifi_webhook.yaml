@@ -1,6 +1,7 @@
-# UniFi Protect Alarm Manager webhook handler.
-# Splits alarm.triggers[], resolves camera MAC -> name, derives knx_value,
-# publishes one NATS message per trigger so knx-nats-bridge can write KNX.
+# UniFi Protect Alarm Manager webhook handler -> per-trigger NATS messages.
+#
+# Splits alarm.triggers[], resolves camera MAC -> name, derives knx_value, and
+# publishes one message per trigger so knx-nats-bridge can write KNX.
 # Geofence triggers (key=admin_geolocation) get their own subject so the
 # node-RED Geofence tab can subscribe via the NATS MQTT gateway.
 input:
