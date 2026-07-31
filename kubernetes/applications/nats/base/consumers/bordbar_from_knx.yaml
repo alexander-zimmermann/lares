@@ -1,0 +1,33 @@
+# Durable consumer for the redpanda-connect bordbar_from_knx pipeline.
+#
+# Watches the Bordbar command GAs (written by Basalte):
+#   knx.4.2.61 Ein/Aus                 (1.001)
+#   knx.4.2.63 Helligkeit-Schritt      (1.007, true = heller)
+#   knx.4.2.64 Farbe-Schritt           (1.007)
+#   knx.4.2.65 Modus-Schritt           (1.007)
+#   knx.4.2.66 Geschwindigkeit-Schritt (1.007)
+#   knx.4.2.67 Reset                   (1.015, only 1 acts)
+# 4/2/62 and 4/2/68 are status GAs driven the other way by the writer rules.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-bordbar-from-knx
+  namespace: nats
+spec:
+  streamName: KNX
+  durableName: redpanda-connect-bordbar-from-knx
+  filterSubjects:
+    - knx.4.2.61
+    - knx.4.2.63
+    - knx.4.2.64
+    - knx.4.2.65
+    - knx.4.2.66
+    - knx.4.2.67
+  deliverPolicy: new
+  ackPolicy: explicit
+  # nats-operator default surfaces as 1ns, which causes immediate re-delivery
+  # of any message slower-than-instant to ack. 15s covers the core republish
+  # comfortably without leaving wedged messages locked long.
+  ackWait: 15s
+  # Drop after 5 attempts so a permanently-failing message can't loop forever.
+  maxDeliver: 5
