@@ -58,3 +58,7 @@ extraEnv:
     value: "10"
   - name: RUSTFS_DRIVE_ACTIVE_CHECK_TIMEOUT_SECS
     value: "30"
+  # Periodic mi_collect — without it mimalloc never returns freed pages and RSS
+  # ratchets into the memory limit. Upstream's run.sh enables it, the image does not.
+  - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
+    value: "true"
