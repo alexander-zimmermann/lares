@@ -41,6 +41,24 @@ false alarms on patterns that look like failures but are normal in this cluster.
   restarts; `/readyz` passes. A real fault instead shows `connection refused` /
   `context deadline exceeded`, etcd alarms, or raft lag, and the cluster degrades.
 
+### kube-apiserver → prometheus-operator admission webhook, "failing open"
+- Pattern: `Failed calling webhook, failing open prometheusrulemutate.monitoring.coreos.com:
+  ... Post "https://prometheus-operator.prometheus.svc:443/admission-prometheusrules/mutate?timeout=10s":
+  context deadline exceeded` (or `connect: connection refused`), W-level from
+  `dispatcher.go:210`, each one echoed as an E-level `dispatcher.go:214
+  "Unhandled Error"`. Short bursts of seconds on one kube-apiserver pod, not continuous.
+- Why benign: the three `prometheus-admission` webhooks are `failurePolicy: Ignore`,
+  and the apiserver states the outcome itself — "failing open". prometheus-operator
+  runs a single replica, so while it restarts (chart upgrade, node drain, eviction)
+  its Service has no endpoint and in-flight PrometheusRule / AlertmanagerConfig
+  admissions time out. The object is still admitted; nothing is rejected or lost.
+- Confirm still benign: the bursts coincide with a prometheus-operator restart or
+  rollout (recent `startedAt` / Unhealthy event on
+  `-n prometheus -l app.kubernetes.io/name=prometheus-operator`) and stopped once it
+  went Ready; PrometheusRules still reconcile. A real fault instead keeps erroring
+  while the operator is stable and Ready (Service/NetworkPolicy/serving-cert problem),
+  CrashLoops the operator, or leaves rules never reaching Prometheus.
+
 ### Transient readiness/liveness probe failures during a rollout
 - Pattern: `Readiness probe failed: ... context deadline exceeded` or
   `Liveness/Readiness probe failed: ... connect: connection refused`, clustered
@@ -111,6 +129,24 @@ false alarms on patterns that look like failures but are normal in this cluster.
   answer normally). A real fault instead shows client-facing 5xx/timeouts,
   `panic`, rejected writes (`too many outstanding requests`), or the pod
   CrashLooping.
+
+### Loki results-cache "SERVER_ERROR out of memory storing object"
+- Pattern: `caller=background.go:202 msg="backgroundCache writeBackLoop Cache.Store fail"
+  err="server=<ip>:11211: memcache: unexpected response line from \"set\":
+  \"SERVER_ERROR out of memory storing object\""`, **warn**-level, from `loki-0`
+  (loki namespace), a few hundred lines per day, arriving in short bursts roughly
+  hourly rather than continuously.
+- Why benign: `loki-results-cache` is a deliberately fixed-size memcached (`-m 256`
+  in a 307Mi pod, max item size `-I 5m`). When the matching slab class holds nothing
+  evictable, memcached refuses the `set`. This is the asynchronous write-back path —
+  the query result has already been returned to the client, so a refused store only
+  means the next identical query is a cache miss served from the object store.
+  Nothing fails and nothing is lost.
+- Confirm still benign: the lines are warn-level and on the write-back path
+  (`background.go` / `Cache.Store fail`), `loki-0` and `loki-results-cache-0` are
+  Running with no restarts or OOMKills, and queries still return normally. A real
+  fault instead shows the memcached pod OOMKilled/CrashLooping, cache errors on the
+  read path or at error level, or client-facing query 5xx/timeouts.
 
 ## Synthesize findings
 
