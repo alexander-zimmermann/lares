@@ -62,3 +62,7 @@ extraEnv:
   # ratchets into the memory limit. Upstream's run.sh enables it, the image does not.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
+  # Object data cache budgets itself from host RAM, not the cgroup limit, and holds
+  # ~300 MiB that no allocator reclaim can return. Off until upstream bounds it.
+  - name: RUSTFS_OBJECT_DATA_CACHE_ENABLE
+    value: "false"
