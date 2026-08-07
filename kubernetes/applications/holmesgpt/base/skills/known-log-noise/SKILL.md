@@ -148,6 +148,30 @@ false alarms on patterns that look like failures but are normal in this cluster.
   fault instead shows the memcached pod OOMKilled/CrashLooping, cache errors on the
   read path or at error level, or client-facing query 5xx/timeouts.
 
+### rustfs `disk_local_background_cleanup` ESTALE / NotFound on `deleted_objects`
+- Pattern: `{"level":"ERROR","message":"Disk local background cleanup failed",
+  "event":"disk_local_background_cleanup","subsystem":"disk_local",
+  "task":"deleted_objects","error":"Io(Os { code: 116, kind: StaleNetworkFileHandle`
+  — and the same line with `code: 2, kind: NotFound` — from the single `rustfs`
+  pod, a handful of lines per day on a roughly hourly GC pass.
+- Why benign: the deleted-objects GC races other paths (scanner, heal, an earlier
+  GC pass) that already removed the entry. On the NFS-backed PVC a handle to a
+  file the server has already unlinked returns ESTALE; when the lookup instead
+  happens after the dentry is gone, the same race returns ENOENT. Two errno values
+  alternating on one task is that race — a genuinely stale mount fails
+  consistently, not a subset of passes. The removal is idempotent, so nothing is
+  left behind.
+- Confirm still benign: the mount is usable — `kubectl exec -n rustfs
+  deploy/rustfs -c rustfs -- stat -f /data` reports type nfs with free blocks, and
+  touch/rm under `/data` succeed — drive health is intact
+  (`rustfs_cluster_health_drives_offline_count` 0,
+  `rustfs_cluster_erasure_set_{read,write}_health` 1), and the nightly CNPG
+  backups complete. Restarts on this pod are OOMKills from the tracked memory
+  regression, so check `lastState.terminated.reason` before reading them as
+  storage trouble. A real fault instead shows drives going offline/FaultyDisk,
+  `InsufficientWriteQuorum` or 5xx on the S3 path, ESTALE on the read/write paths
+  rather than only the GC task, or errors on every pass.
+
 ## Synthesize findings
 
 - Matched + Confirm passes → report the pattern as expected steady-state noise;
