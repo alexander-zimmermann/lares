@@ -56,19 +56,5 @@ spec:
         - kind: Service
           name: devolutions-gateway
           port: 7171
-    # Fallback if Authentik forwardAuth breaks the WebSocket upgrade: move the
-    # RDP session stream out of the auth chain. Safe because /jet/rdp requires a
-    # gateway-signed JWT that only the web app hands out. Scoped to /jet/rdp so
-    # /jet/config and /jet/sessions stay behind Authentik.
-    # - kind: Rule
-    #   match: Host(`PLACEHOLDER`) && Path(`/jet/rdp`)
-    #   priority: 20
-    #   middlewares:
-    #     - name: chain-standard
-    #       namespace: ingress-controller
-    #   services:
-    #     - kind: Service
-    #       name: devolutions-gateway
-    #       port: 7171
   tls:
     secretName: devolutions-gateway-tls-cert
