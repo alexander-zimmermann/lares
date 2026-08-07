@@ -135,7 +135,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, charger_state AS \"Ladecontroller\" FROM warp_evse WHERE charger_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, charger_state AS \"Ladecontroller\" FROM warp_evse WHERE time > now() - INTERVAL '30 days' AND charger_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -230,7 +230,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, error_state AS \"Fehlerzustand\" FROM warp_evse WHERE error_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, error_state AS \"Fehlerzustand\" FROM warp_evse WHERE time > now() - INTERVAL '30 days' AND error_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -601,7 +601,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, dc_fault_current_state AS \"DC-Fehler\" FROM warp_evse WHERE dc_fault_current_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, dc_fault_current_state AS \"DC-Fehler\" FROM warp_evse WHERE time > now() - INTERVAL '30 days' AND dc_fault_current_state IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -740,7 +740,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, contactor_error AS \"Schützfehler\" FROM warp_evse WHERE contactor_error IS NOT NULL ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, contactor_error AS \"Schützfehler\" FROM warp_evse WHERE time > now() - INTERVAL '30 days' AND contactor_error IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
@@ -817,7 +817,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, tracked_charges AS \"Ladevorgänge Gesamt\" FROM warp_charge_tracker WHERE tracked_charges IS NOT NULL ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, tracked_charges AS \"Ladevorgänge Gesamt\" FROM warp_charge_tracker WHERE time > now() - INTERVAL '30 days' AND tracked_charges IS NOT NULL ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
