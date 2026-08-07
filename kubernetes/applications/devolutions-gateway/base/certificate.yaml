@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: devolutions-gateway-tls-cert
+  namespace: devolutions-gateway
+
+spec:
+  secretName: devolutions-gateway-tls-cert
+  issuerRef:
+    name: letsencrypt-dns01-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - PLACEHOLDER

@@ -1,0 +1,16 @@
+{
+  "Listeners": [
+    {
+      "InternalUrl": "http://*:7171",
+      "ExternalUrl": "https://*:443"
+    }
+  ],
+  "WebApp": {
+    "Enabled": true,
+    "Authentication": "None"
+  },
+  "ProvisionerPublicKeyFile": "/etc/devolutions-gateway/keys/provisioner.pub",
+  "ProvisionerPrivateKeyFile": "/etc/devolutions-gateway/keys/provisioner.key",
+  "JrlFile": "/var/lib/devolutions-gateway/jrl.json",
+  "TlsVerifyStrict": true
+}

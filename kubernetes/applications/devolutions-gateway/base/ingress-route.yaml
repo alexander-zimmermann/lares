@@ -1,0 +1,74 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+
+metadata:
+  name: devolutions-gateway
+  namespace: devolutions-gateway
+  annotations:
+    # ExternalDNS configuration for Cloudflare
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    # Homepage Service Discovery
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: "Infrastructure"
+    gethomepage.dev/name: "Remote Desktop"
+    gethomepage.dev/icon: "rustdesk.png"
+    gethomepage.dev/weight: "3"
+    gethomepage.dev/href: "https://PLACEHOLDER"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=devolutions-gateway"
+    # Gatus — automated status page discovery (probes the unauthenticated health endpoint)
+    gatus.home-operations.com/enabled: "true"
+    gatus.home-operations.com/endpoint: |
+      name: Remote Desktop
+      group: Infrastructure
+      url: https://PLACEHOLDER/jet/health
+      interval: 60s
+      conditions:
+        - "[STATUS] == 200"
+        - "[RESPONSE_TIME] < 1500"
+      alerts:
+        - type: pushover
+
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    # The standalone web app runs with Authentication "None", so this chain is
+    # the only gate in front of it.
+    - kind: Rule
+      match: Host(`PLACEHOLDER`)
+      priority: 10
+      middlewares:
+        - name: chain-mfa-auth
+          namespace: ingress-controller
+      services:
+        - kind: Service
+          name: devolutions-gateway
+          port: 7171
+    # Health endpoint for Gatus — no auth, but still rate-limited and behind CrowdSec.
+    - kind: Rule
+      match: Host(`PLACEHOLDER`) && Path(`/jet/health`)
+      priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
+      services:
+        - kind: Service
+          name: devolutions-gateway
+          port: 7171
+    # Fallback if Authentik forwardAuth breaks the WebSocket upgrade: move the
+    # RDP session stream out of the auth chain. Safe because /jet/rdp requires a
+    # gateway-signed JWT that only the web app hands out. Scoped to /jet/rdp so
+    # /jet/config and /jet/sessions stay behind Authentik.
+    # - kind: Rule
+    #   match: Host(`PLACEHOLDER`) && Path(`/jet/rdp`)
+    #   priority: 20
+    #   middlewares:
+    #     - name: chain-standard
+    #       namespace: ingress-controller
+    #   services:
+    #     - kind: Service
+    #       name: devolutions-gateway
+    #       port: 7171
+  tls:
+    secretName: devolutions-gateway-tls-cert

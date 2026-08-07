@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: devolutions-gateway
+resources:
+  - ./namespace.yaml
+  - ./sealed-secret.yaml
+  - ./certificate.yaml
+  - ./ingress-route.yaml
+
+helmCharts:
+  - name: application
+    repo: https://stakater.github.io/stakater-charts
+    releaseName: devolutions-gateway
+    version: 9.2.0
+    valuesFile: values.yaml
+    namespace: devolutions-gateway
+
+configMapGenerator:
+  - name: devolutions-gateway-config
+    files:
+      - config/gateway.json
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: devolutions-gateway
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "10"

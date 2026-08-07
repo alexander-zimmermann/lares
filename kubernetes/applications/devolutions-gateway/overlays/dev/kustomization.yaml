@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+replacements:
+  # Inject domain name into Certificate, IngressRoute, Homepage href and Gatus endpoint
+  - sourceValue: remote.zimmermann.phd
+    targets:
+      - select:
+          kind: Certificate
+          name: devolutions-gateway-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: devolutions-gateway
+        fieldPaths:
+          - spec.routes.0.match
+          - spec.routes.1.match
+        options:
+          delimiter: "`"
+          index: 1
+      - select:
+          kind: IngressRoute
+          name: devolutions-gateway
+        fieldPaths:
+          - metadata.annotations.[gethomepage.dev/href]
+        options:
+          delimiter: "//"
+          index: 1
+      - select:
+          kind: IngressRoute
+          name: devolutions-gateway
+        fieldPaths:
+          - metadata.annotations.[gatus.home-operations.com/endpoint]
+        options:
+          delimiter: "/"
+          index: 2
+
+  # Rewrite external-dns target annotation to dev UDM Pro
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
