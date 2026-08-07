@@ -21,6 +21,7 @@ pipeline:
         # Subject is "solaredge-N.modbus.inverter"; pull N for inverter_id.
         let subj = meta("nats_subject")
         let inv_id = $subj.split(".").index(0).split("-").index(1).number()
+        meta inverter = $inv_id.string()
         root = {
           "time":               $evt.timestamp,
           "inverter_id":        $inv_id,
@@ -44,6 +45,14 @@ pipeline:
           "ac_power_reactive":  $evt.ac.power.reactive.or(null),
           "raw":                $evt,
         }
+
+    # Per-inverter liveness: a dead inverter leaves the pod Running and silent.
+    - metric:
+        type: gauge
+        name: solaredge_inverter_last_reading_timestamp_seconds
+        value: ${! now().ts_unix() }
+        labels:
+          inverter: ${! meta("inverter") }
 
 output:
   broker:

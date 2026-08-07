@@ -142,6 +142,32 @@ spec:
             summary: "UniFi arm-sync metric stale/absent"
             description: "unifi_arm_sync_ok has not been reported for >15m (expected every ~5min via the KNX status heartbeat). The redpanda-connect stream, its JetStream consumer binding, or the scrape is stuck — drift detection is blind."
 
+    - name: solaredge-alerts
+      rules:
+        - alert: SolarEdgeInverterDataStale
+          # solaredge_inverter_last_reading_timestamp_seconds is emitted by the
+          # redpanda-connect solaredge_inverter stream on every reading (~1/5s, 24/7).
+          expr: time() - max by (inverter) (solaredge_inverter_last_reading_timestamp_seconds) > 600
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SolarEdge inverter {{ $labels.inverter }} delivering no data"
+            description: "No modbus reading from inverter {{ $labels.inverter }} (pod solaredge2mqtt-{{ $labels.inverter }}) for {{ $value | humanizeDuration }}. Readings arrive every 5s around the clock, so a gap this long means the inverter or its modbus interface is dead — the pod stays Running 1/1 and silently publishes nothing. Reboot the inverter; restarting the pod does not clear it."
+
+        - alert: SolarEdgeInverterDataAbsent
+          # The staleness rule needs an existing series — an inverter that never
+          # reported since the connect stream started has none.
+          expr: |
+            absent(solaredge_inverter_last_reading_timestamp_seconds{inverter="1"})
+            or absent(solaredge_inverter_last_reading_timestamp_seconds{inverter="2"})
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "SolarEdge inverter {{ $labels.inverter }} never reported"
+            description: "Inverter {{ $labels.inverter }} has not delivered a single reading since the redpanda-connect solaredge_inverter stream last started — check the solaredge2mqtt pod, the SOLAREDGE JetStream consumer and the inverter itself."
+
     - name: argocd-alerts
       rules:
         - alert: ArgoCDAppOutOfSync
