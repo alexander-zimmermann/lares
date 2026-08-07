@@ -14,7 +14,7 @@ helmCharts:
   - name: traefik
     repo: oci://ghcr.io/traefik/helm
     releaseName: traefik
-    version: 41.1.1
+    version: 41.2.0
     valuesFile: values.yaml
     namespace: ingress-controller
     includeCRDs: true
