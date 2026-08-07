@@ -18,38 +18,19 @@ deployment:
 
   # Bypass the image's pwsh entrypoint: it only generates a config and
   # provisioner keys — both supplied here — and then stays resident at ~58 MiB.
+  #
+  # gateway.json is copied into the writable data directory first: the gateway
+  # writes jrl.json, boot.stacktrace and the libsql databases next to it, and a
+  # ConfigMap mounted there directly would be shadowed by the emptyDir.
   command:
-    - /opt/devolutions/gateway/devolutions-gateway
-  args:
-    - --config-path
-    - /var/lib/devolutions-gateway
+    - sh
+    - -c
+    - cp /config/gateway.json /var/lib/devolutions-gateway/gateway.json && exec /opt/devolutions/gateway/devolutions-gateway --config-path /var/lib/devolutions-gateway
 
   env:
     # Keep logs/timestamps consistent with local timezone.
     TZ:
       value: "Europe/Berlin"
-
-  # The gateway needs gateway.json inside its own writable data directory — it
-  # writes jrl.json, boot.stacktrace and the libsql databases next to it. A
-  # ConfigMap mounted there directly would be shadowed by the emptyDir, so the
-  # config is seeded into it instead.
-  initContainers:
-    seed-config:
-      image: docker.io/devolutions/devolutions-gateway:2026.2.4
-      imagePullPolicy: IfNotPresent
-      command:
-        - sh
-        - -c
-        - cp /config/gateway.json /var/lib/devolutions-gateway/gateway.json
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-      volumeMounts:
-        - name: devolutions-gateway-config
-          mountPath: /config
-          readOnly: true
-        - name: devolutions-gateway-data
-          mountPath: /var/lib/devolutions-gateway
 
   volumes:
     # Writable data directory: gateway.json plus jrl.json and the libsql
@@ -68,6 +49,9 @@ deployment:
   volumeMounts:
     devolutions-gateway-data:
       mountPath: /var/lib/devolutions-gateway
+    devolutions-gateway-config:
+      mountPath: /config
+      readOnly: true
     devolutions-gateway-keys:
       mountPath: /etc/devolutions-gateway/keys
       readOnly: true
