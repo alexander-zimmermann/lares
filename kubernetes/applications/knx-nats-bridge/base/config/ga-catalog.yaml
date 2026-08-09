@@ -743,6 +743,41 @@
   function: Sicherheit
   name: Sicherheit.OG.Badezimmer-Eltern.Fenster.Stellung-Geöffnet-Status
   room: Badezimmer Eltern
+11/1/10:
+  dpt: '1.003'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Sperren
+  room: Garage
+11/1/11:
+  dpt: '1.011'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Sperren-Status
+  room: Garage
+11/1/12:
+  dpt: '1.017'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Aktivieren
+  room: Garage
+11/1/13:
+  dpt: '1.003'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Bereit
+  room: Garage
+11/1/14:
+  dpt: '1.011'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Bereit-Status
+  room: Garage
+11/1/15:
+  dpt: '1.003'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Freigabe
+  room: Garage
+11/1/16:
+  dpt: '1.011'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Freigabe-Status
+  room: Garage
 12/0/200:
   description: Haus Steinroth 20 Entertainment
   dpt: '5.010'
@@ -2509,7 +2544,7 @@
 15/5/22:
   dpt: '1.011'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Bewässerung.Kreislauf-2..Ein/Aus-Status
+  name: Versorgungstechnik.Bewässerung.Kreislauf-2.Ein/Aus-Status
   room: Technikraum
 15/5/32:
   dpt: '1.011'
@@ -2534,7 +2569,7 @@
 15/5/72:
   dpt: '1.011'
   function: Versorgerungstechnik
-  name: Versorgungstechnik.Bewässerung.Kreislauf-7.Ein/Aus-Staus
+  name: Versorgungstechnik.Bewässerung.Kreislauf-7.Ein/Aus-Status
   room: Technikraum
 15/5/82:
   dpt: '1.011'
