@@ -78,7 +78,7 @@ operator:
   # Pinned back: the 0.37.0/0.38.0 images lack the holmes package their entrypoint imports (CrashLoop).
   # Registry split off the image so the repository path stays resolvable for dependency lookups.
   registry: docker.io
-  image: robustadev/holmes-operator:0.38.2
+  image: robustadev/holmes-operator:0.39.0
 
 # Custom skills as real .md files (kustomize ConfigMap) — a reusable registry of known-benign
 # log noise so investigations (esp. log-anomaly) don't escalate steady-state patterns.
