@@ -2,8 +2,9 @@
 name: known-log-noise
 description: >-
   Decide whether a recurring log/error pattern (repeated connection or gRPC
-  errors, 5xx bursts, probe failures, "connection refused" / "operation was
-  canceled") is a known benign steady-state pattern in this homelab cluster
+  errors, 5xx bursts, probe failures, metric ingest/remote-write rejections,
+  "connection refused" / "operation was canceled") is a known benign
+  steady-state pattern in this homelab cluster
   rather than a real incident. Use this whenever a log scan or anomaly check
   surfaces a recurring error, BEFORE concluding an application is failing: it
   lists the patterns that are expected noise and how to confirm each is still
@@ -171,6 +172,34 @@ false alarms on patterns that look like failures but are normal in this cluster.
   storage trouble. A real fault instead shows drives going offline/FaultyDisk,
   `InsufficientWriteQuorum` or 5xx on the S3 path, ESTALE on the read/write paths
   rather than only the GC task, or errors on every pass.
+
+### Alloy remote_write 400 "duplicate sample for timestamp" (rustfs scanner counter)
+- Pattern: `level=error msg="non-recoverable error"
+  component_id=prometheus.remote_write.prometheus ... failedSampleCount=<hundreds>
+  err="server returned HTTP status 400 Bad Request: duplicate sample for timestamp
+  <ms>; overrides not allowed: existing <v1>, new value <v2>"` from
+  `alloy-alloy-receiver` (alloy namespace), mirrored in `prometheus-prometheus-0`
+  as `Out of order sample from remote write` (`write_handler.go`). Bursty, not
+  continuous: silent for days, then several hundred lines in a day at roughly one
+  per minute, only while the rustfs scanner is actively counting.
+- Why benign: rustfs emits `rustfs_scanner_objects_scanned_total` twice within the
+  same OTLP export batch with slightly different snapshot values. Both data points
+  carry an identical millisecond timestamp and collapse onto one series — it has no
+  `instance`/`pod` label — so Prometheus keeps the first and rejects the second.
+  `failedSampleCount` is the size of the whole remote-write batch, not the number
+  of samples lost: Prometheus commits the rest and only then returns 400, which
+  Alloy classifies as non-recoverable. This is an upstream instrumentation bug, not
+  double-scraping — there is a single rustfs pod. Expected to be retested on the
+  1.0.0-rc.1 image, which reworked the scanner metric dimensions; if it survives
+  there it is worth an upstream report.
+- Confirm still benign: the affected series is unbroken and monotonic —
+  `count_over_time(rustfs_scanner_objects_scanned_total[1h])` is the same during a
+  burst as outside one (~122 vs ~124), and the value stored at a rejected timestamp
+  equals the `existing` value from the error line, so only the redundant copy was
+  dropped. A real fault instead shows gaps or counter resets in the rustfs series,
+  the error naming a timestamp far from now (a clock or backfill problem), the same
+  400 arriving from senders other than the rustfs OTLP path, or Alloy's WAL growing
+  because batches are genuinely being retried.
 
 ## Synthesize findings
 
