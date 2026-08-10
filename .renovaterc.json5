@@ -32,6 +32,12 @@
   },
   "packageRules": [
     {
+      // rustfs chart mirrors the app version and ships only pre-releases since 1.0.0
+      "matchDatasources": ["helm"],
+      "matchPackageNames": ["rustfs"],
+      "ignoreUnstable": false
+    },
+    {
       "matchFileNames": ["infrastructure/manifest/20-image/image.yaml"],
       "postUpgradeTasks": {
         "commands": [
