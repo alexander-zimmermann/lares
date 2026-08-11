@@ -754,29 +754,29 @@
   name: Zutritt.KG.Garage.Garagentor.Sperren-Status
   room: Garage
 11/1/12:
-  dpt: '1.017'
+  dpt: '1.003'
   function: Zutritt
-  name: Zutritt.KG.Garage.Garagentor.Aktivieren
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Sperren
   room: Garage
 11/1/13:
+  dpt: '1.011'
+  function: Zutritt
+  name: Zutritt.KG.Garage.Garagentor.Automatik-Sperren-Status
+  room: Garage
+11/1/14:
   dpt: '1.003'
   function: Zutritt
   name: Zutritt.KG.Garage.Garagentor.Automatik-Bereit
   room: Garage
-11/1/14:
+11/1/15:
   dpt: '1.011'
   function: Zutritt
   name: Zutritt.KG.Garage.Garagentor.Automatik-Bereit-Status
   room: Garage
-11/1/15:
-  dpt: '1.003'
-  function: Zutritt
-  name: Zutritt.KG.Garage.Garagentor.Automatik-Freigabe
-  room: Garage
 11/1/16:
-  dpt: '1.011'
+  dpt: '1.017'
   function: Zutritt
-  name: Zutritt.KG.Garage.Garagentor.Automatik-Freigabe-Status
+  name: Zutritt.KG.Garage.Garagentor.Aktivieren
   room: Garage
 12/0/200:
   description: Haus Steinroth 20 Entertainment
@@ -1308,207 +1308,203 @@
   name: Entertainment.A.Terrasse.Asano.Quelle-Status
   room: Terrasse
 14/1/1:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Status
   room: Technikraum
 14/1/10:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Störung.Akku
   room: Technikraum
 14/1/11:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Störung.Übertragungseinrichtung
   room: Technikraum
 14/1/2:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.015'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Neustart
   room: Technikraum
 14/1/20:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.001'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Unscharf
   room: Technikraum
 14/1/21:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Unscharf-Status
   room: Technikraum
 14/1/22:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.001'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Intern-Scharf
   room: Technikraum
 14/1/23:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Intern-Scharf-Status
   room: Technikraum
 14/1/24:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Intern-Scharf-Bereit
   room: Technikraum
 14/1/25:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.001'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Extern-Scharf
   room: Technikraum
 14/1/26:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Extern-Scharf-Status
   room: Technikraum
 14/1/27:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Extern-Scharf-Bereit
   room: Technikraum
 14/1/28:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.005'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Alarm
   room: Technikraum
 14/1/29:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.015'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Alarm-Zurücksetzen
   room: Technikraum
 14/1/3:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.007'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Zustände-Lesen
   room: Technikraum
 14/1/30:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sicherungsbereich.Haus.Störung
   room: Technikraum
 14/1/4:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.007'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Zustände-Aktualisieren
   room: Technikraum
 14/1/40:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.003'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Sabotage.Sperren
   room: Technikraum
 14/1/41:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Sabotage.Sperren-Status
   room: Technikraum
 14/1/42:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Sabotage.Status
   room: Technikraum
 14/1/43:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.003'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.IR-Melder.Sperren
   room: Technikraum
 14/1/44:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.IR-Melder.Sperren-Status
   room: Technikraum
 14/1/45:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.IR-Melder.Status
   room: Technikraum
 14/1/46:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.003'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Fensterkontakt.Sperren
   room: Technikraum
 14/1/47:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Fensterkontakt.Sperren-Status
   room: Technikraum
 14/1/48:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Fensterkontakt.Status
   room: Technikraum
 14/1/49:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.003'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Türkontakt.Sperren
   room: Technikraum
 14/1/5:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sabotage.Deckelkontakt
   room: Technikraum
 14/1/50:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Türkontakt.Sperren-Status
   room: Technikraum
 14/1/51:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Meldebereich.Türkontakt.Status
   room: Technikraum
 14/1/6:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sabotage.Signalgeber.Leitungsüberwachung.ASG
   room: Technikraum
-14/1/7:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
+14/1/60:
+  dpt: '1.001'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R1.Ein/Aus
+  room: Technikraum
+14/1/61:
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R1.Ein/Aus-Status
+  room: Technikraum
+14/1/62:
+  dpt: '1.001'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R2.Ein/Aus
+  room: Technikraum
+14/1/63:
+  dpt: '1.011'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R2.Ein/Aus-Status
+  room: Technikraum
+14/1/64:
+  dpt: '1.001'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R3.Ein/Aus
+  room: Technikraum
+14/1/65:
+  dpt: '1.011'
+  function: Sicherheitstechnik
+  name: Sicherheitstechnik.EMA.Relais.R3.Ein/Aus-Status
+  room: Technikraum
+14/1/7:
+  dpt: '1.011'
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sabotage.Signalgeber.Leitungsüberwachung.OSG
   room: Technikraum
 14/1/8:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Sabotage.Signalgeber.Wandabreißkontakt
   room: Technikraum
 14/1/9:
-  description: 3 - Technikraum (K3) Sicherheitstechnik
   dpt: '1.011'
-  function: Einbruchmeldeanlage
+  function: Sicherheitstechnik
   name: Sicherheitstechnik.EMA.Störung.Strom
   room: Technikraum
 14/3/1:
@@ -3463,7 +3459,7 @@
 2/1/156:
   dpt: '1.010'
   function: Schalten
-  name: Schalten.KG.hauswirtschaftsraum.K1-L3.Entfeuchter.Kilowattstunde-Löschen
+  name: Schalten.KG.Hauswirtschaftsraum.K1-L3.Entfeuchter.Kilowattstunde-Löschen
   room: Hauswirtschaftsraum
 2/1/157:
   dpt: '7.012'
