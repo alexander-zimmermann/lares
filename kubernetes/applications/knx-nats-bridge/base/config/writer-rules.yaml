@@ -1245,56 +1245,56 @@ mappings:
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.fbh_cold.og-schlafzimmer-luis"
-    ga: "6/3/88"
+    ga: "6/3/108"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.window_while_heating.og-schlafzimmer-luis"
-    ga: "6/3/89"
+    ga: "6/3/109"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.fbh_cold.og-schlafzimmer-eltern"
-    ga: "6/3/108"
+    ga: "6/3/148"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.window_while_heating.og-schlafzimmer-eltern"
-    ga: "6/3/109"
+    ga: "6/3/149"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.fbh_cold.og-begehbarer-schrank"
-    ga: "6/3/128"
+    ga: "6/3/188"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.window_while_heating.og-begehbarer-schrank"
-    ga: "6/3/129"
+    ga: "6/3/189"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Fenster-Auf-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.fbh_cold.og-badezimmer-eltern"
-    ga: "6/3/148"
+    ga: "6/3/208"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.window_while_heating.og-badezimmer-eltern"
-    ga: "6/3/149"
+    ga: "6/3/209"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie"
@@ -1382,37 +1382,77 @@ mappings:
     seed_on_start: true
 
   # Luftreiniger (Dyson PC1) status feedback (KNX<-NATS). The command GAs
-  # (6/3/111/113/115/117) are driven KNX->device by the redpanda-connect
+  # (6/3/160/162/164/166/168) are driven KNX->device by the redpanda-connect
   # dyson_from_knx stream; these rules report the actual device state back
   # so Basalte reflects reality. Lüfterstufe 0 = Automatik; Drehmodus enum
   # 0=Aus 1=45° 2=90° 3=180° 4=350°.
   - subject: "dyson.ventilator-1.state"
-    ga: "6/3/112"
+    ga: "6/3/161"
+    dpt: "1.011"
+    payload_path: "$.locked"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Sperren-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/163"
     dpt: "1.011"
     payload_path: "$.power"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus-Status"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-1.state"
-    ga: "6/3/114"
+    ga: "6/3/165"
     dpt: "5.010"
     payload_path: "$.speed"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe-Status"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-1.state"
-    ga: "6/3/116"
+    ga: "6/3/167"
     dpt: "5.010"
     payload_path: "$.oscillation_mode"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus-Status"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-1.state"
-    ga: "6/3/118"
+    ga: "6/3/169"
     dpt: "1.011"
     payload_path: "$.night"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status"
     min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  # `power` is the commanded state, `fan_running` whether the fan actually
+  # turns — in Automatik with clean air the device is on while the fan idles.
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/173"
+    dpt: "1.011"
+    payload_path: "$.fan_running"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfter-Läuft-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.state"
+    ga: "6/3/172"
+    dpt: "5.001"
+    payload_path: "$.filter_life"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Filter-Lebensdauer"
+    min_delta: 1  # percent
+    seed_on_start: true
+
+  # Luftreiniger particulate sensor (KNX<-NATS). Only the PM sensor exists on
+  # this model; min_delta keeps the poll interval off the bus.
+  - subject: "dyson.ventilator-1.environment"
+    ga: "6/3/170"
+    dpt: "9.030"
+    payload_path: "$.pm25"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM25"
+    min_delta: 1  # µg/m³
+    seed_on_start: true
+  - subject: "dyson.ventilator-1.environment"
+    ga: "6/3/171"
+    dpt: "9.030"
+    payload_path: "$.pm10"
+    description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM10"
+    min_delta: 1  # µg/m³
     seed_on_start: true
 
   # Bordbar LED status feedback (KNX<-NATS). The command GAs (4/2/61/63-67) are

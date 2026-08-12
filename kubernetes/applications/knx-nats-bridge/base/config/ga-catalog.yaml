@@ -9085,208 +9085,238 @@
 6/3/100:
   dpt: '1.003'
   function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Sperren
+  room: Schlafzimmer Luis
+6/3/101:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Stellwert-Status
+  room: Schlafzimmer Luis
+6/3/102:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Soll-Temperatur
+  room: Schlafzimmer Luis
+6/3/103:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Soll-Temperatur-Status
+  room: Schlafzimmer Luis
+6/3/104:
+  dpt: '9.002'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Sollwertverschiebung
+  room: Schlafzimmer Luis
+6/3/105:
+  dpt: '20.102'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.HVAC
+  room: Schlafzimmer Luis
+6/3/106:
+  dpt: '20.102'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.HVAC-Status
+  room: Schlafzimmer Luis
+6/3/107:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv
+  room: Schlafzimmer Luis
+6/3/108:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie
+  room: Schlafzimmer Luis
+6/3/109:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Schlafzimmer Luis
+6/3/110:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Diagnose
+  room: Schlafzimmer Luis
+6/3/140:
+  dpt: '1.003'
+  function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Sperren
   room: Schlafzimmer Eltern
-6/3/101:
+6/3/141:
   dpt: '5.001'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Stellwert-Status
   room: Schlafzimmer Eltern
-6/3/102:
+6/3/142:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Soll-Temperatur
   room: Schlafzimmer Eltern
-6/3/103:
+6/3/143:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Soll-Temperatur-Status
   room: Schlafzimmer Eltern
-6/3/104:
+6/3/144:
   dpt: '9.002'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Sollwertverschiebung
   room: Schlafzimmer Eltern
-6/3/105:
+6/3/145:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.HVAC
   room: Schlafzimmer Eltern
-6/3/106:
+6/3/146:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.HVAC-Status
   room: Schlafzimmer Eltern
-6/3/107:
+6/3/147:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv
   room: Schlafzimmer Eltern
-6/3/108:
+6/3/148:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Anomalie
   room: Schlafzimmer Eltern
-6/3/109:
+6/3/149:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Schlafzimmer Eltern
-6/3/110:
+6/3/150:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.FBH.Diagnose
   room: Schlafzimmer Eltern
-6/3/111:
+6/3/160:
+  dpt: '1.003'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Sperren
+  room: Schlafzimmer Eltern
+6/3/161:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Sperren-Status
+  room: Schlafzimmer Eltern
+6/3/162:
   dpt: '1.001'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus
   room: Schlafzimmer Eltern
-6/3/112:
+6/3/163:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus-Status
   room: Schlafzimmer Eltern
-6/3/113:
+6/3/164:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe
   room: Schlafzimmer Eltern
-6/3/114:
+6/3/165:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe-Status
   room: Schlafzimmer Eltern
-6/3/115:
+6/3/166:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus
   room: Schlafzimmer Eltern
-6/3/116:
+6/3/167:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus-Status
   room: Schlafzimmer Eltern
-6/3/117:
+6/3/168:
   dpt: '1.001'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus
   room: Schlafzimmer Eltern
-6/3/118:
+6/3/169:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status
   room: Schlafzimmer Eltern
-6/3/120:
+6/3/170:
+  dpt: '9.030'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM25
+  room: Schlafzimmer Eltern
+6/3/171:
+  dpt: '9.030'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM10
+  room: Schlafzimmer Eltern
+6/3/172:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Filter-Lebensdauer
+  room: Schlafzimmer Eltern
+6/3/173:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfter-Läuft-Status
+  room: Schlafzimmer Eltern
+6/3/180:
   dpt: '1.003'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Sperren
   room: Begehbarer Schrank
-6/3/121:
+6/3/181:
   dpt: '5.001'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Stellwert-Status
   room: Begehbarer Schrank
-6/3/122:
+6/3/182:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Soll-Temperatur
   room: Begehbarer Schrank
-6/3/123:
+6/3/183:
   dpt: '9.001'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Soll-Temperatur-Status
   room: Begehbarer Schrank
-6/3/124:
+6/3/184:
   dpt: '9.002'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Sollwertverschiebung
   room: Begehbarer Schrank
-6/3/125:
+6/3/185:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.HVAC
   room: Begehbarer Schrank
-6/3/126:
+6/3/186:
   dpt: '20.102'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.HVAC-Status
   room: Begehbarer Schrank
-6/3/127:
+6/3/187:
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv
   room: Begehbarer Schrank
-6/3/128:
+6/3/188:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Anomalie
   room: Begehbarer Schrank
-6/3/129:
+6/3/189:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Begehbarer Schrank
-6/3/130:
+6/3/190:
   dpt: '16.000'
   function: Raumklima
   name: Raumklima.OG.Begehbarer-Schrank.FBH.Diagnose
   room: Begehbarer Schrank
-6/3/140:
-  dpt: '1.003'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Sperren
-  room: Badezimmer Eltern
-6/3/141:
-  dpt: '5.001'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Stellwert-Status
-  room: Badezimmer Eltern
-6/3/142:
-  dpt: '9.001'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Soll-Temperatur
-  room: Badezimmer Eltern
-6/3/143:
-  dpt: '9.001'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Soll-Temperatur-Status
-  room: Badezimmer Eltern
-6/3/144:
-  dpt: '9.002'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Sollwertverschiebung
-  room: Badezimmer Eltern
-6/3/145:
-  dpt: '20.102'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.HVAC
-  room: Badezimmer Eltern
-6/3/146:
-  dpt: '20.102'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.HVAC-Status
-  room: Badezimmer Eltern
-6/3/147:
-  dpt: '1.011'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv
-  room: Badezimmer Eltern
-6/3/148:
-  dpt: '5.010'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie
-  room: Badezimmer Eltern
-6/3/149:
-  dpt: '5.010'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie
-  room: Badezimmer Eltern
-6/3/150:
-  dpt: '16.000'
-  function: Raumklima
-  name: Raumklima.OG.Badezimmer-Eltern.FBH.Diagnose
-  room: Badezimmer Eltern
 6/3/2:
   dpt: '9.001'
   function: Raumklima
@@ -9297,11 +9327,66 @@
   function: Raumklima
   name: Raumklima.OG.Abstellraum.FBH.Sperren
   room: Abstellraum
+6/3/200:
+  dpt: '1.003'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Sperren
+  room: Badezimmer Eltern
+6/3/201:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Stellwert-Status
+  room: Badezimmer Eltern
+6/3/202:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Soll-Temperatur
+  room: Badezimmer Eltern
+6/3/203:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Soll-Temperatur-Status
+  room: Badezimmer Eltern
+6/3/204:
+  dpt: '9.002'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Sollwertverschiebung
+  room: Badezimmer Eltern
+6/3/205:
+  dpt: '20.102'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.HVAC
+  room: Badezimmer Eltern
+6/3/206:
+  dpt: '20.102'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.HVAC-Status
+  room: Badezimmer Eltern
+6/3/207:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv
+  room: Badezimmer Eltern
+6/3/208:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Anomalie
+  room: Badezimmer Eltern
+6/3/209:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Aktiv-Fenster-Auf-Anomalie
+  room: Badezimmer Eltern
 6/3/21:
   dpt: '5.001'
   function: Raumklima
   name: Raumklima.OG.Abstellraum.FBH.Stellwert-Status
   room: Abstellraum
+6/3/210:
+  dpt: '16.000'
+  function: Raumklima
+  name: Raumklima.OG.Badezimmer-Eltern.FBH.Diagnose
+  room: Badezimmer Eltern
 6/3/22:
   dpt: '9.001'
   function: Raumklima
@@ -9487,66 +9572,11 @@
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.Aktiv-Anomalie
   room: Flur
-6/3/80:
-  dpt: '1.003'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Sperren
-  room: Schlafzimmer Luis
-6/3/81:
-  dpt: '5.001'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Stellwert-Status
-  room: Schlafzimmer Luis
-6/3/82:
-  dpt: '9.001'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Soll-Temperatur
-  room: Schlafzimmer Luis
-6/3/83:
-  dpt: '9.001'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Soll-Temperatur-Status
-  room: Schlafzimmer Luis
-6/3/84:
-  dpt: '9.002'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Sollwertverschiebung
-  room: Schlafzimmer Luis
-6/3/85:
-  dpt: '20.102'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.HVAC
-  room: Schlafzimmer Luis
-6/3/86:
-  dpt: '20.102'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.HVAC-Status
-  room: Schlafzimmer Luis
-6/3/87:
-  dpt: '1.011'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv
-  room: Schlafzimmer Luis
-6/3/88:
-  dpt: '5.010'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Anomalie
-  room: Schlafzimmer Luis
-6/3/89:
-  dpt: '5.010'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Aktiv-Fenster-Auf-Anomalie
-  room: Schlafzimmer Luis
 6/3/9:
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.OG.Flur.FBH.Aktiv-Fenster-Auf-Anomalie
   room: Flur
-6/3/90:
-  dpt: '16.000'
-  function: Raumklima
-  name: Raumklima.OG.Schlafzimmer-Luis.FBH.Diagnose
-  room: Schlafzimmer Luis
 7/0/200:
   description: 1 - Innen Bedienelemente
   dpt: '1.001'
