@@ -5,25 +5,19 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/dyson-nats-bridge
-    tag: 0.3.0
+    tag: 0.4.0
     pullPolicy: IfNotPresent
 
-  # The on-device MQTT broker tolerates very few concurrent clients; never run two replicas.
+  # A second replica would apply every command to the device twice.
   replicas: 1
   strategy:
     type: Recreate
 
   env:
-    DYSON_HOST:
-      value: ventilator-1.zimmermann.eu.com
-    DYSON_SERIAL:
-      value: 9HC-EU-VEA7652A
-    DYSON_PRODUCT_TYPE:
-      value: 438M
-    DYSON_DEVICE_NAME:
-      value: ventilator-1
-    DYSON_CREDENTIAL_FILE:
-      value: /etc/dyson-nats-bridge/credential
+    DYSON_DEVICES_FILE:
+      value: /etc/dyson-nats-bridge/devices.yaml
+    DYSON_CREDENTIALS_DIR:
+      value: /etc/dyson-nats-bridge/credentials
     NATS_SERVERS:
       value: nats://nats.nats.svc.cluster.local:4222
     # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
@@ -37,20 +31,26 @@ deployment:
       value: Europe/Berlin
 
   volumes:
+    devices:
+      configMap:
+        name: dyson-nats-bridge-devices
     nats-credentials:
       secret:
         secretName: dyson-nats-bridge-credentials
-    device-credential:
+    device-credentials:
       secret:
-        secretName: dyson-nats-bridge-device-credential
+        secretName: dyson-nats-bridge-device-credentials
 
   volumeMounts:
+    devices:
+      mountPath: /etc/dyson-nats-bridge/devices.yaml
+      subPath: devices.yaml
     nats-credentials:
       mountPath: /etc/dyson-nats-bridge/nkey-seed
       subPath: nkey-seed
-    device-credential:
-      mountPath: /etc/dyson-nats-bridge/credential
-      subPath: credential
+    # Directory mount: the bridge reads one credential file per device name.
+    device-credentials:
+      mountPath: /etc/dyson-nats-bridge/credentials
 
   ports:
     - containerPort: 9090
