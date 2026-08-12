@@ -223,3 +223,25 @@ spec:
           annotations:
             summary: "Container {{ $labels.namespace }}/{{ $labels.pod }} OOMKilled"
             description: "Container {{ $labels.container }} was OOMKilled and restarted in the last 10m."
+
+    - name: dyson-alerts
+      rules:
+        # Slow-moving: a filter loses a few percent a month, so a long `for`
+        # costs nothing and keeps a flapping scrape from paging.
+        - alert: DysonFilterLow
+          expr: dyson_filter_life_percent < 10
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Dyson {{ $labels.device }} filter almost spent"
+            description: "HEPA filter at {{ $value | humanize }}% — order a replacement before it runs out."
+
+        - alert: DysonDeviceDisconnected
+          expr: dyson_connected == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Dyson {{ $labels.device }} unreachable"
+            description: "The bridge has not held a connection for 30m — device unplugged, moved, or off the WLAN."
