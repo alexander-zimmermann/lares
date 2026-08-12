@@ -1,7 +1,6 @@
-# Daily prune of stale log processors. LAPI pods do not unregister on shutdown,
-# so old replicas accumulate after rollouts and surface in the console as
-# inactive log processors. The chart's agents_autodelete flush does not clear
-# them reliably; cscli machines prune does.
+# Daily prune of stale log processors. Agent and LAPI pods do not unregister on
+# shutdown, so old replicas accumulate after rollouts and surface in the console
+# as inactive log processors. Only registrations whose pod is gone are deleted.
 apiVersion: batch/v1
 kind: CronJob
 
@@ -22,7 +21,7 @@ spec:
       ttlSecondsAfterFinished: 86400
       template:
         spec:
-          serviceAccountName: crowdsec-machines-prune
+          serviceAccountName: crowdsec-machines
           restartPolicy: OnFailure
           imagePullSecrets:
             - name: dhi-registry-secret
@@ -46,8 +45,9 @@ spec:
                   value: "crowdsec"
                 - name: SELECTOR
                   value: "type=lapi,k8s-app=crowdsec" # gitleaks:allow
-                - name: DURATION
-                  value: "48h"
+                # Log processors register under their pod name; watchers never do.
+                - name: MACHINE_PATTERN
+                  value: "^crowdsec-"
               resources:
                 requests:
                   cpu: 10m
