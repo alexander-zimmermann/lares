@@ -5,7 +5,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/dyson-nats-bridge
-    tag: 0.4.0
+    tag: 0.5.0
     pullPolicy: IfNotPresent
 
   # A second replica would apply every command to the device twice.
