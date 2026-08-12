@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 
 metadata:
-  name: crowdsec-machines-prune
+  name: crowdsec-machines
   namespace: crowdsec
 
 ---
@@ -10,7 +10,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 
 metadata:
-  name: crowdsec-machines-prune
+  name: crowdsec-machines
   namespace: crowdsec
 
 rules:
@@ -26,15 +26,15 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 
 metadata:
-  name: crowdsec-machines-prune
+  name: crowdsec-machines
   namespace: crowdsec
 
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: crowdsec-machines-prune
+  name: crowdsec-machines
 
 subjects:
   - kind: ServiceAccount
-    name: crowdsec-machines-prune
+    name: crowdsec-machines
     namespace: crowdsec

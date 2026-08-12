@@ -1,0 +1,68 @@
+# Post-sync Job that registers the homepage widget as a LAPI watcher. Watcher
+# accounts live only in the CrowdSec database, so without this they are lost on
+# every database rebuild and the widget fails with 401.
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: crowdsec-ensure-watcher
+  namespace: crowdsec
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+
+spec:
+  backoffLimit: 2
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      serviceAccountName: crowdsec-machines
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: dhi-registry-secret
+      containers:
+        - name: ensure
+          # `:1-dev` includes busybox/coreutils so the script can use /bin/sh and awk.
+          image: dhi.io/kubectl:1-dev
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          command: ["/bin/sh", "/scripts/ensure-watcher.sh"]
+          env:
+            - name: NAMESPACE
+              value: "crowdsec"
+            - name: SELECTOR
+              value: "type=lapi,k8s-app=crowdsec" # gitleaks:allow
+            - name: WATCHER_NAME
+              value: "homepage"
+            - name: WATCHER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec-homepage-lapi-key
+                  key: crowdsec_homepage_lapi_key
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: scripts
+          configMap:
+            name: crowdsec-ensure-watcher-script
+            defaultMode: 0555
+        - name: tmp
+          emptyDir: {}

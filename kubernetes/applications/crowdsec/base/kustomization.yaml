@@ -7,9 +7,15 @@ resources:
   - ./sealed-secret.yaml
   - ./database.yaml
   - ./rbac.yaml
+  - ./ensure-watcher-job.yaml
   - ./machines-prune-cronjob.yaml
 
 configMapGenerator:
+  - name: crowdsec-ensure-watcher-script
+    options:
+      disableNameSuffixHash: true
+    files:
+      - scripts/ensure-watcher.sh
   - name: crowdsec-machines-prune-script
     options:
       disableNameSuffixHash: true
