@@ -1,13 +1,17 @@
 # Luftreiniger control: Basalte command GAs -> dyson-nats-bridge.
 #
-#   knx.6.3.111 Ein/Aus     -> dyson.ventilator-1.command.power       {"value": bool}
-#   knx.6.3.113 Lüfterstufe -> dyson.ventilator-1.command.speed       {"value": 0..10, 0 = auto}
-#   knx.6.3.115 Drehmodus   -> dyson.ventilator-1.command.oscillation {"value": 0..4}
-#   knx.6.3.117 Nachtmodus  -> dyson.ventilator-1.command.night       {"value": bool}
+#   knx.6.3.160 Sperren     -> dyson.ventilator-1.command.lock        {"value": bool}
+#   knx.6.3.162 Ein/Aus     -> dyson.ventilator-1.command.power       {"value": bool}
+#   knx.6.3.164 Lüfterstufe -> dyson.ventilator-1.command.speed       {"value": 0..10, 0 = auto}
+#   knx.6.3.166 Drehmodus   -> dyson.ventilator-1.command.oscillation {"value": 0..4}
+#   knx.6.3.168 Nachtmodus  -> dyson.ventilator-1.command.night       {"value": bool}
+#
+# Sperren is 1 = gesperrt, matching the bridge's lock semantics, so nothing is
+# inverted here. While locked the bridge swallows the other four commands.
 #
 # Core NATS only; the bridge subscribes core and nothing archives commands.
 input:
-  # Consumer (filterSubjects on the four GAs) is declared as a CRD in
+  # Consumer (filterSubjects on the five GAs) is declared as a CRD in
   # nats/base/consumers/dyson_from_knx.yaml.
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -22,15 +26,16 @@ pipeline:
   processors:
     - mapping: |
         let subj = meta("nats_subject")
-        root = if $subj == "knx.6.3.113" || $subj == "knx.6.3.115" {
+        root = if $subj == "knx.6.3.164" || $subj == "knx.6.3.166" {
           {"value": this.value.number()}
         } else {
           {"value": this.value == true || this.value == 1}
         }
         meta dyson_subject = "dyson.ventilator-1.command." + (
-          if $subj == "knx.6.3.111" { "power" }
-          else if $subj == "knx.6.3.113" { "speed" }
-          else if $subj == "knx.6.3.115" { "oscillation" }
+          if $subj == "knx.6.3.160" { "lock" }
+          else if $subj == "knx.6.3.162" { "power" }
+          else if $subj == "knx.6.3.164" { "speed" }
+          else if $subj == "knx.6.3.166" { "oscillation" }
           else { "night" }
         )
 
