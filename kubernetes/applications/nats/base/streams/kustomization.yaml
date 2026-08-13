@@ -9,6 +9,7 @@ resources:
   - unifi.yaml
   - dyson.yaml
   - bordbar.yaml
+  - miele.yaml
   # Derived streams (republished/computed subjects), kept only so the
   # knx-nats-bridge read responder can be seeded after a restart.
   - wallbox-knx.yaml

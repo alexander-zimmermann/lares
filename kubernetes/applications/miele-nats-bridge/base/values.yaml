@@ -1,0 +1,140 @@
+applicationName: miele-nats-bridge
+
+deployment:
+  enabled: true
+  reloadOnChange: false
+  image:
+    repository: ghcr.io/alexander-zimmermann/miele-nats-bridge
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+  # A second replica would open a second cloud event stream and double every
+  # publish; the rotated refresh token also lives on a ReadWriteOnce volume.
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  env:
+    MIELE_APPLIANCES_FILE:
+      value: /etc/miele-nats-bridge/appliances.yaml
+    MIELE_CLIENT_ID_FILE:
+      value: /etc/miele-nats-bridge/credentials/client-id
+    MIELE_CLIENT_SECRET_FILE:
+      value: /etc/miele-nats-bridge/credentials/client-secret
+    # Seed only: read when the persisted copy below does not exist yet.
+    MIELE_REFRESH_TOKEN_FILE:
+      value: /etc/miele-nats-bridge/credentials/refresh-token
+    # Rotated on every token exchange, so it must outlive the pod.
+    MIELE_TOKEN_STATE_FILE:
+      value: /var/lib/miele-nats-bridge/refresh-token
+    NATS_SERVERS:
+      value: nats://nats.nats.svc.cluster.local:4222
+    NATS_STREAM_NAME:
+      value: MIELE
+    # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
+    NATS_NKEY_SEED_FILE:
+      value: /etc/miele-nats-bridge/nkey-seed
+    LOG_FORMAT:
+      value: json
+    METRICS_PORT:
+      value: "9090"
+    TZ:
+      value: Europe/Berlin
+
+  volumes:
+    appliances:
+      configMap:
+        name: miele-nats-bridge-appliances
+    nats-credentials:
+      secret:
+        secretName: miele-nats-bridge-credentials
+    cloud-credentials:
+      secret:
+        secretName: miele-nats-bridge-cloud-credentials
+    token-state:
+      persistentVolumeClaim:
+        claimName: miele-nats-bridge-token-state
+
+  volumeMounts:
+    appliances:
+      mountPath: /etc/miele-nats-bridge/appliances.yaml
+      subPath: appliances.yaml
+    nats-credentials:
+      mountPath: /etc/miele-nats-bridge/nkey-seed
+      subPath: nkey-seed
+    # Directory mount: client id, client secret and the initial refresh token.
+    cloud-credentials:
+      mountPath: /etc/miele-nats-bridge/credentials
+    # The only writable path; the root filesystem stays read-only.
+    token-state:
+      mountPath: /var/lib/miele-nats-bridge
+
+  ports:
+    - containerPort: 9090
+      name: metrics
+      protocol: TCP
+
+  # Liveness deliberately excludes cloud reachability: a Miele outage surfaces
+  # via the miele_connected metric instead of a pod restart loop.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: [ALL]
+
+  securityContext:
+    fsGroup: 1000
+
+# Holds nothing but the rotated refresh token, so the smallest volume that
+# Longhorn will provision is already oversized.
+persistence:
+  enabled: true
+  name: miele-nats-bridge-token-state
+  accessMode: ReadWriteOnce
+  storageClass: longhorn
+  storageSize: PLACEHOLDER
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 9090
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics

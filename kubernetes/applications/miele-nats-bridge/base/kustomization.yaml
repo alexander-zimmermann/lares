@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: miele-nats-bridge
+resources:
+  - ./namespace.yaml
+  - ./sealed-secret.yaml
+
+helmCharts:
+  - name: application
+    repo: https://stakater.github.io/stakater-charts
+    releaseName: miele-nats-bridge
+    version: 9.2.0
+    valuesFile: values.yaml
+    namespace: miele-nats-bridge
+    apiVersions:
+      - monitoring.coreos.com/v1
+
+# Content-hash suffix: an appliance-list change produces a new ConfigMap name, so
+# the Deployment reference updates and ArgoCD rolls the pod natively.
+configMapGenerator:
+  - name: miele-nats-bridge-appliances
+    files:
+      - appliances.yaml=config/appliances.yaml
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: miele-nats-bridge
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "10"

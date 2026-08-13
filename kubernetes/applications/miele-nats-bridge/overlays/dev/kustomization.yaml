@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+replacements:
+  # Inject PVC storage size for the rotated refresh token
+  - sourceValue: 32Mi
+    targets:
+      - select:
+          kind: PersistentVolumeClaim
+          name: miele-nats-bridge-token-state
+        fieldPaths:
+          - spec.resources.requests.storage
