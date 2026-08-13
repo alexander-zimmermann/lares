@@ -35,6 +35,7 @@
         // First-party images (we own the build + CI)
         "/knx-nats-bridge/",
         "/dyson-nats-bridge/",
+        "/miele-nats-bridge/",
         "/midea-nats-bridge/"
       ],
       "ignoreTests": false
