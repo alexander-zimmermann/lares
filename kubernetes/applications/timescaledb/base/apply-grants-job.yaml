@@ -19,7 +19,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: psql
-          image: ghcr.io/cloudnative-pg/postgresql:18.4
+          image: ghcr.io/cloudnative-pg/postgresql:18.6
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
