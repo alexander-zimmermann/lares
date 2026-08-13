@@ -12,7 +12,7 @@ helmCharts:
   - name: cert-manager-chart
     repo: oci://ghcr.io/alexander-zimmermann/charts
     releaseName: cert-manager
-    version: 1.20.3
+    version: 1.21.1
     valuesFile: values.yaml
     namespace: cert-manager
     includeCRDs: true
