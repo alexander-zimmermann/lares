@@ -3,6 +3,6 @@
 # dyson-nats-bridge-device-credentials Secret.
 devices:
   - name: ventilator-1
-    host: ventilator-1.zimmermann.eu.com
+    host: ventilator-og7.zimmermann.eu.com
     serial: 9HC-EU-VEA7652A
     product_type: "438M" # Purifier Cool PC1
