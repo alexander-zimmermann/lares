@@ -1,0 +1,23 @@
+# Miele appliances served by the bridge. `name` is the NATS subject slug
+# (miele.<name>.state) and drives the program/phase offsets in the bridge.
+# `device_id` is the fabrication number from GET /devices — the API reports
+# deviceName as empty for every appliance, so the id is the only stable key.
+appliances:
+  - device_id: "000105454657"
+    name: geschirrspueler
+    model: G7560
+  - device_id: "000138283781"
+    name: backofen
+    model: H7860BPX
+  - device_id: "000175853376"
+    name: tellerwaermer
+    model: ESW7020
+  - device_id: "000138262731"
+    name: mikrowelle
+    model: H7840BMX
+  - device_id: "000703326754"
+    name: kaffeemaschine
+    model: CVA7845
+  - device_id: "000175805475"
+    name: dampfgarer
+    model: DGC7845X

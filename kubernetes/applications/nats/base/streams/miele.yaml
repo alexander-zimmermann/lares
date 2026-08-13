@@ -1,0 +1,16 @@
+# Miele kitchen appliance state published by miele-nats-bridge
+# (miele.<appliance>.state|eco). Backs the knx-nats-bridge writer-rule seeding
+# and the TimescaleDB/parquet archive.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: miele
+  namespace: nats
+spec:
+  name: MIELE
+  subjects:
+    - miele.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
