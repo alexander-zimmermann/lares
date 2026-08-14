@@ -30,7 +30,7 @@ pipeline:
         let topic = meta("nats_subject").split(".").index(1)
         # ems-esp payloads carry no timestamp field — use the JetStream-server
         # receive time, falling back to now() if metadata is missing.
-        let ts = meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z"))
+        let ts = (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z"))
         root = {
           "time":              $ts,
           "topic":             $topic,

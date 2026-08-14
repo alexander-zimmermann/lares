@@ -22,7 +22,7 @@ pipeline:
   processors:
     - mapping: |
         root = {
-          "time":          meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "time":          (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
           "device":        meta("nats_subject").split(".").index(1),
           "humidity":      this.humidity | null,
           "temperature_c": this.temperature_c | null,

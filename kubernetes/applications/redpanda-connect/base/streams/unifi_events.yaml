@@ -27,7 +27,7 @@ pipeline:
         # read from the payload rather than parsing the subject.
         # Use JetStream server-receive time as the canonical row time;
         # the original UniFi trigger.timestamp (ms epoch) stays in `raw`.
-        let ts = meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z"))
+        let ts = (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z"))
         root = {
           "time":           $ts,
           "camera":         $evt.camera,
