@@ -31,6 +31,23 @@ replacements:
         fieldPaths:
           - 'data.storageclass\.yaml.parameters.staleReplicaTimeout'
 
+patches:
+  # The chart's NetworkPolicy only admits Longhorn's own pods, which blocks
+  # Prometheus from scraping longhorn-manager metrics on :9500
+  - target:
+      kind: NetworkPolicy
+      name: longhorn-manager
+    patch: |-
+      - op: add
+        path: /spec/ingress/0/from/-
+        value:
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: prometheus
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+
 labels:
   - includeSelectors: false
     pairs:
