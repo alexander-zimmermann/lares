@@ -1,0 +1,11 @@
+# Comfee dehumidifiers served by the bridge. `name` is the NATS subject slug
+# (midea.<name>.state) and the prefix of the matching entries in the
+# midea-nats-bridge-device-credentials Secret (<name>.token, <name>.key).
+#
+# The slug matches the hostname without the domain, so a device is called the
+# same thing in DNS, in NATS subjects and in the credentials Secret. The
+# appliance is still registered as "Technikraum" in the Comfee cloud but
+# physically stands in the Hauswirtschaftsraum (KG room 5).
+devices:
+  - name: entfeuchter-kg5
+    host: entfeuchter-kg5.zimmermann.eu.com

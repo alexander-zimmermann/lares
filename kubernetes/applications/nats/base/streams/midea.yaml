@@ -1,0 +1,16 @@
+# Comfee/Midea dehumidifier state/environment published by midea-nats-bridge
+# (midea.<device>.state|environment). Backs the knx-nats-bridge read-responder
+# seeding and the TimescaleDB/parquet archive; command subjects stay core-only.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: midea
+  namespace: nats
+spec:
+  name: MIDEA
+  subjects:
+    - midea.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1

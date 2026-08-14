@@ -8,6 +8,7 @@ resources:
   - warp.yaml
   - unifi.yaml
   - dyson.yaml
+  - midea.yaml
   - bordbar.yaml
   - miele.yaml
   # Derived streams (republished/computed subjects), kept only so the
