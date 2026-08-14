@@ -420,6 +420,71 @@ SELECT create_hypertable('dyson_environment', 'time', chunk_time_interval => INT
 CREATE INDEX ON dyson_environment (device, time DESC);
 
 -- =========================================================
+-- Dyson Luftreiniger control state (dyson-nats-bridge → dyson.<device>.state)
+-- `power` is the commanded state, `fan_running` whether the fan actually
+-- turns — they differ in auto mode. `speed` 0 encodes auto; oscillation_mode
+-- 0=off, 1..4 = 45/90/180/350 degrees. `locked` is a bridge-side flag with no
+-- counterpart on the device. Fields the model does not report stay NULL.
+-- =========================================================
+CREATE TABLE dyson_state (
+    time             TIMESTAMPTZ NOT NULL,
+    device           TEXT        NOT NULL,
+    power            BOOLEAN,
+    auto             BOOLEAN,
+    speed            SMALLINT,
+    oscillation      BOOLEAN,
+    oscillation_mode SMALLINT,
+    night            BOOLEAN,
+    fan_running      BOOLEAN,
+    filter_life      SMALLINT,
+    locked           BOOLEAN,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('dyson_state', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON dyson_state (device, time DESC);
+
+-- =========================================================
+-- Comfee/Midea Entfeuchter (midea-nats-bridge → midea.<device>.environment)
+-- =========================================================
+CREATE TABLE midea_environment (
+    time          TIMESTAMPTZ NOT NULL,
+    device        TEXT        NOT NULL,
+    humidity      SMALLINT,
+    temperature_c REAL,
+    tank_level    SMALLINT,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('midea_environment', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON midea_environment (device, time DESC);
+
+-- =========================================================
+-- Comfee/Midea Entfeuchter control state (→ midea.<device>.state)
+-- `mode` and `fan_speed` are the appliance's own integers, deliberately
+-- untranslated — the library's 0-15 / 0-127 are library bounds, not device
+-- capabilities. ion/pump/filter_indicator stay NULL on models that do not
+-- advertise the capability; the bridge omits them rather than reporting false.
+-- =========================================================
+CREATE TABLE midea_state (
+    time             TIMESTAMPTZ NOT NULL,
+    device           TEXT        NOT NULL,
+    power            BOOLEAN,
+    mode             SMALLINT,
+    fan_speed        SMALLINT,
+    target_humidity  SMALLINT,
+    tank_full        BOOLEAN,
+    sleep            BOOLEAN,
+    defrosting       BOOLEAN,
+    ion              BOOLEAN,
+    pump             BOOLEAN,
+    filter_indicator BOOLEAN,
+    error_code       SMALLINT,
+    locked           BOOLEAN,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('midea_state', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON midea_state (device, time DESC);
+
+-- =========================================================
 -- Continuous Aggregate Refresh Policies
 -- =========================================================
 SELECT add_continuous_aggregate_policy('knx_1h',
@@ -488,6 +553,15 @@ ALTER TABLE warp_meter SET (timescaledb.compress,
 ALTER TABLE dyson_environment SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'device',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE dyson_state SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE midea_environment SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE midea_state SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
 ALTER TABLE unifi_events SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'camera',
     timescaledb.compress_orderby = 'time DESC');
@@ -503,6 +577,9 @@ SELECT add_compression_policy('warp_charge_manager', INTERVAL '2 days');
 SELECT add_compression_policy('warp_charge_tracker', INTERVAL '2 days');
 SELECT add_compression_policy('warp_meter',          INTERVAL '2 days');
 SELECT add_compression_policy('dyson_environment',   INTERVAL '2 days');
+SELECT add_compression_policy('dyson_state',         INTERVAL '2 days');
+SELECT add_compression_policy('midea_environment',   INTERVAL '2 days');
+SELECT add_compression_policy('midea_state',         INTERVAL '2 days');
 SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 
 -- =========================================================
@@ -521,6 +598,9 @@ SELECT add_retention_policy('warp_charge_manager', INTERVAL '365 days');
 SELECT add_retention_policy('warp_charge_tracker', INTERVAL '365 days');
 SELECT add_retention_policy('warp_meter',          INTERVAL '365 days');
 SELECT add_retention_policy('dyson_environment',   INTERVAL '365 days');
+SELECT add_retention_policy('dyson_state',         INTERVAL '365 days');
+SELECT add_retention_policy('midea_environment',   INTERVAL '365 days');
+SELECT add_retention_policy('midea_state',         INTERVAL '365 days');
 
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,
