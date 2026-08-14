@@ -1,0 +1,9 @@
+# Comfee dehumidifiers served by the bridge. `name` is the NATS subject slug
+# (midea.<name>.state) and the prefix of the matching entries in the
+# midea-nats-bridge-device-credentials Secret (<name>.token, <name>.key).
+#
+# The appliance is still registered as "Technikraum" in the Comfee cloud but
+# physically stands in the Hauswirtschaftsraum; the slug follows the room.
+devices:
+  - name: hauswirtschaftsraum
+    host: entfeuchter-kg5.zimmermann.eu.com

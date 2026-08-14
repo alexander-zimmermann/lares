@@ -1,0 +1,115 @@
+applicationName: midea-nats-bridge
+
+deployment:
+  enabled: true
+  reloadOnChange: false
+  image:
+    repository: ghcr.io/alexander-zimmermann/midea-nats-bridge
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+  # A second replica would apply every command to the appliance twice.
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  env:
+    MIDEA_DEVICES_FILE:
+      value: /etc/midea-nats-bridge/devices.yaml
+    MIDEA_CREDENTIALS_DIR:
+      value: /etc/midea-nats-bridge/credentials
+    NATS_SERVERS:
+      value: nats://nats.nats.svc.cluster.local:4222
+    # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
+    NATS_NKEY_SEED_FILE:
+      value: /etc/midea-nats-bridge/nkey-seed
+    LOG_FORMAT:
+      value: json
+    METRICS_PORT:
+      value: "9090"
+    TZ:
+      value: Europe/Berlin
+
+  volumes:
+    devices:
+      configMap:
+        name: midea-nats-bridge-devices
+    nats-credentials:
+      secret:
+        secretName: midea-nats-bridge-credentials
+    device-credentials:
+      secret:
+        secretName: midea-nats-bridge-device-credentials
+
+  volumeMounts:
+    devices:
+      mountPath: /etc/midea-nats-bridge/devices.yaml
+      subPath: devices.yaml
+    nats-credentials:
+      mountPath: /etc/midea-nats-bridge/nkey-seed
+      subPath: nkey-seed
+    # Directory mount: the bridge reads <name>.token and <name>.key per device.
+    device-credentials:
+      mountPath: /etc/midea-nats-bridge/credentials
+
+  ports:
+    - containerPort: 9090
+      name: metrics
+      protocol: TCP
+
+  # Liveness deliberately excludes the appliance connection: a dehumidifier on a
+  # switched socket may legitimately be powerless, which surfaces via the
+  # midea_connected metric instead of a pod restart loop.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: [ALL]
+
+  securityContext:
+    fsGroup: 1000
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 9090
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
