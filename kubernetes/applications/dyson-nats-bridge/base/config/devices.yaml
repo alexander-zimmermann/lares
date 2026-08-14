@@ -2,7 +2,7 @@
 # (dyson.<name>.state) and the key of the matching credential in the
 # dyson-nats-bridge-device-credentials Secret.
 devices:
-  - name: ventilator-1
+  - name: ventilator-og7
     host: ventilator-og7.zimmermann.eu.com
     serial: 9HC-EU-VEA7652A
     product_type: "438M" # Purifier Cool PC1
