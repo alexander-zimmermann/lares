@@ -1,0 +1,95 @@
+# Dyson Luftreiniger control state -> TimescaleDB + parquet cold archive.
+#
+#   dyson.<device>.state -> dyson_state
+#
+# The bridge publishes only on change, so rows are sparse by design. Fields the
+# model does not report are omitted upstream rather than sent as null -> typed
+# columns stay NULL.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: DYSON
+    subject: dyson.*.state
+    durable: redpanda-connect-dyson-state
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "time":             meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "device":           meta("nats_subject").split(".").index(1),
+          "power":            this.power | null,
+          "auto":             this.auto | null,
+          "speed":            this.speed | null,
+          "oscillation":      this.oscillation | null,
+          "oscillation_mode": this.oscillation_mode | null,
+          "night":            this.night | null,
+          "fan_running":      this.fan_running | null,
+          "filter_life":      this.filter_life | null,
+          "locked":           this.locked | null,
+          "raw":              this,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO dyson_state (
+              time, device, power, auto, speed, oscillation, oscillation_mode,
+              night, fan_running, filter_life, locked
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            ON CONFLICT (time, device) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.device,
+              this.power,
+              this.auto,
+              this.speed,
+              this.oscillation,
+              this.oscillation_mode,
+              this.night,
+              this.fan_running,
+              this.filter_life,
+              this.locked,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: dyson-state/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }
