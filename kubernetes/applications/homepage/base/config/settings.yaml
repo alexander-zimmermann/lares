@@ -27,7 +27,7 @@ layout:
 
   Observability:
     icon: mdi-chart-bar-stacked-#FFFFFF
-  GitOps:
+  GitOps & Operations:
     icon: mdi-all-inclusive-#FFFFFF
   Security & Identity:
     icon: mdi-shield-lock-#FFFFFF

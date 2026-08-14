@@ -10,7 +10,7 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     # Homepage Service Discovery
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: "GitOps"
+    gethomepage.dev/group: "GitOps & Operations"
     gethomepage.dev/name: "ArgoCD"
     gethomepage.dev/icon: "argo-cd.png"
     gethomepage.dev/weight: "1"
@@ -22,7 +22,7 @@ metadata:
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
       name: ArgoCD
-      group: GitOps
+      group: GitOps & Operations
       url: https://PLACEHOLDER/_gatus
       interval: 60s
       client:

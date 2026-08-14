@@ -10,17 +10,17 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     # Homepage Service Discovery
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: "Infrastructure"
+    gethomepage.dev/group: "GitOps & Operations"
     gethomepage.dev/name: "Remote Desktop"
     gethomepage.dev/icon: "rustdesk.png"
-    gethomepage.dev/weight: "3"
+    gethomepage.dev/weight: "2"
     gethomepage.dev/href: "https://PLACEHOLDER"
     gethomepage.dev/pod-selector: "app.kubernetes.io/name=devolutions-gateway"
     # Gatus — automated status page discovery (probes the unauthenticated health endpoint)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
       name: Remote Desktop
-      group: Infrastructure
+      group: GitOps & Operations
       url: https://PLACEHOLDER/jet/health
       interval: 60s
       conditions:
