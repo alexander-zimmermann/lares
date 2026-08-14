@@ -1,10 +1,10 @@
 # Luftreiniger control: Basalte command GAs -> dyson-nats-bridge.
 #
-#   knx.6.3.160 Sperren     -> dyson.ventilator-1.command.lock        {"value": bool}
-#   knx.6.3.162 Ein/Aus     -> dyson.ventilator-1.command.power       {"value": bool}
-#   knx.6.3.164 Lüfterstufe -> dyson.ventilator-1.command.speed       {"value": 0..10, 0 = auto}
-#   knx.6.3.166 Drehmodus   -> dyson.ventilator-1.command.oscillation {"value": 0..4}
-#   knx.6.3.168 Nachtmodus  -> dyson.ventilator-1.command.night       {"value": bool}
+#   knx.6.3.160 Sperren     -> dyson.ventilator-og7.command.lock        {"value": bool}
+#   knx.6.3.162 Ein/Aus     -> dyson.ventilator-og7.command.power       {"value": bool}
+#   knx.6.3.164 Lüfterstufe -> dyson.ventilator-og7.command.speed       {"value": 0..10, 0 = auto}
+#   knx.6.3.166 Drehmodus   -> dyson.ventilator-og7.command.oscillation {"value": 0..4}
+#   knx.6.3.168 Nachtmodus  -> dyson.ventilator-og7.command.night       {"value": bool}
 #
 # Sperren is 1 = gesperrt, matching the bridge's lock semantics, so nothing is
 # inverted here. While locked the bridge swallows the other four commands.
@@ -31,7 +31,7 @@ pipeline:
         } else {
           {"value": this.value == true || this.value == 1}
         }
-        meta dyson_subject = "dyson.ventilator-1.command." + (
+        meta dyson_subject = "dyson.ventilator-og7.command." + (
           if $subj == "knx.6.3.160" { "lock" }
           else if $subj == "knx.6.3.162" { "power" }
           else if $subj == "knx.6.3.164" { "speed" }
