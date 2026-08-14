@@ -46,7 +46,7 @@ pipeline:
         let evt = this
         let parts = meta("nats_subject").split(".")
         root = {
-          "time":      meta("nats_timestamp").or(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "time":      (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
           "sub_topic": $parts.slice(1).join("."),
           "raw":       $evt,
         }
