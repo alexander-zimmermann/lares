@@ -245,3 +245,16 @@ spec:
           annotations:
             summary: "Dyson {{ $labels.device }} unreachable"
             description: "The bridge has not held a connection for 30m — device unplugged, moved, or off the WLAN."
+
+    - name: midea-alerts
+      rules:
+        # The appliances are permanently powered and answer even while switched
+        # off, so unreachable means unreachable. Reconnect backoff caps at 5m.
+        - alert: MideaDeviceDisconnected
+          expr: midea_connected == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Dehumidifier {{ $labels.device }} unreachable"
+            description: "The bridge has not held a connection for 30m — device unplugged, moved, or off the WLAN."

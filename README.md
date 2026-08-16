@@ -140,15 +140,17 @@ flowchart TB
         pv[solaredge2mqtt]
         warp[WARP Wallbox]
         fan[Dyson PC1] <-- local MQTT --> dysonb[dyson-nats-bridge]
+        dehum[Comfee dehumidifiers] <-- LAN :6444 --> mideab[midea-nats-bridge]
     end
 
-    nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP · DYSON<br/>WARP · SOLAREDGE · UNIFI)]
+    nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP · DYSON · MIDEA<br/>WARP · SOLAREDGE · UNIFI)]
 
     webhook -- pub unifi.> --> nats
     ems  -- MQTT --> nats
     pv   -- MQTT --> nats
     warp -- MQTT pub --> nats
     dysonb <-- pub/sub dyson.> --> nats
+    mideab <-- pub/sub midea.> --> nats
 
     subgraph KX[KNX]
         direction TB
