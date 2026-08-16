@@ -1,0 +1,62 @@
+# Entfeuchter control: Basalte command GAs -> midea-nats-bridge.
+#
+#   knx.6.1.60     Sperren           (1.003) -> midea.entfeuchter-kg4.command.lock
+#   knx.6.1.62     Ein/Aus           (1.001) -> midea.entfeuchter-kg4.command.power
+#   knx.6.1.64     Modus             (5.010) -> midea.entfeuchter-kg4.command.mode
+#   knx.6.1.66     Lüfterstufe       (5.010) -> midea.entfeuchter-kg4.command.fan_speed
+#   knx.6.1.68     Soll-Luftfeuchte  (5.001) -> midea.entfeuchter-kg4.command.target_humidity
+#   knx.6.1.100    Sperren           (1.003) -> midea.entfeuchter-kg5.command.lock
+#   knx.6.1.102    Ein/Aus           (1.001) -> midea.entfeuchter-kg5.command.power
+#   knx.6.1.104    Modus             (5.010) -> midea.entfeuchter-kg5.command.mode
+#   knx.6.1.106    Lüfterstufe       (5.010) -> midea.entfeuchter-kg5.command.fan_speed
+#   knx.6.1.108    Soll-Luftfeuchte  (5.001) -> midea.entfeuchter-kg5.command.target_humidity
+#
+# Sperren is 1 = gesperrt, matching the bridge's lock semantics, so nothing is
+# inverted here. While locked the bridge swallows the other four commands.
+#
+# Modus 1=kein Modus 2=Wäschetrocknen 3=Kontinuierlich 4=Smart; Lüfterstufe
+# 40/60/80 = niedrig/mittel/hoch. Raw appliance values, deliberately not
+# remapped — the bridge passes them straight through.
+#
+# Core NATS only; the bridge subscribes core and nothing archives commands.
+input:
+  # Consumer (filterSubjects on the ten GAs) is declared as a CRD in
+  # nats/base/consumers/midea_from_knx.yaml.
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: KNX
+    durable: redpanda-connect-midea-from-knx
+    bind: true
+
+pipeline:
+  processors:
+    - mapping: |
+        let subj = meta("nats_subject")
+        root = if $subj == "knx.6.1.64" || $subj == "knx.6.1.66" || $subj == "knx.6.1.68" || $subj == "knx.6.1.104" || $subj == "knx.6.1.106" || $subj == "knx.6.1.108" {
+          {"value": this.value.number()}
+        } else {
+          {"value": this.value == true || this.value == 1}
+        }
+        meta midea_subject = (
+          if $subj == "knx.6.1.60" { "midea.entfeuchter-kg4.command.lock" }
+          else if $subj == "knx.6.1.62" { "midea.entfeuchter-kg4.command.power" }
+          else if $subj == "knx.6.1.64" { "midea.entfeuchter-kg4.command.mode" }
+          else if $subj == "knx.6.1.66" { "midea.entfeuchter-kg4.command.fan_speed" }
+          else if $subj == "knx.6.1.68" { "midea.entfeuchter-kg4.command.target_humidity" }
+          else if $subj == "knx.6.1.100" { "midea.entfeuchter-kg5.command.lock" }
+          else if $subj == "knx.6.1.102" { "midea.entfeuchter-kg5.command.power" }
+          else if $subj == "knx.6.1.104" { "midea.entfeuchter-kg5.command.mode" }
+          else if $subj == "knx.6.1.106" { "midea.entfeuchter-kg5.command.fan_speed" }
+          else { "midea.entfeuchter-kg5.command.target_humidity" }
+        )
+
+output:
+  nats:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("midea_subject") }

@@ -2613,7 +2613,7 @@
   name: Versorgungstechnik.Wallbox.Energie.Geladen-Aktuell
   room: Garage
 15/6/15:
-  dpt: '13.000'
+  dpt: '13.010'
   function: Versorgungstechnik
   name: Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell
   room: Garage
@@ -8737,6 +8737,136 @@
   function: Raumklima
   name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi-Status
   room: 1 - Gebäude
+6/1/100:
+  dpt: '1.003'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Sperren
+  room: Hauswirtschaftsraum
+6/1/101:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Sperren-Status
+  room: Hauswirtschaftsraum
+6/1/102:
+  dpt: '1.001'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Ein/Aus
+  room: Hauswirtschaftsraum
+6/1/103:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Ein/Aus-Status
+  room: Hauswirtschaftsraum
+6/1/104:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Modus
+  room: Hauswirtschaftsraum
+6/1/105:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Modus-Status
+  room: Hauswirtschaftsraum
+6/1/106:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Lüfterstufe
+  room: Hauswirtschaftsraum
+6/1/107:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Lüfterstufe-Status
+  room: Hauswirtschaftsraum
+6/1/108:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte
+  room: Hauswirtschaftsraum
+6/1/109:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte-Status
+  room: Hauswirtschaftsraum
+6/1/110:
+  dpt: '1.005'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Tank-Voll-Status
+  room: Hauswirtschaftsraum
+6/1/111:
+  dpt: '9.007'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchte
+  room: Hauswirtschaftsraum
+6/1/112:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Temperatur
+  room: Hauswirtschaftsraum
+6/1/60:
+  dpt: '1.003'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Sperren
+  room: Vorratsraum
+6/1/61:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Sperren-Status
+  room: Vorratsraum
+6/1/62:
+  dpt: '1.001'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Ein/Aus
+  room: Vorratsraum
+6/1/63:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Ein/Aus-Status
+  room: Vorratsraum
+6/1/64:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Modus
+  room: Vorratsraum
+6/1/65:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Modus-Status
+  room: Vorratsraum
+6/1/66:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Lüfterstufe
+  room: Vorratsraum
+6/1/67:
+  dpt: '5.010'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Lüfterstufe-Status
+  room: Vorratsraum
+6/1/68:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte
+  room: Vorratsraum
+6/1/69:
+  dpt: '5.001'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte-Status
+  room: Vorratsraum
+6/1/70:
+  dpt: '1.005'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Tank-Voll-Status
+  room: Vorratsraum
+6/1/71:
+  dpt: '9.007'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchte
+  room: Vorratsraum
+6/1/72:
+  dpt: '9.001'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Temperatur
+  room: Vorratsraum
 6/2/0:
   dpt: '1.003'
   function: Raumklima

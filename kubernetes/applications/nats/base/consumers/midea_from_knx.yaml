@@ -1,0 +1,41 @@
+# Durable consumer for the redpanda-connect midea_from_knx pipeline.
+#
+#   knx.6.1.60     Sperren           (1.003) -> midea.entfeuchter-kg4.command.lock
+#   knx.6.1.62     Ein/Aus           (1.001) -> midea.entfeuchter-kg4.command.power
+#   knx.6.1.64     Modus             (5.010) -> midea.entfeuchter-kg4.command.mode
+#   knx.6.1.66     Lüfterstufe       (5.010) -> midea.entfeuchter-kg4.command.fan_speed
+#   knx.6.1.68     Soll-Luftfeuchte  (5.001) -> midea.entfeuchter-kg4.command.target_humidity
+#   knx.6.1.100    Sperren           (1.003) -> midea.entfeuchter-kg5.command.lock
+#   knx.6.1.102    Ein/Aus           (1.001) -> midea.entfeuchter-kg5.command.power
+#   knx.6.1.104    Modus             (5.010) -> midea.entfeuchter-kg5.command.mode
+#   knx.6.1.106    Lüfterstufe       (5.010) -> midea.entfeuchter-kg5.command.fan_speed
+#   knx.6.1.108    Soll-Luftfeuchte  (5.001) -> midea.entfeuchter-kg5.command.target_humidity
+#
+# The Entfeuchter command GAs, written by Basalte.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: redpanda-connect-midea-from-knx
+  namespace: nats
+spec:
+  streamName: KNX
+  durableName: redpanda-connect-midea-from-knx
+  filterSubjects:
+    - knx.6.1.60
+    - knx.6.1.62
+    - knx.6.1.64
+    - knx.6.1.66
+    - knx.6.1.68
+    - knx.6.1.100
+    - knx.6.1.102
+    - knx.6.1.104
+    - knx.6.1.106
+    - knx.6.1.108
+  deliverPolicy: new
+  ackPolicy: explicit
+  # nats-operator default surfaces as 1ns, which causes immediate re-delivery
+  # of any message slower-than-instant to ack. 15s covers the core republish
+  # comfortably without leaving wedged messages locked long.
+  ackWait: 15s
+  # Drop after 5 attempts so a permanently-failing message can't loop forever.
+  maxDeliver: 5
