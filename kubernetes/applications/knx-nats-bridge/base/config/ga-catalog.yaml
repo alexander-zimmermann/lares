@@ -8780,12 +8780,12 @@
 6/1/108:
   dpt: '5.001'
   function: Raumklima
-  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchtigkeit
   room: Hauswirtschaftsraum
 6/1/109:
   dpt: '5.001'
   function: Raumklima
-  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte-Status
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status
   room: Hauswirtschaftsraum
 6/1/110:
   dpt: '1.005'
@@ -8795,7 +8795,7 @@
 6/1/111:
   dpt: '9.007'
   function: Raumklima
-  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchte
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchtigkeit
   room: Hauswirtschaftsraum
 6/1/112:
   dpt: '9.001'
@@ -8845,12 +8845,12 @@
 6/1/68:
   dpt: '5.001'
   function: Raumklima
-  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchtigkeit
   room: Vorratsraum
 6/1/69:
   dpt: '5.001'
   function: Raumklima
-  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte-Status
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status
   room: Vorratsraum
 6/1/70:
   dpt: '1.005'
@@ -8860,7 +8860,7 @@
 6/1/71:
   dpt: '9.007'
   function: Raumklima
-  name: Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchte
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchtigkeit
   room: Vorratsraum
 6/1/72:
   dpt: '9.001'

@@ -1491,7 +1491,7 @@ mappings:
     ga: "6/1/69"
     dpt: "5.001"
     payload_path: "$.target_humidity"
-    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte-Status"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status"
     min_delta: 0  # setpoint: only moves when set
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
@@ -1505,7 +1505,7 @@ mappings:
     ga: "6/1/71"
     dpt: "9.007"
     payload_path: "$.humidity"
-    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchte"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchtigkeit"
     min_delta: 1  # %RH
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.environment"
@@ -1552,7 +1552,7 @@ mappings:
     ga: "6/1/109"
     dpt: "5.001"
     payload_path: "$.target_humidity"
-    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte-Status"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status"
     min_delta: 0  # setpoint: only moves when set
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
@@ -1566,7 +1566,7 @@ mappings:
     ga: "6/1/111"
     dpt: "9.007"
     payload_path: "$.humidity"
-    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchte"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchtigkeit"
     min_delta: 1  # %RH
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.environment"
