@@ -19,6 +19,14 @@
     },
     {
       "customType": "regex",
+      // CNPG Cluster CRD uses spec.imageName, which the kubernetes manager ignores
+      "description": "Process CloudNativePG cluster images",
+      "managerFilePatterns": ["/\\.yaml$/"],
+      "matchStrings": ["imageName: (?<depName>[^:\\s]+):(?<currentValue>\\S+)"],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
       "description": "Process shell config file versions",
       "managerFilePatterns": ["\\.conf\\.tftpl$"],
       "matchStrings": [

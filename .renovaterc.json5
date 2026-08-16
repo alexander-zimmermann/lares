@@ -38,6 +38,14 @@
       "ignoreUnstable": false
     },
     {
+      // Own build; bumping it rolls the TimescaleDB cluster, so gate it behind the dashboard
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb"
+      ],
+      "dependencyDashboardApproval": true
+    },
+    {
       "matchFileNames": ["infrastructure/manifest/20-image/image.yaml"],
       "postUpgradeTasks": {
         "commands": [
