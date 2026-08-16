@@ -42,6 +42,7 @@ configMapGenerator:
       - streams/dyson_state.yaml
       - streams/midea_environment.yaml
       - streams/midea_state.yaml
+      - streams/midea_from_knx.yaml
       - streams/bordbar_from_knx.yaml
 
 patches:

@@ -519,7 +519,7 @@ mappings:
     ga: "15/6/21"
     dpt: "1.001"
     payload_path: "$.on"  # derived in warp_charging_status from WARP Slot 4 release
-    description: "Versorgungstechnik.Wallbox.Freigabe-Status"
+    description: "Versorgungstechnik.Wallbox.Ein-Freigabe-Status"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
@@ -1453,6 +1453,128 @@ mappings:
     payload_path: "$.pm10"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM10"
     min_delta: 1  # µg/m³
+    seed_on_start: true
+
+  # Entfeuchter Vorratsraum status feedback (KNX<-NATS). The command GAs
+  # (60/62/64/66/68) are driven KNX->device by the
+  # redpanda-connect midea_from_knx stream. Modus 1=kein Modus 2=Wäschetrocknen
+  # 3=Kontinuierlich 4=Smart; Lüfterstufe 40/60/80 = niedrig/mittel/hoch.
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/61"
+    dpt: "1.011"
+    payload_path: "$.locked"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Sperren-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/63"
+    dpt: "1.011"
+    payload_path: "$.power"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Ein/Aus-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/65"
+    dpt: "5.010"
+    payload_path: "$.mode"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Modus-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/67"
+    dpt: "5.010"
+    payload_path: "$.fan_speed"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Lüfterstufe-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/69"
+    dpt: "5.001"
+    payload_path: "$.target_humidity"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchte-Status"
+    min_delta: 0  # setpoint: only moves when set
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.state"
+    ga: "6/1/70"
+    dpt: "1.005"
+    payload_path: "$.tank_full"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Tank-Voll-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.environment"
+    ga: "6/1/71"
+    dpt: "9.007"
+    payload_path: "$.humidity"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchte"
+    min_delta: 1  # %RH
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg4.environment"
+    ga: "6/1/72"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+
+  # Entfeuchter Hauswirtschaftsraum status feedback (KNX<-NATS). The command GAs
+  # (100/102/104/106/108) are driven KNX->device by the
+  # redpanda-connect midea_from_knx stream. Modus 1=kein Modus 2=Wäschetrocknen
+  # 3=Kontinuierlich 4=Smart; Lüfterstufe 40/60/80 = niedrig/mittel/hoch.
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/101"
+    dpt: "1.011"
+    payload_path: "$.locked"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Sperren-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/103"
+    dpt: "1.011"
+    payload_path: "$.power"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Ein/Aus-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/105"
+    dpt: "5.010"
+    payload_path: "$.mode"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Modus-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/107"
+    dpt: "5.010"
+    payload_path: "$.fan_speed"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Lüfterstufe-Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/109"
+    dpt: "5.001"
+    payload_path: "$.target_humidity"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchte-Status"
+    min_delta: 0  # setpoint: only moves when set
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.state"
+    ga: "6/1/110"
+    dpt: "1.005"
+    payload_path: "$.tank_full"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Tank-Voll-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.environment"
+    ga: "6/1/111"
+    dpt: "9.007"
+    payload_path: "$.humidity"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchte"
+    min_delta: 1  # %RH
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.environment"
+    ga: "6/1/112"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Temperatur"
+    min_delta: 0.5  # °C
     seed_on_start: true
 
   # Bordbar LED status feedback (KNX<-NATS). The command GAs (4/2/61/63-67) are

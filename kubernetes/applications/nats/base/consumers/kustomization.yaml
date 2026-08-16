@@ -9,4 +9,5 @@ resources:
   - warp_charge_mode_from_knx.yaml
   - warp_mode_buttons_from_knx.yaml
   - dyson_from_knx.yaml
+  - midea_from_knx.yaml
   - bordbar_from_knx.yaml
