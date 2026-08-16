@@ -3,9 +3,11 @@
 # midea-nats-bridge-device-credentials Secret (<name>.token, <name>.key).
 #
 # The slug matches the hostname without the domain, so a device is called the
-# same thing in DNS, in NATS subjects and in the credentials Secret. The
-# appliance is still registered as "Technikraum" in the Comfee cloud but
-# physically stands in the Hauswirtschaftsraum (KG room 5).
+# same thing in DNS, in NATS subjects and in the credentials Secret.
 devices:
+  # Registered as "Technikraum" in the Comfee cloud but stands in the
+  # Hauswirtschaftsraum; the slug follows the room.
   - name: entfeuchter-kg5
     host: entfeuchter-kg5.zimmermann.eu.com
+  - name: entfeuchter-kg4
+    host: entfeuchter-kg4.zimmermann.eu.com
