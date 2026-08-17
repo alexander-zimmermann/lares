@@ -23,6 +23,10 @@ deployment:
     # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
     NATS_NKEY_SEED_FILE:
       value: /etc/midea-nats-bridge/nkey-seed
+    # Bounds how long a change made at the appliance itself stays invisible:
+    # only commands are confirmed by a re-read, a manual press is not.
+    POLL_INTERVAL:
+      value: "20"
     LOG_FORMAT:
       value: json
     METRICS_PORT:
