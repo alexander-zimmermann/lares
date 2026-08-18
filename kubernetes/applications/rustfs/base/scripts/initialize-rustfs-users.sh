@@ -39,15 +39,6 @@ EOF
   rc admin policy attach admin "${slug}-scoped" --user "$ak"
 }
 
-# Console SSO: the OIDC groups claim carries Authentik group names, and RustFS
-# resolves each value against a policy of the same name. No user is created —
-# the Console mints temporary credentials from this policy on login.
-echo ">>> policy='platform-admins' (OIDC console admins)"
-cat > /tmp/policy.json <<'EOF'
-{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:*","admin:*"],"Resource":["arn:aws:s3:::*"]}]}
-EOF
-rc admin policy create admin platform-admins /tmp/policy.json
-
 provision authentik           authentik-backups     readwrite "$AUTHENTIK_RUSTFS_ACCESS_KEY"   "$AUTHENTIK_RUSTFS_SECRET_KEY"
 provision wiki-js             wiki-js-backups       readwrite "$WIKIJS_RUSTFS_ACCESS_KEY"      "$WIKIJS_RUSTFS_SECRET_KEY"
 provision timescaledb         timescaledb-backups   readwrite "$TIMESCALEDB_RUSTFS_ACCESS_KEY" "$TIMESCALEDB_RUSTFS_SECRET_KEY"
