@@ -13,7 +13,7 @@ helmCharts:
   - name: kube-prometheus-stack
     repo: oci://ghcr.io/prometheus-community/charts
     releaseName: prometheus
-    version: 88.3.0
+    version: 88.4.0
     valuesFile: values.yaml
     namespace: prometheus
     includeCRDs: false
