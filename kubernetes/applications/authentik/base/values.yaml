@@ -65,6 +65,12 @@ global:
         secretKeyRef:
           name: iot-mcp-bridge-oidc-secret
           key: IOT_MCP_BRIDGE_OIDC_CLIENT_SECRET
+    # RustFS Console OIDC client secret for the rustfs-oidc blueprint
+    - name: RUSTFS_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: rustfs-oidc-secret
+          key: RUSTFS_OIDC_CLIENT_SECRET
 
     # Blueprint variables — injected per environment via overlay replacements
     - name: AUTHENTIK_ARGOCD_REDIRECT_URI
@@ -79,6 +85,8 @@ global:
       value: https://PLACEHOLDER_NODE_RED_HOST/auth/strategy/callback/
     - name: AUTHENTIK_WIKIJS_REDIRECT_URI
       value: https://PLACEHOLDER_WIKIJS_HOST/login/b7746d63-71b4-47c1-bd32-903833a0a8ca/callback
+    - name: AUTHENTIK_RUSTFS_REDIRECT_URI
+      value: https://PLACEHOLDER_RUSTFS_HOST/rustfs/admin/v3/oidc/callback/default
     - name: ANTHROPIC_OAUTH_REDIRECT_URI
       value: https://claude.ai/api/mcp/auth_callback
 
@@ -119,6 +127,7 @@ blueprints:
     - authentik-blueprint-node-red
     - authentik-blueprint-wikijs
     - authentik-blueprint-iot-mcp-bridge
+    - authentik-blueprint-rustfs
 
 server:
   # Expose Authentik service via Cilium/BGP-announced LoadBalancer

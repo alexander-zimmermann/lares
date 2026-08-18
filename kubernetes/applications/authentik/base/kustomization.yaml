@@ -47,6 +47,9 @@ configMapGenerator:
   - name: authentik-blueprint-iot-mcp-bridge
     files:
       - blueprints/iot-mcp-bridge.yaml
+  - name: authentik-blueprint-rustfs
+    files:
+      - blueprints/rustfs.yaml
 
 labels:
   - includeSelectors: false

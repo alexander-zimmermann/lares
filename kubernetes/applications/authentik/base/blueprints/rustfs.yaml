@@ -1,0 +1,48 @@
+version: 1
+metadata:
+  name: rustfs-oidc
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  # OAuth2/OIDC Provider for the RustFS Console
+  - model: authentik_providers_oauth2.oauth2provider
+    state: present
+    identifiers:
+      name: RustFS
+    attrs:
+      name: RustFS
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      client_type: confidential
+      client_id: rustfs
+      client_secret: !Env RUSTFS_OIDC_CLIENT_SECRET
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+      redirect_uris:
+        - matching_mode: strict
+          url: !Env AUTHENTIK_RUSTFS_REDIRECT_URI
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, custom.homelab/scope-groups]]
+
+  # Application entry in Authentik's app library
+  - model: authentik_core.application
+    state: present
+    identifiers:
+      slug: rustfs
+    attrs:
+      name: RustFS
+      slug: rustfs
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, RustFS]]
+      policy_engine_mode: any
+
+  # Restrict RustFS Console access to platform-admins group
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, rustfs]]
+      group: !Find [authentik_core.group, [name, platform-admins]]
+      order: 0
+    attrs:
+      enabled: true
