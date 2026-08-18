@@ -30,6 +30,41 @@ replacements:
           delimiter: "//"
           index: 1
 
+  # Console SSO URLs — must match the redirect_uri registered in the Authentik blueprint
+  - sourceValue: https://rustfs-console.zimmermann.sh
+    targets:
+      - select:
+          kind: Deployment
+          name: rustfs
+        fieldPaths:
+          - spec.template.spec.containers.[name=rustfs].env.[name=RUSTFS_BROWSER_REDIRECT_URL].value
+
+  - sourceValue: https://rustfs-console.zimmermann.sh/rustfs/admin/v3/oidc/callback/default
+    targets:
+      - select:
+          kind: Deployment
+          name: rustfs
+        fieldPaths:
+          - spec.template.spec.containers.[name=rustfs].env.[name=RUSTFS_IDENTITY_OPENID_REDIRECT_URI].value
+
+  # Kustomize list selectors match by prefix, so the replacement above also hits
+  # RUSTFS_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC. Restore its literal value here.
+  - sourceValue: "off"
+    targets:
+      - select:
+          kind: Deployment
+          name: rustfs
+        fieldPaths:
+          - spec.template.spec.containers.[name=rustfs].env.[name=RUSTFS_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC].value
+
+  - sourceValue: https://auth.zimmermann.sh/application/o/rustfs/
+    targets:
+      - select:
+          kind: Deployment
+          name: rustfs
+        fieldPaths:
+          - spec.template.spec.containers.[name=rustfs].env.[name=RUSTFS_IDENTITY_OPENID_CONFIG_URL].value
+
   # Inject storage size configuration
   - sourceValue: 500Gi
     targets:

@@ -66,3 +66,33 @@ extraEnv:
   # ~300 MiB that no allocator reclaim can return. Off until upstream bounds it.
   - name: RUSTFS_OBJECT_DATA_CACHE_ENABLE
     value: "false"
+  # Console SSO via Authentik — replaces typing the admin access/secret key.
+  # Host URLs are injected per environment via overlay replacements.
+  - name: RUSTFS_BROWSER_REDIRECT_URL
+    value: https://PLACEHOLDER_RUSTFS_HOST
+  - name: RUSTFS_IDENTITY_OPENID_ENABLE
+    value: "on"
+  - name: RUSTFS_IDENTITY_OPENID_CONFIG_URL
+    value: https://PLACEHOLDER_AUTH_HOST/application/o/rustfs/
+  - name: RUSTFS_IDENTITY_OPENID_CLIENT_ID
+    value: rustfs
+  - name: RUSTFS_IDENTITY_OPENID_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: rustfs-oidc-credentials
+        key: RUSTFS_OIDC_CLIENT_SECRET
+  - name: RUSTFS_IDENTITY_OPENID_SCOPES
+    value: "openid,profile,email,groups"
+  - name: RUSTFS_IDENTITY_OPENID_REDIRECT_URI
+    value: https://PLACEHOLDER_RUSTFS_HOST/rustfs/admin/v3/oidc/callback/default
+  - name: RUSTFS_IDENTITY_OPENID_REDIRECT_URI_DYNAMIC
+    value: "off"
+  - name: RUSTFS_IDENTITY_OPENID_DISPLAY_NAME
+    value: Authentik
+  # Claim values must match RustFS policy names — see initialize-rustfs-users.sh.
+  - name: RUSTFS_IDENTITY_OPENID_GROUPS_CLAIM
+    value: groups
+  - name: RUSTFS_IDENTITY_OPENID_USERNAME_CLAIM
+    value: preferred_username
+  - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
+    value: email

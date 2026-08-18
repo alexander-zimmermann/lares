@@ -93,6 +93,19 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=AUTHENTIK_WIKIJS_REDIRECT_URI].value
 
+  - sourceValue: https://rustfs-console.zimmermann.sh/rustfs/admin/v3/oidc/callback/default
+    targets:
+      - select:
+          kind: Deployment
+          name: authentik-worker
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_RUSTFS_REDIRECT_URI].value
+      - select:
+          kind: Deployment
+          name: authentik-server
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_RUSTFS_REDIRECT_URI].value
+
   - sourceValue: https://auth.zimmermann.sh
     targets:
       - select:
