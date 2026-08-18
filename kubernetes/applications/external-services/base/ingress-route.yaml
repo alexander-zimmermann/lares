@@ -43,6 +43,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - kind: Service
           name: proxmox
@@ -94,6 +97,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - name: backup
           port: 8007
@@ -145,6 +151,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - name: omni
           port: 443
@@ -368,6 +377,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - name: ems-esp
           port: 80
@@ -419,6 +431,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - name: fritzbox
           port: 80
@@ -470,6 +485,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - name: knx-ip
           port: 8080

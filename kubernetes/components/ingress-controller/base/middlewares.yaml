@@ -165,11 +165,6 @@ spec:
     trustForwardHeader: true
     # Bound auth-server response body; silences Traefik's unlimited-body DoS warning.
     maxResponseBodySize: 1048576
-    authResponseHeaders:
-      - "Remote-User"
-      - "Remote-Groups"
-      - "Remote-Name"
-      - "Remote-Email"
 
 ---
 # Basic Auth: Simple htpasswd-based authentication for emergency or technical access

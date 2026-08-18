@@ -44,6 +44,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`)
       priority: 10
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - kind: Service
           name: authentik-server
@@ -52,6 +55,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
       services:
         - kind: Service
           name: authentik-server
