@@ -45,17 +45,5 @@ provision timescaledb         timescaledb-backups   readwrite "$TIMESCALEDB_RUST
 provision redpanda-connect    nats-archive          writeonly "$REDPANDA_RUSTFS_ACCESS_KEY"    "$REDPANDA_RUSTFS_SECRET_KEY"
 provision iot-insights-engine iot-mcp-bridge-models readwrite "$IOTENGINE_RUSTFS_ACCESS_KEY"   "$IOTENGINE_RUSTFS_SECRET_KEY"
 
-# Console SSO policy. RustFS documents consoleAdmin as built-in, but the OIDC
-# binding resolves claim values against the IAM store, where it does not exist.
-# No user is attached — the Console mints temporary credentials from it on login.
-# Runs last so a failure here cannot block the machine users above.
-echo ">>> policy='consoleAdmin' (OIDC console access)"
-cat > /tmp/policy.json <<'EOF'
-{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:*","admin:*"],"Resource":["arn:aws:s3:::*"]}]}
-EOF
-rc admin policy create admin consoleAdmin /tmp/policy.json
-
 echo ">>> done; current users:"
 rc admin user ls admin
-echo ">>> current policies:"
-rc admin policy ls admin
