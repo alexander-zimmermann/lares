@@ -96,3 +96,9 @@ extraEnv:
     value: preferred_username
   - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
     value: email
+  # TEMPORARY — remove once the Console SSO policy mapping is diagnosed.
+  # RUST_LOG takes precedence over config.rustfs.log_level and accepts full
+  # EnvFilter syntax, so DEBUG stays scoped to the admin handlers. The data
+  # path keeps logging at error, which is what the log_level comment protects.
+  - name: RUST_LOG
+    value: "error,rustfs::admin=debug"
