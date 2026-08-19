@@ -41,9 +41,14 @@ spec:
   entryPoints:
     - websecure
   routes:
+    # chain-pre-auth, not chain-standard: the post-auth half strips the session
+    # cookies and X-Forwarded-* headers that authentik requires.
     - kind: Rule
       match: Host(`PLACEHOLDER`)
       priority: 10
+      middlewares:
+        - name: chain-pre-auth
+          namespace: ingress-controller
       services:
         - kind: Service
           name: authentik-server
@@ -52,6 +57,9 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
+      middlewares:
+        - name: chain-pre-auth
+          namespace: ingress-controller
       services:
         - kind: Service
           name: authentik-server
