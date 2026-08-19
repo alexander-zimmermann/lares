@@ -39,20 +39,18 @@ spec:
   entryPoints:
     - websecure
   routes:
-    # Browser UI. Machine paths below match at higher priority and skip forward-auth.
     - kind: Rule
       match: Host(`PLACEHOLDER`)
       priority: 10
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-standard
           namespace: ingress-controller
       services:
         - kind: Service
           name: argocd-server
           port: 80
-    # argocd CLI. Regex covers application/grpc, +proto and the grpc-web variants.
     - kind: Rule
-      match: Host(`PLACEHOLDER`) && HeaderRegexp(`Content-Type`, `application/grpc.*`)
+      match: Host(`PLACEHOLDER`) && Header(`Content-Type`, `application/grpc`)
       priority: 11
       middlewares:
         - name: chain-standard
@@ -66,17 +64,6 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
       priority: 20
-      middlewares:
-        - name: chain-standard
-          namespace: ingress-controller
-      services:
-        - kind: Service
-          name: argocd-server
-          port: 80
-    # GitHub push webhook — authenticated by its own HMAC signature, not by Authentik.
-    - kind: Rule
-      match: Host(`PLACEHOLDER`) && PathPrefix(`/api/webhook`) && Method(`POST`)
-      priority: 15
       middlewares:
         - name: chain-standard
           namespace: ingress-controller

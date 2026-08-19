@@ -16,7 +16,6 @@ replacements:
           - spec.routes.0.match
           - spec.routes.1.match
           - spec.routes.2.match
-          - spec.routes.3.match
         options:
           delimiter: "`"
           index: 1
