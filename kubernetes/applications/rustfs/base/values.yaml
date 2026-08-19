@@ -98,7 +98,8 @@ extraEnv:
     value: email
   # TEMPORARY — remove once the Console SSO policy mapping is diagnosed.
   # RUST_LOG takes precedence over config.rustfs.log_level and accepts full
-  # EnvFilter syntax, so DEBUG stays scoped to the admin handlers. The data
-  # path keeps logging at error, which is what the log_level comment protects.
+  # EnvFilter syntax, so DEBUG stays scoped to the OIDC path. rustfs_iam::oidc
+  # carries the claims_policy_mapped diagnostic; it only fires on login, and the
+  # data path keeps logging at error, which is what the log_level comment protects.
   - name: RUST_LOG
-    value: "error,rustfs::admin=debug"
+    value: "error,rustfs::admin=debug,rustfs_iam::oidc=debug"
