@@ -89,11 +89,7 @@ extraEnv:
     value: "off"
   - name: RUSTFS_IDENTITY_OPENID_DISPLAY_NAME
     value: Authentik
-  # Grant one fixed policy instead of deriving policy names from the groups claim.
-  # authentik's built-in profile scope emits the user's real group names into the
-  # same claim, and RustFS requires every value to resolve to a policy — which
-  # names containing a space can never do. Who may log in is decided by the
-  # policy binding on the authentik application, not here.
+  # Fixed policy: the profile scope also emits real group names, which never resolve.
   - name: RUSTFS_IDENTITY_OPENID_ROLE_POLICY
     value: consoleAdmin
   - name: RUSTFS_IDENTITY_OPENID_GROUPS_CLAIM
@@ -102,10 +98,3 @@ extraEnv:
     value: preferred_username
   - name: RUSTFS_IDENTITY_OPENID_EMAIL_CLAIM
     value: email
-  # TEMPORARY — remove once the Console SSO policy mapping is diagnosed.
-  # RUST_LOG takes precedence over config.rustfs.log_level and accepts full
-  # EnvFilter syntax, so DEBUG stays scoped to the OIDC path. rustfs_iam::oidc
-  # carries the claims_policy_mapped diagnostic; it only fires on login, and the
-  # data path keeps logging at error, which is what the log_level comment protects.
-  - name: RUST_LOG
-    value: "error,rustfs::admin=debug,rustfs_iam::oidc=debug"
