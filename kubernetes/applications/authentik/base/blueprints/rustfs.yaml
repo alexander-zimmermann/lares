@@ -4,19 +4,12 @@ metadata:
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # RustFS resolves each groups value against a policy of the same name, so the
-  # claim carries RustFS' built-in policy names rather than Authentik group names.
+  # Superseded by RUSTFS_IDENTITY_OPENID_ROLE_POLICY. The built-in profile scope
+  # emits its own groups claim, so a second mapping could never control the result.
   - model: authentik_providers_oauth2.scopemapping
-    state: present
+    state: absent
     identifiers:
       managed: custom.homelab/scope-rustfs-policies
-    attrs:
-      name: "OAuth Mapping: RustFS policies"
-      scope_name: groups
-      description: "Maps platform-admins to the RustFS consoleAdmin policy"
-      expression: |
-        groups = [group.name for group in request.user.ak_groups.all()]
-        return {"groups": ["consoleAdmin"] if "platform-admins" in groups else []}
 
   # OAuth2/OIDC Provider for the RustFS Console
   - model: authentik_providers_oauth2.oauth2provider
@@ -43,7 +36,7 @@ entries:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
-        - !Find [authentik_providers_oauth2.scopemapping, [managed, custom.homelab/scope-rustfs-policies]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, custom.homelab/scope-groups]]
 
   # Application entry in Authentik's app library
   - model: authentik_core.application

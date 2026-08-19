@@ -89,7 +89,13 @@ extraEnv:
     value: "off"
   - name: RUSTFS_IDENTITY_OPENID_DISPLAY_NAME
     value: Authentik
-  # Claim values must match RustFS policy names — see initialize-rustfs-users.sh.
+  # Grant one fixed policy instead of deriving policy names from the groups claim.
+  # authentik's built-in profile scope emits the user's real group names into the
+  # same claim, and RustFS requires every value to resolve to a policy — which
+  # names containing a space can never do. Who may log in is decided by the
+  # policy binding on the authentik application, not here.
+  - name: RUSTFS_IDENTITY_OPENID_ROLE_POLICY
+    value: consoleAdmin
   - name: RUSTFS_IDENTITY_OPENID_GROUPS_CLAIM
     value: groups
   - name: RUSTFS_IDENTITY_OPENID_USERNAME_CLAIM
