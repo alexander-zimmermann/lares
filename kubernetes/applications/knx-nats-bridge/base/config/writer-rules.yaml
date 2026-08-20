@@ -1596,3 +1596,345 @@ mappings:
     description: "Beleuchtung.EG.Wohnzimmer.Bordbar.Verbindung-Status"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
+
+  # ---------------------------------------------------------------------------
+  # Miele kitchen appliances (KNX<-NATS), read-only status from the cloud bridge.
+  # Programm and Programm-Phase carry the bridge's DPT-5.010-compacted codes, not
+  # the raw Miele ids; the ovens report phase 255 (OTHER) until a real run reveals
+  # where their phase block starts. Fernsteuerung is the reason a command would be
+  # rejected, so it is on the bus before the command direction exists.
+  # ---------------------------------------------------------------------------
+
+  # Miele Geschirrspüler status feedback (KNX<-NATS). Ein/Aus, Programm-Start
+  # and Startzeit are command GAs and stay unwritten here. Salz- and
+  # Klarspüler-Füllstand are not part of the cloud state model at all.
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/3"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Geschirrspüler.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/4"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Geschirrspüler.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/5"
+    dpt: "5.010"
+    payload_path: "$.program"
+    description: "Haushaltstechnik.Geschirrspüler.Programm"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/6"
+    dpt: "5.010"
+    payload_path: "$.phase"
+    description: "Haushaltstechnik.Geschirrspüler.Programm-Phase"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/7"
+    dpt: "7.006"
+    payload_path: "$.remaining_minutes"
+    description: "Haushaltstechnik.Geschirrspüler.Restzeit"
+    min_delta: 1  # minutes
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/9"
+    dpt: "1.005"
+    payload_path: "$.info"
+    description: "Haushaltstechnik.Geschirrspüler.Hinweis-Fertig"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/12"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Geschirrspüler.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+
+  # Miele Backofen status feedback (KNX<-NATS). Kern-Ist-Temperatur only
+  # reports while a food probe is attached; the bridge drops Miele's -32768
+  # sentinel, so the GA keeps its last value instead of seeing -327.68 °C.
+  - subject: "miele.backofen.state"
+    ga: "17/1/64"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Backofen.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/65"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Backofen.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/66"
+    dpt: "1.019"
+    payload_path: "$.door_open"
+    description: "Haushaltstechnik.Backofen.Tür-Offen"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/67"
+    dpt: "5.010"
+    payload_path: "$.program"
+    description: "Haushaltstechnik.Backofen.Programm"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/68"
+    dpt: "5.010"
+    payload_path: "$.phase"
+    description: "Haushaltstechnik.Backofen.Programm-Phase"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/69"
+    dpt: "7.006"
+    payload_path: "$.remaining_minutes"
+    description: "Haushaltstechnik.Backofen.Restzeit"
+    min_delta: 1  # minutes
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/71"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Haushaltstechnik.Backofen.Ist-Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/73"
+    dpt: "9.001"
+    payload_path: "$.core_temperature_c"
+    description: "Haushaltstechnik.Backofen.Kern-Ist-Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/75"
+    dpt: "1.005"
+    payload_path: "$.info"
+    description: "Haushaltstechnik.Backofen.Hinweis-Fertig"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/76"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Backofen.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+
+  # Miele Tellerwärmer status feedback (KNX<-NATS). The appliance has no
+  # programs at all, which is why its block carries no Programm GA.
+  - subject: "miele.tellerwaermer.state"
+    ga: "17/1/82"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Tellerwärmer.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.tellerwaermer.state"
+    ga: "17/1/83"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Tellerwärmer.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.tellerwaermer.state"
+    ga: "17/1/84"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Haushaltstechnik.Tellerwärmer.Ist-Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "miele.tellerwaermer.state"
+    ga: "17/1/86"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Tellerwärmer.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+
+  # Miele Mikrowelle status feedback (KNX<-NATS).
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/104"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Mikrowelle.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/105"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Mikrowelle.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/106"
+    dpt: "1.019"
+    payload_path: "$.door_open"
+    description: "Haushaltstechnik.Mikrowelle.Tür-Offen"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/107"
+    dpt: "5.010"
+    payload_path: "$.program"
+    description: "Haushaltstechnik.Mikrowelle.Programm"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/108"
+    dpt: "5.010"
+    payload_path: "$.phase"
+    description: "Haushaltstechnik.Mikrowelle.Programm-Phase"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/109"
+    dpt: "7.006"
+    payload_path: "$.remaining_minutes"
+    description: "Haushaltstechnik.Mikrowelle.Restzeit"
+    min_delta: 1  # minutes
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/111"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Haushaltstechnik.Mikrowelle.Ist-Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/113"
+    dpt: "1.005"
+    payload_path: "$.info"
+    description: "Haushaltstechnik.Mikrowelle.Hinweis"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/114"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Mikrowelle.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+
+  # Miele Kaffeemaschine status feedback (KNX<-NATS). Entkalken/Reinigen/
+  # Milchsystem are not in the cloud state model; the coarse Hinweis is the
+  # only consumable signal. Restzeit is not reported for beverages.
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/123"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Kaffeemaschine.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/124"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Kaffeemaschine.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/125"
+    dpt: "5.010"
+    payload_path: "$.program"
+    description: "Haushaltstechnik.Kaffeemaschine.Programm"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/126"
+    dpt: "5.010"
+    payload_path: "$.phase"
+    description: "Haushaltstechnik.Kaffeemaschine.Programm-Phase"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/127"
+    dpt: "1.005"
+    payload_path: "$.info"
+    description: "Haushaltstechnik.Kaffeemaschine.Hinweis"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/131"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Kaffeemaschine.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+
+  # Miele Dampfgarer status feedback (KNX<-NATS).
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/144"
+    dpt: "5.010"
+    payload_path: "$.status"
+    description: "Haushaltstechnik.Dampfgarer.Status"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/145"
+    dpt: "1.005"
+    payload_path: "$.failure"
+    description: "Haushaltstechnik.Dampfgarer.Störung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/146"
+    dpt: "1.019"
+    payload_path: "$.door_open"
+    description: "Haushaltstechnik.Dampfgarer.Tür-Offen"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/147"
+    dpt: "5.010"
+    payload_path: "$.program"
+    description: "Haushaltstechnik.Dampfgarer.Programm"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/148"
+    dpt: "5.010"
+    payload_path: "$.phase"
+    description: "Haushaltstechnik.Dampfgarer.Programm-Phase"
+    min_delta: 0  # enum state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/149"
+    dpt: "7.006"
+    payload_path: "$.remaining_minutes"
+    description: "Haushaltstechnik.Dampfgarer.Restzeit"
+    min_delta: 1  # minutes
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/151"
+    dpt: "9.001"
+    payload_path: "$.temperature_c"
+    description: "Haushaltstechnik.Dampfgarer.Ist-Temperatur"
+    min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/153"
+    dpt: "1.005"
+    payload_path: "$.info"
+    description: "Haushaltstechnik.Dampfgarer.Hinweis"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/154"
+    dpt: "1.003"
+    payload_path: "$.remote_control"
+    description: "Haushaltstechnik.Dampfgarer.Fernsteuerung"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true

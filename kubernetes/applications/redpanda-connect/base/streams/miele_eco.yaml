@@ -1,0 +1,91 @@
+# Miele ecoFeedback (energy/water per programme run) -> TimescaleDB + parquet.
+#
+#   miele.<appliance>.eco -> miele_eco
+#
+# The bridge publishes this subject only while a programme runs or has just
+# finished — the API reports null otherwise, which is a normal idle state.
+# The consumption counters are cumulative within a run, so the last row before
+# the next run is that run's total. The forecasts are Miele's own 0..1
+# relative estimate, not an absolute prediction.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: MIELE
+    subject: miele.*.eco
+    durable: redpanda-connect-miele-eco
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "time":            (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "device":          meta("nats_subject").split(".").index(1),
+          "energy_kwh":      this.energy_kwh | null,
+          "energy_unit":     this.energy_kwh_unit | null,
+          "water_l":         this.water_l | null,
+          "water_unit":      this.water_l_unit | null,
+          "energy_forecast": this.energy_forecast | null,
+          "water_forecast":  this.water_forecast | null,
+          "raw":             this,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO miele_eco (
+              time, device, energy_kwh, energy_unit, water_l, water_unit,
+              energy_forecast, water_forecast
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (time, device) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.device,
+              this.energy_kwh,
+              this.energy_unit,
+              this.water_l,
+              this.water_unit,
+              this.energy_forecast,
+              this.water_forecast,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: miele-eco/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }
