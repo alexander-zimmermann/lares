@@ -40,3 +40,14 @@ entries:
       _config:
         authentik_host: !Env AUTHENTIK_HOST
         authentik_host_browser: !Env AUTHENTIK_HOST
+
+  # Restrict the shared forward-auth gate to platform-admins. Without this binding
+  # every account authentik knows passes the edge for all apps behind it.
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, forward-auth-proxy]]
+      group: !Find [authentik_core.group, [name, platform-admins]]
+      order: 0
+    attrs:
+      enabled: true

@@ -36,3 +36,13 @@ entries:
       slug: argocd
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, ArgoCD]]
       policy_engine_mode: any
+
+  # Restrict ArgoCD access to platform-admins
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, argocd]]
+      group: !Find [authentik_core.group, [name, platform-admins]]
+      order: 0
+    attrs:
+      enabled: true
