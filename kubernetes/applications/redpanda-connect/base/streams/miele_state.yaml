@@ -1,0 +1,126 @@
+# Miele kitchen appliance state -> TimescaleDB + parquet cold archive.
+#
+#   miele.<appliance>.state -> miele_state
+#
+# The bridge omits fields an appliance does not report rather than sending
+# null, so a row is a partial snapshot and untouched columns stay NULL.
+# `program`/`phase` are the DPT-5.010-compacted codes that go on the bus;
+# `program_id`/`phase_id` keep Miele's raw ids, which is what analysis needs.
+# `*_name` is only present where the API supplies a plain-text name — some
+# runtime codes have none.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: MIELE
+    subject: miele.*.state
+    durable: redpanda-connect-miele-state
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+
+pipeline:
+  processors:
+    - mapping: |
+        root = {
+          "time":                      (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "device":                    meta("nats_subject").split(".").index(1),
+          "status":                    this.status | null,
+          "status_name":               this.status_name | null,
+          "program_id":                this.program_id | null,
+          "program":                   this.program | null,
+          "program_name":              this.program_name | null,
+          "phase_id":                  this.phase_id | null,
+          "phase":                     this.phase | null,
+          "phase_name":                this.phase_name | null,
+          "remaining_minutes":         this.remaining_minutes | null,
+          "start_minutes":             this.start_minutes | null,
+          "elapsed_minutes":           this.elapsed_minutes | null,
+          "temperature_c":             this.temperature_c | null,
+          "target_temperature_c":      this.target_temperature_c | null,
+          "core_temperature_c":        this.core_temperature_c | null,
+          "core_target_temperature_c": this.core_target_temperature_c | null,
+          "failure":                   this.failure | null,
+          "info":                      this.info | null,
+          "door_open":                 this.door_open | null,
+          "remote_control":            this.remote_control | null,
+          "mobile_start":              this.mobile_start | null,
+          "light":                     this.light | null,
+          "raw":                       this,
+        }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO miele_state (
+              time, device, status, status_name, program_id, program, program_name,
+              phase_id, phase, phase_name, remaining_minutes, start_minutes,
+              elapsed_minutes, temperature_c, target_temperature_c, core_temperature_c,
+              core_target_temperature_c, failure, info, door_open, remote_control,
+              mobile_start, light
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
+                    $16, $17, $18, $19, $20, $21, $22, $23)
+            ON CONFLICT (time, device) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.device,
+              this.status,
+              this.status_name,
+              this.program_id,
+              this.program,
+              this.program_name,
+              this.phase_id,
+              this.phase,
+              this.phase_name,
+              this.remaining_minutes,
+              this.start_minutes,
+              this.elapsed_minutes,
+              this.temperature_c,
+              this.target_temperature_c,
+              this.core_temperature_c,
+              this.core_target_temperature_c,
+              this.failure,
+              this.info,
+              this.door_open,
+              this.remote_control,
+              this.mobile_start,
+              this.light,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: miele-state/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw.format_json(),
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }

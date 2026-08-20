@@ -485,6 +485,63 @@ SELECT create_hypertable('midea_state', 'time', chunk_time_interval => INTERVAL 
 CREATE INDEX ON midea_state (device, time DESC);
 
 -- =========================================================
+-- Miele kitchen appliances (miele-nats-bridge → miele.<device>.state)
+-- The bridge omits fields an appliance does not report, so a row is a partial
+-- snapshot and untouched columns stay NULL. `program`/`phase` are the codes
+-- compacted into DPT 5.010 for the bus; `program_id`/`phase_id` keep Miele's
+-- raw ids, which the selectable-program list and the runtime state number
+-- differently. `*_name` is NULL wherever the API supplies no plain-text name.
+-- =========================================================
+CREATE TABLE miele_state (
+    time                      TIMESTAMPTZ NOT NULL,
+    device                    TEXT        NOT NULL,
+    status                    SMALLINT,
+    status_name               TEXT,
+    program_id                INTEGER,
+    program                   SMALLINT,
+    program_name              TEXT,
+    phase_id                  INTEGER,
+    phase                     SMALLINT,
+    phase_name                TEXT,
+    remaining_minutes         INTEGER,
+    start_minutes             INTEGER,
+    elapsed_minutes           INTEGER,
+    temperature_c             REAL,
+    target_temperature_c      REAL,
+    core_temperature_c        REAL,
+    core_target_temperature_c REAL,
+    failure                   BOOLEAN,
+    info                      BOOLEAN,
+    door_open                 BOOLEAN,
+    remote_control            BOOLEAN,
+    mobile_start              BOOLEAN,
+    light                     BOOLEAN,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('miele_state', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON miele_state (device, time DESC);
+
+-- =========================================================
+-- Miele ecoFeedback per programme run (→ miele.<device>.eco)
+-- Only present while a programme runs or has just finished. The consumption
+-- counters are cumulative within a run; the forecasts are Miele's own 0..1
+-- relative estimate rather than an absolute prediction.
+-- =========================================================
+CREATE TABLE miele_eco (
+    time            TIMESTAMPTZ NOT NULL,
+    device          TEXT        NOT NULL,
+    energy_kwh      REAL,
+    energy_unit     TEXT,
+    water_l         REAL,
+    water_unit      TEXT,
+    energy_forecast REAL,
+    water_forecast  REAL,
+    PRIMARY KEY (time, device)
+);
+SELECT create_hypertable('miele_eco', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON miele_eco (device, time DESC);
+
+-- =========================================================
 -- Continuous Aggregate Refresh Policies
 -- =========================================================
 SELECT add_continuous_aggregate_policy('knx_1h',
@@ -562,6 +619,12 @@ ALTER TABLE midea_environment SET (timescaledb.compress,
 ALTER TABLE midea_state SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'device',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE miele_state SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE miele_eco SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'device',
+    timescaledb.compress_orderby = 'time DESC');
 ALTER TABLE unifi_events SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'camera',
     timescaledb.compress_orderby = 'time DESC');
@@ -580,6 +643,8 @@ SELECT add_compression_policy('dyson_environment',   INTERVAL '2 days');
 SELECT add_compression_policy('dyson_state',         INTERVAL '2 days');
 SELECT add_compression_policy('midea_environment',   INTERVAL '2 days');
 SELECT add_compression_policy('midea_state',         INTERVAL '2 days');
+SELECT add_compression_policy('miele_state',         INTERVAL '2 days');
+SELECT add_compression_policy('miele_eco',           INTERVAL '2 days');
 SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 
 -- =========================================================
@@ -601,6 +666,8 @@ SELECT add_retention_policy('dyson_environment',   INTERVAL '365 days');
 SELECT add_retention_policy('dyson_state',         INTERVAL '365 days');
 SELECT add_retention_policy('midea_environment',   INTERVAL '365 days');
 SELECT add_retention_policy('midea_state',         INTERVAL '365 days');
+SELECT add_retention_policy('miele_state',         INTERVAL '365 days');
+SELECT add_retention_policy('miele_eco',           INTERVAL '365 days');
 
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,
