@@ -39,3 +39,13 @@ entries:
       slug: iot-mcp-bridge
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, iot-mcp-bridge]]
       policy_engine_mode: any
+
+  # Restrict token issuance for this audience to platform-admins
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, iot-mcp-bridge]]
+      group: !Find [authentik_core.group, [name, platform-admins]]
+      order: 0
+    attrs:
+      enabled: true

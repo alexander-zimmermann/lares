@@ -16,7 +16,9 @@ entries:
       consumer_key: !Env AUTHENTIK_GITHUB_CLIENT_ID
       consumer_secret: !Env AUTHENTIK_GITHUB_CLIENT_SECRET
       authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
-      enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
+      # No enrollment flow: GitHub signs in existing accounts, it does not create them.
+      # Explicitly null rather than omitted — blueprints leave unlisted attrs untouched.
+      enrollment_flow: null
       enabled: true
 
   # Expression Policy: denies login if the GitHub account does not have 2FA enabled
