@@ -66,6 +66,7 @@ fi
 ## Update key file and the compose env file rendered from it
 echo "${new_key}" > "${OMNI_IP_KEY_PATH}"
 chown "${OMNI_OWNER}" "${OMNI_IP_KEY_PATH}"
+chmod 0600 "${OMNI_IP_KEY_PATH}"
 write_infra_provider_env
 
 ## Restart infra provider container with the new key

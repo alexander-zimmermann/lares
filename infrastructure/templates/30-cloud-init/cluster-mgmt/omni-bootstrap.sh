@@ -187,6 +187,7 @@ setup_gpg() {
     --quiet \
     --export-secret-key \
     --armor "${OMNI_PRIVATE_KEY_EMAIL}" > "${OMNI_PRIVATE_KEY_PATH}" || die "Failed to export key."
+  chmod 0600 "${OMNI_PRIVATE_KEY_PATH}"
 
   ## Backup .gnupg folder
   cp -R "${HOME:-/root}/.gnupg" "${OMNI_BACKUP_DIR}/gnupg"
@@ -246,6 +247,7 @@ setup_infra_provider_key() {
 
   ## Update the key file and the compose env file rendered from it
   echo "${new_key}" > "${OMNI_IP_KEY_PATH}"
+  chmod 0600 "${OMNI_IP_KEY_PATH}"
   write_infra_provider_env
 
   success "Proxmox InfraProvider key ${OMNI_IP_NAME} successfully generated at ${OMNI_IP_KEY_PATH}."
@@ -327,9 +329,12 @@ docker compose up -d --wait omni 2> /dev/null || die "Failed to start Omni core 
 info "Generating Proxmox infrastructure provider key..."
 setup_infra_provider_key
 
-## Set permissions & ownership for newly generated key
+## Set permissions & ownership for newly generated keys
 chown -R "${OMNI_OWNER}" "${OMNI_CERT_DIR}"
 chown -R "${OMNI_OWNER}" "${OMNI_KEY_DIR}"
+
+## Omni writes the initial service account key itself, so restrict the whole key dir
+find "${OMNI_KEY_DIR}" -type f -exec chmod 0600 {} +
 
 ## Deploy Remaining Services (Provider, Backup)
 info "Deploying remaining Omni infrastructure stack..."

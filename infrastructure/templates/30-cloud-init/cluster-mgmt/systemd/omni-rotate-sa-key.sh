@@ -57,5 +57,6 @@ fi
 ## Update key file
 echo "${new_key}" > "${OMNI_SA_KEY_PATH}"
 chown "${OMNI_OWNER}" "${OMNI_SA_KEY_PATH}"
+chmod 0600 "${OMNI_SA_KEY_PATH}"
 
 success "Service account '${OMNI_SA_NAME}' key renewed and updated at ${OMNI_SA_KEY_PATH}."
