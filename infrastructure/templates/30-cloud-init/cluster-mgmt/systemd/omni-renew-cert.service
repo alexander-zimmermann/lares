@@ -7,5 +7,4 @@ Wants=network-online.target
 Type=oneshot
 User=root
 Group=root
-EnvironmentFile=/etc/omni/omni-bootstrap.conf
 ExecStart=/usr/local/bin/omni-renew-cert.sh

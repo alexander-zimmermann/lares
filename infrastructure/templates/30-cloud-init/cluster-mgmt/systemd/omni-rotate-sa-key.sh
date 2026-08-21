@@ -6,9 +6,12 @@
 ##
 ## Prerequisites:
 ## - omnictl installed
-## - Environment file in /etc/omni/omni-rotate-sa-key.env
+## - Configuration file in /etc/omni/omni-bootstrap.conf
 
 set -euo pipefail
+
+## Set configuration file
+OMNI_BOOTSTRAP_CONF="/etc/omni/omni-bootstrap.conf"
 
 ###############################################################################
 ## Helper: Logging functions
@@ -29,6 +32,10 @@ die() {
 ###############################################################################
 ## Main Script
 ###############################################################################
+## Load configuration in bash so the nested variable references resolve
+# shellcheck source=/dev/null
+source "${OMNI_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${OMNI_BOOTSTRAP_CONF}."
+
 ## Perform key rotation
 info "Rotating service account '${OMNI_SA_NAME}' key..."
 output=$(\
