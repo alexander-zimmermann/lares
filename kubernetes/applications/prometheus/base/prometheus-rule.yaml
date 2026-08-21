@@ -258,3 +258,64 @@ spec:
           annotations:
             summary: "Dehumidifier {{ $labels.device }} unreachable"
             description: "The bridge has not held a connection for 30m — device unplugged, moved, or off the WLAN."
+
+    # The only cloud-dependent bridge in the stack: appliance state goes stale
+    # whenever the WAN link or Miele is down, and the access token is a second
+    # way to lose the stream without the pod noticing. Warning throughout —
+    # nothing safety-relevant hangs off this path, the KNX current detectors do.
+    - name: miele-alerts
+      rules:
+        - alert: MieleCloudDisconnected
+          expr: miele_connected == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Miele cloud event stream down"
+            description: "The bridge has not held the SSE stream for 30m — WAN outage or a Miele-side problem. It reconnects on its own with backoff; the 17/1 GAs keep their last value meanwhile."
+
+        - alert: MieleEventStreamStale
+          # The keep-alive arrives every ~20s and never gapped below 14 per 5min
+          # in measurement, so silence is decisive. Appliance events alone would
+          # not be: they average 30/h with 15min windows of nothing. Guarded
+          # against the 0 a fresh pod reports until its first frame.
+          expr: miele_last_event_received_timestamp > 0 and time() - miele_last_event_received_timestamp > 300
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Miele stream silent while connected"
+            description: "No SSE frame for {{ $value | humanizeDuration }} although miele_connected is 1 — a half-open connection the read timeout has not yet cut. Restart the pod if it persists."
+
+        # No alert on miele_token_expiry_timestamp_seconds: the token is
+        # refreshed lazily, on the next call that needs it, so it sits expired
+        # for hours while a long-lived stream runs perfectly. A broken refresh
+        # shows up as token_* below, or as PodCrashLooping when consent lapsed.
+        - alert: MieleTokenRefreshFailing
+          expr: sum(rate(miele_api_errors_total{reason=~"token_.*"}[30m])) > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Miele token refresh failing"
+            description: "Token refresh has been erroring for 15m. reason=token_rejected means consent lapsed and only a new round via miele-cloud-auth plus a re-sealed secret repairs it; token_http and token_transport are usually transient."
+
+        - alert: MieleApiErrors
+          expr: sum by (reason) (rate(miele_api_errors_total{reason!~"token_.*"}[30m])) > 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Miele API errors ({{ $labels.reason }})"
+            description: "The cloud API has returned {{ $labels.reason }} continuously for 30m. Healthy operation produces none of these."
+
+        - alert: MieleMetricsAbsent
+          # `up` covers a failing scrape; this covers the ServiceMonitor being
+          # dropped or relabelled away, which would silence every rule above.
+          expr: absent(miele_connected)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Miele bridge metrics absent"
+            description: "miele_connected has not been scraped for 15m — check the pod and its ServiceMonitor. Every other Miele alert is blind until this clears."
