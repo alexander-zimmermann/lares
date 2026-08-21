@@ -95,6 +95,14 @@ ci_vendor_config:
         owner: "omni:omni"
         defer: true
 
+      ## ACME secrets, kept out of the compose .env
+      - path: /etc/omni/omni-acme.conf
+        template_file: templates/30-cloud-init/cluster-mgmt/omni-acme.conf.tftpl
+        secret_ref: omni_bootstrap_conf
+        permissions: "0600"
+        owner: "omni:omni"
+        defer: true
+
       ## Omni bootstrap script
       - path: /usr/local/bin/omni-bootstrap.sh
         content_file: templates/30-cloud-init/cluster-mgmt/omni-bootstrap.sh

@@ -115,13 +115,17 @@ services:
     secrets:
       - omni_proxmox_config
 
+    ## Provider reads the key from OMNI_SERVICE_ACCOUNT_KEY; a scratch image cannot
+    ## read /run/secrets itself, so this keeps it off the command line at least
+    env_file:
+      - ./.secrets/omni-infra-provider.env
+
     environment:
       <<: *default-environment
 
     command:
       - --config-file=/run/secrets/omni_proxmox_config
       - --omni-api-endpoint=${OMNI_API_ENDPOINT}
-      - --omni-service-account-key=${OMNI_SERVICE_ACCOUNT_KEY}
       - --id=${OMNI_IP_NAME}
 
     logging:

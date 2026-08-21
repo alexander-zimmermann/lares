@@ -6,12 +6,13 @@
 ##
 ## Prerequisites:
 ## - git, lego, gpg installed.
-## - Environment files in /opt/omni/.env/{bootstrap,docker,lego}
+## - Configuration files in /etc/omni/{omni-bootstrap.conf,omni-acme.conf}
 
 set -euo pipefail
 
-## Set environment file
+## Set configuration files
 OMNI_BOOTSTRAP_CONF="/etc/omni/omni-bootstrap.conf"
+OMNI_ACME_CONF="/etc/omni/omni-acme.conf"
 
 ###############################################################################
 ## Helper: Logging functions
@@ -194,6 +195,20 @@ setup_gpg() {
 }
 
 ###############################################################################
+## Helper: Proxmox infrastructure provider compose env file
+###############################################################################
+write_infra_provider_env() {
+  mkdir -p "$(dirname "${OMNI_IP_ENV_PATH}")"
+  install -m 0600 -o "${OMNI_OWNER%%:*}" -g "${OMNI_OWNER##*:}" /dev/null "${OMNI_IP_ENV_PATH}"
+
+  ## Compose validates every env_file when it loads the project, so the file has to
+  ## exist before the first "up" — the key itself only arrives once Omni is running
+  if [[ -s ${OMNI_IP_KEY_PATH} ]]; then
+    printf 'OMNI_SERVICE_ACCOUNT_KEY=%s\n' "$(< "${OMNI_IP_KEY_PATH}")" > "${OMNI_IP_ENV_PATH}"
+  fi
+}
+
+###############################################################################
 ## Helper: Proxmox infrastructure provider key generation
 ###############################################################################
 setup_infra_provider_key() {
@@ -202,6 +217,7 @@ setup_infra_provider_key() {
   ## Check if infra provider key exists locally (either from backup extraction or previous run)
   if [[ -s ${OMNI_IP_KEY_PATH} ]]; then
     info "Proxmox InfraProvider key already exists at ${OMNI_IP_KEY_PATH}. Skipping generation."
+    write_infra_provider_env
     return 0
   fi
 
@@ -228,8 +244,9 @@ setup_infra_provider_key() {
       die "Failed to extract OMNI_SERVICE_ACCOUNT_KEY from omnictl output '${output}'."
   fi
 
-  ## Update the key file
+  ## Update the key file and the compose env file rendered from it
   echo "${new_key}" > "${OMNI_IP_KEY_PATH}"
+  write_infra_provider_env
 
   success "Proxmox InfraProvider key ${OMNI_IP_NAME} successfully generated at ${OMNI_IP_KEY_PATH}."
 }
@@ -268,10 +285,12 @@ info "===================================="
 info " Omni Bootstrap "
 info "===================================="
 
-## Load environment files
-info "Loading environment files..."
+## Load configuration files
+info "Loading configuration files..."
 # shellcheck source=/dev/null
 source "${OMNI_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${OMNI_BOOTSTRAP_CONF}."
+# shellcheck source=/dev/null
+source "${OMNI_ACME_CONF}" || die "ACME configuration file not found at ${OMNI_ACME_CONF}."
 
 ## Restore all data from the latest tarball (if on a fresh node)
 info "Checking for Omni backup archive to restore..."
@@ -296,6 +315,9 @@ setup_gpg
 ## Create .env symlink for docker compose
 ln -sf "${OMNI_BOOTSTRAP_CONF}" "${OMNI_LOCAL_DIR}/.env"
 
+## Ensure the infra provider env file exists before compose loads the project
+write_infra_provider_env
+
 ## Deploy Core Omni Service
 info "Deploying core Omni service and waiting for API to become healthy..."
 cd "${OMNI_LOCAL_DIR}"
@@ -312,7 +334,6 @@ chown -R "${OMNI_OWNER}" "${OMNI_KEY_DIR}"
 ## Deploy Remaining Services (Provider, Backup)
 info "Deploying remaining Omni infrastructure stack..."
 cd "${OMNI_LOCAL_DIR}"
-OMNI_SERVICE_ACCOUNT_KEY="$(< "${OMNI_IP_KEY_PATH}")" \
 docker compose up -d 2> /dev/null || die "Failed to deploy remaining compose stack."
 
 success "===================================="
