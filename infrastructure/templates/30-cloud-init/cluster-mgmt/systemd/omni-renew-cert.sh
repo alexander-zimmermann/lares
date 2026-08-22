@@ -6,9 +6,13 @@
 ##
 ## Prerequisites:
 ## - lego installed
-## - Environment files in /etc/omni/omni-renew-cert.env
+## - Configuration files in /etc/omni/{omni-bootstrap.conf,omni-acme.conf}
 
 set -euo pipefail
+
+## Set configuration files
+OMNI_BOOTSTRAP_CONF="/etc/omni/omni-bootstrap.conf"
+OMNI_ACME_CONF="/etc/omni/omni-acme.conf"
 
 ###############################################################################
 ## Helper: Logging functions
@@ -29,6 +33,12 @@ die() {
 ###############################################################################
 ## Main Script
 ###############################################################################
+## Load configuration in bash so the nested variable references resolve
+# shellcheck source=/dev/null
+source "${OMNI_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${OMNI_BOOTSTRAP_CONF}."
+# shellcheck source=/dev/null
+source "${OMNI_ACME_CONF}" || die "ACME configuration file not found at ${OMNI_ACME_CONF}."
+
 ## Construct domain flags for running lego (xargs trims whitespace around commas)
 info "Configuring domains..."
 domain_flags=("--domains=${ACME_PRIMARY_DOMAIN}")

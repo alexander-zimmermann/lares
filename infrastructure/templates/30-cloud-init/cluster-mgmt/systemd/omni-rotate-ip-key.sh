@@ -6,9 +6,12 @@
 ##
 ## Prerequisites:
 ## - omnictl installed
-## - Environment file in /etc/omni/omni-rotate-ip-key.env
+## - Configuration file in /etc/omni/omni-bootstrap.conf
 
 set -euo pipefail
+
+## Set configuration file
+OMNI_BOOTSTRAP_CONF="/etc/omni/omni-bootstrap.conf"
 
 ###############################################################################
 ## Helper: Logging functions
@@ -27,8 +30,21 @@ die() {
 }
 
 ###############################################################################
+## Helper: Proxmox infrastructure provider compose env file
+###############################################################################
+write_infra_provider_env() {
+  mkdir -p "$(dirname "${OMNI_IP_ENV_PATH}")"
+  install -m 0600 -o "${OMNI_OWNER%%:*}" -g "${OMNI_OWNER##*:}" /dev/null "${OMNI_IP_ENV_PATH}"
+  printf 'OMNI_SERVICE_ACCOUNT_KEY=%s\n' "$(< "${OMNI_IP_KEY_PATH}")" > "${OMNI_IP_ENV_PATH}"
+}
+
+###############################################################################
 ## Main Script
 ###############################################################################
+## Load configuration in bash so the nested variable references resolve
+# shellcheck source=/dev/null
+source "${OMNI_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${OMNI_BOOTSTRAP_CONF}."
+
 ## Perform key rotation
 info "Rotating infra provider '${OMNI_IP_NAME}' key..."
 output=$(\
@@ -47,14 +63,15 @@ if [[ -z "${new_key}" ]]; then
     die "Failed to extract OMNI_SERVICE_ACCOUNT_KEY from omnictl output '${output}'."
 fi
 
-## Update key file
+## Update key file and the compose env file rendered from it
 echo "${new_key}" > "${OMNI_IP_KEY_PATH}"
 chown "${OMNI_OWNER}" "${OMNI_IP_KEY_PATH}"
+chmod 0600 "${OMNI_IP_KEY_PATH}"
+write_infra_provider_env
 
 ## Restart infra provider container with the new key
 info "Restarting omni-infra-provider-proxmox with new key..."
 cd "${OMNI_LOCAL_DIR}"
-OMNI_SERVICE_ACCOUNT_KEY="${new_key}" \
-docker compose up -d omni-infra-provider-proxmox &> /dev/null || die "Failed to restart omni-infra-provider-proxmox."
+docker compose up -d --force-recreate omni-infra-provider-proxmox &> /dev/null || die "Failed to restart omni-infra-provider-proxmox."
 
 success "InfraProvider '${OMNI_IP_NAME}' key renewed and updated at ${OMNI_IP_KEY_PATH}."
