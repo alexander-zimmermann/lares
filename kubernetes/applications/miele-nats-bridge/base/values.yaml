@@ -5,7 +5,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/miele-nats-bridge
-    tag: 0.3.0
+    tag: 0.4.0
     pullPolicy: IfNotPresent
 
   # A second replica would open a second cloud event stream and double every
