@@ -8,7 +8,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/knx-nats-bridge
-    tag: 0.14.0
+    tag: 0.16.0
     pullPolicy: IfNotPresent
 
   # KNX tunnel allows only one connection per credential; never run two replicas.
