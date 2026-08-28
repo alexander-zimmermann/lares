@@ -625,12 +625,6 @@ mappings:
     description: "Versorgungstechnik.Gastherme.Brenner.Modulation-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.boiler_heatingactive"
-    ga: "15/2/21"
-    dpt: "5.010"
-    payload_path: "$.severity_level"
-    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Anomalie"
-    min_delta: 0
     seed_on_start: true
   - subject: "anomaly.heating_activity_seasonal"
     ga: "15/2/22"
