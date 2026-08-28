@@ -39,9 +39,14 @@ tasks:
       - sh: test -f "{{.KNXPROJ}}"
         msg: "'{{.KNXPROJ}}' not found"
     cmds:
+      # --ignore-write-from Dummy: the GIRA placeholder device receives ~1850
+      # addresses purely to get them into the coupler filter tables. Counting
+      # its Write flag would mark almost everything writable, status mirrors
+      # included.
       - uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
+        --ignore-write-from Dummy
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
   enrich-catalog:
