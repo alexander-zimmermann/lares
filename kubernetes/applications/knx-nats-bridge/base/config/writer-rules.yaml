@@ -331,25 +331,25 @@ mappings:
     description: "Versorgungstechnik.Gastherme.Heizung.Aktiv"
     min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/28"
+    ga: "15/2/27"
     dpt: "1.001"
     payload_path: "$.heatingpump"
     description: "Versorgungstechnik.Gastherme.Heizung.Pumpe-Aktiv"
     min_delta: 0  # binary status: write only on change
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/23"
+    ga: "15/2/22"
     dpt: "9.001"
     payload_path: "$.curflowtemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/25"
+    ga: "15/2/24"
     dpt: "9.001"
     payload_path: "$.selflowtemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Soll-Temperatur"
     min_delta: 0.5  # °C
   - subject: "ems-esp.boiler_data"
-    ga: "15/2/26"
+    ga: "15/2/25"
     dpt: "9.001"
     payload_path: "$.rettemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur"
@@ -627,21 +627,21 @@ mappings:
     seed_on_start: true
     seed_on_start: true
   - subject: "anomaly.heating_activity_seasonal"
-    ga: "15/2/22"
+    ga: "15/2/21"
     dpt: "5.010"
     payload_path: "$.severity_level"
-    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Saisonal-Anomalie"
+    description: "Versorgungstechnik.Gastherme.Heizung.Aktiv-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.boiler_curflowtemp"
-    ga: "15/2/24"
+    ga: "15/2/23"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
     min_delta: 0
     seed_on_start: true
   - subject: "anomaly.boiler_rettemp"
-    ga: "15/2/27"
+    ga: "15/2/26"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
@@ -1610,42 +1610,42 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/4"
+    ga: "17/1/5"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Geschirrspüler.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/5"
+    ga: "17/1/6"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Geschirrspüler.Programm"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/6"
+    ga: "17/1/7"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Geschirrspüler.Programm-Phase"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/7"
+    ga: "17/1/8"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Geschirrspüler.Restzeit"
     min_delta: 1  # minutes
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/9"
+    ga: "17/1/10"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Geschirrspüler.Hinweis-Fertig"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
-    ga: "17/1/12"
+    ga: "17/1/13"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Geschirrspüler.Fernsteuerung"
@@ -1663,63 +1663,63 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/65"
+    ga: "17/1/66"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Backofen.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/66"
+    ga: "17/1/67"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Backofen.Tür-Offen"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/67"
+    ga: "17/1/68"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Backofen.Programm"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/68"
+    ga: "17/1/69"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Backofen.Programm-Phase"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/69"
+    ga: "17/1/70"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Backofen.Restzeit"
     min_delta: 1  # minutes
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/71"
+    ga: "17/1/72"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Backofen.Ist-Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/73"
+    ga: "17/1/74"
     dpt: "9.001"
     payload_path: "$.core_temperature_c"
     description: "Haushaltstechnik.Backofen.Kern-Ist-Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/75"
+    ga: "17/1/76"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Backofen.Hinweis-Fertig"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
-    ga: "17/1/76"
+    ga: "17/1/77"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Backofen.Fernsteuerung"
@@ -1736,21 +1736,21 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
-    ga: "17/1/83"
+    ga: "17/1/84"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Tellerwärmer.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
-    ga: "17/1/84"
+    ga: "17/1/85"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Tellerwärmer.Ist-Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
-    ga: "17/1/86"
+    ga: "17/1/87"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Tellerwärmer.Fernsteuerung"
@@ -1766,56 +1766,56 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/105"
+    ga: "17/1/106"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Mikrowelle.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/106"
+    ga: "17/1/107"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Mikrowelle.Tür-Offen"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/107"
+    ga: "17/1/108"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Mikrowelle.Programm"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/108"
+    ga: "17/1/109"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Mikrowelle.Programm-Phase"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/109"
+    ga: "17/1/110"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Mikrowelle.Restzeit"
     min_delta: 1  # minutes
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/111"
+    ga: "17/1/112"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Mikrowelle.Ist-Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/113"
+    ga: "17/1/114"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Mikrowelle.Hinweis"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
-    ga: "17/1/114"
+    ga: "17/1/115"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Mikrowelle.Fernsteuerung"
@@ -1833,35 +1833,35 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
-    ga: "17/1/124"
+    ga: "17/1/125"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Kaffeemaschine.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
-    ga: "17/1/125"
+    ga: "17/1/126"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Kaffeemaschine.Programm"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
-    ga: "17/1/126"
+    ga: "17/1/127"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Kaffeemaschine.Programm-Phase"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
-    ga: "17/1/127"
+    ga: "17/1/128"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Kaffeemaschine.Hinweis"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
-    ga: "17/1/131"
+    ga: "17/1/132"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Kaffeemaschine.Fernsteuerung"
@@ -1877,56 +1877,56 @@ mappings:
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/145"
+    ga: "17/1/146"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Dampfgarer.Störung"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/146"
+    ga: "17/1/147"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Dampfgarer.Tür-Offen"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/147"
+    ga: "17/1/148"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Dampfgarer.Programm"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/148"
+    ga: "17/1/149"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Dampfgarer.Programm-Phase"
     min_delta: 0  # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/149"
+    ga: "17/1/150"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Dampfgarer.Restzeit"
     min_delta: 1  # minutes
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/151"
+    ga: "17/1/152"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Dampfgarer.Ist-Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/153"
+    ga: "17/1/154"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Dampfgarer.Hinweis"
     min_delta: 0  # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
-    ga: "17/1/154"
+    ga: "17/1/155"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Dampfgarer.Fernsteuerung"

@@ -2490,42 +2490,36 @@
   room: Technikraum
   writable: false
 15/2/22:
-  dpt: '5.010'
-  function: Versorgerungstechnik
-  name: Versorgungstechnik.Gastherme.Heizung.Aktiv-Saisonal-Anomalie
-  room: Technikraum
-  writable: false
-15/2/23:
   dpt: '9.001'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur
   room: Technikraum
   writable: false
-15/2/24:
+15/2/23:
   dpt: '5.010'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie
   room: Technikraum
   writable: false
-15/2/25:
+15/2/24:
   dpt: '9.001'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Vorlauf.Soll-Temperatur
   room: Technikraum
   writable: false
-15/2/26:
+15/2/25:
   dpt: '9.001'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur
   room: Technikraum
   writable: false
-15/2/27:
+15/2/26:
   dpt: '5.010'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie
   room: Technikraum
   writable: false
-15/2/28:
+15/2/27:
   dpt: '1.001'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Heizung.Pumpe-Aktiv
@@ -3274,9 +3268,9 @@
   room: Küche
   writable: false
 17/1/10:
-  dpt: '5.010'
+  dpt: '1.005'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Salz-Füllstand
+  name: Haushaltstechnik.Geschirrspüler.Hinweis-Fertig
   room: Küche
   writable: false
 17/1/100:
@@ -3310,75 +3304,81 @@
   room: Küche
   writable: false
 17/1/105:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Statustext
+  room: Küche
+  writable: false
+17/1/106:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Störung
   room: Küche
   writable: false
-17/1/106:
+17/1/107:
   dpt: '1.019'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Tür-Offen
   room: Küche
   writable: false
-17/1/107:
+17/1/108:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Programm
   room: Küche
   writable: false
-17/1/108:
+17/1/109:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Programm-Phase
   room: Küche
   writable: false
-17/1/109:
-  dpt: '7.006'
-  function: Haushaltstechnik
-  name: Haushaltstechnik.Mikrowelle.Restzeit
-  room: Küche
-  writable: false
 17/1/11:
   dpt: '5.010'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Klarspüler-Füllstand
+  name: Haushaltstechnik.Geschirrspüler.Salz-Füllstand
   room: Küche
   writable: false
 17/1/110:
   dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Mikrowelle.Startzeit
+  name: Haushaltstechnik.Mikrowelle.Restzeit
   room: Küche
   writable: false
 17/1/111:
-  dpt: '9.001'
+  dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Mikrowelle.Ist-Temperatur
+  name: Haushaltstechnik.Mikrowelle.Startzeit
   room: Küche
   writable: false
 17/1/112:
   dpt: '9.001'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Mikrowelle.Soll-Temperatur
+  name: Haushaltstechnik.Mikrowelle.Ist-Temperatur
   room: Küche
   writable: false
 17/1/113:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Mikrowelle.Soll-Temperatur
+  room: Küche
+  writable: false
+17/1/114:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Hinweis
   room: Küche
   writable: false
-17/1/114:
+17/1/115:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Mikrowelle.Fernsteuerung
   room: Küche
   writable: false
 17/1/12:
-  dpt: '1.003'
+  dpt: '5.010'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Fernsteuerung
+  name: Haushaltstechnik.Geschirrspüler.Klarspüler-Füllstand
   room: Küche
   writable: false
 17/1/120:
@@ -3406,48 +3406,60 @@
   room: Küche
   writable: false
 17/1/124:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Statustext
+  room: Küche
+  writable: false
+17/1/125:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Störung
   room: Küche
   writable: false
-17/1/125:
+17/1/126:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Programm
   room: Küche
   writable: false
-17/1/126:
+17/1/127:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Programm-Phase
   room: Küche
   writable: false
-17/1/127:
+17/1/128:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Hinweis
   room: Küche
   writable: false
-17/1/128:
+17/1/129:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Entkalken-Fällig
   room: Küche
   writable: false
-17/1/129:
-  dpt: '1.005'
+17/1/13:
+  dpt: '1.003'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Kaffeemaschine.Reinigen-Fällig
+  name: Haushaltstechnik.Geschirrspüler.Fernsteuerung
   room: Küche
   writable: false
 17/1/130:
   dpt: '1.005'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Kaffeemaschine.Milchsystem-Reinigen
+  name: Haushaltstechnik.Kaffeemaschine.Reinigen-Fällig
   room: Küche
   writable: false
 17/1/131:
+  dpt: '1.005'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kaffeemaschine.Milchsystem-Reinigen
+  room: Küche
+  writable: false
+17/1/132:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kaffeemaschine.Fernsteuerung
@@ -3484,60 +3496,66 @@
   room: Küche
   writable: false
 17/1/145:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Dampfgarer.Statustext
+  room: Küche
+  writable: false
+17/1/146:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Störung
   room: Küche
   writable: false
-17/1/146:
+17/1/147:
   dpt: '1.019'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Tür-Offen
   room: Küche
   writable: false
-17/1/147:
+17/1/148:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Programm
   room: Küche
   writable: false
-17/1/148:
+17/1/149:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Programm-Phase
   room: Küche
   writable: false
-17/1/149:
+17/1/150:
   dpt: '7.006'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Restzeit
   room: Küche
   writable: false
-17/1/150:
+17/1/151:
   dpt: '7.006'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Startzeit
   room: Küche
   writable: false
-17/1/151:
+17/1/152:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Ist-Temperatur
   room: Küche
   writable: false
-17/1/152:
+17/1/153:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Soll-Temperatur
   room: Küche
   writable: false
-17/1/153:
+17/1/154:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Hinweis
   room: Küche
   writable: false
-17/1/154:
+17/1/155:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Dampfgarer.Fernsteuerung
@@ -3568,30 +3586,36 @@
   room: Küche
   writable: false
 17/1/164:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Gefrierschrank.Statustext
+  room: Küche
+  writable: false
+17/1/165:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Gefrierschrank.Störung
   room: Küche
   writable: false
-17/1/165:
+17/1/166:
   dpt: '1.019'
   function: Haushaltstechnik
   name: Haushaltstechnik.Gefrierschrank.Tür-Offen
   room: Küche
   writable: false
-17/1/166:
+17/1/167:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Gefrierschrank.Ist-Temperatur
   room: Küche
   writable: false
-17/1/167:
+17/1/168:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Gefrierschrank.Soll-Temperatur
   room: Küche
   writable: false
-17/1/168:
+17/1/169:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Gefrierschrank.Fernsteuerung
@@ -3634,18 +3658,24 @@
   room: Küche
   writable: false
 17/1/25:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Haubenlüfter.Statustext
+  room: Küche
+  writable: false
+17/1/26:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Haubenlüfter.Störung
   room: Küche
   writable: false
-17/1/26:
+17/1/27:
   dpt: '5.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Haubenlüfter.Fettfilter
   room: Küche
   writable: false
-17/1/27:
+17/1/28:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Haubenlüfter.Fernsteuerung
@@ -3658,9 +3688,9 @@
   room: Küche
   writable: false
 17/1/4:
-  dpt: '1.005'
+  dpt: '16.001'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Störung
+  name: Haushaltstechnik.Geschirrspüler.Statustext
   room: Küche
   writable: false
 17/1/40:
@@ -3688,45 +3718,51 @@
   room: Küche
   writable: false
 17/1/44:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Kühlschrank.Statustext
+  room: Küche
+  writable: false
+17/1/45:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kühlschrank.Störung
   room: Küche
   writable: false
-17/1/45:
+17/1/46:
   dpt: '1.019'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kühlschrank.Tür-Offen
   room: Küche
   writable: false
-17/1/46:
+17/1/47:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kühlschrank.Ist-Temperatur
   room: Küche
   writable: false
-17/1/47:
+17/1/48:
   dpt: '9.002'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kühlschrank.Soll-Temperatur
   room: Küche
   writable: false
-17/1/48:
+17/1/49:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Kühlschrank.Fernsteuerung
   room: Küche
   writable: false
 17/1/5:
-  dpt: '5.010'
+  dpt: '1.005'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Programm
+  name: Haushaltstechnik.Geschirrspüler.Störung
   room: Küche
   writable: false
 17/1/6:
   dpt: '5.010'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Programm-Phase
+  name: Haushaltstechnik.Geschirrspüler.Programm
   room: Küche
   writable: false
 17/1/60:
@@ -3760,78 +3796,84 @@
   room: Küche
   writable: false
 17/1/65:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Statustext
+  room: Küche
+  writable: false
+17/1/66:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Störung
   room: Küche
   writable: false
-17/1/66:
+17/1/67:
   dpt: '1.019'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Tür-Offen
   room: Küche
   writable: false
-17/1/67:
+17/1/68:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Programm
   room: Küche
   writable: false
-17/1/68:
+17/1/69:
   dpt: '5.010'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Programm-Phase
   room: Küche
   writable: false
-17/1/69:
-  dpt: '7.006'
-  function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Restzeit
-  room: Küche
-  writable: false
 17/1/7:
-  dpt: '7.006'
+  dpt: '5.010'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Restzeit
+  name: Haushaltstechnik.Geschirrspüler.Programm-Phase
   room: Küche
   writable: false
 17/1/70:
   dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Startzeit
+  name: Haushaltstechnik.Backofen.Restzeit
   room: Küche
   writable: false
 17/1/71:
-  dpt: '9.001'
+  dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Ist-Temperatur
+  name: Haushaltstechnik.Backofen.Startzeit
   room: Küche
   writable: false
 17/1/72:
   dpt: '9.001'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Soll-Temperatur
+  name: Haushaltstechnik.Backofen.Ist-Temperatur
   room: Küche
   writable: false
 17/1/73:
   dpt: '9.001'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Kern-Ist-Temperatur
+  name: Haushaltstechnik.Backofen.Soll-Temperatur
   room: Küche
   writable: false
 17/1/74:
   dpt: '9.001'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Backofen.Kern-Soll-Temperatur
+  name: Haushaltstechnik.Backofen.Kern-Ist-Temperatur
   room: Küche
   writable: false
 17/1/75:
+  dpt: '9.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Backofen.Kern-Soll-Temperatur
+  room: Küche
+  writable: false
+17/1/76:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Hinweis-Fertig
   room: Küche
   writable: false
-17/1/76:
+17/1/77:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Backofen.Fernsteuerung
@@ -3840,7 +3882,7 @@
 17/1/8:
   dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Startzeit
+  name: Haushaltstechnik.Geschirrspüler.Restzeit
   room: Küche
   writable: false
 17/1/80:
@@ -3862,33 +3904,39 @@
   room: Küche
   writable: false
 17/1/83:
+  dpt: '16.001'
+  function: Haushaltstechnik
+  name: Haushaltstechnik.Tellerwärmer.Statustext
+  room: Küche
+  writable: false
+17/1/84:
   dpt: '1.005'
   function: Haushaltstechnik
   name: Haushaltstechnik.Tellerwärmer.Störung
   room: Küche
   writable: false
-17/1/84:
+17/1/85:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Tellerwärmer.Ist-Temperatur
   room: Küche
   writable: false
-17/1/85:
+17/1/86:
   dpt: '9.001'
   function: Haushaltstechnik
   name: Haushaltstechnik.Tellerwärmer.Soll-Temperatur
   room: Küche
   writable: false
-17/1/86:
+17/1/87:
   dpt: '1.003'
   function: Haushaltstechnik
   name: Haushaltstechnik.Tellerwärmer.Fernsteuerung
   room: Küche
   writable: false
 17/1/9:
-  dpt: '1.005'
+  dpt: '7.006'
   function: Haushaltstechnik
-  name: Haushaltstechnik.Geschirrspüler.Hinweis-Fertig
+  name: Haushaltstechnik.Geschirrspüler.Startzeit
   room: Küche
   writable: false
 2/0/240:
