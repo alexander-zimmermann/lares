@@ -29,7 +29,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: scorer
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.12.0
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.13.0
               command: ["iot-insights-engine", "score-iforest"]
               env:
                 - name: MCP_DB_HOST
