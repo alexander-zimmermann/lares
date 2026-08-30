@@ -28,7 +28,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: trainer
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.13.0
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.14.0
               command: ["iot-insights-engine", "train-iforest"]
               env:
                 - name: MCP_DB_HOST
