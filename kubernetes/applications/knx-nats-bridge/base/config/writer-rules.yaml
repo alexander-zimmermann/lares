@@ -317,61 +317,61 @@ mappings:
     dpt: "1.011"
     payload_path: "$.burngas"
     description: "Versorgungstechnik.Gastherme.Brenner.Status"
-    min_delta: 0  # binary status: write only on change
+    min_delta: 0 # binary status: write only on change
   - subject: "ems-esp.boiler_data"
     ga: "15/2/11"
     dpt: "5.001"
     payload_path: "$.curburnpow"
     description: "Versorgungstechnik.Gastherme.Brenner.Modulation"
-    min_delta: 2  # percent
+    min_delta: 2 # percent
   - subject: "ems-esp.boiler_data"
     ga: "15/2/20"
     dpt: "1.001"
     payload_path: "$.heatingactive"
     description: "Versorgungstechnik.Gastherme.Heizung.Aktiv"
-    min_delta: 0  # binary status: write only on change
+    min_delta: 0 # binary status: write only on change
   - subject: "ems-esp.boiler_data"
     ga: "15/2/27"
     dpt: "1.001"
     payload_path: "$.heatingpump"
     description: "Versorgungstechnik.Gastherme.Heizung.Pumpe-Aktiv"
-    min_delta: 0  # binary status: write only on change
+    min_delta: 0 # binary status: write only on change
   - subject: "ems-esp.boiler_data"
     ga: "15/2/22"
     dpt: "9.001"
     payload_path: "$.curflowtemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/24"
     dpt: "9.001"
     payload_path: "$.selflowtemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Vorlauf.Soll-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/25"
     dpt: "9.001"
     payload_path: "$.rettemp"
     description: "Versorgungstechnik.Gastherme.Heizung.Rücklauf.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/30"
     dpt: "9.001"
     payload_path: "$.switchtemp"
     description: "Versorgungstechnik.Gastherme.Hydraulische-Weiche.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/60"
     dpt: "9.001"
     payload_path: "$.outdoortemp"
     description: "Versorgungstechnik.Gastherme.Außen-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data"
     ga: "15/2/0"
     dpt: "9.006"
     payload_path: "$.syspress"
     description: "Versorgungstechnik.Gastherme.System-Druck"
-    min_delta: 0.05  # bar (raw value; DPT 9.006 unit is Pa)
+    min_delta: 0.05 # bar (raw value; DPT 9.006 unit is Pa)
 
   # EMS-ESP boiler_data_dhw (domestic hot water)
   - subject: "ems-esp.boiler_data_dhw"
@@ -379,25 +379,25 @@ mappings:
     dpt: "1.001"
     payload_path: "$.charging"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Bereitung-Aktiv"
-    min_delta: 0  # binary status: write only on change
+    min_delta: 0 # binary status: write only on change
   - subject: "ems-esp.boiler_data_dhw"
     ga: "15/2/53"
     dpt: "9.001"
     payload_path: "$.curtemp"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data_dhw"
     ga: "15/2/55"
     dpt: "9.001"
     payload_path: "$.settemp"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Soll-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.boiler_data_dhw"
     ga: "15/2/51"
     dpt: "9.025"
     payload_path: "$.curflow"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Durchfluss"
-    min_delta: 0.5  # l/min (raw value; DPT 9.025 unit is l/h)
+    min_delta: 0.5 # l/min (raw value; DPT 9.025 unit is l/h)
 
   # EMS-ESP mixer_data_hc1 (mixer / floor heating)
   - subject: "ems-esp.mixer_data_hc1"
@@ -405,25 +405,25 @@ mappings:
     dpt: "1.001"
     payload_path: "$.pumpstatus"
     description: "Versorgungstechnik.Gastherme.Mischer.Pumpe-Aktiv"
-    min_delta: 0  # binary status: write only on change
+    min_delta: 0 # binary status: write only on change
   - subject: "ems-esp.mixer_data_hc1"
     ga: "15/2/41"
     dpt: "5.001"
     payload_path: "$.valvestatus"
     description: "Versorgungstechnik.Gastherme.Mischer.Stellung"
-    min_delta: 2  # percent
+    min_delta: 2 # percent
   - subject: "ems-esp.mixer_data_hc1"
     ga: "15/2/42"
     dpt: "9.001"
     payload_path: "$.flowtemphc"
     description: "Versorgungstechnik.Gastherme.Mischer.Vorlauf.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "ems-esp.mixer_data_hc1"
     ga: "15/2/43"
     dpt: "9.001"
     payload_path: "$.flowsettemp"
     description: "Versorgungstechnik.Gastherme.Mischer.Vorlauf.Soll-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
 
   # WARP wallbox. warp.evse.state is event-driven (published only on change),
   # so seed_on_start primes the read responder from JetStream after a restart —
@@ -433,42 +433,42 @@ mappings:
     dpt: "5.010"
     payload_path: "$.charger_state"
     description: "Versorgungstechnik.Wallbox.Ladecontroller-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/4"
     dpt: "5.010"
     payload_path: "$.iec61851_state"
     description: "Versorgungstechnik.Wallbox.IEC61851-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/0"
     dpt: "5.010"
     payload_path: "$.error_state"
     description: "Versorgungstechnik.Wallbox.Fehlerzustand-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/8"
     dpt: "5.010"
     payload_path: "$.contactor_error"
     description: "Versorgungstechnik.Wallbox.Schütz-Fehler"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/6"
     dpt: "5.010"
     payload_path: "$.dc_fault_current_state"
     description: "Versorgungstechnik.Wallbox.DC-Fehlerstrom-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "warp.evse.state"
     ga: "15/6/11"
     dpt: "7.012"
     payload_path: "$.allowed_charging_current"
     description: "Versorgungstechnik.Wallbox.Ladestrom-Erlaubt"
-    min_delta: 100  # mA
+    min_delta: 100 # mA
     min_delta_pct: 2
     seed_on_start: true
 
@@ -481,27 +481,27 @@ mappings:
     dpt: "7.012"
     payload_path: "$.ladestrom"
     description: "Versorgungstechnik.Wallbox.Ladestrom"
-    min_delta: 100  # mA
+    min_delta: 100 # mA
     min_delta_pct: 2
   - subject: "wallbox.knx.meter"
     ga: "15/6/12"
     dpt: "14.056"
     payload_path: "$.ladeleistung"
     description: "Versorgungstechnik.Wallbox.Ladeleistung"
-    min_delta: 25  # W
+    min_delta: 25 # W
     min_delta_pct: 2
   - subject: "wallbox.knx.meter"
     ga: "15/6/15"
     dpt: "13.010"
     payload_path: "$.zaehlerstand_aktuell"
     description: "Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell"
-    min_delta: 10  # Wh
+    min_delta: 10 # Wh
   - subject: "wallbox.knx.charge"
     ga: "15/6/16"
     dpt: "13.010"
     payload_path: "$.zaehlerstand_ladebeginn"
     description: "Versorgungstechnik.Wallbox.Energie.Zählerstand-Ladebeginn"
-    min_delta: 0  # changes only per charge: write on change
+    min_delta: 0 # changes only per charge: write on change
     seed_on_start: true
 
   # WARP control feedback (KNX<-WARP). The command GAs (Freigabe 15/6/20,
@@ -511,37 +511,37 @@ mappings:
   - subject: "warp.power_manager.charge_mode"
     ga: "15/6/23"
     dpt: "5.010"
-    payload_path: "$.mode"  # 0=Schnell 1=Aus 2=PV 3=Min+PV
+    payload_path: "$.mode" # 0=Schnell 1=Aus 2=PV 3=Min+PV
     description: "Versorgungstechnik.Wallbox.Lademodi-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "wallbox.knx.charging"
     ga: "15/6/21"
     dpt: "1.001"
-    payload_path: "$.on"  # derived in warp_charging_status from WARP Slot 4 release
+    payload_path: "$.on" # derived in warp_charging_status from WARP Slot 4 release
     description: "Versorgungstechnik.Wallbox.Ein-Freigabe-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
   # Derived in warp_mode_flags from warp.power_manager.charge_mode.
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/26"
     dpt: "1.011"
-    payload_path: "$.pv"  # mode == 2
+    payload_path: "$.pv" # mode == 2
     description: "Versorgungstechnik.Wallbox.Lademodus-PV-Status"
     min_delta: 0
     seed_on_start: true
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/28"
     dpt: "1.011"
-    payload_path: "$.pvmin"  # mode == 3
+    payload_path: "$.pvmin" # mode == 3
     description: "Versorgungstechnik.Wallbox.Lademodus-PV+Min-Status"
     min_delta: 0
     seed_on_start: true
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/30"
     dpt: "1.011"
-    payload_path: "$.fast"  # mode == 0
+    payload_path: "$.fast" # mode == 0
     description: "Versorgungstechnik.Wallbox.Lademodus-Schnell-Status"
     min_delta: 0
     seed_on_start: true
@@ -561,27 +561,27 @@ mappings:
     dpt: "14.056"
     payload_path: "$.pv_production"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung"
-    min_delta: 25  # W
+    min_delta: 25 # W
     min_delta_pct: 2
   - subject: "solaredge-1.modbus.inverter"
     ga: "15/4/23"
     dpt: "9.001"
     payload_path: "$.temperature"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   - subject: "solaredge-2.powerflow"
     ga: "15/4/41"
     dpt: "14.056"
     payload_path: "$.pv_production"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung"
-    min_delta: 25  # W
+    min_delta: 25 # W
     min_delta_pct: 2
   - subject: "solaredge-2.modbus.inverter"
     ga: "15/4/43"
     dpt: "9.001"
     payload_path: "$.temperature"
     description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
   # Batterie (15/4/51..55) — dormant until the battery is online; until then the
   # solaredge-1.powerflow battery.* / consumer.used_battery_production fields are
   # absent and these rules emit nothing. SOC comes from a separate modbus.battery
@@ -591,21 +591,21 @@ mappings:
     dpt: "14.056"
     payload_path: "$.battery.charge"
     description: "Versorgungstechnik.Photovoltaik.Batterie.Ladeleistung"
-    min_delta: 25  # W
+    min_delta: 25 # W
     min_delta_pct: 2
   - subject: "solaredge-1.powerflow"
     ga: "15/4/53"
     dpt: "14.056"
     payload_path: "$.consumer.used_battery_production"
     description: "Versorgungstechnik.Photovoltaik.Batterie.Entladeleistung"
-    min_delta: 25  # W
+    min_delta: 25 # W
     min_delta_pct: 2
   - subject: "solaredge-1.modbus.battery"
     ga: "15/4/55"
     dpt: "5.001"
     payload_path: "$.state_of_charge"
     description: "Versorgungstechnik.Photovoltaik.Batterie.Ladestand"
-    min_delta: 1  # %
+    min_delta: 1 # %
 
   # Anomaly detectors -> KNX (iot-insights-engine). The engine publishes the
   # current tier as $.severity_level (0=ok, 1=info, 2=warning, 3=critical) and
@@ -616,7 +616,7 @@ mappings:
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Anomalie-Gesamt"
-    min_delta: 0  # severity tier: write only on change
+    min_delta: 0 # severity tier: write only on change
     seed_on_start: true
   - subject: "anomaly.boiler_curburnpow"
     ga: "15/2/12"
@@ -624,7 +624,6 @@ mappings:
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Brenner.Modulation-Anomalie"
     min_delta: 0
-    seed_on_start: true
     seed_on_start: true
   - subject: "anomaly.heating_activity_seasonal"
     ga: "15/2/21"
@@ -1385,35 +1384,35 @@ mappings:
     dpt: "1.011"
     payload_path: "$.locked"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Sperren-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-og7.state"
     ga: "6/3/163"
     dpt: "1.011"
     payload_path: "$.power"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Ein/Aus-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-og7.state"
     ga: "6/3/165"
     dpt: "5.010"
     payload_path: "$.speed"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfterstufe-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-og7.state"
     ga: "6/3/167"
     dpt: "5.010"
     payload_path: "$.oscillation_mode"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Drehmodus-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-og7.state"
     ga: "6/3/169"
     dpt: "1.011"
     payload_path: "$.night"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Nachtmodus-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   # `power` is the commanded state, `fan_running` whether the fan actually
   # turns — in Automatik with clean air the device is on while the fan idles.
@@ -1422,14 +1421,14 @@ mappings:
     dpt: "1.011"
     payload_path: "$.fan_running"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Lüfter-Läuft-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "dyson.ventilator-og7.state"
     ga: "6/3/172"
     dpt: "5.001"
     payload_path: "$.filter_life"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Filter-Lebensdauer"
-    min_delta: 1  # percent
+    min_delta: 1 # percent
     seed_on_start: true
 
   # Luftreiniger particulate sensor (KNX<-NATS). Only the PM sensor exists on
@@ -1439,14 +1438,14 @@ mappings:
     dpt: "9.030"
     payload_path: "$.pm25"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM25"
-    min_delta: 1  # µg/m³
+    min_delta: 1 # µg/m³
     seed_on_start: true
   - subject: "dyson.ventilator-og7.environment"
     ga: "6/3/171"
     dpt: "9.030"
     payload_path: "$.pm10"
     description: "Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger.Feinstaub-PM10"
-    min_delta: 1  # µg/m³
+    min_delta: 1 # µg/m³
     seed_on_start: true
 
   # Entfeuchter Vorratsraum status feedback (KNX<-NATS). The command GAs
@@ -1458,56 +1457,56 @@ mappings:
     dpt: "1.011"
     payload_path: "$.locked"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Sperren-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
     ga: "6/1/63"
     dpt: "1.011"
     payload_path: "$.power"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Ein/Aus-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
     ga: "6/1/65"
     dpt: "5.010"
     payload_path: "$.mode"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Modus-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
     ga: "6/1/67"
     dpt: "5.010"
     payload_path: "$.fan_speed"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Lüfterstufe-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
     ga: "6/1/69"
     dpt: "5.001"
     payload_path: "$.target_humidity"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status"
-    min_delta: 0  # setpoint: only moves when set
+    min_delta: 0 # setpoint: only moves when set
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.state"
     ga: "6/1/70"
     dpt: "1.005"
     payload_path: "$.tank_full"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Tank-Voll-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.environment"
     ga: "6/1/71"
     dpt: "9.007"
     payload_path: "$.humidity"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Luftfeuchtigkeit"
-    min_delta: 1  # %RH
+    min_delta: 1 # %RH
     seed_on_start: true
   - subject: "midea.entfeuchter-kg4.environment"
     ga: "6/1/72"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   # `power` is what the appliance reports; while the bridge holds no connection
   # to it there is nothing to report and every status GA above keeps its last
@@ -1517,7 +1516,7 @@ mappings:
     dpt: "1.011"
     payload_path: "$.online"
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Verbindung-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Entfeuchter Hauswirtschaftsraum status feedback (KNX<-NATS). The command GAs
@@ -1529,63 +1528,63 @@ mappings:
     dpt: "1.011"
     payload_path: "$.locked"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Sperren-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
     ga: "6/1/103"
     dpt: "1.011"
     payload_path: "$.power"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Ein/Aus-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
     ga: "6/1/105"
     dpt: "5.010"
     payload_path: "$.mode"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Modus-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
     ga: "6/1/107"
     dpt: "5.010"
     payload_path: "$.fan_speed"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Lüfterstufe-Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
     ga: "6/1/109"
     dpt: "5.001"
     payload_path: "$.target_humidity"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Soll-Luftfeuchtigkeit-Status"
-    min_delta: 0  # setpoint: only moves when set
+    min_delta: 0 # setpoint: only moves when set
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.state"
     ga: "6/1/110"
     dpt: "1.005"
     payload_path: "$.tank_full"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Tank-Voll-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.environment"
     ga: "6/1/111"
     dpt: "9.007"
     payload_path: "$.humidity"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Luftfeuchtigkeit"
-    min_delta: 1  # %RH
+    min_delta: 1 # %RH
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.environment"
     ga: "6/1/112"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "midea.entfeuchter-kg5.availability"
     ga: "6/1/113"
     dpt: "1.011"
     payload_path: "$.online"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Verbindung-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Bordbar LED status feedback (KNX<-NATS). The command GAs (4/2/61/63-67) are
@@ -1598,14 +1597,14 @@ mappings:
     dpt: "1.011"
     payload_path: "$.power"
     description: "Beleuchtung.EG.Wohnzimmer.Bordbar.Ein/Aus-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "bordbar.availability"
     ga: "4/2/68"
     dpt: "1.011"
     payload_path: "$.online"
     description: "Beleuchtung.EG.Wohnzimmer.Bordbar.Verbindung-Status"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # ---------------------------------------------------------------------------
@@ -1624,49 +1623,49 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Geschirrspüler.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/5"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Geschirrspüler.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/6"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Geschirrspüler.Programm"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/7"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Geschirrspüler.Programm-Phase"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/8"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Geschirrspüler.Restzeit"
-    min_delta: 1  # minutes
+    min_delta: 1 # minutes
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/10"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Geschirrspüler.Hinweis-Fertig"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.geschirrspueler.state"
     ga: "17/1/13"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Geschirrspüler.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Miele Backofen status feedback (KNX<-NATS). Kern-Ist-Temperatur only
@@ -1677,70 +1676,70 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Backofen.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/66"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Backofen.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/67"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Backofen.Tür-Offen"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/68"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Backofen.Programm"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/69"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Backofen.Programm-Phase"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/70"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Backofen.Restzeit"
-    min_delta: 1  # minutes
+    min_delta: 1 # minutes
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/72"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Backofen.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/74"
     dpt: "9.001"
     payload_path: "$.core_temperature_c"
     description: "Haushaltstechnik.Backofen.Kern-Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/76"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Backofen.Hinweis-Fertig"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.backofen.state"
     ga: "17/1/77"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Backofen.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Miele Tellerwärmer status feedback (KNX<-NATS). The appliance has no
@@ -1750,28 +1749,28 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Tellerwärmer.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
     ga: "17/1/84"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Tellerwärmer.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
     ga: "17/1/85"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Tellerwärmer.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "miele.tellerwaermer.state"
     ga: "17/1/87"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Tellerwärmer.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Miele Mikrowelle status feedback (KNX<-NATS).
@@ -1780,63 +1779,63 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Mikrowelle.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/106"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Mikrowelle.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/107"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Mikrowelle.Tür-Offen"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/108"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Mikrowelle.Programm"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/109"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Mikrowelle.Programm-Phase"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/110"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Mikrowelle.Restzeit"
-    min_delta: 1  # minutes
+    min_delta: 1 # minutes
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/112"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Mikrowelle.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/114"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Mikrowelle.Hinweis"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.mikrowelle.state"
     ga: "17/1/115"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Mikrowelle.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Miele Kaffeemaschine status feedback (KNX<-NATS). Entkalken/Reinigen/
@@ -1847,42 +1846,42 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Kaffeemaschine.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
     ga: "17/1/125"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Kaffeemaschine.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
     ga: "17/1/126"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Kaffeemaschine.Programm"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
     ga: "17/1/127"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Kaffeemaschine.Programm-Phase"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
     ga: "17/1/128"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Kaffeemaschine.Hinweis"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.kaffeemaschine.state"
     ga: "17/1/132"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Kaffeemaschine.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
 
   # Miele Dampfgarer status feedback (KNX<-NATS).
@@ -1891,61 +1890,61 @@ mappings:
     dpt: "5.010"
     payload_path: "$.status"
     description: "Haushaltstechnik.Dampfgarer.Status"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/146"
     dpt: "1.005"
     payload_path: "$.failure"
     description: "Haushaltstechnik.Dampfgarer.Störung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/147"
     dpt: "1.019"
     payload_path: "$.door_open"
     description: "Haushaltstechnik.Dampfgarer.Tür-Offen"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/148"
     dpt: "5.010"
     payload_path: "$.program"
     description: "Haushaltstechnik.Dampfgarer.Programm"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/149"
     dpt: "5.010"
     payload_path: "$.phase"
     description: "Haushaltstechnik.Dampfgarer.Programm-Phase"
-    min_delta: 0  # enum state: write only on change
+    min_delta: 0 # enum state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/150"
     dpt: "7.006"
     payload_path: "$.remaining_minutes"
     description: "Haushaltstechnik.Dampfgarer.Restzeit"
-    min_delta: 1  # minutes
+    min_delta: 1 # minutes
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/152"
     dpt: "9.001"
     payload_path: "$.temperature_c"
     description: "Haushaltstechnik.Dampfgarer.Ist-Temperatur"
-    min_delta: 0.5  # °C
+    min_delta: 0.5 # °C
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/154"
     dpt: "1.005"
     payload_path: "$.info"
     description: "Haushaltstechnik.Dampfgarer.Hinweis"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
   - subject: "miele.dampfgarer.state"
     ga: "17/1/155"
     dpt: "1.003"
     payload_path: "$.remote_control"
     description: "Haushaltstechnik.Dampfgarer.Fernsteuerung"
-    min_delta: 0  # bool state: write only on change
+    min_delta: 0 # bool state: write only on change
     seed_on_start: true
