@@ -1,0 +1,13 @@
+---
+version: "3"
+
+tasks:
+  inventory:
+    desc: "regenerate the Basalte logic inventory from a Studio export [path/to/export.bcfg]"
+    vars:
+      EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
+    preconditions:
+      - sh: test -f "{{.EXPORT}}"
+        msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
+    cmds:
+      - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" docs/basalte/logic-inventory.md
