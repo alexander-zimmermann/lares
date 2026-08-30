@@ -1,0 +1,89 @@
+name: Sidecar Python Auto Release
+
+on:
+  workflow_call:
+    inputs:
+      bump:
+        description: Version component to bump (major, minor, patch)
+        type: string
+        default: minor
+    secrets:
+      RENOVATE_APP_ID:
+        description: App ID used to mint a token that can push to a protected main
+        required: true
+      RENOVATE_PRIVATE_KEY:
+        description: Private key for the same App
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_PRIVATE_KEY }}
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Check for commits since last tag
+        id: guard
+        run: |
+          last=$(git describe --tags --match 'v*' --abbrev=0 2>/dev/null || true)
+          if [ -n "$last" ] && [ -z "$(git log "$last"..HEAD --oneline)" ]; then
+            echo "go=false" >> "$GITHUB_OUTPUT" # nothing merged since last release
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up uv
+        if: steps.guard.outputs.go == 'true'
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+
+      - name: Bump version
+        id: bump
+        if: steps.guard.outputs.go == 'true'
+        env:
+          BUMP: ${{ inputs.bump }}
+        run: |
+          uv version --bump "$BUMP" # updates pyproject.toml and uv.lock
+          v=$(uv version --short)
+          echo "tag=v$v" >> "$GITHUB_OUTPUT"
+          echo "branch=release/v$v" >> "$GITHUB_OUTPUT"
+
+      - name: Open and merge release PR
+        if: steps.guard.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config user.name "renovate[bot]"
+          git config user.email "29139614+renovate[bot]@users.noreply.github.com"
+          git switch -c "${{ steps.bump.outputs.branch }}"
+          git commit -am "chore(release): bump version to ${{ steps.bump.outputs.tag }}"
+          git push -u origin "${{ steps.bump.outputs.branch }}"
+          gh pr create --base main --head "${{ steps.bump.outputs.branch }}" \
+            --title "chore(release): ${{ steps.bump.outputs.tag }}" \
+            --body "Automated monthly release."
+          for _ in $(seq 1 10); do # wait out mergeability computation
+            [ "$(gh pr view "${{ steps.bump.outputs.branch }}" --json mergeable -q .mergeable)" = "MERGEABLE" ] && break
+            sleep 3
+          done
+          gh pr merge "${{ steps.bump.outputs.branch }}" --squash --delete-branch
+
+      - name: Tag release and create GitHub release
+        if: steps.guard.outputs.go == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git fetch origin main
+          git tag "${{ steps.bump.outputs.tag }}" origin/main # app push triggers the release workflow
+          git push origin "${{ steps.bump.outputs.tag }}"
+          gh release create "${{ steps.bump.outputs.tag }}" --generate-notes --title "${{ steps.bump.outputs.tag }}"

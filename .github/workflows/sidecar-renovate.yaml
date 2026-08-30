@@ -1,0 +1,61 @@
+name: Sidecar Renovate
+
+on:
+  workflow_call:
+    inputs:
+      dryRun:
+        description: Renovate dry-run mode; empty for a normal run
+        type: string
+        default: ""
+      logLevel:
+        description: Renovate log level
+        type: string
+        default: debug
+      version:
+        description: Renovate version to run
+        type: string
+        default: latest
+    secrets:
+      RENOVATE_APP_ID:
+        description: App ID Renovate authenticates as
+        required: true
+      RENOVATE_PRIVATE_KEY:
+        description: Private key for the same App
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Generate Token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        id: app-token
+        with:
+          # NOTE: 'app-id' is marked deprecated by the action, but GitHub's
+          # installation-token endpoint still rejects string client-id values
+          # with 'iss must be an Integer' (HTTP 401). Staying on numeric App ID.
+          app-id: ${{ secrets.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_PRIVATE_KEY }}
+
+      - name: Run Renovate
+        uses: renovatebot/github-action@e09d604f8f803bb527bd8321ed5be06c460b8682 # v46.2.2
+        env:
+          LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
+          RENOVATE_REPOSITORIES: ${{ github.repository }}
+          RENOVATE_DRY_RUN: ${{ inputs.dryRun }}
+          RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: "true"
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          renovate-version: ${{ inputs.version || 'latest' }}
