@@ -12,7 +12,6 @@ read generically. Decoded so far:
   ``notification`` the ``body``; device nodes reference an ``itemUuid``
 * device UUIDs resolve against the named objects elsewhere in the export
 
-The rendered output is German on purpose: it is documentation, not code.
 """
 
 from __future__ import annotations
@@ -134,7 +133,7 @@ def extract(export: Path) -> list[dict]:
         name = field_of(value, 2)
         blocks.append(
             {
-                "name": name if isinstance(name, str) else "(ohne Namen)",
+                "name": name if isinstance(name, str) else "(unnamed)",
                 "n": len(models),
                 "kinds": dict(collections.Counter(m["name"].split("::")[-1] for m in models)),
                 "refs": sorted(set(refs)),
@@ -152,24 +151,24 @@ def extract(export: Path) -> list[dict]:
 def render(blocks: list[dict], named: int) -> str:
     pushing = sum(1 for b in blocks if b["notif"])
     summary = (
-        f"**{len(blocks)} Logikblöcke**, davon **{pushing} mit Push-Benachrichtigung**. "
-        f"{named} benannte Objekte im Export."
+        f"**{len(blocks)} logic blocks**, **{pushing} of them sending a push notification**. "
+        f"{named} named objects in the export."
     )
-    out = ["# Basalte-Logik: Bestandsaufnahme", ""]
+    out = ["# Basalte logic: inventory", ""]
     out += [
-        "Erzeugt aus dem Studio-Export mit `task basalte:inventory` — **nicht von Hand pflegen**,",
-        "sondern nach jeder Änderung in Basalte neu erzeugen und den Diff ansehen.",
+        "Generated from the Studio export with `task basalte:inventory` — **do not hand-edit**.",
+        "Regenerate after every change in Basalte and read the diff.",
         "",
-        "Der Export selbst liegt nicht im Repo: 14 MB binär, und er enthält mindestens einen",
-        "Wert, der wie ein Zugangstoken aussieht. Ablage siehe `docs/basalte/README.md`.",
+        "The export itself is not in the repo: 14 MB of binary, and it carries at least one",
+        "value that looks like an access token. See `docs/basalte/README.md` for where it goes.",
         "",
         summary,
         "",
-        "## Blöcke mit Benachrichtigung",
+        "## Blocks that send a notification",
         "",
-        "Der Bestand, gegen den jede neu geplante Störung geprüft werden muss.",
+        "The existing set, against which every newly planned fault has to be checked.",
         "",
-        "| Block | Meldung | Schwellen | Geräte |",
+        "| Block | Message | Thresholds | Devices |",
         "|---|---|---|---|",
     ]
     for b in sorted([x for x in blocks if x["notif"]], key=lambda x: str(x["name"])):
@@ -177,7 +176,7 @@ def render(blocks: list[dict], named: int) -> str:
         th = ", ".join(map(str, b["thresholds"])) or "—"
         txt = str(b["notif"][0]).replace("\n", " ").replace("|", "/")
         out.append(f"| {b['name']} | {txt} | {th} | {refs} |")
-    out += ["", "## Alle Blöcke", "", "| Block | Knoten | Bausteine |", "|---|---:|---|"]
+    out += ["", "## All blocks", "", "| Block | Nodes | Node types |", "|---|---:|---|"]
     for b in sorted(blocks, key=lambda x: str(x["name"])):
         kinds = ", ".join(f"{k}×{v}" for k, v in sorted(b["kinds"].items()) if k != "comment")
         out.append(f"| {b['name']} | {b['n']} | {kinds[:150]} |")
@@ -189,4 +188,4 @@ if __name__ == "__main__":
     export_path = Path(sys.argv[1])
     blocks, named = extract(export_path)
     Path(sys.argv[2]).write_text(render(blocks, named), encoding="utf-8")
-    print(f"{len(blocks)} Blöcke aus {export_path.name}, {named} benannte Objekte")
+    print(f"{len(blocks)} blocks from {export_path.name}, {named} named objects")
