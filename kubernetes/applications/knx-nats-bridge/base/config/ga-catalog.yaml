@@ -10600,6 +10600,12 @@
   name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Temperatur
   room: Hauswirtschaftsraum
   writable: false
+6/1/113:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Verbindung-Status
+  room: Hauswirtschaftsraum
+  writable: false
 6/1/60:
   dpt: '1.003'
   function: Raumklima
@@ -10677,6 +10683,12 @@
   function: Raumklima
   name: Raumklima.KG.Vorratsraum.Entfeuchter.Temperatur
   room: Vorratsraum
+  writable: false
+6/1/73:
+  dpt: '1.011'
+  function: Raumklima
+  name: Raumklima.KG.Vorratsraum.Entfeuchter.Verbindung-Status
+  room: Hauswirtschaftsraum
   writable: false
 6/2/0:
   dpt: '1.003'
