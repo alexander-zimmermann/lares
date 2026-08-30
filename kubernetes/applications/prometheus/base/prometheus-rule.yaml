@@ -259,6 +259,21 @@ spec:
             summary: "Dehumidifier {{ $labels.device }} unreachable"
             description: "The bridge has not held a connection for 30m — device unplugged, moved, or off the WLAN."
 
+        # The disconnect alert above is deliberately slow, because these units
+        # drop off the WLAN constantly and recover on their own. This one fires
+        # on the damage instead: a commanded state the appliance still has not
+        # been given. The bridge holds it and re-sends on every reconnect, so
+        # anything still pending after 15m means the appliance is not coming
+        # back on its own.
+        - alert: MideaCommandNotDelivered
+          expr: midea_pending_commands > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Dehumidifier {{ $labels.device }} has not received a command"
+            description: "{{ $value }} command(s) have been waiting 15m for {{ $labels.device }} — the humidity alarm may be switching a device that never hears it."
+
     # The only cloud-dependent bridge in the stack: appliance state goes stale
     # whenever the WAN link or Miele is down, and the access token is a second
     # way to lose the stream without the pod noticing. Warning throughout —
