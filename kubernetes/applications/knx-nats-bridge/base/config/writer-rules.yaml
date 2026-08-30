@@ -1509,6 +1509,16 @@ mappings:
     description: "Raumklima.KG.Vorratsraum.Entfeuchter.Temperatur"
     min_delta: 0.5  # °C
     seed_on_start: true
+  # `power` is what the appliance reports; while the bridge holds no connection
+  # to it there is nothing to report and every status GA above keeps its last
+  # value, which reads exactly like a settled appliance.
+  - subject: "midea.entfeuchter-kg4.availability"
+    ga: "6/1/73"
+    dpt: "1.011"
+    payload_path: "$.online"
+    description: "Raumklima.KG.Vorratsraum.Entfeuchter.Verbindung-Status"
+    min_delta: 0  # bool state: write only on change
+    seed_on_start: true
 
   # Entfeuchter Hauswirtschaftsraum status feedback (KNX<-NATS). The command GAs
   # (100/102/104/106/108) are driven KNX->device by the
@@ -1569,6 +1579,13 @@ mappings:
     payload_path: "$.temperature_c"
     description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Temperatur"
     min_delta: 0.5  # °C
+    seed_on_start: true
+  - subject: "midea.entfeuchter-kg5.availability"
+    ga: "6/1/113"
+    dpt: "1.011"
+    payload_path: "$.online"
+    description: "Raumklima.KG.Hauswirtschaftsraum.Entfeuchter.Verbindung-Status"
+    min_delta: 0  # bool state: write only on change
     seed_on_start: true
 
   # Bordbar LED status feedback (KNX<-NATS). The command GAs (4/2/61/63-67) are
