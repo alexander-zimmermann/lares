@@ -5,7 +5,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/midea-nats-bridge
-    tag: 0.6.0
+    tag: 0.7.0
     pullPolicy: IfNotPresent
 
   # A second replica would apply every command to the appliance twice.
