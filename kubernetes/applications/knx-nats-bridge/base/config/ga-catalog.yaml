@@ -10688,7 +10688,7 @@
   dpt: '1.011'
   function: Raumklima
   name: Raumklima.KG.Vorratsraum.Entfeuchter.Verbindung-Status
-  room: Hauswirtschaftsraum
+  room: Vorratsraum
   writable: false
 6/2/0:
   dpt: '1.003'
