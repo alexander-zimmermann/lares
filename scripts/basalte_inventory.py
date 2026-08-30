@@ -150,9 +150,10 @@ def extract(export: Path) -> list[dict]:
 
 def render(blocks: list[dict], named: int) -> str:
     pushing = sum(1 for b in blocks if b["notif"])
+    messages = sum(len(b["notif"]) for b in blocks)
     summary = (
-        f"**{len(blocks)} logic blocks**, **{pushing} of them sending a push notification**. "
-        f"{named} named objects in the export."
+        f"**{len(blocks)} logic blocks**, **{pushing} of them notifying**, carrying "
+        f"**{messages} distinct notifications** between them. {named} named objects in the export."
     )
     out = ["# Basalte logic: inventory", ""]
     out += [
@@ -164,9 +165,10 @@ def render(blocks: list[dict], named: int) -> str:
         "",
         summary,
         "",
-        "## Blocks that send a notification",
+        "## Notifications",
         "",
         "The existing set, against which every newly planned fault has to be checked.",
+        "One row per notification — a block often carries several, one per room or device.",
         "",
         "| Block | Message | Thresholds | Devices |",
         "|---|---|---|---|",
@@ -174,8 +176,9 @@ def render(blocks: list[dict], named: int) -> str:
     for b in sorted([x for x in blocks if x["notif"]], key=lambda x: str(x["name"])):
         refs = ", ".join(r for r in map(str, b["refs"]) if not r.startswith("?")) or "—"
         th = ", ".join(map(str, b["thresholds"])) or "—"
-        txt = str(b["notif"][0]).replace("\n", " ").replace("|", "/")
-        out.append(f"| {b['name']} | {txt} | {th} | {refs} |")
+        for message in b["notif"]:
+            txt = str(message).replace("\n", " ").replace("|", "/")
+            out.append(f"| {b['name']} | {txt} | {th} | {refs} |")
     out += ["", "## All blocks", "", "| Block | Nodes | Node types |", "|---|---:|---|"]
     for b in sorted(blocks, key=lambda x: str(x["name"])):
         kinds = ", ".join(f"{k}×{v}" for k, v in sorted(b["kinds"].items()) if k != "comment")
