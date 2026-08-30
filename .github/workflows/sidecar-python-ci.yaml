@@ -1,0 +1,45 @@
+name: Sidecar Python CI
+
+on:
+  workflow_call:
+    inputs:
+      uv-extras:
+        description: Space-separated optional-dependency groups to sync (e.g. "dev tools import")
+        type: string
+        default: dev
+      python-version:
+        description: Python version for setup-uv
+        type: string
+        default: "3.14"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        env:
+          UV_EXTRAS: ${{ inputs.uv-extras }}
+        run: |
+          read -ra extras <<< "$UV_EXTRAS"
+          args=()
+          for extra in "${extras[@]}"; do args+=(--extra "$extra"); done
+          uv sync "${args[@]}"
+
+      - name: Ruff
+        run: uv run ruff check .
+
+      - name: Mypy
+        run: uv run mypy src
+
+      - name: Pytest
+        run: uv run pytest -q
