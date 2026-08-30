@@ -6,148 +6,148 @@ Regenerate after every change in Basalte and read the diff.
 The export itself is not in the repo: 14 MB of binary, and it carries at least one
 value that looks like an access token. See `docs/basalte/README.md` for where it goes.
 
-**166 logic blocks**, **28 of them notifying**, carrying **133 distinct notifications** between them. 877 named objects in the export.
+**166 logic blocks**, **28 of them notifying**, carrying **133 distinct notifications** between them — 112 to the app, 21 by e-mail. 877 named objects in the export.
 
 ## Notifications
 
 The existing set, against which every newly planned fault has to be checked.
 One row per notification — a block often carries several, one per room or device.
 
-| Block | Message | Thresholds | Devices |
-|---|---|---|---|
-| (unnamed) | Kritisch: Warmwasser Ist-Temperatur auffällig. | — | — |
-| (unnamed) | Kritisch: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Warnung: Warmwasser Ist-Temperatur auffällig. | — | — |
-| (unnamed) | Info: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Warnung: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Info: Warmwasser Ist-Temperatur auffällig. | — | — |
-| A5 - Dach | Windgeschwindigkeit größer als 36km/h für mehr als 3 Minuten. | False, True | — |
-| Alarmauslösung EMA Extern Scharf | Linienüberschreitung auf der Terrasse! | 1, False | Pollerleuchte |
-| An/Abwesend - Meldung | Willkommen zu Hause. | — | — |
-| An/Abwesend - Meldung | Außer Haus. | — | — |
-| Annomalie Temperatur | Kritisch: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Warnung: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Warnung: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Kritisch: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Info: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Info: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Therme | Kritisch: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
-| Annomalie Therme | Info: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Kritisch: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Info: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Info: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
-| Annomalie Therme | Kritisch: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Warnung: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Warnung: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Warnung: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
-| CO-Melder Alarm | Technischer Alarm: Technikraum (K3) CO-Melder. | — | — |
-| DG - Dachgeschoss | Warnung: im Speicher (S) ist der Taupunkt unterschritten. | — | — |
-| DG - Dachgeschoss | Warnung: im Speicher (S) ist der CO2 Wert > 1600ppm. | — | — |
-| DG - Dachgeschoss | Warnung: im Abstellraum (O2) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: im Büro (E3) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: im Esszimmer (E5) ist der CO2 Wert > 1400ppm. | — | — |
-| EG - Erdgeschoss | Warnung: im der Küche (E6) ist der Taupunkt unterschritten. | — | — |
-| EG - Erdgeschoss | Warnung: im Wohnzimmer (E4) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: in der Küche (E6) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: im Gäste WC (E2) ist der CO2 Wert > 1400ppm. | — | — |
-| EG - Erdgeschoss | Warnung: im Gäste WC (E2) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: im Wohnzimmer (E4) ist der CO2 Wert > 1400ppm. | — | — |
-| EG - Erdgeschoss | Warnung: im Esszimmer (E5) ist der Taupunkt unterschritten. | — | — |
-| EG - Erdgeschoss | Warnung: im Gäste WC (E2) ist der Taupunkt unterschritten. | — | — |
-| EG - Erdgeschoss | Warnung: im Esszimmer (E5) ist die Luftfeuchtigkeit > 65%. | — | — |
-| EG - Erdgeschoss | Warnung: im Arbeitszimmer (E3) ist der Taupunkt unterschritten. | — | — |
-| EG - Erdgeschoss | Warnung: im der Küche (E6) ist der CO2 Wert > 1400ppm. | — | — |
-| EG - Erdgeschoss | Warnung: im Wohnzimmer (E4) ist der Taupunkt unterschritten. | — | — |
-| EG - Erdgeschoss | Warnung: im Arbeitszimmer (E3) ist der CO2 Wert > 1400ppm. | — | — |
-| EG - Erdgeschoss | Warnung: im Flur (E1) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| EG - Erdgeschoss | Warnung: im Gäste WC (E2) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| EG - Erdgeschoss | Warnung: in der Küche (E6) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| EG - Erdgeschoss | Warnung: im Arbeitszimmer (E3) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| EG - Erdgeschoss | Warnung: im Esszimmer (E5) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| EG - Erdgeschoss | Warnung: im Wohnzimmer (E4) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
-| Gasmelder Alarm | Technischer Alarm: Vorratsraum (K4) Gasmelder. | — | — |
-| Gasmelder Alarm | Technischer Alarm: Technikraum (K3) Gasmelder. | — | — |
-| Gefriehrschrank - Türe auf | Warnung:erhöhter Stromverbrauch festgestellt. Möglicherweise ist die Türe nicht richtig geschlossen. | 120, 150, 180, 210, 25.5, 27 | Fußbodenheizung |
-| KG - Kellergeschoss | Warnung: im Hauswirtschaftsraum (K5) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
-| KG - Kellergeschoss | Warnung: im Technikraum (K3) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
-| KG - Kellergeschoss | Warnung: in der Garage (K2) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
-| KG - Kellergeschoss | Warnung: im Vorratsraum (K4) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
-| KG - Kellergeschoss | Warnung: im Hauswirtschaftsraum (K5) ist der Taupunkt unterschritten. | — | — |
-| KG - Kellergeschoss | Warnung: im Hauswirtschaftsraum (K5) ist der CO2 Wert > 1400ppm. | — | — |
-| KG - Kellergeschoss | Warnung: im der Garage (K2) ist die Luftfeuchtigkeit > 65%. | — | — |
-| KG - Kellergeschoss | Warnung: im Vorratsraum (K4) ist der CO2 Wert > 1400ppm. | — | — |
-| KG - Kellergeschoss | Warnung: im Hauswirtschaftsraum (K5) ist die Luftfeuchtigkeit > 65%. | — | — |
-| KG - Kellergeschoss | Warnung: im Technikraum (K3) ist der CO2 Wert > 1400ppm. | — | — |
-| KG - Kellergeschoss | Warnung: in der Garage (K2) ist der Taupunkt unterschritten. | — | — |
-| KG - Kellergeschoss | Warnung: im Technikraum (K3) i ist der Taupunkt unterschritten. | — | — |
-| KG - Kellergeschoss | Warnung: im Technikraum (K3) ist die Luftfeuchtigkeit > 65%. | — | — |
-| KG - Kellergeschoss | Warnung: im Vorratsraum (K4) ist die Luftfeuchtigkeit > 65%. | — | — |
-| KG - Kellergeschoss | Warnung: im Vorratsraum (K4)  ist der Taupunkt unterschritten. | — | — |
-| KG - Kellergeschoss | Warnung: in der Garage (K2) ist der CO2 Wert > 1400ppm. | — | — |
-| Kühlschrank - Türe auf | Warnung:erhöhter Stromverbrauch festgestellt. Möglicherweise ist die Türe nicht richtig geschlossen. | 25.5, 27, 30, 60, 80, 90 | Fußbodenheizung |
-| Meldung Bewässerung | Die Bewässerung für Kreislauf 1 ist gestoppt worden. | — | — |
-| Meldung Bewässerung | Die Bewässerung für Kreislauf 1 ist gestartet worden. | — | — |
-| Meldungen Sabotage | Sabotage: Leitungsüberwachung Optischer Signalgeber. | — | — |
-| Meldungen Sabotage | Sabotage: Wandabreisskontakt Signalgeber. | — | — |
-| Meldungen Sabotage | Sabotage: Deckelkontakt. | — | — |
-| Meldungen Sabotage | Sabotage: Leitungsüberwachung Akustischer Signalgeber. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich Alarm! | — | — |
-| Meldungen Sicherungsbereich | Warnung: das Haus ist verlassen worden und die Sicherungsbereich ist nicht extern scharf geschaltet worden. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich extern scharf geschaltet. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich unscharf geschaltet. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich intern scharf geschaltet. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich unscharf geschaltet. | — | — |
-| Meldungen Sicherungsbereich | Sicherungsbereich scharf geschaltet. | — | — |
-| Meldungen Störung | Störung Akku. | — | — |
-| Meldungen Störung | Störung Netz. | — | — |
-| Meldungen Störung | Störung Übertragungseinrichtung. | — | — |
-| Meldungen Störung | Störung des Sicherungsbereich. | — | — |
-| Meldungen Terrasse EMA Extern Scharf | Sirenengeräusch auf der Terrasse Wohnzimmer erkannt! | False, True | — |
-| Meldungen Terrasse EMA Extern Scharf | Einruchsgegäusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
-| Meldungen Terrasse EMA Extern Scharf | Glasbruchgeräusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
-| Meldungen Terrasse EMA Extern Scharf | Personen auf der Terrasse Wohnzimmer erkannt! | False, True | — |
-| Meldungen Terrasse EMA Extern Scharf | Geschrächsgeräusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
-| Meldungen Wohnzimmer EMA Extern Scharf | Sirenengeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
-| Meldungen Wohnzimmer EMA Extern Scharf | Geschrächsgeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
-| Meldungen Wohnzimmer EMA Extern Scharf | Glasbruchgeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
-| Meldungen Wohnzimmer EMA Extern Scharf | Einruchsgegäusch auf der Terrasse Esszimmer erkannt! | False, True | — |
-| Meldungen Wohnzimmer EMA Extern Scharf | Personen auf der Terrasse Esszimmer erkannt! | False, True | — |
-| OG - Obergeschoss | Warnung: im Kinderbad (O3) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: im Abstellraum (O2) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: in Luis Schlafzimmer (O5) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: in Luis Schlafzimmer (O5) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: im Kinderbad (O3) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Gregory's Schlafzimmer (O4) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: im Kinderbad (O3) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: im Abstellraum (O2) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Elternbad (O8) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: im Gregory's Schlafzimmer (O4) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Elternbad (O8) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Abstellraum (O2) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: in Luis Schlafzimmer (O5) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Elternschlafzimmer (O6) ist die Luftfeuchtigkeit > 65%. | — | — |
-| OG - Obergeschoss | Warnung: in Gregory's Schlafzimmer (O4) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: im Elternbad (O8) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: im Elternschlafzimmer (O6) ist der CO2 Wert > 1600ppm. | — | — |
-| OG - Obergeschoss | Warnung: im Elternschlafzimmer (O6) ist der Taupunkt unterschritten. | — | — |
-| OG - Obergeschoss | Warnung: im Schlafzimmer (O6) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: im Kinderbad (O3) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: in Luis Schafzimmer (O5) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: im Elternbad (O8) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: in Gregory's Schlafzimmer (O4) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: im Flur (O1) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| OG - Obergeschoss | Warnung: im Abstellraum (O2) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
-| Trockner - Programmaktionen | Trockenprogramm ist beendet. | False, True | — |
-| Waschmaschine - Programmaktionen | Waschmaschinenprogramm ist beendet. | False, True | — |
-| Wasser - Erweiteter Durchflussalarm | Wasserdurchfluss für Wasserzähler Haus größer als 1000 l/h für mehr als 1 Minute. | False, True | — |
-| Wasser - Erweiteter Durchflussalarm | Wasserdurchfluss für Wasserzähler Garten größer als 1000 l/h für mehr als 1 Minute. | False, True | — |
-| Wassermelder Alarm | Technischer Alarm: Flur (E1) Wassermelder. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Küche (E6) Wassermelder Küchenzeile Links. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Küche (E6) Wassermelder Kücheninsel. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Flur (E6) Wassermelder Küchenzeile Rechts. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Elternschlafzimmer (O6) Wassermelder. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Technikraum (K3) Wassermelder. | — | — |
-| Wassermelder Alarm | Technischer Alarm: Hauswirtschaftsraum (K5) Wassermelder. | — | — |
+| Block | Channel | Message | Thresholds | Devices |
+|---|---|---|---|---|
+| (unnamed) | email | Kritisch: Warmwasser Ist-Temperatur auffällig. | — | — |
+| (unnamed) | email | Kritisch: Warmwasser Durchfluss auffällig. | — | — |
+| (unnamed) | email | Warnung: Warmwasser Ist-Temperatur auffällig. | — | — |
+| (unnamed) | email | Info: Warmwasser Durchfluss auffällig. | — | — |
+| (unnamed) | email | Warnung: Warmwasser Durchfluss auffällig. | — | — |
+| (unnamed) | email | Info: Warmwasser Ist-Temperatur auffällig. | — | — |
+| A5 - Dach | app | Windgeschwindigkeit größer als 36km/h für mehr als 3 Minuten. | False, True | — |
+| Alarmauslösung EMA Extern Scharf | app | Linienüberschreitung auf der Terrasse! | 1, False | Pollerleuchte |
+| An/Abwesend - Meldung | app | Willkommen zu Hause. | — | — |
+| An/Abwesend - Meldung | app | Außer Haus. | — | — |
+| Annomalie Temperatur | email | Kritisch: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Temperatur | email | Warnung: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Temperatur | email | Warnung: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Temperatur | email | Kritisch: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Temperatur | email | Info: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Temperatur | email | Info: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Annomalie Therme | email | Kritisch: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
+| Annomalie Therme | email | Info: Heizverhalten saisonal auffällig (Forecast). | — | — |
+| Annomalie Therme | email | Kritisch: Brenner Modulation auffällig. | — | — |
+| Annomalie Therme | email | Info: Brenner Modulation auffällig. | — | — |
+| Annomalie Therme | email | Info: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
+| Annomalie Therme | email | Kritisch: Heizverhalten saisonal auffällig (Forecast). | — | — |
+| Annomalie Therme | email | Warnung: Heizverhalten saisonal auffällig (Forecast). | — | — |
+| Annomalie Therme | email | Warnung: Brenner Modulation auffällig. | — | — |
+| Annomalie Therme | email | Warnung: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
+| CO-Melder Alarm | app | Technischer Alarm: Technikraum (K3) CO-Melder. | — | — |
+| DG - Dachgeschoss | app | Warnung: im Speicher (S) ist der Taupunkt unterschritten. | — | — |
+| DG - Dachgeschoss | app | Warnung: im Speicher (S) ist der CO2 Wert > 1600ppm. | — | — |
+| DG - Dachgeschoss | app | Warnung: im Abstellraum (O2) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Büro (E3) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Esszimmer (E5) ist der CO2 Wert > 1400ppm. | — | — |
+| EG - Erdgeschoss | app | Warnung: im der Küche (E6) ist der Taupunkt unterschritten. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Wohnzimmer (E4) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: in der Küche (E6) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Gäste WC (E2) ist der CO2 Wert > 1400ppm. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Gäste WC (E2) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Wohnzimmer (E4) ist der CO2 Wert > 1400ppm. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Esszimmer (E5) ist der Taupunkt unterschritten. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Gäste WC (E2) ist der Taupunkt unterschritten. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Esszimmer (E5) ist die Luftfeuchtigkeit > 65%. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Arbeitszimmer (E3) ist der Taupunkt unterschritten. | — | — |
+| EG - Erdgeschoss | app | Warnung: im der Küche (E6) ist der CO2 Wert > 1400ppm. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Wohnzimmer (E4) ist der Taupunkt unterschritten. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Arbeitszimmer (E3) ist der CO2 Wert > 1400ppm. | — | — |
+| EG - Erdgeschoss | app | Warnung: im Flur (E1) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| EG - Erdgeschoss | app | Warnung: im Gäste WC (E2) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| EG - Erdgeschoss | app | Warnung: in der Küche (E6) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| EG - Erdgeschoss | app | Warnung: im Arbeitszimmer (E3) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| EG - Erdgeschoss | app | Warnung: im Esszimmer (E5) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| EG - Erdgeschoss | app | Warnung: im Wohnzimmer (E4) ist noch ein Fenster geöffnet. | — | Eingangstüre, Fenster, Fenster Links, Fenster Mitte, Fenster Mitte Links, Fenster Mitte Rechts, Fenster Rechts, Fenster Seite |
+| Gasmelder Alarm | app | Technischer Alarm: Vorratsraum (K4) Gasmelder. | — | — |
+| Gasmelder Alarm | app | Technischer Alarm: Technikraum (K3) Gasmelder. | — | — |
+| Gefriehrschrank - Türe auf | app | Warnung:erhöhter Stromverbrauch festgestellt. Möglicherweise ist die Türe nicht richtig geschlossen. | 120, 150, 180, 210, 25.5, 27 | Fußbodenheizung |
+| KG - Kellergeschoss | app | Warnung: im Hauswirtschaftsraum (K5) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
+| KG - Kellergeschoss | app | Warnung: im Technikraum (K3) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
+| KG - Kellergeschoss | app | Warnung: in der Garage (K2) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
+| KG - Kellergeschoss | app | Warnung: im Vorratsraum (K4) ist noch ein Fenster geöffnet. | — | Fenster, Garagentor |
+| KG - Kellergeschoss | app | Warnung: im Hauswirtschaftsraum (K5) ist der Taupunkt unterschritten. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Hauswirtschaftsraum (K5) ist der CO2 Wert > 1400ppm. | — | — |
+| KG - Kellergeschoss | app | Warnung: im der Garage (K2) ist die Luftfeuchtigkeit > 65%. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Vorratsraum (K4) ist der CO2 Wert > 1400ppm. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Hauswirtschaftsraum (K5) ist die Luftfeuchtigkeit > 65%. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Technikraum (K3) ist der CO2 Wert > 1400ppm. | — | — |
+| KG - Kellergeschoss | app | Warnung: in der Garage (K2) ist der Taupunkt unterschritten. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Technikraum (K3) i ist der Taupunkt unterschritten. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Technikraum (K3) ist die Luftfeuchtigkeit > 65%. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Vorratsraum (K4) ist die Luftfeuchtigkeit > 65%. | — | — |
+| KG - Kellergeschoss | app | Warnung: im Vorratsraum (K4)  ist der Taupunkt unterschritten. | — | — |
+| KG - Kellergeschoss | app | Warnung: in der Garage (K2) ist der CO2 Wert > 1400ppm. | — | — |
+| Kühlschrank - Türe auf | app | Warnung:erhöhter Stromverbrauch festgestellt. Möglicherweise ist die Türe nicht richtig geschlossen. | 25.5, 27, 30, 60, 80, 90 | Fußbodenheizung |
+| Meldung Bewässerung | app | Die Bewässerung für Kreislauf 1 ist gestoppt worden. | — | — |
+| Meldung Bewässerung | app | Die Bewässerung für Kreislauf 1 ist gestartet worden. | — | — |
+| Meldungen Sabotage | app | Sabotage: Leitungsüberwachung Optischer Signalgeber. | — | — |
+| Meldungen Sabotage | app | Sabotage: Wandabreisskontakt Signalgeber. | — | — |
+| Meldungen Sabotage | app | Sabotage: Deckelkontakt. | — | — |
+| Meldungen Sabotage | app | Sabotage: Leitungsüberwachung Akustischer Signalgeber. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich Alarm! | — | — |
+| Meldungen Sicherungsbereich | app | Warnung: das Haus ist verlassen worden und die Sicherungsbereich ist nicht extern scharf geschaltet worden. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich extern scharf geschaltet. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich unscharf geschaltet. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich intern scharf geschaltet. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich unscharf geschaltet. | — | — |
+| Meldungen Sicherungsbereich | app | Sicherungsbereich scharf geschaltet. | — | — |
+| Meldungen Störung | app | Störung Akku. | — | — |
+| Meldungen Störung | app | Störung Netz. | — | — |
+| Meldungen Störung | app | Störung Übertragungseinrichtung. | — | — |
+| Meldungen Störung | app | Störung des Sicherungsbereich. | — | — |
+| Meldungen Terrasse EMA Extern Scharf | app | Sirenengeräusch auf der Terrasse Wohnzimmer erkannt! | False, True | — |
+| Meldungen Terrasse EMA Extern Scharf | app | Einruchsgegäusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
+| Meldungen Terrasse EMA Extern Scharf | app | Glasbruchgeräusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
+| Meldungen Terrasse EMA Extern Scharf | app | Personen auf der Terrasse Wohnzimmer erkannt! | False, True | — |
+| Meldungen Terrasse EMA Extern Scharf | app | Geschrächsgeräusch auf der Wohnzimmer Esszimmer erkannt! | False, True | — |
+| Meldungen Wohnzimmer EMA Extern Scharf | app | Sirenengeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
+| Meldungen Wohnzimmer EMA Extern Scharf | app | Geschrächsgeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
+| Meldungen Wohnzimmer EMA Extern Scharf | app | Glasbruchgeräusch auf der Terrasse Esszimmer erkannt! | False, True | — |
+| Meldungen Wohnzimmer EMA Extern Scharf | app | Einruchsgegäusch auf der Terrasse Esszimmer erkannt! | False, True | — |
+| Meldungen Wohnzimmer EMA Extern Scharf | app | Personen auf der Terrasse Esszimmer erkannt! | False, True | — |
+| OG - Obergeschoss | app | Warnung: im Kinderbad (O3) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: im Abstellraum (O2) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: in Luis Schlafzimmer (O5) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: in Luis Schlafzimmer (O5) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: im Kinderbad (O3) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Gregory's Schlafzimmer (O4) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: im Kinderbad (O3) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: im Abstellraum (O2) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternbad (O8) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: im Gregory's Schlafzimmer (O4) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternbad (O8) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Abstellraum (O2) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: in Luis Schlafzimmer (O5) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternschlafzimmer (O6) ist die Luftfeuchtigkeit > 65%. | — | — |
+| OG - Obergeschoss | app | Warnung: in Gregory's Schlafzimmer (O4) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternbad (O8) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternschlafzimmer (O6) ist der CO2 Wert > 1600ppm. | — | — |
+| OG - Obergeschoss | app | Warnung: im Elternschlafzimmer (O6) ist der Taupunkt unterschritten. | — | — |
+| OG - Obergeschoss | app | Warnung: im Schlafzimmer (O6) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: im Kinderbad (O3) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: in Luis Schafzimmer (O5) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: im Elternbad (O8) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: in Gregory's Schlafzimmer (O4) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: im Flur (O1) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| OG - Obergeschoss | app | Warnung: im Abstellraum (O2) ist noch ein Fenster geöffnet. | — | Fenster, Fenster Gallerie, Fenster Gang |
+| Trockner - Programmaktionen | app | Trockenprogramm ist beendet. | False, True | — |
+| Waschmaschine - Programmaktionen | app | Waschmaschinenprogramm ist beendet. | False, True | — |
+| Wasser - Erweiteter Durchflussalarm | app | Wasserdurchfluss für Wasserzähler Haus größer als 1000 l/h für mehr als 1 Minute. | False, True | — |
+| Wasser - Erweiteter Durchflussalarm | app | Wasserdurchfluss für Wasserzähler Garten größer als 1000 l/h für mehr als 1 Minute. | False, True | — |
+| Wassermelder Alarm | app | Technischer Alarm: Flur (E1) Wassermelder. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Küche (E6) Wassermelder Küchenzeile Links. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Küche (E6) Wassermelder Kücheninsel. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Flur (E6) Wassermelder Küchenzeile Rechts. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Elternschlafzimmer (O6) Wassermelder. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Technikraum (K3) Wassermelder. | — | — |
+| Wassermelder Alarm | app | Technischer Alarm: Hauswirtschaftsraum (K5) Wassermelder. | — | — |
 
 ## All blocks
 

@@ -139,7 +139,11 @@ def extract(export: Path) -> list[dict]:
                 "refs": sorted(set(refs)),
                 "thresholds": sorted({m["triggerValue"] for m in models if "triggerValue" in m}, key=str),
                 "notif": [
-                    m["body"].strip()
+                    {
+                        "body": m["body"].strip(),
+                        "sink": m.get("sink", "?"),
+                        "subject": m.get("subject", ""),
+                    }
                     for m in models
                     if m["name"].endswith("notification") and m.get("body", "").strip()
                 ],
@@ -151,9 +155,12 @@ def extract(export: Path) -> list[dict]:
 def render(blocks: list[dict], named: int) -> str:
     pushing = sum(1 for b in blocks if b["notif"])
     messages = sum(len(b["notif"]) for b in blocks)
+    app = sum(1 for b in blocks for n in b["notif"] if n["sink"] == "app")
+    mail = sum(1 for b in blocks for n in b["notif"] if n["sink"] == "email")
     summary = (
         f"**{len(blocks)} logic blocks**, **{pushing} of them notifying**, carrying "
-        f"**{messages} distinct notifications** between them. {named} named objects in the export."
+        f"**{messages} distinct notifications** between them — {app} to the app, {mail} by e-mail. "
+        f"{named} named objects in the export."
     )
     out = ["# Basalte logic: inventory", ""]
     out += [
@@ -170,15 +177,15 @@ def render(blocks: list[dict], named: int) -> str:
         "The existing set, against which every newly planned fault has to be checked.",
         "One row per notification — a block often carries several, one per room or device.",
         "",
-        "| Block | Message | Thresholds | Devices |",
-        "|---|---|---|---|",
+        "| Block | Channel | Message | Thresholds | Devices |",
+        "|---|---|---|---|---|",
     ]
     for b in sorted([x for x in blocks if x["notif"]], key=lambda x: str(x["name"])):
         refs = ", ".join(r for r in map(str, b["refs"]) if not r.startswith("?")) or "—"
         th = ", ".join(map(str, b["thresholds"])) or "—"
         for message in b["notif"]:
-            txt = str(message).replace("\n", " ").replace("|", "/")
-            out.append(f"| {b['name']} | {txt} | {th} | {refs} |")
+            txt = str(message["body"]).replace("\n", " ").replace("|", "/")
+            out.append(f"| {b['name']} | {message['sink']} | {txt} | {th} | {refs} |")
     out += ["", "## All blocks", "", "| Block | Nodes | Node types |", "|---|---:|---|"]
     for b in sorted(blocks, key=lambda x: str(x["name"])):
         kinds = ", ".join(f"{k}×{v}" for k, v in sorted(b["kinds"].items()) if k != "comment")
