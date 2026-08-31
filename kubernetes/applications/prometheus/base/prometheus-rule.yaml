@@ -50,6 +50,42 @@ spec:
             summary: "Gatus is not being scraped"
             description: "Gatus has not been scraped by Prometheus for more than 5 minutes — external reachability monitoring is offline."
 
+    # Endpoint state comes from the gatus_results_endpoint_success gauge; `for`
+    # replaces the per-endpoint failure-threshold, and one shared alertname per
+    # rule groups a multi-endpoint outage into a single notification.
+    - name: gatus-endpoint-alerts
+      rules:
+        - alert: GatusWanDown
+          # All external references unreachable at once = uplink, not endpoints.
+          # Inhibits every other Gatus alert while it fires.
+          expr: max(gatus_results_endpoint_success{group="External"}) == 0
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "WAN uplink down"
+            description: "None of the external reference endpoints (Cloudflare DNS, GitHub, Pushover API) are reachable — the uplink or WAN path is down, not the individual services."
+
+        - alert: GatusEndpointDown
+          expr: gatus_results_endpoint_success{group!="External", name!~"EMS-ESP|FRITZ!Box|KNX-IP|Prometheus Watchdog"} == 0
+          for: 3m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Endpoint {{ $labels.name }} unreachable"
+            description: "Gatus has seen only failed checks for {{ $labels.group }}/{{ $labels.name }} for 3 minutes."
+
+        # ESP32-class devices drop off the WLAN and recover on their own; the
+        # longer window replaces the old failure-threshold of 5.
+        - alert: GatusFlakyDeviceDown
+          expr: gatus_results_endpoint_success{name=~"EMS-ESP|FRITZ!Box|KNX-IP"} == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Device endpoint {{ $labels.name }} unreachable"
+            description: "Gatus has seen only failed checks for {{ $labels.name }} for 5 minutes — longer than its usual brief hiccups."
+
     - name: pbs-alerts
       rules:
         - alert: PbsDatastoreAlmostFull
