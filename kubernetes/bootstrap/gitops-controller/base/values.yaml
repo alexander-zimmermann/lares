@@ -85,98 +85,10 @@ applicationSet:
       cpu: 100m
       memory: 128Mi
 
-# Notifications controller send notifications (Slack/webhook/etc.) on sync/health events
+# Notifications controller off: Alertmanager owns delivery, and the
+# ArgoCD alerts already exist as debounced PrometheusRules on argocd_app_info
 notifications:
-  # Secret is managed via SealedSecret
-  secret:
-    create: false
-
-  # Resource limits and requests
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
-
-  # Pushover for sync failures, health degradation, and recovery — no email.
-  notifiers:
-    service.webhook.pushover: |
-      url: https://api.pushover.net/1/messages.json
-      headers:
-        - name: Content-Type
-          value: application/json
-
-  # Notification content per event type
-  templates:
-    template.app-sync-failed: |
-      webhook:
-        pushover:
-          method: POST
-          body: |
-            {
-              "token": "{{printf "%s" (index .secrets "pushover-token")}}",
-              "user": "{{printf "%s" (index .secrets "pushover-user-key")}}",
-              "title": "Sync Failed: {{.app.metadata.name}}",
-              "message": "{{.app.status.operationState.message | js}}",
-              "priority": 1,
-              "sound": "siren"
-            }
-    template.app-health-degraded: |
-      webhook:
-        pushover:
-          method: POST
-          body: |
-            {
-              "token": "{{printf "%s" (index .secrets "pushover-token")}}",
-              "user": "{{printf "%s" (index .secrets "pushover-user-key")}}",
-              "title": "Degraded: {{.app.metadata.name}}",
-              "message": "Health: {{.app.status.health.status}}",
-              "priority": 1,
-              "sound": "falling"
-            }
-    template.app-health-recovered: |
-      webhook:
-        pushover:
-          method: POST
-          body: |
-            {
-              "token": "{{printf "%s" (index .secrets "pushover-token")}}",
-              "user": "{{printf "%s" (index .secrets "pushover-user-key")}}",
-              "title": "Recovered: {{.app.metadata.name}}",
-              "message": "Application is healthy again.",
-              "priority": 0,
-              "sound": "magic"
-            }
-
-  # Trigger conditions: when to fire each notification.
-  # Triggers fire only on the false→true transition of `when`, so on-health-recovered
-  # only sends when health flips back to Healthy (typically after a Degraded period).
-  triggers:
-    trigger.on-sync-failed: |
-      - description: Application syncing has failed
-        send:
-          - app-sync-failed
-        when: app.status.operationState != nil && app.status.operationState.phase in ['Error', 'Failed']
-    trigger.on-health-degraded: |
-      - description: Application has degraded
-        send:
-          - app-health-degraded
-        when: app.status.health.status == 'Degraded'
-    trigger.on-health-recovered: |
-      - description: Application returned to healthy
-        send:
-          - app-health-recovered
-        when: app.status.health.status == 'Healthy'
-
-  subscriptions:
-    - recipients:
-        - pushover
-      triggers:
-        - on-sync-failed
-        - on-health-degraded
-        - on-health-recovered
+  enabled: false
 
 # Internal Redis for ArgoCD (caching/locking)
 redis:
