@@ -1,9 +1,10 @@
 version: "3"
 
 # Tasks for the KNX catalog pipeline. Paths come from Taskfile.yaml vars:
-#   KNX_BRIDGE_DIR    — sibling repo holding knxproj-to-yaml and the schema
-#   KNX_CATALOG_PATH  — destination ConfigMap source file in lares
-#   SCRIPTS_DIR       — lares scripts/
+#   KNX_BRIDGE_DIR        — sibling repo holding knxproj-to-yaml and the schema
+#   KNX_CATALOG_PATH      — destination ConfigMap source file in lares
+#   KNX_WRITER_RULES_PATH — writer-rules ConfigMap source file in lares
+#   SCRIPTS_DIR           — lares scripts/
 
 tasks:
   catalog:
@@ -58,6 +59,21 @@ tasks:
       ENRICH_SCRIPT: "{{.SCRIPTS_DIR}}/knx_enrich_catalog.py"
     cmds:
       - '"{{.ENRICH_SCRIPT}}" "{{.KNX_CATALOG_PATH}}"'
+
+  validate-writer-rules:
+    desc: "validate writer-rules.yaml with the bridge's own loader"
+    summary: |
+      Load the writer rules with the bridge's loader — schema validation plus
+      the DPT existence check and the reader-loop guard (prefix "knx", as in
+      production) — so a bad edit fails here instead of at pod start.
+    cmds:
+      - >
+        uv run --directory "{{.KNX_BRIDGE_DIR}}" python -c
+        "import sys; from pathlib import Path;
+        from knx_nats_bridge.writer_rules import WriterRules;
+        rules = WriterRules.load(Path(sys.argv[1]), reader_subject_prefix='knx');
+        print(f'OK: {len(rules)} rules on {len(rules.subjects())} subjects')"
+        "{{.KNX_WRITER_RULES_PATH}}"
 
   validate-catalog:
     desc: "validate ga-catalog.yaml against the JSON-Schema"
