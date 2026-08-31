@@ -37,16 +37,10 @@ spec:
               env:
                 - name: HOME
                   value: /tmp
-                # Low-urgency findings → e-mail via cluster-internal smtprelay
-                # (no auth/TLS for in-cluster senders). Overlay-patch for dev.
-                - name: SMTP_HOST
-                  value: smtprelay.smtprelay.svc.cluster.local
-                - name: SMTP_PORT
-                  value: "25"
-                - name: MAIL_FROM
-                  value: admin@zimmermann.sh
-                - name: MAIL_TO
-                  value: admin@zimmermann.sh
+                # Low-urgency findings → Alertmanager as severity=info,
+                # whose routing tree delivers them by e-mail
+                - name: ALERTMANAGER_URL
+                  value: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/api/v2/alerts
               resources:
                 requests:
                   cpu: 10m
