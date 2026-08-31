@@ -58,8 +58,14 @@ extraEnv:
     value: "10"
   - name: RUSTFS_DRIVE_ACTIVE_CHECK_TIMEOUT_SECS
     value: "30"
-  # Periodic mi_collect — without it mimalloc never returns freed pages and RSS
-  # ratchets into the memory limit. Upstream's run.sh enables it, the image does not.
+  # A full auto-heal over 100k+ objects on NFS-CSI cannot finish within the 300s default
+  # and times out.
+  - name: RUSTFS_HEAL_TASK_TIMEOUT_SECS
+    value: "3600"
+  # Fewer objects held live per heal page (default 8).
+  - name: RUSTFS_HEAL_PAGE_OBJECT_CONCURRENCY
+    value: "2"
+  # Redundant since rc.4 defaults it to true; kept explicit to pin the contract.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
