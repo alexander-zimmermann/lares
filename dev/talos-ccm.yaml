@@ -1,0 +1,322 @@
+apiVersion: talos.dev/v1alpha1
+kind: ServiceAccount
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: talos-cloud-controller-manager-talos-secrets
+  namespace: kube-system
+spec:
+  roles:
+  - os:reader
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: system:talos-cloud-controller-manager
+rules:
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/status
+  verbs:
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts
+  verbs:
+  - create
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - serviceaccounts/token
+  verbs:
+  - create
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/approval
+  verbs:
+  - update
+- apiGroups:
+  - certificates.k8s.io
+  resourceNames:
+  - kubernetes.io/kubelet-serving
+  resources:
+  - signers
+  verbs:
+  - approve
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    homelab.component: talos-ccm
+  name: system:talos-cloud-controller-manager:extension-apiserver-authentication-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    homelab.component: talos-ccm
+  name: system:talos-cloud-controller-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:talos-cloud-controller-manager
+subjects:
+- kind: ServiceAccount
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: v1
+data:
+  ccm-config.yaml: |
+    global:
+    transformations:
+      - labels:
+          node-role.kubernetes.io/worker: ""
+        name: worker-role
+        nodeSelector:
+        - matchExpressions:
+          - key: Hostname
+            operator: Regexp
+            values:
+            - ^(talos-dp|homelab-.*-data-plane)-.*$
+      - labels:
+          node.longhorn.io/create-default-disk: "true"
+        name: longhorn-storage
+        nodeSelector:
+        - matchExpressions:
+          - key: Hostname
+            operator: Regexp
+            values:
+            - ^(talos-dp|homelab-.*-data-plane)-.*$
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+spec:
+  clusterIP: None
+  ports:
+  - name: metrics
+    port: 10458
+    protocol: TCP
+    targetPort: 10458
+  selector:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/name: talos-cloud-controller-manager
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+  labels:
+    app.kubernetes.io/instance: talos-cloud-controller-manager
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: talos-cloud-controller-manager
+    app.kubernetes.io/version: v1.13.0
+    helm.sh/chart: talos-cloud-controller-manager-0.5.6
+    homelab.component: talos-ccm
+  name: talos-cloud-controller-manager
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: talos-cloud-controller-manager
+      app.kubernetes.io/name: talos-cloud-controller-manager
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "-5"
+        checksum/config: 627cd4ac9d8898fc613277e202d0cfedba41aebd9bcb6e8dc24eb3d49fa2809e
+      labels:
+        app.kubernetes.io/instance: talos-cloud-controller-manager
+        app.kubernetes.io/name: talos-cloud-controller-manager
+    spec:
+      containers:
+      - args:
+        - --v=2
+        - --cloud-provider=talos
+        - --cloud-config=/etc/talos/ccm-config.yaml
+        - --controllers=cloud-node,node-csr-approval
+        - --leader-elect-resource-name=cloud-controller-manager-talos
+        - --use-service-account-credentials
+        - --secure-port=10458
+        - --authorization-always-allow-paths=/healthz,/livez,/readyz,/metrics
+        command:
+        - /talos-cloud-controller-manager
+        env:
+        - name: SERVICE_ACCOUNT
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.serviceAccountName
+        image: ghcr.io/siderolabs/talos-cloud-controller-manager:v1.13.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: metrics
+            scheme: HTTPS
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: talos-cloud-controller-manager
+        ports:
+        - containerPort: 10458
+          name: metrics
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 50m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/talos
+          name: cloud-config
+          readOnly: true
+        - mountPath: /var/run/secrets/talos.dev
+          name: talos-secrets
+          readOnly: true
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      priorityClassName: system-cluster-critical
+      securityContext:
+        fsGroup: 10258
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 10258
+        runAsNonRoot: true
+        runAsUser: 10258
+      serviceAccountName: talos-cloud-controller-manager
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node.cloudprovider.kubernetes.io/uninitialized
+        operator: Exists
+      volumes:
+      - configMap:
+          defaultMode: 416
+          name: talos-cloud-controller-manager
+        name: cloud-config
+      - name: talos-secrets
+        secret:
+          defaultMode: 416
+          secretName: talos-cloud-controller-manager-talos-secrets
