@@ -1,0 +1,21 @@
+version: "3"
+
+# Tasks for the insights-engine fault list. Paths come from Taskfile.yaml vars:
+#   INSIGHTS_ENGINE_DIR  — sibling repo holding the loader and the schema
+#   INSIGHTS_FAULTS_PATH — the fault-list source file in lares
+
+tasks:
+  validate-faults:
+    desc: "validate faults.yaml against the engine's schema and loader"
+    summary: |
+      Load the fault list with the engine's own loader — schema validation
+      plus the loader's checks (duplicate names, per-kind parameters) — so a
+      bad edit fails here instead of at startup in the cluster.
+    cmds:
+      - >
+        uv run --directory "{{.INSIGHTS_ENGINE_DIR}}" python -c
+        "import sys; from pathlib import Path;
+        from iot_insights_engine.faults import FaultList;
+        faults = FaultList.load(Path(sys.argv[1]));
+        print(f'OK: {len(faults)} faults, {len(faults.schedulable())} schedulable')"
+        "{{.INSIGHTS_FAULTS_PATH}}"
