@@ -1,0 +1,18 @@
+# The fault list: one sentence with a unit per entry, parameters in the
+# channel's own unit, scope as a catalog query — never an address list.
+# Check before shipping: task insights:validate-faults
+
+faults:
+  # Tracer fault: needs no model and exercises the whole chain.
+  - name: channel_silence
+    sentence: "Ein Kanal, der sonst regelmäßig sendet, schweigt länger als das
+      Fünffache seiner üblichen Sendepause."
+    unit: "× der üblichen Sendepause"
+    kind: silence
+    parameters:
+      gap_factor: 5
+    scope:
+      name_like: "%"
+    target:
+      # One severity address per matched main group, in its Zentral block.
+      per_main_group: true

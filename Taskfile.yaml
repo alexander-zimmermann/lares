@@ -4,6 +4,8 @@ vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
   KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml"
+  INSIGHTS_ENGINE_DIR: "{{.ROOT_DIR}}/../iot-insights-engine"
+  INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"
 
 includes:
   infra:
@@ -15,6 +17,8 @@ includes:
     taskfile: ./tasks/cluster.yaml
   knx:
     taskfile: ./tasks/knx.yaml
+  insights:
+    taskfile: ./tasks/insights.yaml
   basalte:
     taskfile: ./tasks/basalte.yaml
 
