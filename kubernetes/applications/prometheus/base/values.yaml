@@ -9,41 +9,157 @@ grafana:
   enabled: false
 
 alertmanager:
-  # Alertmanager configuration with Pushover integration
+  # Central notification router: the source picks the Pushover application
+  # (its icon in the app), severity picks sound and repeat cadence.
   config:
     global:
       resolve_timeout: 5m
+      smtp_smarthost: smtprelay.smtprelay.svc.cluster.local:25
+      smtp_from: admin@zimmermann.sh
+      # The in-cluster relay speaks plaintext SMTP
+      smtp_require_tls: false
     route:
       # Group by job to avoid alert storms when multiple alerts fire together
       group_by: ["alertname", "job"]
       group_wait: 30s
       group_interval: 1m
       repeat_interval: 6h
-      receiver: "endpoints"
+      receiver: "cluster-warning"
       routes:
         # Watchdog heartbeat: silent Pushover ping (priority -1, no resolved alarm)
         - matchers:
             - alertname = "Watchdog"
-          receiver: "watchdog-pushover"
+          receiver: "watchdog"
           repeat_interval: 12h
+        # Review-at-leisure findings (HolmesGPT) go to e-mail, batched per run
+        - matchers:
+            - severity = "info"
+          receiver: "email"
+          group_wait: 5m
+          group_interval: 10m
+          repeat_interval: 24h
+        - matchers:
+            - alertname =~ "Gatus.*"
+          receiver: "gatus-warning"
+          repeat_interval: 24h
+          routes:
+            - matchers:
+                - severity = "critical"
+              receiver: "gatus-critical"
+              repeat_interval: 4h
+        - matchers:
+            - alertname =~ "ArgoCD.*"
+          receiver: "argocd-warning"
+          repeat_interval: 24h
+          routes:
+            - matchers:
+                - severity = "critical"
+              receiver: "argocd-critical"
+              repeat_interval: 4h
+        # House-device bridges: chatty by nature, own application to mute at will
+        - matchers:
+            - alertname =~ "Dyson.*|Midea.*|Miele.*|SolarEdge.*|UnifiArm.*"
+          receiver: "devices-warning"
+          repeat_interval: 24h
+          routes:
+            - matchers:
+                - severity = "critical"
+              receiver: "devices-critical"
+              repeat_interval: 4h
+        - matchers:
+            - severity = "critical"
+          receiver: "cluster-critical"
+          repeat_interval: 4h
     receivers:
-      - name: "endpoints"
-        # Pushover integration for mobile notifications
+      - name: "cluster-critical"
         pushover_configs:
-          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/token
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
             sound: siren
-      - name: "watchdog-pushover"
+            priority: "1"
+      - name: "cluster-warning"
         pushover_configs:
-          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/token
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+      - name: "gatus-critical"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/gatus-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            sound: siren
+            priority: "1"
+      - name: "gatus-warning"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/gatus-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+      - name: "argocd-critical"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/argocd-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            sound: siren
+            priority: "1"
+      - name: "argocd-warning"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/argocd-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+      - name: "devices-critical"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/devices-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            sound: siren
+            priority: "1"
+      - name: "devices-warning"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/devices-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+      - name: "watchdog"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
             priority: "-1"
             send_resolved: false
+      # send_resolved stays at its email default (false): info alerts are
+      # event-shaped findings, a resolved mail would only be noise
+      - name: "email"
+        email_configs:
+          - to: admin@zimmermann.sh
+    # Setting this key replaces the chart defaults wholesale — the first four
+    # rules below are carried over from them verbatim.
+    inhibit_rules:
+      - source_matchers:
+          - severity = "critical"
+        target_matchers:
+          - severity =~ "warning|info"
+        equal: ["namespace", "alertname"]
+      - source_matchers:
+          - severity = "warning"
+        target_matchers:
+          - severity = "info"
+        equal: ["namespace", "alertname"]
+      - source_matchers:
+          - alertname = "InfoInhibitor"
+        target_matchers:
+          - severity = "info"
+        equal: ["namespace"]
+      - target_matchers:
+          - alertname = "InfoInhibitor"
+      # A WAN outage collapses every Gatus endpoint alert into the one naming the cause
+      - source_matchers:
+          - alertname = "GatusWanDown"
+        target_matchers:
+          - alertname =~ "Gatus.*"
+      # A dead instance silences everything below it on the same instance
+      - source_matchers:
+          - alertname = "InstanceDown"
+        target_matchers:
+          - severity =~ "warning|info"
+        equal: ["instance"]
 
   alertmanagerSpec:
     # Mount the Pushover secret so token_file / user_key_file can reference it
     secrets:
       - alertmanager-pushover-tokens
+    # Links notifications back to the UI; silences are the mute mechanism now
+    externalUrl: https://PLACEHOLDER
     # Persist Alertmanager state (silences, notification log)
     storage:
       volumeClaimTemplate:

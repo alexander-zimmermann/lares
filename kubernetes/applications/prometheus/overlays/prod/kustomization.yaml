@@ -52,6 +52,14 @@ replacements:
         options:
           delimiter: "//"
           index: 1
+      - select:
+          kind: Alertmanager
+          name: prometheus
+        fieldPaths:
+          - spec.externalUrl
+        options:
+          delimiter: "//"
+          index: 1
 
   # Inject storage size configuration
   - sourceValue: 10Gi
