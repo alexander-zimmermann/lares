@@ -51,7 +51,7 @@ spec:
       - name: iot_mcp_bridge_rw
         ensure: present
         login: true
-        comment: "iot-mcp-bridge-jobs — INSERT/SELECT on mcp_anomalies + mcp_forecasts + SELECT on baseline-CAGGs"
+        comment: "iot-mcp-bridge-jobs — INSERT/SELECT on mcp_anomalies + mcp_forecasts"
         passwordSecret:
           name: timescaledb-db-iot-mcp-bridge-rw-secret
       - name: grafana_ro

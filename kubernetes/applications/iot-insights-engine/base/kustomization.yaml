@@ -5,16 +5,9 @@ namespace: iot-insights-engine
 resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
-  - ./detect-univariate-cronjob.yaml
-  - ./detect-knx-join-cronjob.yaml
-  - ./detect-pv-underperformance-cronjob.yaml
-  - ./train-iforest-cronjob.yaml
-  - ./score-iforest-cronjob.yaml
   - ./forecast-solar-cronjob.yaml
   - ./forecast-weather-cronjob.yaml
   - ./energy-balance-cronjob.yaml
-  - ./score-seasonal-cronjob.yaml
-  - ./weekly-report-cronjob.yaml
 
 labels:
   - includeSelectors: false
