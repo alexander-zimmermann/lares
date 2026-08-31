@@ -1948,3 +1948,50 @@ mappings:
     description: "Haushaltstechnik.Dampfgarer.Fernsteuerung"
     min_delta: 0 # bool state: write only on change
     seed_on_start: true
+
+  # Miele status as words (KNX<-NATS). Basalte shows a DPT 5.010 status as a bare
+  # number; these carry the same state as text so it can be bound directly. The
+  # numeric Status GAs stay — they remain the reliable input for logic, since
+  # DPT 16.001 truncates at 14 bytes.
+  - subject: "miele.geschirrspueler.state"
+    ga: "17/1/4"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Geschirrspüler.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
+  - subject: "miele.backofen.state"
+    ga: "17/1/65"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Backofen.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
+  - subject: "miele.tellerwaermer.state"
+    ga: "17/1/83"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Tellerwärmer.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
+  - subject: "miele.mikrowelle.state"
+    ga: "17/1/105"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Mikrowelle.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
+  - subject: "miele.kaffeemaschine.state"
+    ga: "17/1/124"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Kaffeemaschine.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
+  - subject: "miele.dampfgarer.state"
+    ga: "17/1/145"
+    dpt: "16.001"
+    payload_path: "$.status_text"
+    description: "Haushaltstechnik.Dampfgarer.Statustext"
+    min_delta: 0  # text state: write only on change
+    seed_on_start: true
