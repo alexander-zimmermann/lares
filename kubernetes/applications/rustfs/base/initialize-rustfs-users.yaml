@@ -73,9 +73,6 @@ spec:
             - secretRef:
                 name: rustfs-redpanda-connect-credentials
               prefix: REDPANDA_
-            - secretRef:
-                name: rustfs-iot-insights-engine-credentials
-              prefix: IOTENGINE_
           env:
             - name: HOME
               value: /tmp

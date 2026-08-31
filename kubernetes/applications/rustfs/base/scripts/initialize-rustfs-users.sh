@@ -43,7 +43,6 @@ provision authentik           authentik-backups     readwrite "$AUTHENTIK_RUSTFS
 provision wiki-js             wiki-js-backups       readwrite "$WIKIJS_RUSTFS_ACCESS_KEY"      "$WIKIJS_RUSTFS_SECRET_KEY"
 provision timescaledb         timescaledb-backups   readwrite "$TIMESCALEDB_RUSTFS_ACCESS_KEY" "$TIMESCALEDB_RUSTFS_SECRET_KEY"
 provision redpanda-connect    nats-archive          writeonly "$REDPANDA_RUSTFS_ACCESS_KEY"    "$REDPANDA_RUSTFS_SECRET_KEY"
-provision iot-insights-engine iot-mcp-bridge-models readwrite "$IOTENGINE_RUSTFS_ACCESS_KEY"   "$IOTENGINE_RUSTFS_SECRET_KEY"
 
 echo ">>> done; current users:"
 rc admin user ls admin
