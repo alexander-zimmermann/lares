@@ -26,8 +26,6 @@ metadata:
       conditions:
         - "[STATUS] == 200"
         - "[RESPONSE_TIME] < 1500"
-      alerts:
-        - type: pushover
 
 spec:
   entryPoints:
