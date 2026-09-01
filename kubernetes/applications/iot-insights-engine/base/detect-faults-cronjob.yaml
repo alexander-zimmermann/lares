@@ -1,0 +1,102 @@
+# CronJob: run the declared fault list hourly. The engine resolves each
+# fault's scope against ga_catalog, measures over the hourly aggregates,
+# folds observations into episodes (episodes tables, rw role) and publishes
+# a severity 0-3 per main group on anomaly.<fault>.<main_group> for the
+# knx-nats-bridge writer-rules. Runs at :20, after the CAGG refreshes.
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: iot-insights-engine-detect-faults
+  namespace: iot-insights-engine
+
+spec:
+  schedule: "20 * * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: detect-faults
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.16.0
+              command: ["iot-insights-engine", "detect-faults"]
+              env:
+                - name: MCP_DB_HOST
+                  value: timescaledb-db-rw.timescaledb.svc.cluster.local
+                - name: MCP_DB_PORT
+                  value: "5432"
+                - name: MCP_DB_NAME
+                  value: homelab
+                - name: MCP_DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: username
+                - name: MCP_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      key: password
+                # Episode writes go through the rw role (episodes tables only).
+                - name: MCP_DB_WRITE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: username
+                - name: MCP_DB_WRITE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      key: password
+                - name: MCP_FAULTS_FILE
+                  value: /etc/iot-insights-engine/faults.yaml
+                # NATS — publish anomaly.* severities for the KNX writer rules.
+                - name: MCP_NATS_SERVERS
+                  value: nats://nats.nats.svc.cluster.local:4222
+                - name: MCP_NATS_NKEY_SEED_FILE
+                  value: /etc/iot-insights-engine/nats/nkey-seed
+                - name: TZ
+                  value: Europe/Berlin
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+              volumeMounts:
+                - name: faults
+                  mountPath: /etc/iot-insights-engine/faults.yaml
+                  subPath: faults.yaml
+                  readOnly: true
+                - name: nats-credentials
+                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
+                  subPath: nkey-seed
+                  readOnly: true
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+          volumes:
+            - name: faults
+              configMap:
+                name: iot-insights-engine-faults
+                defaultMode: 0444
+            - name: nats-credentials
+              secret:
+                secretName: iot-mcp-bridge-credentials
