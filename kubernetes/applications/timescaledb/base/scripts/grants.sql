@@ -54,4 +54,14 @@ BEGIN
        AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'mcp_forecasts') THEN
         GRANT INSERT, UPDATE ON mcp_forecasts TO iot_mcp_bridge_rw;
     END IF;
+
+    -- Episode writer — iot_mcp_bridge_rw keeps open episodes current
+    -- (last_seen_at, severity, ended_at) and appends evidence and events.
+    -- Sequence usage covers the identity column on INSERT.
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_rw')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'episodes') THEN
+        GRANT INSERT, UPDATE ON episodes, episode_observations, episode_events TO iot_mcp_bridge_rw;
+        EXECUTE format('GRANT USAGE, SELECT ON SEQUENCE %s TO iot_mcp_bridge_rw',
+                       pg_get_serial_sequence('public.episodes', 'id'));
+    END IF;
 END$$;

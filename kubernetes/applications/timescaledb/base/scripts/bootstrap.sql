@@ -743,6 +743,51 @@ CREATE INDEX ON mcp_forecasts (model, forecast_for DESC);
 SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 
 -- =========================================================
+-- Episodes — repeated observations of one fault fold into one episode,
+-- the unit that reports, notifications and verdicts address. Per-bucket
+-- observations stay underneath as evidence, each with its severity — the
+-- episode's trajectory; the events table's key caps notifications at one
+-- appear/escalate/end per episode. `folded` marks episodes imported once
+-- from the retained mcp_anomalies history.
+-- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
+-- Plain tables, no hypertable — episode volume is a handful a week.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS episodes (
+    id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fault        TEXT             NOT NULL,
+    subject      TEXT             NOT NULL,
+    started_at   TIMESTAMPTZ      NOT NULL,
+    last_seen_at TIMESTAMPTZ      NOT NULL,
+    -- Set when the quiet window makes the end decidable, not at last_seen_at.
+    ended_at     TIMESTAMPTZ,
+    severity     SMALLINT         NOT NULL CHECK (severity BETWEEN 1 AND 3),
+    peak_score   DOUBLE PRECISION NOT NULL,
+    folded       BOOLEAN          NOT NULL DEFAULT false,
+    created_at   TIMESTAMPTZ      NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS episodes_fault_started_at_idx ON episodes (fault, started_at DESC);
+-- One open episode per fault and subject, enforced for every writer.
+CREATE UNIQUE INDEX IF NOT EXISTS episodes_open_idx
+    ON episodes (fault, subject) WHERE ended_at IS NULL;
+
+CREATE TABLE IF NOT EXISTS episode_observations (
+    episode_id BIGINT           NOT NULL REFERENCES episodes (id),
+    time       TIMESTAMPTZ      NOT NULL,
+    score      DOUBLE PRECISION NOT NULL,
+    severity   SMALLINT         NOT NULL CHECK (severity BETWEEN 1 AND 3),
+    value      DOUBLE PRECISION,
+    PRIMARY KEY (episode_id, time)
+);
+
+CREATE TABLE IF NOT EXISTS episode_events (
+    episode_id BIGINT      NOT NULL REFERENCES episodes (id),
+    kind       TEXT        NOT NULL CHECK (kind IN ('appeared', 'escalated', 'ended')),
+    time       TIMESTAMPTZ NOT NULL,
+    severity   SMALLINT    NOT NULL CHECK (severity BETWEEN 0 AND 3),
+    PRIMARY KEY (episode_id, kind)
+);
+
+-- =========================================================
 -- Transfer ownership from `postgres` (CNPG runs initdb as superuser)
 -- to the application user `homelab`, so it can issue table-level GRANTs.
 -- =========================================================
