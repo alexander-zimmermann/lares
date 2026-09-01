@@ -65,15 +65,20 @@ tasks:
     summary: |
       Load the writer rules with the bridge's loader — schema validation plus
       the DPT existence check and the reader-loop guard (prefix "knx", as in
-      production) — so a bad edit fails here instead of at pod start.
+      production) — then cross-check every target GA against ga-catalog.yaml,
+      so a bad edit or a dangling rule fails here instead of in the cluster.
     cmds:
       - >
         uv run --directory "{{.KNX_BRIDGE_DIR}}" python -c
         "import sys; from pathlib import Path;
+        import yaml;
         from knx_nats_bridge.writer_rules import WriterRules;
         rules = WriterRules.load(Path(sys.argv[1]), reader_subject_prefix='knx');
-        print(f'OK: {len(rules)} rules on {len(rules.subjects())} subjects')"
-        "{{.KNX_WRITER_RULES_PATH}}"
+        catalog = yaml.safe_load(Path(sys.argv[2]).read_text());
+        dangling = sorted({r.ga for r in rules} - set(catalog));
+        sys.exit(f'dangling rule targets, GA not in catalog: {dangling}') if dangling else
+        print(f'OK: {len(rules)} rules on {len(rules.subjects())} subjects, all GAs in catalog')"
+        "{{.KNX_WRITER_RULES_PATH}}" "{{.KNX_CATALOG_PATH}}"
 
   validate-catalog:
     desc: "validate ga-catalog.yaml against the JSON-Schema"
