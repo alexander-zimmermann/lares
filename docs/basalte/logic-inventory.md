@@ -6,7 +6,7 @@ Regenerate after every change in Basalte and read the diff.
 The export itself is not in the repo: 14 MB of binary, and it carries at least one
 value that looks like an access token. See `docs/basalte/README.md` for where it goes.
 
-**166 logic blocks**, **28 of them notifying**, carrying **133 distinct notifications** between them. 877 named objects in the export.
+**166 logic blocks**, **28 of them notifying**, carrying **127 distinct notifications** between them. 878 named objects in the export.
 
 ## Notifications
 
@@ -15,31 +15,25 @@ One row per notification — a block often carries several, one per room or devi
 
 | Block | Message | Thresholds | Devices |
 |---|---|---|---|
-| (unnamed) | Kritisch: Warmwasser Ist-Temperatur auffällig. | — | — |
-| (unnamed) | Kritisch: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Warnung: Warmwasser Ist-Temperatur auffällig. | — | — |
-| (unnamed) | Info: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Warnung: Warmwasser Durchfluss auffällig. | — | — |
-| (unnamed) | Info: Warmwasser Ist-Temperatur auffällig. | — | — |
 | A5 - Dach | Windgeschwindigkeit größer als 36km/h für mehr als 3 Minuten. | False, True | — |
 | Alarmauslösung EMA Extern Scharf | Linienüberschreitung auf der Terrasse! | 1, False | Pollerleuchte |
 | An/Abwesend - Meldung | Willkommen zu Hause. | — | — |
 | An/Abwesend - Meldung | Außer Haus. | — | — |
-| Annomalie Temperatur | Kritisch: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Warnung: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Warnung: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Kritisch: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Info: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Temperatur | Info: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
-| Annomalie Therme | Kritisch: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
-| Annomalie Therme | Info: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Kritisch: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Info: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Info: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
-| Annomalie Therme | Kritisch: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Warnung: Heizverhalten saisonal auffällig (Forecast). | — | — |
-| Annomalie Therme | Warnung: Brenner Modulation auffällig. | — | — |
-| Annomalie Therme | Warnung: Gesamt-Anomalie (mehrere Messwerte auffällig). | — | — |
+| Anomalie Temperatur | Kritisch: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Temperatur | Warnung: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Temperatur | Warnung: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Temperatur | Kritisch: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Temperatur | Info: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Temperatur | Info: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
+| Anomalie Therme | Kritisch: Brenner Modulation auffällig. | — | — |
+| Anomalie Therme | Info: Brenner Modulation auffällig. | — | — |
+| Anomalie Therme | Warnung: Brenner Modulation auffällig. | — | — |
+| Anomalie Warmwasser | Kritisch: Warmwasser Ist-Temperatur auffällig. | — | — |
+| Anomalie Warmwasser | Kritisch: Warmwasser Durchfluss auffällig. | — | — |
+| Anomalie Warmwasser | Warnung: Warmwasser Ist-Temperatur auffällig. | — | — |
+| Anomalie Warmwasser | Info: Warmwasser Durchfluss auffällig. | — | — |
+| Anomalie Warmwasser | Warnung: Warmwasser Durchfluss auffällig. | — | — |
+| Anomalie Warmwasser | Info: Warmwasser Ist-Temperatur auffällig. | — | — |
 | CO-Melder Alarm | Technischer Alarm: Technikraum (K3) CO-Melder. | — | — |
 | DG - Dachgeschoss | Warnung: im Speicher (S) ist der Taupunkt unterschritten. | — | — |
 | DG - Dachgeschoss | Warnung: im Speicher (S) ist der CO2 Wert > 1600ppm. | — | — |
@@ -153,7 +147,6 @@ One row per notification — a block often carries several, one per room or devi
 
 | Block | Nodes | Node types |
 |---|---:|---|
-| (unnamed) | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
 | (unnamed) | 10 | and×1, knxbool×3, linkinput×1, not×2, openclosedevice×1 |
 | 1 Minute | 4 | init×1, linkoutput×1, oscillator×1, setbool×1 |
 | 1 Stunde | 4 | init×1, linkoutput×1, oscillator×1, setbool×1 |
@@ -172,8 +165,9 @@ One row per notification — a block often carries several, one per room or devi
 | An/Abwesend - Home Szenen | 5 | linkinput×2, not×1, or×1, scenes×1 |
 | An/Abwesend - Meldung | 17 | compare×2, debouncer×2, gate×1, linkinput×2, memory×1, not×1, notification×2, or×1 |
 | An/Abwesend - Zustand | 8 | debouncer×2, init×1, knxbool×2, linkoutput×2, memory×1 |
-| Annomalie Temperatur | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
-| Annomalie Therme | 18 | changedetector×3, knxnumber×3, lookuptable×3, notification×9 |
+| Anomalie Temperatur | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
+| Anomalie Therme | 6 | changedetector×1, knxnumber×1, lookuptable×1, notification×3 |
+| Anomalie Warmwasser | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
 | Automatik Bereit - Präsenzfenster | 6 | linkinput×2, linkoutput×1, multiplexer×1, oneshot×1 |
 | Automatik Bereit - Status senden | 7 | init×1, knxbool×2, linkinput×1, memory×1, multiplexer×1 |
 | Automatik Sperren - Status senden | 7 | init×1, knxbool×2, linkinput×1, memory×1, multiplexer×1 |
