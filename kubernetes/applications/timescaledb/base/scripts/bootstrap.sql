@@ -33,11 +33,12 @@ SELECT time_bucket('1 hour', time) AS bucket, ga, knx_name,
 FROM knx GROUP BY bucket, ga, knx_name WITH NO DATA;
 
 -- Appliance power channels (`%Stromwert`) get a mode-aware hourly rollup so
--- the bursty on/off load doesn't poison a stationary z-score. `idle_floor`
--- (the hourly min) is the standby draw → standby-drift detector; `on_samples`
--- counts samples above the standby valley (~100 native units; observed standby
--- floors top out ~55) → "left on" / duty-cycle. A single fixed threshold is
--- robust here only because the standby↔operation gap is huge for these loads.
+-- the bursty on/off load doesn't poison hourly statistics. `idle_floor`
+-- (the hourly min) is the standby draw, feeding the standby-drift fault;
+-- `on_samples` counts samples above the standby valley (~100 native units;
+-- observed standby floors top out ~55), feeding the appliance-runtime fault.
+-- A single fixed threshold is robust here only because the standby↔operation
+-- gap is huge for these loads.
 CREATE MATERIALIZED VIEW knx_appliance_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 hour', time) AS bucket, ga, knx_name,
