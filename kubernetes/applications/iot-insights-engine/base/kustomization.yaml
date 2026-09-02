@@ -8,6 +8,14 @@ resources:
   - ./forecast-solar-cronjob.yaml
   - ./forecast-weather-cronjob.yaml
   - ./energy-balance-cronjob.yaml
+  - ./detect-faults-cronjob.yaml
+
+# Hash suffix on: a faults.yaml edit re-renders the CronJob reference, so
+# the next run picks it up without a manual restart.
+configMapGenerator:
+  - name: iot-insights-engine-faults
+    files:
+      - ./config/faults.yaml
 
 labels:
   - includeSelectors: false
