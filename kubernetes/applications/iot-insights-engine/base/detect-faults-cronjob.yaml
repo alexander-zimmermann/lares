@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: detect-faults
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.16.0
+              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.17.0
               command: ["iot-insights-engine", "detect-faults"]
               env:
                 - name: MCP_DB_HOST
