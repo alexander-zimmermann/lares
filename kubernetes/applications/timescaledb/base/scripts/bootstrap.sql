@@ -749,7 +749,9 @@ SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 -- observations stay underneath as evidence, each with its severity — the
 -- episode's trajectory; the events table's key caps notifications at one
 -- appear/escalate/end per episode. `folded` marks episodes imported once
--- from the retained mcp_anomalies history.
+-- from the retained mcp_anomalies history; `externally_delivered` marks
+-- episodes whose fault Basalte detected and delivered itself — the engine
+-- only records them, nothing downstream notifies a second time.
 -- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
 -- Plain tables, no hypertable — episode volume is a handful a week.
 -- =========================================================
@@ -764,6 +766,7 @@ CREATE TABLE IF NOT EXISTS episodes (
     severity     SMALLINT         NOT NULL CHECK (severity BETWEEN 1 AND 3),
     peak_score   DOUBLE PRECISION NOT NULL,
     folded       BOOLEAN          NOT NULL DEFAULT false,
+    externally_delivered BOOLEAN  NOT NULL DEFAULT false,
     created_at   TIMESTAMPTZ      NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS episodes_fault_started_at_idx ON episodes (fault, started_at DESC);

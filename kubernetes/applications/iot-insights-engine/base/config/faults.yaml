@@ -16,3 +16,114 @@ faults:
     target:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
+
+  # External faults: Basalte detects, writes the severity to the fault
+  # address and delivers push/e-mail itself; the engine reads the writes
+  # back and records episodes. All dormant until the Studio logic writes
+  # them — and, on the re-purposed addresses, until the telegrams of the
+  # switched-off engine detectors have left the 30-day read window.
+  - name: system_pressure_low
+    sentence: "Der Systemdruck der Gastherme liegt unter 1,0 bar."
+    unit: "bar"
+    kind: external
+    scope:
+      name_like: "%.Gastherme.System-Druck-Anomalie"
+    dormant:
+      reason: "Die Adresse existiert in ETS noch nicht."
+      active_when: "Die Adresse steht im Katalog und die Studio-Logik schreibt sie."
+
+  - name: burner_idle_despite_demand
+    sentence: "Der Brenner liefert länger als 2 h 0 % Modulation, obwohl das
+      Vorlauf-Soll mehr als 5 K über dem Ist liegt."
+    unit: "%"
+    kind: external
+    scope:
+      name_like: "%.Gastherme.Brenner.Modulation-Anomalie"
+    dormant:
+      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
+        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
+      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
+        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: dhw_cold
+    sentence: "Das Warmwasser liegt länger als 3 h unter 40 °C."
+    unit: "°C"
+    kind: external
+    scope:
+      name_like: "%.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
+    dormant:
+      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
+        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
+      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
+        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: flow_under_setpoint
+    sentence: "Der Vorlauf bleibt bei laufendem Brenner über 3 h mehr als 5 K
+      unter dem Sollwert."
+    unit: "K"
+    kind: external
+    scope:
+      name_like: "%.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
+    dormant:
+      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
+        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
+      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
+        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: heating_spread_collapsed
+    sentence: "Der Rücklauf liegt bei laufendem Brenner über 1 h weniger als
+      3 K unter dem Vorlauf."
+    unit: "K"
+    kind: external
+    scope:
+      name_like: "%.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
+    dormant:
+      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
+        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
+      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
+        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: kwl_airflow_low
+    sentence: "Die KWL liefert bei der eingestellten Stufe anhaltend weniger
+      als 80 % des Sollvolumens oder gar keinen Luftstrom."
+    unit: "m³/h"
+    kind: external
+    scope:
+      name_like: "%.KWL.Luftstrom-Anomalie"
+    dormant:
+      reason: "Die Adresse existiert in ETS noch nicht."
+      active_when: "Die Adresse steht im Katalog und die Studio-Logik schreibt sie."
+
+  - name: inverter_temperature_high
+    sentence: "Die Temperatur eines Wechselrichters liegt über 70 °C."
+    unit: "°C"
+    kind: external
+    scope:
+      name_like: "%.Photovoltaik.Wechselrichter-%.Temperatur-Anomalie"
+    dormant:
+      reason: "Die Studio-Logik ist noch nicht gebaut; auf den Adressen liegen
+        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
+      active_when: "Die Studio-Logik schreibt die Adressen und die Alt-Telegramme
+        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: grid_voltage_out_of_range
+    sentence: "Die Netzspannung liegt auf mindestens einer Phase außerhalb von
+      207–253 V."
+    unit: "V"
+    kind: external
+    scope:
+      name_like: "%.Energiezähler.Strom.Spannung-Anomalie"
+    dormant:
+      reason: "Die Adresse existiert in ETS noch nicht."
+      active_when: "Die Adresse steht im Katalog und die Studio-Logik schreibt sie."
+
+  - name: dehumidifier_ineffective
+    sentence: "Ein Entfeuchter läuft über 4 h, während die Luftfeuchte um
+      weniger als 2 % fällt."
+    unit: "%"
+    kind: external
+    scope:
+      name_like: "Raumklima.%.Entfeuchter.Anomalie"
+    dormant:
+      reason: "Die Adressen existieren in ETS noch nicht."
+      active_when: "Die Adressen stehen im Katalog und die Studio-Logik schreibt sie."
