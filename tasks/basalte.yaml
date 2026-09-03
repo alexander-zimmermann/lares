@@ -12,8 +12,16 @@ tasks:
     cmds:
       - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" docs/basalte/logic-inventory.md
 
-  thermostats:
-    desc: "which KNX addresses each room's thermostat is bound to, checked against the fault list"
+  sync:
+    desc: "check the Studio export against the GA catalog [path/to/export.bcfg]"
+    summary: |
+      Report where Basalte and ETS disagree about a group address: bindings
+      whose address moved (the ones that matter), labels left over from an
+      older name, and addresses the catalog does not know. Exits non-zero on
+      a moved address.
+
+      The catalog is a snapshot — rebuild it with `task knx:catalog` before
+      believing a finding.
     vars:
       EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
     preconditions:
@@ -21,6 +29,5 @@ tasks:
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
     cmds:
       - >
-        uv run --no-project --with pyyaml python scripts/basalte_thermostats.py "{{.EXPORT}}"
+        uv run --no-project --with pyyaml python scripts/basalte_sync.py "{{.EXPORT}}"
         kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml
-        kubernetes/applications/iot-insights-engine/base/config/faults.yaml
