@@ -17,6 +17,89 @@ faults:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
 
+  - name: fbh_cold
+    sentence: "Ein Raum liegt bei mehr als 50 % Stellwert seit mindestens 2 h
+      weiter unter seiner Soll-Temperatur, als seine je Raum erlaubte Abweichung
+      zulässt — Ventil klemmt, Luft im Heizkreis oder ein Fühler steht falsch."
+    unit: "× der erlaubten Abweichung"
+    kind: deviation
+    parameters:
+      min_hours: 2
+      gate_min_pct: 50
+    roles:
+      # Setpoint and valve position follow one naming rule across all
+      # rooms, so a pattern is the rule itself; the reference is the
+      # setpoint — the deviation kind's swappable expectation. The measured
+      # value follows no such rule and is named per room below.
+      reference: "%.FBH.Soll-Temperatur-Status"
+      gate: "%.FBH.Stellwert-Status"
+    scope:
+      name_like:
+        - "Raumklima.%.FBH.Stellwert-Status"
+        - "Raumklima.%.FBH.Soll-Temperatur-Status"
+        - "Sensorik.%.Sensor.Temperatur"
+        - "Sensorik.EG.Flur.BWM.Eingang.Temperatur"
+        - "Sensorik.OG.Flur.BWM.Treppe.Temperatur"
+        - "Sensorik.OG.Begehbarer-Schrank.BWM.Temperatur"
+      # Unheated rooms (basement, attic) carry room sensors but no FBH
+      # circuit.
+      exclude_name_like:
+        - "Sensorik.KG.%"
+        - "Sensorik.DG.%"
+    rooms:
+      # Every room names the channel it measures with — the address its
+      # Basalte thermostat reads (task basalte:thermostats): eleven read
+      # their room sensor, the three without one read a single
+      # motion-detector head. Gaps start at 1 K everywhere, to be revisited
+      # against the 30-day verification.
+      EG.Flur:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Flur.BWM.Eingang.Temperatur"
+      EG.Gäste-WC:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Gäste-WC.Sensor.Temperatur"
+      EG.Büro:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Büro.Sensor.Temperatur"
+      EG.Wohnzimmer:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Wohnzimmer.Sensor.Temperatur"
+      EG.Esszimmer:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Esszimmer.Sensor.Temperatur"
+      EG.Küche:
+        min_gap_k: 1.0
+        value: "Sensorik.EG.Küche.Sensor.Temperatur"
+      OG.Flur:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Flur.BWM.Treppe.Temperatur"
+      OG.Abstellraum:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Abstellraum.Sensor.Temperatur"
+      OG.Badezimmer-Kinder:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Badezimmer-Kinder.Sensor.Temperatur"
+      OG.Schlafzimmer-Gregory:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Schlafzimmer-Gregory.Sensor.Temperatur"
+      OG.Schlafzimmer-Luis:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Schlafzimmer-Luis.Sensor.Temperatur"
+      OG.Schlafzimmer-Eltern:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Schlafzimmer-Eltern.Sensor.Temperatur"
+      OG.Begehbarer-Schrank:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Begehbarer-Schrank.BWM.Temperatur"
+      OG.Badezimmer-Eltern:
+        min_gap_k: 1.0
+        value: "Sensorik.OG.Badezimmer-Eltern.Sensor.Temperatur"
+    target:
+      # One severity address per room: the writer rules carry
+      # anomaly.fbh_cold.<room-slug> to the room's FBH Aktiv-Anomalie
+      # address.
+      per_room: true
+
   # External faults: Basalte detects, writes the severity to the fault
   # address and delivers push/e-mail itself; the engine reads the writes
   # back and records episodes. All dormant until the Studio logic writes

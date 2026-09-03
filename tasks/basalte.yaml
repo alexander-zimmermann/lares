@@ -11,3 +11,16 @@ tasks:
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
     cmds:
       - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" docs/basalte/logic-inventory.md
+
+  thermostats:
+    desc: "which KNX addresses each room's thermostat is bound to, checked against the fault list"
+    vars:
+      EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
+    preconditions:
+      - sh: test -f "{{.EXPORT}}"
+        msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
+    cmds:
+      - >
+        uv run --no-project --with pyyaml python scripts/basalte_thermostats.py "{{.EXPORT}}"
+        kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml
+        kubernetes/applications/iot-insights-engine/base/config/faults.yaml

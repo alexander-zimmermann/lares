@@ -19,6 +19,19 @@ task basalte:inventory -- /path/to/export.bcfg
 Writes `logic-inventory.md`. Regenerate after every change in Basalte Studio and
 read the diff — that shows what changed without opening Studio.
 
+## Which address a room's thermostat reads
+
+```
+task basalte:thermostats                      # uses docs/basalte/Steinroth.bcfg
+```
+
+Prints, per room, the temperature and setpoint addresses its thermostat is bound
+to, resolves them through the GA catalog, and checks the `fbh_cold` entry of the
+fault list against them — the fault measures the room against the same value the
+app shows, so the mapping is read from the export instead of transcribed. Exits
+non-zero when a thermostat reads an address belonging to another room or one the
+catalog does not know.
+
 ## What else lives here
 
 `logic-blocks-reference.md` — the reference for Basalte's logic blocks (what
