@@ -17,6 +17,62 @@ faults:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
 
+  - name: appliance_runtime
+    sentence: "Ein Gerät zieht ununterbrochen länger Strom, als seine je Gerät
+      erlaubte Laufzeit zulässt — vergessen eingeschaltet oder hängen geblieben."
+    unit: "× der erlaubten Laufzeit"
+    kind: duration
+    parameters:
+      # An hour counts as active when half its samples sit above the
+      # standby valley baked into knx_appliance_1h.
+      active_hour_fraction: 0.5
+    scope:
+      dpt: "7.012"
+      name_like: "%.Stromwert"
+      # By-design continuous loads, and the cooling appliances whose
+      # compressor cycles faster than the hourly grid can resolve.
+      exclude_name_like:
+        - "%.Netzwerkschrank.%"
+        - "%.Heizung.%"
+        - "%.Kühlschrank.%"
+        - "%.Gefrierschrank.%"
+        - "%.Lüftung.%"
+    devices:
+      Garage.K1-L3.Entfeuchter:
+        max_run_hours: 24
+      Technikraum.K3-L3.Entfeuchter:
+        max_run_hours: 24
+      Vorratsraum.K1-L3.Entfeuchter:
+        max_run_hours: 24
+      Hauswirtschaftsraum.K1-L3.Entfeuchter:
+        max_run_hours: 24
+      Hauswirtschaftsraum.K3-L1.Trockner:
+        max_run_hours: 4
+      # Laundry days chain loads back to back for 10-13 h; only a run past
+      # two of those in a row is a fault.
+      Hauswirtschaftsraum.K4-L1.Waschmaschine:
+        max_run_hours: 16
+      Wohnzimmer.K4-L1.Ofen:
+        max_run_hours: 8
+      Küche.K4-L1.Geschirrspüler:
+        max_run_hours: 4
+      Küche.K5-L1.Haubenlüfter:
+        max_run_hours: 3
+      Küche.K9-L1.Backofen:
+        max_run_hours: 4
+      Küche.K10-L1.Tellerwärmer:
+        max_run_hours: 3
+      Küche.K12-L1.Mikrowelle:
+        max_run_hours: 2
+      Küche.K13-L1.Kaffeemaschine:
+        max_run_hours: 3
+      Küche.K14-L1.Dampfgarer:
+        max_run_hours: 3
+    target:
+      # One severity address per device: the writer rules carry
+      # anomaly.appliance_runtime.<ga-slug> to the Dauerbetrieb address.
+      per_device: true
+
   - name: fbh_cold
     sentence: "Ein Raum liegt bei mehr als 50 % Stellwert seit mindestens 2 h
       weiter unter seiner Soll-Temperatur, als seine je Raum erlaubte Abweichung
