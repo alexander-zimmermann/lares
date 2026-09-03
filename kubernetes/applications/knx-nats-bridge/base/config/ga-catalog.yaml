@@ -6393,13 +6393,13 @@
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Gebäude.Ein/Aus
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 3/0/181:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Gebäude.Ein/Aus-Status
-  room: 1 - Gebäude
+  room: Gebäude
   writable: false
 3/0/19:
   dpt: '1.011'
@@ -6423,13 +6423,13 @@
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Garten.Ein/Aus
-  room: 2 - Garten
+  room: Garten
   writable: true
 3/0/201:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Garten.Ein/Aus-Status
-  room: 2 - Garten
+  room: Garten
   writable: true
 3/0/21:
   dpt: '1.011'
@@ -9354,109 +9354,109 @@
   dpt: '1.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Sperren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/181:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Fahren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/182:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Position
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/183:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Rotation
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/184:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Helligkeitsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/185:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Innen.Automatik.Dämmerungsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/186:
   dpt: '1.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Sperren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/187:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Fahren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/188:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Position
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/189:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Rotation
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/190:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Helligkeitsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/191:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-1.Automatik.Dämmerungsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/192:
   dpt: '1.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Sperren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/193:
   dpt: '1.008'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Fahren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/194:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Position
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/195:
   dpt: '5.001'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Rotation
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/196:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Helligkeitsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/197:
   dpt: '9.004'
   function: Beschattung
   name: Beschattung.Zentral.Gebäude.Raffstore.Außen.Zone-2.Automatik.Dämmerungsschwelle
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 5/0/250:
   dpt: '5.010'
@@ -10585,14 +10585,14 @@
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi
-  room: 1 - Gebäude
+  room: Gebäude
   writable: false
 6/0/181:
   description: 1 - Innen Raumklima
   dpt: '5.010'
   function: Raumklima
   name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi-Status
-  room: 1 - Gebäude
+  room: Gebäude
   writable: false
 6/0/250:
   dpt: '5.010'
@@ -11709,14 +11709,14 @@
   dpt: '1.001'
   function: Bedienelemente
   name: Bedienelemente.Zentral.Gebäude.Schalter.Sperren
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 7/0/181:
   description: 1 - Innen Bedienelemente
   dpt: '5.010'
   function: Bedienelemente
   name: Bedienelemente.Zentral.Gebäude.Schalter.Farbe
-  room: 1 - Gebäude
+  room: Gebäude
   writable: true
 7/0/250:
   dpt: '5.010'
