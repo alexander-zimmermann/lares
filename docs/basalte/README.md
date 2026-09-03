@@ -19,18 +19,25 @@ task basalte:inventory -- /path/to/export.bcfg
 Writes `logic-inventory.md`. Regenerate after every change in Basalte Studio and
 read the diff — that shows what changed without opening Studio.
 
-## Which address a room's thermostat reads
+## Does Basalte still agree with ETS?
 
 ```
-task basalte:thermostats                      # uses docs/basalte/Steinroth.bcfg
+task basalte:sync                             # uses docs/basalte/Steinroth.bcfg
 ```
 
-Prints, per room, the temperature and setpoint addresses its thermostat is bound
-to, resolves them through the GA catalog, and checks the `fbh_cold` entry of the
-fault list against them — the fault measures the room against the same value the
-app shows, so the mapping is read from the export instead of transcribed. Exits
-non-zero when a thermostat reads an address belonging to another room or one the
-catalog does not know.
+Basalte holds the bus twice: the imported ETS project, and a copy of the address
+name inside every device and logic block that was wired with it. Rename or
+renumber in ETS afterwards and the copies stay behind — harmless where only the
+name moved, wrong where the address did.
+
+The check reports both, plus whatever the catalog does not know at all, and
+exits non-zero only on a moved address. Run it after every ETS change and after
+every re-import.
+
+It compares against `ga-catalog.yaml`, which is a snapshot: rebuild it with
+`task knx:catalog` before believing a finding. When the export's own import layer
+is behind, the check says so and stops listing the name drift — everything is
+stale by construction until Studio has re-imported.
 
 ## What else lives here
 
