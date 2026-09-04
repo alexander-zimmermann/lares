@@ -38,6 +38,14 @@ tasks:
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
+      # The extractor strips ETS' Building numbering; nothing here does it
+      # any more. An extractor from before that fails silently, and the
+      # numbering reaches ga_catalog.room, which iot-mcp-bridge lists rooms
+      # by. Assert the behaviour rather than a version — it cannot drift.
+      - >
+        ! grep -qE '^  room: [0-9]+ - ' "{{.KNX_CATALOG_PATH}}" ||
+        { echo "rooms still carry ETS' Building numbering: update {{.KNX_BRIDGE_DIR}}
+        (needs the extractor that strips it, knx-nats-bridge >= v0.19.0)"; exit 1; }
 
   validate-writer-rules:
     desc: "validate writer-rules.yaml with the bridge's own loader"
