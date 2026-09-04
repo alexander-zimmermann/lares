@@ -1,7 +1,13 @@
 """Check whether Basalte still agrees with ETS about the group addresses.
 
     uv run --no-project --with pyyaml python scripts/basalte_sync.py \
-        <export.bcfg> <ga-catalog.yaml>
+        <export.bcfg> <ets-catalog.yaml>
+
+The ETS side is the project itself, extracted for this run — `task
+basalte:sync` does that first. Comparing against the committed
+`ga-catalog.yaml` would answer a different question: whether Basalte
+matches what the repo last wrote down, which is a snapshot and can be
+older than ETS.
 
 Basalte holds the bus in two layers. One is the imported ETS project,
 which a re-import refreshes wholesale. The other is every device and
@@ -19,12 +25,11 @@ Three findings, by how much they cost:
   value that measures something else. This is the class that matters.
 * **stale label** — the address is right, the name beside it is what ETS
   called it once. Cosmetic; a re-assignment in Studio refreshes it.
-* **unknown** — neither the address nor the name is in the catalog.
-  Basalte-internal objects live here, so this needs deciding once rather
-  than reading every run.
+* **unknown** — neither the address nor the name is in ETS. Datapoints
+  Basalte uses that were never created live here, so this needs deciding
+  once rather than reading every run.
 
-Only a stale binding fails the run. The catalog is a snapshot: rebuild it
-with `task knx:catalog` before believing a finding.
+Only a stale binding fails the run.
 
 The export is schema-less Protocol Buffers; `basalte_inventory.py`
 documents the wire format. An address binding is any message carrying the
@@ -85,7 +90,8 @@ def layers(export: Path) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
     return imported, wired
 
 
-def catalog_of(path: Path) -> dict[str, str]:
+def ets_of(path: Path) -> dict[str, str]:
+    """{address: name} as ETS defines it, from a freshly extracted catalog."""
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     return {
         str(ga): entry["name"]
@@ -95,16 +101,16 @@ def catalog_of(path: Path) -> dict[str, str]:
 
 
 def main() -> int:
-    export, catalog_path = Path(sys.argv[1]), Path(sys.argv[2])
-    catalog = catalog_of(catalog_path)
+    export, ets_path = Path(sys.argv[1]), Path(sys.argv[2])
+    catalog = ets_of(ets_path)
     by_name = {name: ga for ga, name in catalog.items()}
     imported, wired = layers(export)
 
-    print(f"{catalog_path.name}: {len(catalog)} addresses")
+    print(f"ETS project: {len(catalog)} addresses")
     drifted = {(ga, name) for ga, name in imported if catalog.get(ga) != name}
     print(
         f"{export.name}: {len(set(imported))} imported bindings, "
-        f"{len(drifted)} of them off the catalog"
+        f"{len(drifted)} of them off ETS"
     )
     # A handful of drifted imports is ETS' own noise; a fifth of them means
     # the project was re-exported and Studio has not seen it yet. Then every
@@ -144,7 +150,7 @@ def main() -> int:
             print(f"  {ga:9s} ETS      {ets}")
             print(f"  {'':9s} Basalte  {basalte}")
 
-    print(f"\n=== {len(unknown)} unknown to the catalog")
+    print(f"\n=== {len(unknown)} unknown to ETS")
     for prefix, count in Counter(name.split(".")[0] for _ga, name in unknown).most_common():
         print(f"  {prefix:22s} {count}")
     for ga, name in unknown:

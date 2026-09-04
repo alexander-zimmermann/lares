@@ -22,7 +22,7 @@ read the diff — that shows what changed without opening Studio.
 ## Does Basalte still agree with ETS?
 
 ```
-task basalte:sync                             # uses docs/basalte/Steinroth.bcfg
+KNXPROJ_PASSWORD=… task basalte:sync          # uses docs/basalte/Steinroth.bcfg
 ```
 
 Basalte holds the bus twice: the imported ETS project, and a copy of the address
@@ -30,17 +30,19 @@ name inside every device and logic block that was wired with it. Rename or
 renumber in ETS afterwards and the copies stay behind — harmless where only the
 name moved, wrong where the address did.
 
-The check reports both, plus whatever the catalog does not know at all, and
-exits non-zero only on a moved address. Run it after every ETS change and after
-every re-import.
+The check reports both, plus whatever ETS does not define at all, and exits
+non-zero only on a moved address. Run it after every ETS change and after every
+re-import.
 
 A moved address is not always an obviously dead one. Where ETS compacted a block,
 the slot the object still holds got re-used by its neighbour — so it reads a
 plausible value that measures something else, which is why the report names what
 sits on the bound address now and lists those cases first.
 
-It compares against `ga-catalog.yaml`, which is a snapshot: rebuild it with
-`task knx:catalog` before believing a finding. When the export's own import layer
+It compares against the `.knxproj` itself, extracted for the run into `.tmp/`,
+because `ga-catalog.yaml` is a snapshot: an address created in ETS after the last
+`task knx:catalog` would make the check call Basalte wrong for using it. When the
+export's own import layer
 is behind, the check says so and stops listing the name drift — everything is
 stale by construction until Studio has re-imported.
 

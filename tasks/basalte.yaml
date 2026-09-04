@@ -13,21 +13,35 @@ tasks:
       - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" docs/basalte/logic-inventory.md
 
   sync:
-    desc: "check the Studio export against the GA catalog [path/to/export.bcfg]"
+    desc: "check the Studio export against the ETS project [path/to/export.bcfg]"
     summary: |
       Report where Basalte and ETS disagree about a group address: bindings
       whose address moved (the ones that matter), labels left over from an
-      older name, and addresses the catalog does not know. Exits non-zero on
-      a moved address.
+      older name, and addresses ETS does not define. Exits non-zero on a
+      moved address.
 
-      The catalog is a snapshot — rebuild it with `task knx:catalog` before
-      believing a finding.
+      Compares against the .knxproj itself, extracted for this run — not
+      against ga-catalog.yaml, which is a snapshot and can be older than
+      ETS. Pass KNXPROJ_PASSWORD=… for encrypted projects.
     vars:
       EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
+      ETS_CATALOG: "{{.ROOT_DIR}}/.tmp/ets-catalog.yaml"
+    env:
+      # through the environment so the plaintext never reaches an argument list
+      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
     preconditions:
       - sh: test -f "{{.EXPORT}}"
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
+      - sh: test -f "{{.KNX_PROJECT_PATH}}"
+        msg: "ETS project not found: {{.KNX_PROJECT_PATH}}"
     cmds:
+      - mkdir -p "{{.ROOT_DIR}}/.tmp"
       - >
-        uv run --no-project --with pyyaml python scripts/basalte_sync.py "{{.EXPORT}}"
-        kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml
+        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
+        --input "{{.KNX_PROJECT_PATH}}"
+        --output "{{.ETS_CATALOG}}"
+        --ignore-write-from Dummy
+        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
+      - >
+        uv run --no-project --with pyyaml python scripts/basalte_sync.py
+        "{{.EXPORT}}" "{{.ETS_CATALOG}}"
