@@ -3,28 +3,35 @@
     uv run --no-project --with pyyaml python scripts/fault_writer_rules.py \
         <faults.yaml> <ga-catalog.yaml> <writer-rules.yaml>
 
-A fault whose target is "one address per main group" (channel silence) is
-delivered by one writer rule per main group: the engine publishes the
-group's severity on `anomaly.<fault>.<main group>`, the bridge carries it
-to that group's address in its Zentral block. A block of near-identical
-rules that must follow every ETS renumbering is exactly the list that went
-wrong once already when it was copied by hand, so it is written here instead.
+Two target forms are generated, both of them faults the engine delivers to
+addresses nobody should type twice:
 
-Two files decide everything: the fault list says which faults deliver per
-main group, the catalog says which address that is in each group and with
-which DPT. What is neither is the naming rule that ties the two together —
-that a channel-silence target is the group's `Telegrammstille-Anomalie` —
-and it is declared once, in TARGET_NAME below, rather than resolved from a
-list of addresses that could drift.
+* "one address per main group" (channel silence) becomes one rule per main
+  group — the engine publishes the group's severity on
+  `anomaly.<fault>.<main group>`, the bridge carries it to that group's
+  address in its Zentral block. A block of near-identical rules that must
+  follow every ETS renumbering is exactly the list that went wrong once
+  already when it was copied by hand, so it is written here instead.
+* a single house-wide address (the notification-volume watchdog on 0/0/251)
+  becomes one rule on the 1:1 subject `anomaly.<fault>`. The address is
+  declared in the fault file; DPT and description come from the catalog, so
+  a renumbering that leaves the fault file behind fails here rather than
+  publishing into nothing.
+
+Two files decide everything: the fault list says which faults deliver which
+way, the catalog says which address that is and with which DPT. What is
+neither is the naming rule that ties the two together for the per-main-group
+form — that a channel-silence target is the group's
+`Telegrammstille-Anomalie` — and it is declared once, in TARGET_NAME below,
+rather than resolved from a list of addresses that could drift.
 
 The rules are spliced into the writer-rules file between its markers, so
 regenerating after a catalog change is the whole procedure and the diff
 shows what moved.
 
-Faults delivering to a single house-wide address — the notification-volume
-watchdog on 0/0/251 — are not generated here: none is declared in the fault
-list yet, and the target form they need is a plain address rather than a
-name per main group.
+Per-device and per-room targets are not generated: their addresses follow
+the device and room names rather than one suffix per group, and their rules
+are written out in the file itself.
 """
 
 from __future__ import annotations
@@ -60,15 +67,12 @@ def main_group(ga: str) -> int:
     return int(ga.split("/")[0])
 
 
-def per_main_group_faults(path: Path) -> list[str]:
-    """The faults the fault list declares as delivering one severity per
-    main group, in file order."""
+def targeted_faults(path: Path) -> list[tuple[str, dict]]:
+    """Every fault that declares a delivery target — its name and that
+    target, in file order. Which target shapes are generated is decided in
+    one place, in main()."""
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
-    return [
-        fault["name"]
-        for fault in raw["faults"]
-        if fault.get("target", {}).get("per_main_group")
-    ]
+    return [(fault["name"], fault["target"]) for fault in raw["faults"] if "target" in fault]
 
 
 def targets(catalog: dict, suffix: str) -> dict[int, tuple[str, dict]]:
@@ -100,23 +104,42 @@ def targets(catalog: dict, suffix: str) -> dict[int, tuple[str, dict]]:
     return found
 
 
-def rules(fault: str, addresses: dict[int, tuple[str, dict]]) -> list[str]:
+def rule(subject: str, ga: str, entry: dict) -> list[str]:
+    """One writer rule: the engine's subject, the catalog's address."""
+    if '"' in entry["name"] or "\\" in entry["name"]:
+        raise SystemExit(f"{ga}: name needs YAML escaping, which this does not do")
+    return [
+        f'  - subject: "{subject}"',
+        f'    ga: "{ga}"',
+        f'    dpt: "{entry["dpt"]}"',
+        f'    payload_path: "{PAYLOAD_PATH}"',
+        f'    description: "{entry["name"]}"',
+        f"    min_delta: {MIN_DELTA}",
+        f"    seed_on_start: {str(SEED_ON_START).lower()}",
+    ]
+
+
+def per_main_group_rules(fault: str, addresses: dict[int, tuple[str, dict]]) -> list[str]:
     """One writer rule per main group, in the file's own key order."""
-    lines = []
+    lines: list[str] = []
     for group in sorted(addresses):
         ga, entry = addresses[group]
-        if '"' in entry["name"] or "\\" in entry["name"]:
-            raise SystemExit(f"{ga}: name needs YAML escaping, which this does not do")
-        lines += [
-            f'  - subject: "anomaly.{fault}.{group}"',
-            f'    ga: "{ga}"',
-            f'    dpt: "{entry["dpt"]}"',
-            f'    payload_path: "{PAYLOAD_PATH}"',
-            f'    description: "{entry["name"]}"',
-            f"    min_delta: {MIN_DELTA}",
-            f"    seed_on_start: {str(SEED_ON_START).lower()}",
-        ]
+        lines += rule(f"anomaly.{fault}.{group}", ga, entry)
     return lines
+
+
+def house_wide_rule(fault: str, ga: str, catalog: dict) -> list[str]:
+    """The one rule for a fault delivering to a single address: a 1:1
+    subject, and the address the fault file names — which has to exist in
+    the catalog, or the severity would go nowhere and nothing would say so.
+    """
+    entry = catalog.get(ga)
+    if entry is None:
+        raise SystemExit(
+            f"fault {fault} delivers to {ga}, which the catalog does not know — "
+            "either it was renumbered in ETS or it was never created"
+        )
+    return rule(f"anomaly.{fault}", ga, entry)
 
 
 def splice(text: str, block: list[str]) -> str:
@@ -138,17 +161,23 @@ def main() -> int:
     catalog = yaml.safe_load(catalog_path.read_text(encoding="utf-8"))
 
     block: list[str] = []
-    for fault in per_main_group_faults(faults_path):
-        suffix = TARGET_NAME.get(fault)
-        if suffix is None:
-            raise SystemExit(
-                f"fault {fault} delivers per main group, but TARGET_NAME does not "
-                "say which address in the group that is"
-            )
-        addresses = targets(catalog, suffix)
-        block += rules(fault, addresses)
-        groups = ", ".join(str(g) for g in sorted(addresses))
-        print(f"{fault}: {len(addresses)} rules on main groups {groups}")
+    for fault, target in targeted_faults(faults_path):
+        if "ga" in target:
+            block += house_wide_rule(fault, target["ga"], catalog)
+            print(f"{fault}: 1 rule on {target['ga']}")
+        elif target.get("per_main_group"):
+            suffix = TARGET_NAME.get(fault)
+            if suffix is None:
+                raise SystemExit(
+                    f"fault {fault} delivers per main group, but TARGET_NAME does not "
+                    "say which address in the group that is"
+                )
+            addresses = targets(catalog, suffix)
+            block += per_main_group_rules(fault, addresses)
+            groups = ", ".join(str(g) for g in sorted(addresses))
+            print(f"{fault}: {len(addresses)} rules on main groups {groups}")
+        # Per-device and per-room targets are written by hand: their
+        # addresses follow device and room names, not one suffix per group.
 
     generated = splice(rules_path.read_text(encoding="utf-8"), block)
     rules_path.write_text(generated, encoding="utf-8")
