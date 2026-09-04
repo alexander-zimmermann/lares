@@ -1,13 +1,13 @@
 """Check whether Basalte still agrees with ETS about the group addresses.
 
     uv run --no-project --with pyyaml python scripts/basalte_sync.py \
-        <export.bcfg> <ets-catalog.yaml>
+        <export.bcfg> <ga-catalog.yaml>
 
-The ETS side is the project itself, extracted for this run — `task
-basalte:sync` does that first. Comparing against the committed
-`ga-catalog.yaml` would answer a different question: whether Basalte
-matches what the repo last wrote down, which is a snapshot and can be
-older than ETS.
+The ETS side is the catalog, which is a snapshot of the project: an
+address created in ETS since the last `task knx:catalog` would look like
+one Basalte invented. `task basalte:sync` keeps that from happening by
+refusing to run while the .knxproj is newer — which is why this stays two
+plain files to read instead of an extraction with a project password.
 
 Basalte holds the bus in two layers. One is the imported ETS project,
 which a re-import refreshes wholesale. The other is every device and
@@ -90,8 +90,8 @@ def layers(export: Path) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
     return imported, wired
 
 
-def ets_of(path: Path) -> dict[str, str]:
-    """{address: name} as ETS defines it, from a freshly extracted catalog."""
+def catalog_of(path: Path) -> dict[str, str]:
+    """{address: name} as ETS defines it, per the catalog."""
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     return {
         str(ga): entry["name"]
@@ -101,12 +101,12 @@ def ets_of(path: Path) -> dict[str, str]:
 
 
 def main() -> int:
-    export, ets_path = Path(sys.argv[1]), Path(sys.argv[2])
-    catalog = ets_of(ets_path)
+    export, catalog_path = Path(sys.argv[1]), Path(sys.argv[2])
+    catalog = catalog_of(catalog_path)
     by_name = {name: ga for ga, name in catalog.items()}
     imported, wired = layers(export)
 
-    print(f"ETS project: {len(catalog)} addresses")
+    print(f"{catalog_path.name}: {len(catalog)} addresses")
     drifted = {(ga, name) for ga, name in imported if catalog.get(ga) != name}
     print(
         f"{export.name}: {len(set(imported))} imported bindings, "

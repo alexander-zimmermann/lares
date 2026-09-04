@@ -22,7 +22,7 @@ read the diff — that shows what changed without opening Studio.
 ## Does Basalte still agree with ETS?
 
 ```
-KNXPROJ_PASSWORD=… task basalte:sync          # uses docs/basalte/Steinroth.bcfg
+task basalte:sync                             # uses docs/basalte/Steinroth.bcfg
 ```
 
 Basalte holds the bus twice: the imported ETS project, and a copy of the address
@@ -39,10 +39,10 @@ the slot the object still holds got re-used by its neighbour — so it reads a
 plausible value that measures something else, which is why the report names what
 sits on the bound address now and lists those cases first.
 
-It compares against the `.knxproj` itself, extracted for the run into `.tmp/`,
-because `ga-catalog.yaml` is a snapshot: an address created in ETS after the last
-`task knx:catalog` would make the check call Basalte wrong for using it. When the
-export's own import layer
+It compares against `ga-catalog.yaml`. That is a snapshot of the project, so an
+address created in ETS after the last `task knx:catalog` would look like one
+Basalte invented — the task therefore refuses to run while the `.knxproj` is
+newer and tells you to rebuild first. When the export's own import layer
 is behind, the check says so and stops listing the name drift — everything is
 stale by construction until Studio has re-imported.
 

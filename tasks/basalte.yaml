@@ -13,35 +13,26 @@ tasks:
       - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" docs/basalte/logic-inventory.md
 
   sync:
-    desc: "check the Studio export against the ETS project [path/to/export.bcfg]"
+    desc: "check the Studio export against the GA catalog [path/to/export.bcfg]"
     summary: |
       Report where Basalte and ETS disagree about a group address: bindings
       whose address moved (the ones that matter), labels left over from an
       older name, and addresses ETS does not define. Exits non-zero on a
       moved address.
 
-      Compares against the .knxproj itself, extracted for this run — not
-      against ga-catalog.yaml, which is a snapshot and can be older than
-      ETS. Pass KNXPROJ_PASSWORD=… for encrypted projects.
+      Compares against ga-catalog.yaml, which is a snapshot of the project.
+      The task refuses to run while the .knxproj is newer than it — an
+      address created in ETS since would otherwise be reported as one
+      Basalte invented. Rebuild with `task knx:catalog` first.
     vars:
       EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
-      ETS_CATALOG: "{{.ROOT_DIR}}/.tmp/ets-catalog.yaml"
-    env:
-      # through the environment so the plaintext never reaches an argument list
-      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
     preconditions:
       - sh: test -f "{{.EXPORT}}"
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
-      - sh: test -f "{{.KNX_PROJECT_PATH}}"
-        msg: "ETS project not found: {{.KNX_PROJECT_PATH}}"
+      # Absent .knxproj: nothing to be stale against, so the check runs.
+      - sh: '! test "{{.KNX_PROJECT_PATH}}" -nt "{{.KNX_CATALOG_PATH}}"'
+        msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:catalog` first"
     cmds:
-      - mkdir -p "{{.ROOT_DIR}}/.tmp"
       - >
-        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
-        --input "{{.KNX_PROJECT_PATH}}"
-        --output "{{.ETS_CATALOG}}"
-        --ignore-write-from Dummy
-        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
-      - >
-        uv run --no-project --with pyyaml python scripts/basalte_sync.py
-        "{{.EXPORT}}" "{{.ETS_CATALOG}}"
+        uv run --no-project --with pyyaml python scripts/basalte_sync.py "{{.EXPORT}}"
+        "{{.KNX_CATALOG_PATH}}"
