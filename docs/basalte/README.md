@@ -34,6 +34,11 @@ The check reports both, plus whatever the catalog does not know at all, and
 exits non-zero only on a moved address. Run it after every ETS change and after
 every re-import.
 
+A moved address is not always an obviously dead one. Where ETS compacted a block,
+the slot the object still holds got re-used by its neighbour — so it reads a
+plausible value that measures something else, which is why the report names what
+sits on the bound address now and lists those cases first.
+
 It compares against `ga-catalog.yaml`, which is a snapshot: rebuild it with
 `task knx:catalog` before believing a finding. When the export's own import layer
 is behind, the check says so and stops listing the name drift — everything is

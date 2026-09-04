@@ -13,9 +13,10 @@ bus says so.
 
 Three findings, by how much they cost:
 
-* **stale binding** — the address is unknown to ETS while its name lives
-  there under a different one. The object talks to an address that means
-  something else now, or nothing. This is the class that matters.
+* **stale binding** — the datapoint the object was wired to lives under a
+  different address now. Whether the address it still holds exists decides
+  only how loudly it fails: gone means silence, re-used means a plausible
+  value that measures something else. This is the class that matters.
 * **stale label** — the address is right, the name beside it is what ETS
   called it once. Cosmetic; a re-assignment in Studio refreshes it.
 * **unknown** — neither the address nor the name is in the catalog.
@@ -112,21 +113,28 @@ def main() -> int:
     if import_behind:
         print("  the ETS import is behind — re-import in Studio, then re-run")
 
-    stale_binding: list[tuple[str, str, str]] = []
+    stale_binding: list[tuple[str, str, str, str | None]] = []
     stale_label: list[tuple[str, str, str]] = []
     unknown: list[tuple[str, str]] = []
     for ga, name in sorted(set(wired)):
-        if ga in catalog:
+        elsewhere = by_name.get(name)
+        if elsewhere is not None and elsewhere != ga:
+            # The datapoint this object was wired to lives somewhere else
+            # now. Whether the address it holds still exists decides how
+            # loudly it fails, not whether it is wrong: an address that was
+            # re-used reads a plausible value that means something else.
+            stale_binding.append((ga, elsewhere, name, catalog.get(ga)))
+        elif ga in catalog:
             if catalog[ga] != name:
                 stale_label.append((ga, catalog[ga], name))
-        elif name in by_name:
-            stale_binding.append((ga, by_name[name], name))
         else:
             unknown.append((ga, name))
 
     print(f"\n=== {len(stale_binding)} stale bindings — the address moved in ETS")
-    for ga, correct, name in stale_binding:
+    for ga, correct, name, occupant in sorted(stale_binding, key=lambda b: b[3] is None):
         print(f"  {ga:9s} -> {correct:9s}  {name}")
+        if occupant is not None:
+            print(f"  {'':9s}    {ga} is now {occupant}")
 
     print(f"\n=== {len(stale_label)} stale labels — right address, old name")
     if import_behind:
