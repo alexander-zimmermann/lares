@@ -26,7 +26,7 @@ helmCharts:
   - name: crowdsec
     repo: oci://ghcr.io/crowdsecurity/helm-charts
     releaseName: crowdsec
-    version: 0.24.0
+    version: 0.24.2
     valuesFile: values.yaml
     namespace: crowdsec
     apiVersions:
