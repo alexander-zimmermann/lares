@@ -31,3 +31,7 @@ powerflow:
 
 energy:
   retain: false
+
+# History lives in TimescaleDB; the local SQLite file would only grow in the ephemeral container layer.
+storage:
+  enable: false
