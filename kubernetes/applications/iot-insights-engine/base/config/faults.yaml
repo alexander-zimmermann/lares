@@ -6,11 +6,14 @@ faults:
   # Tracer fault: needs no model and exercises the whole chain.
   - name: channel_silence
     sentence: "Ein Kanal, der sonst regelmäßig sendet, schweigt länger als das
-      Fünffache seiner üblichen Sendepause."
+      Fünffache der Sendepause, die er sonst in 19 von 20 Fällen einhält."
     unit: "× der üblichen Sendepause"
     kind: silence
     parameters:
       gap_factor: 5
+      # The pause is read at this quantile of the channel's own gaps: the
+      # median sits inside an evening's switching, where nothing returns from.
+      gap_quantile: 0.95
     scope:
       name_like: "%"
     target:
