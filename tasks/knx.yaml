@@ -4,27 +4,16 @@ version: "3"
 #   KNX_BRIDGE_DIR        — sibling repo holding knxproj-to-yaml and the schema
 #   KNX_CATALOG_PATH      — destination ConfigMap source file in lares
 #   KNX_WRITER_RULES_PATH — writer-rules ConfigMap source file in lares
-#   SCRIPTS_DIR           — lares scripts/
 
 tasks:
   catalog:
     desc: "rebuild ga-catalog.yaml from an ETS project export [path/to/project.knxproj]"
     summary: |
-      Run the full pipeline — extract the raw catalog from the .knxproj via
-      xknxproject, then apply project-specific enrichment.
-      Arguments: [path/to/project.knxproj]
-      Pass KNXPROJ_PASSWORD=… for encrypted projects.
-    cmds:
-      - task: generate-catalog
-        vars:
-          CLI_ARGS: "{{.CLI_ARGS}}"
-      - task: enrich-catalog
-
-  generate-catalog:
-    desc: "extract raw ga-catalog.yaml from an ETS project export (no enrichment) [path/to/project.knxproj]"
-    summary: |
-      Run knxproj-to-yaml against the supplied .knxproj and write the raw catalog into the ConfigMap
-      source file.
+      Run knxproj-to-yaml against the supplied .knxproj and write the catalog
+      into the ConfigMap source file. The extractor strips what ETS adds by
+      itself — the Building numbering around a space name and the description
+      it pre-fills from space plus function — so there is nothing left to
+      post-process here.
       Arguments: [path/to/project.knxproj]
       Pass KNXPROJ_PASSWORD=… for encrypted projects.
     vars:
@@ -49,16 +38,6 @@ tasks:
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
-
-  enrich-catalog:
-    desc: "apply project-specific enrichment to ga-catalog.yaml"
-    summary: |
-      Normalise ETS Building-style room names and drop ETS auto-generated descriptions.
-      Configuration (floor tokens, regex) lives in scripts/knx_enrich_catalog.py.
-    vars:
-      ENRICH_SCRIPT: "{{.SCRIPTS_DIR}}/knx_enrich_catalog.py"
-    cmds:
-      - '"{{.ENRICH_SCRIPT}}" "{{.KNX_CATALOG_PATH}}"'
 
   validate-writer-rules:
     desc: "validate writer-rules.yaml with the bridge's own loader"
