@@ -307,7 +307,7 @@ One row per notification — a block often carries several, one per room or devi
 | Waschmaschine - Programmaktionen | 15 | audio_notification×1, gate×1, genericdevice×1, knxbool×1, linkinput×2, multiplexer×2, notification×1, setbool×3 |
 | Waschmaschine - Status | 13 | compare×1, delay×2, genericdevice×1, init×1, linkoutput×1, multiplexer×1, not×1, setbool×2, setnumber×1 |
 | Waschmaschine - Statusänderung | 16 | compare×2, debouncer×2, gate×1, linkinput×1, linkoutput×2, memory×1, not×1, setbool×2 |
-| Waschmaschine - Strom sparen | 10 | gate×1, genericdevice×1, knxbool×1, multiplexer×1, not×1, setbool×1, when×2 |
+| Waschmaschine - Strom sparen | 10 | gate×1, genericdevice×1, linkinput×1, multiplexer×1, not×1, setbool×1, when×2 |
 | Wasser - Durchfluss | 18 | gate×2, init×1, knxbool×1, knxnumber×3, multiplexer×2, multiply×2, not×1, setnumber×3 |
 | Wasser - Erweiteter Durchflussalarm | 28 | delay×6, init×2, knxbool×4, memory×2, multiplexer×2, not×2, notification×2, setbool×4 |
 | Wassermelder Alarm | 21 | changedetector×7, knxbool×7, notification×7 |
