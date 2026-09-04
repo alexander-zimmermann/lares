@@ -4,6 +4,7 @@ version: "3"
 #   KNX_BRIDGE_DIR        — sibling repo holding knxproj-to-yaml and the schema
 #   KNX_CATALOG_PATH      — destination ConfigMap source file in lares
 #   KNX_WRITER_RULES_PATH — writer-rules ConfigMap source file in lares
+#   INSIGHTS_FAULTS_PATH  — the fault-list source file in lares
 
 tasks:
   catalog:
@@ -46,6 +47,20 @@ tasks:
         ! grep -qE '^  room: [0-9]+ - ' "{{.KNX_CATALOG_PATH}}" ||
         { echo "rooms still carry ETS' Building numbering: update {{.KNX_BRIDGE_DIR}}
         (needs the extractor that strips it, knx-nats-bridge >= v0.19.0)"; exit 1; }
+
+  fault-writer-rules:
+    desc: "regenerate the fault writer rules from faults.yaml and the GA catalog"
+    summary: |
+      Rewrite the generated block in writer-rules.yaml: one rule per main
+      group for every fault the fault list declares as delivering per main
+      group (channel silence), resolved against the catalog for address,
+      DPT and name. The rules follow the address plan, so run this after
+      every catalog change; it validates the result on the way out.
+    cmds:
+      - >
+        uv run --no-project --with pyyaml python scripts/fault_writer_rules.py
+        "{{.INSIGHTS_FAULTS_PATH}}" "{{.KNX_CATALOG_PATH}}" "{{.KNX_WRITER_RULES_PATH}}"
+      - task: validate-writer-rules
 
   validate-writer-rules:
     desc: "validate writer-rules.yaml with the bridge's own loader"
