@@ -266,3 +266,21 @@ faults:
     dormant:
       reason: "Die Adressen existieren in ETS noch nicht."
       active_when: "Die Adressen stehen im Katalog und die Studio-Logik schreibt sie."
+
+  # The volume watchdog: the notification count is itself a declared fault.
+  # It measures the episode stream every other fault writes, so it is
+  # declared last — the week it counts already includes what this run
+  # produced. Externally delivered episodes count too, and so do its own:
+  # what matters is how much reached a human.
+  - name: notification_volume
+    sentence: "Mehr als 5 Vorfälle in sieben Tagen — die Meldungsmenge selbst
+      driftet zurück ins Rauschen."
+    unit: "× der erlaubten Wochenmenge"
+    kind: volume
+    parameters:
+      # The declared target: about five notifications a week. Tuning it is
+      # an edit to this line in a PR, never an engine release.
+      max_episodes_per_week: 5
+    target:
+      # One house-wide severity address in the central Diagnose block.
+      ga: "0/0/251"
