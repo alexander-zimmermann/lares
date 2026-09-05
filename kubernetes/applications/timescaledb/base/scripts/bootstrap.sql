@@ -243,6 +243,7 @@ CREATE INDEX ON ems_esp (topic, time DESC);
 -- source NATS message — replay after a consumer reset must not duplicate.
 CREATE UNIQUE INDEX IF NOT EXISTS ems_esp_unique ON ems_esp (time, topic);
 
+-- Recreating this CAGG loses buckets older than the ems_esp retention window — they live only here.
 CREATE MATERIALIZED VIEW ems_esp_boiler_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 hour', time) AS bucket,
