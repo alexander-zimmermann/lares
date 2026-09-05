@@ -2353,7 +2353,7 @@
   room: Technikraum
   writable: false
 15/2/1:
-  dpt: '5.010'
+  dpt: '7.001'
   function: Versorgerungstechnik
   name: Versorgungstechnik.Gastherme.Fehlerzustand-Status
   room: Technikraum

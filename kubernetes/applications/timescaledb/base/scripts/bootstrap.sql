@@ -243,6 +243,7 @@ CREATE INDEX ON ems_esp (topic, time DESC);
 -- source NATS message — replay after a consumer reset must not duplicate.
 CREATE UNIQUE INDEX IF NOT EXISTS ems_esp_unique ON ems_esp (time, topic);
 
+-- Recreating this CAGG loses buckets older than the ems_esp retention window — they live only here.
 CREATE MATERIALIZED VIEW ems_esp_boiler_1h
 WITH (timescaledb.continuous, timescaledb.materialized_only = true) AS
 SELECT time_bucket('1 hour', time) AS bucket,
@@ -252,6 +253,8 @@ SELECT time_bucket('1 hour', time) AS bucket,
        avg(syspress)    AS syspress_avg,
        avg(curburnpow)  AS curburnpow_avg,
        sum(heatingactive) AS heatingactive_samples,
+       -- Fault code (EMS-ESP UINT16), 0 = no fault; max = worst code in the bucket.
+       max(servicecodenumber) AS servicecodenumber_max,
        count(*)         AS sample_count
 FROM ems_esp WHERE topic = 'boiler_data'
 GROUP BY bucket WITH NO DATA;

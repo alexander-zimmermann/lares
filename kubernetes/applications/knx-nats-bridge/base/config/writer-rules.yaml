@@ -372,6 +372,14 @@ mappings:
     payload_path: "$.syspress"
     description: "Versorgungstechnik.Gastherme.System-Druck"
     min_delta: 0.05 # bar (raw value; DPT 9.006 unit is Pa)
+  # EMS-ESP reads servicecodenumber as a raw 2-byte telegram field, unmasked —
+  # hence DPT 7.001, not 5.010. Basalte owns the plain text of each code.
+  - subject: "ems-esp.boiler_data"
+    ga: "15/2/1"
+    dpt: "7.001"
+    payload_path: "$.servicecodenumber"
+    description: "Versorgungstechnik.Gastherme.Fehlerzustand-Status"
+    min_delta: 0 # fault code: write on change, 0 included so Basalte can clear
 
   # EMS-ESP boiler_data_dhw (domestic hot water)
   - subject: "ems-esp.boiler_data_dhw"
