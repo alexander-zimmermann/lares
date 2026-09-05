@@ -87,6 +87,15 @@ spec:
       rediscacheenabled: true
       rediscachehost: "redis-master.redis.svc.cluster.local:6379"
       redisCachePasswordFile: "/etc/traefik/redis-secrets/redis_password"
+      crowdsecAppsecEnabled: true
+      crowdsecAppsecHost: "crowdsec-appsec-service.crowdsec.svc.cluster.local:7422"
+      # Read separately from the LAPI key, it does not inherit
+      crowdsecAppsecKeyFile: "/etc/traefik/crowdsec-secrets/crowdsec_lapi_key"
+      # Fail open: AppSec runs one replica in every chain, blocking on it would take down all ingress
+      crowdsecAppsecFailureBlock: false
+      crowdsecAppsecUnreachableBlock: false
+      # 1 MiB instead of the 10 MiB default, buffered per concurrent request on both sides
+      crowdsecAppsecBodyLimit: 1048576
 
 ---
 # Cloudflare Integration: Validates that traffic is coming from trusted Cloudflare CIDRs
