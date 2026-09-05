@@ -157,11 +157,11 @@ spec:
               "calcs": [
                 "first"
               ],
-              "fields": "/^version$/",
+              "fields": "",
               "values": false
             },
             "showPercentChange": false,
-            "textMode": "auto",
+            "textMode": "name",
             "wideLayout": true
           },
           "pluginVersion": "11.5.2",
@@ -174,9 +174,9 @@ spec:
               "editorMode": "code",
               "exemplar": false,
               "expr": "cs_info{instance=\"$instance\"}",
-              "format": "table",
+              "format": "time_series",
               "instant": true,
-              "legendFormat": "__auto",
+              "legendFormat": "{{version}}",
               "range": false,
               "refId": "A"
             }
@@ -226,7 +226,7 @@ spec:
               "calcs": [
                 "first"
               ],
-              "fields": "/^Time$/",
+              "fields": "",
               "values": false
             },
             "showPercentChange": false,
@@ -652,7 +652,7 @@ spec:
               },
               "editorMode": "code",
               "exemplar": false,
-              "expr": "sum(increase(cs_bucket_created_total{instance=\"$instance\"} [$__range]))",
+              "expr": "sum(increase(cs_bucket_instantiation_total{instance=\"$instance\"} [$__range]))",
               "instant": true,
               "legendFormat": "__auto",
               "range": false,
