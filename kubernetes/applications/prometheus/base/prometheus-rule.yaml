@@ -359,17 +359,15 @@ spec:
             description: "miele_connected has not been scraped for 15m — check the pod and its ServiceMonitor. Every other Miele alert is blind until this clears."
 
     # Per-bridge delivery watchdog: catches "the pod runs but delivers
-    # nothing" — the failure mode `up` cannot see (hung cloud stream, dead
-    # appliance session, silent device). One rule per bridge on its steadiest
-    # throughput signal, windowed to the cadence measured over 7-30 days of
-    # history; the shared alertname groups a multi-bridge outage (e.g. NATS
-    # down) into a single notification. Publishers without their own /metrics
-    # endpoint are watched on the NATS side instead: nats_stream_last_seq is
-    # monotonic and persisted with the stream, so it survives both NATS and
-    # redpanda-connect restarts, which the connect-side input_received
-    # counters do not. SolarEdge already has this watchdog in the
-    # SolarEdgeInverterData* rules above; bordbar's RF output is write-only,
-    # so its 60s bordbar.state heartbeat is the only observable liveness.
+    # nothing" — the failure mode `up` cannot see. One rule per bridge on its
+    # steadiest throughput signal, windowed to the cadence measured over 7-30
+    # days of history; the shared alertname groups a multi-bridge outage into
+    # a single notification, and the bridge label keeps the aggregated-away
+    # rules distinct under it. Publishers without their own /metrics endpoint
+    # are watched via nats_stream_last_seq: monotonic and persisted with the
+    # stream, it survives NATS and redpanda-connect restarts (a deliberate
+    # stream recreate reads as a counter reset — one skipped window, no page).
+    # SolarEdge already has this watchdog in SolarEdgeInverterData* above.
     - name: bridge-delivery-alerts
       rules:
         - alert: BridgeSilent
@@ -447,8 +445,11 @@ spec:
 
         - alert: BridgeSilent
           # Protect events are bursty — quiet nights reached 6h of silence in
-          # 30 days of history, a 12h window never froze.
-          expr: sum(rate(nats_stream_last_seq{stream_name="UNIFI"}[12h])) == 0
+          # 30 days of history, a 12h window never froze. Unlike the other
+          # stream-side rules this path runs through a scraped pod (the
+          # webhook receiver), so a dead redpanda-connect stays InstanceDown's
+          # alone instead of surfacing here 12h later.
+          expr: sum(rate(nats_stream_last_seq{stream_name="UNIFI"}[12h])) == 0 and max(up{job="redpanda-connect"}) == 1
           for: 30m
           labels:
             severity: warning
@@ -468,3 +469,20 @@ spec:
           annotations:
             summary: "Bordbar ESP32 delivering nothing"
             description: "No heartbeat on bordbar.state for 25m. Check the ESP32's WLAN and the NATS MQTT gateway; a clean death would have dropped the availability GA via the last will. RF-send health is not remotely observable."
+
+        - alert: BridgeStreamMetricsAbsent
+          # `up` covers the NATS exporter pod; this covers its PodMonitor
+          # being dropped or a stream being deleted, either of which silently
+          # blinds the four stream-side rules above. A rate over an empty
+          # vector matches nothing, so those rules cannot see their own gap.
+          expr: |
+            absent(nats_stream_last_seq{stream_name="WARP"})
+            or absent(nats_stream_last_seq{stream_name="EMS_ESP"})
+            or absent(nats_stream_last_seq{stream_name="UNIFI"})
+            or absent(nats_stream_last_seq{stream_name="BORDBAR"})
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Bridge watchdog blind for {{ $labels.stream_name }}"
+            description: "nats_stream_last_seq for {{ $labels.stream_name }} has not been scraped for 15m — check the nats pod, its PodMonitor and the Stream CRD. The delivery watchdog for this bridge is blind until this clears."
