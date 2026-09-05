@@ -58,7 +58,7 @@ alertmanager:
               repeat_interval: 4h
         # House-device bridges: chatty by nature, own application to mute at will
         - matchers:
-            - alertname =~ "Dyson.*|Midea.*|Miele.*|SolarEdge.*|UnifiArm.*"
+            - alertname =~ "Bridge.*|Dyson.*|Midea.*|Miele.*|SolarEdge.*|UnifiArm.*"
           receiver: "devices-warning"
           repeat_interval: 24h
           routes:
