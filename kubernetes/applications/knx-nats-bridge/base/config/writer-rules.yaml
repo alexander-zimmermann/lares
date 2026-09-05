@@ -618,7 +618,7 @@ mappings:
   # Anomaly detectors -> KNX (iot-insights-engine). The engine publishes the
   # current tier as $.severity_level (0=ok, 1=info, 2=warning, 3=critical) and
   # re-publishes 0 on auto-clear; a Basalte LUT turns it into a notification.
-  # Phase A: Gastherme (1:1 UCs, anomaly.<uc>) + Gefrierschrank-Dauerbetrieb.
+  # Phase A: Gastherme (1:1 UCs, anomaly.<uc>).
   - subject: "anomaly.boiler_curburnpow"
     ga: "15/2/12"
     dpt: "5.010"
@@ -652,13 +652,6 @@ mappings:
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
-    min_delta: 0
-    seed_on_start: true
-  - subject: "anomaly.freezer_icing"
-    ga: "2/2/229"
-    dpt: "5.010"
-    payload_path: "$.severity_level"
-    description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Dauerbetrieb-Anomalie"
     min_delta: 0
     seed_on_start: true
 
@@ -770,7 +763,9 @@ mappings:
 
   # Phase B2: appliance Stromwert anomalies (Schalten 2/1 KG + 2/2 EG).
   # appliance_standby (+8) + appliance_runtime (+9), entity = slug(Stromwert-GA).
-  # Gefrierschrank-Dauerbetrieb (2/2/229) is owned by freezer_icing (Phase A).
+  # Freezer icing is measured on the same Stromwert channel but reported with
+  # the appliance, on 17/1/170; the freezer's Dauerbetrieb address (2/2/229)
+  # stays unwritten — its compressor cycles faster than the hourly grid.
   - subject: "anomaly.appliance_standby.2-1-27"
     ga: "2/1/28"
     dpt: "5.010"
@@ -1056,6 +1051,13 @@ mappings:
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.EG.Küche.K15-L1.Gefrierschrank.Stromwert-Standby-Anomalie"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "anomaly.freezer_icing.2-2-227"
+    ga: "17/1/170"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Haushaltstechnik.Gefrierschrank.Vereisung-Anomalie"
     min_delta: 0
     seed_on_start: true
 

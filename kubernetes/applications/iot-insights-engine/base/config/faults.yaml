@@ -81,6 +81,8 @@ faults:
       über ihrem gesunden Wert — ein klemmendes Relais, keine Sparfrage."
     unit: "× der erlaubten Erhöhung"
     kind: drift
+    # The idle draw in mA — the series this fault's CUSUM walks.
+    signal: standby
     parameters:
       # A floor, not a noise band: nothing below it ever accumulates, so the
       # Vorratsraum's real 10 mA step cannot fire however long it stands.
@@ -148,6 +150,45 @@ faults:
     target:
       # One severity address per device: the writer rules carry
       # anomaly.appliance_standby.<ga-slug> to the Standby address.
+      per_device: true
+
+  - name: freezer_icing
+    sentence: "Der Gefrierschrank lässt seinen Verdichter über den Tag mehr als
+      15 Prozentpunkte länger laufen als im gesunden Zustand — der Verdampfer
+      vereist, lange bevor im Fach etwas antaut."
+    unit: "× der erlaubten Erhöhung"
+    kind: drift
+    # The share of the day the compressor runs, in percent — same CUSUM as
+    # standby drift, over the one signal that shows ice before the food does.
+    signal: duty_cycle
+    parameters:
+      # A healthy freezer has headroom to spare; 15 points of it gone is the
+      # line, and only what stands past that line accumulates.
+      rise_pct: 15
+      # How long a larger rise must stand: the June measurement (80 % of the
+      # day) fills this in under two days, a warm shopping load never does.
+      budget_pct_h: 600
+      window_hours: 24
+      # Lower than the standby fault's: the hours a door event covers are cut
+      # out of the day, so the coverage has to leave room for one.
+      min_window_fraction: 0.6
+      # Three hours in which the compressor never stopped is a door standing
+      # open, not ice — normal cycling idles at some point in every hour.
+      door_run_hours: 3
+      # This compressor runs at 180 mA and up and idles at 50-67, so the
+      # threshold sits in the middle of a wide gap.
+      on_ma: 120
+    scope:
+      dpt: "7.012"
+      name_like: "%.Gefrierschrank.Stromwert"
+    references:
+      # Read off the summers before the icing, never derived from history:
+      # the iced state has stood for months and would become the new normal.
+      Küche.K15-L1.Gefrierschrank:
+        healthy_duty_pct: 50
+    target:
+      # The writer rule carries anomaly.freezer_icing.<ga-slug> to the
+      # freezer's own Vereisung address in the appliance group.
       per_device: true
 
   - name: fbh_cold
