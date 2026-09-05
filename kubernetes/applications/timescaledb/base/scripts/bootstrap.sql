@@ -252,6 +252,8 @@ SELECT time_bucket('1 hour', time) AS bucket,
        avg(syspress)    AS syspress_avg,
        avg(curburnpow)  AS curburnpow_avg,
        sum(heatingactive) AS heatingactive_samples,
+       -- Fault code (EMS-ESP UINT16), 0 = no fault; max = worst code in the bucket.
+       max(servicecodenumber) AS servicecodenumber_max,
        count(*)         AS sample_count
 FROM ems_esp WHERE topic = 'boiler_data'
 GROUP BY bucket WITH NO DATA;
