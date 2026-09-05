@@ -573,6 +573,18 @@ SELECT add_continuous_aggregate_policy('warp_meter_1h',
     start_offset => INTERVAL '2 days', end_offset => INTERVAL '1 hour',
     schedule_interval => INTERVAL '1 hour');
 
+-- knx_1h repeats `ga` and `knx_name` once per channel *per hour* — 2600
+-- addresses times 8760 buckets a year — which made the aggregate larger than
+-- the compressed raw table it summarises. Segmenting by `ga` stores both once
+-- per segment instead: a chunk drops from 11 MB to 32 kB. compress_after is
+-- 7 days, well clear of the 2-day refresh window, so the policy never touches
+-- a chunk the refresh still rewrites. The other aggregates are a few MB each
+-- and not worth the same treatment.
+ALTER MATERIALIZED VIEW knx_1h SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'ga',
+    timescaledb.compress_orderby = 'bucket DESC');
+SELECT add_compression_policy('knx_1h', INTERVAL '7 days');
+
 -- =========================================================
 -- Native compression — segment_by chosen for the column the queries
 -- usually filter on; order_by time DESC matches "most recent first".
