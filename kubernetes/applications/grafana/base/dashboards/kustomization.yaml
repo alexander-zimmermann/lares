@@ -9,6 +9,7 @@ resources:
   - hvac-ventilation.yaml
   - k8s-traefik.yaml
   - k8s-gatus.yaml
+  - k8s-crowdsec.yaml
   - network-unifi-ap.yaml
   - network-unifi-client.yaml
   - knx-alarm-basement.yaml
