@@ -31,7 +31,7 @@ machine:
       rotate-server-certificates: "true" # Enable kubelet serving cert rotation
     extraConfig:
       serverTLSBootstrap: true # Allow kubelet to request TLS certs
-      imageMaximumGCAge: 168h # Prune images unused for 7d; disk-based GC only fires at 85% and never triggers here
+      imageMaximumGCAge: 72h # Prune images unused for 3d; disk-based GC only fires at 85% and never triggers here
       memorySwap: # Kubernetes swap support (K8s 1.32+)
         swapBehavior: LimitedSwap
 
