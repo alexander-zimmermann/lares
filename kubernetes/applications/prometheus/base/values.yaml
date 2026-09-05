@@ -56,9 +56,21 @@ alertmanager:
                 - severity = "critical"
               receiver: "argocd-critical"
               repeat_interval: 4h
+        # Delivery watchdogs: grouped by their shared label instead of the
+        # alertname, so a multi-bridge outage stays a single notification
+        - matchers:
+            - alert_group = "bridge-delivery"
+          group_by: ["alert_group"]
+          receiver: "devices-warning"
+          repeat_interval: 24h
+          routes:
+            - matchers:
+                - severity = "critical"
+              receiver: "devices-critical"
+              repeat_interval: 4h
         # House-device bridges: chatty by nature, own application to mute at will
         - matchers:
-            - alertname =~ "Bridge.*|Dyson.*|Midea.*|Miele.*|SolarEdge.*|UnifiArm.*"
+            - alertname =~ "Dyson.*|Midea.*|Miele.*|SolarEdge.*|UnifiArm.*"
           receiver: "devices-warning"
           repeat_interval: 24h
           routes:
