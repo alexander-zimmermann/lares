@@ -62,4 +62,7 @@ patches:
             memory: 256Mi
           limits:
             cpu: 500m
-            memory: 1Gi
+            # 1Gi could not carry routine maintenance: a month-wide CAGG
+            # refresh and two unbounded reads over `knx` were OOM-killed on the
+            # same day. The node runs at 58% of 10Gi, so the headroom is there.
+            memory: 2Gi
