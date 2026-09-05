@@ -65,6 +65,10 @@ agent:
         crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors
         firix/authentik
 
+    # Its 403 bucket re-alerts on the bouncer's own 403 replies to banned IPs
+    - name: DISABLE_SCENARIOS
+      value: "crowdsecurity/http-generic-bf"
+
   # Acquisition configuration: tells CrowdSec which logs to monitor
   acquisition:
     # Monitor Traefik access logs from the ingress-controller namespace
@@ -118,7 +122,7 @@ appsec:
 
 config:
   # Override default profiles.yaml: extend ban duration from 4h to 24h to keep
-  # scanners blocked longer and reduce repeat alerts hitting the console quota.
+  # scanners blocked longer.
   profiles.yaml: |
     name: default_ip_remediation
     filters:
