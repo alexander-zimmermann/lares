@@ -325,19 +325,6 @@ spec:
             summary: "Miele cloud event stream down"
             description: "The bridge has not held the SSE stream for 30m — WAN outage or a Miele-side problem. It reconnects on its own with backoff; the 17/1 GAs keep their last value meanwhile."
 
-        - alert: MieleEventStreamStale
-          # The keep-alive arrives every ~20s and never gapped below 14 per 5min
-          # in measurement, so silence is decisive. Appliance events alone would
-          # not be: they average 30/h with 15min windows of nothing. Guarded
-          # against the 0 a fresh pod reports until its first frame.
-          expr: miele_last_event_received_timestamp > 0 and time() - miele_last_event_received_timestamp > 300
-          for: 10m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Miele stream silent while connected"
-            description: "No SSE frame for {{ $value | humanizeDuration }} although miele_connected is 1 — a half-open connection the read timeout has not yet cut. Restart the pod if it persists."
-
         # No alert on miele_token_expiry_timestamp_seconds: the token is
         # refreshed lazily, on the next call that needs it, so it sits expired
         # for hours while a long-lived stream runs perfectly. A broken refresh
@@ -370,3 +357,132 @@ spec:
           annotations:
             summary: "Miele bridge metrics absent"
             description: "miele_connected has not been scraped for 15m — check the pod and its ServiceMonitor. Every other Miele alert is blind until this clears."
+
+    # Per-bridge delivery watchdog: catches "the pod runs but delivers
+    # nothing" — the failure mode `up` cannot see. One rule per bridge on its
+    # steadiest throughput signal, windowed to the cadence measured over 7-30
+    # days of history; the shared alertname groups a multi-bridge outage into
+    # a single notification, and the bridge label keeps the aggregated-away
+    # rules distinct under it. Publishers without their own /metrics endpoint
+    # are watched via nats_stream_last_seq: monotonic and persisted with the
+    # stream, it survives NATS and redpanda-connect restarts (a deliberate
+    # stream recreate reads as a counter reset — one skipped window, no page).
+    # SolarEdge already has this watchdog in SolarEdgeInverterData* above.
+    - name: bridge-delivery-alerts
+      rules:
+        - alert: BridgeSilent
+          # The bus never pauses: one silent 10m window in 7 days of history,
+          # and that was a real incident.
+          expr: sum(rate(knx_telegrams_published_total[10m])) == 0 and max(up{job="knx-nats-bridge"}) == 1
+          for: 5m
+          labels:
+            severity: critical
+            bridge: knx
+          annotations:
+            summary: "KNX bridge publishing nothing"
+            description: "The knx-nats-bridge pod is up but has published nothing to NATS for 15m — the bus never goes quiet this long. Check knx_tunnel_connected and nats_connected on the pod. History, detection and every KNX-fed automation are blind meanwhile."
+
+        - alert: BridgeSilent
+          # The SSE keep-alive arrives every ~20s and is the only steady
+          # signal — appliance events alone are bursty, averaging 30/h with
+          # 15min windows of nothing.
+          expr: sum(rate(miele_events_total[10m])) == 0 and max(miele_connected) == 1
+          for: 5m
+          labels:
+            severity: warning
+            bridge: miele
+          annotations:
+            summary: "Miele stream silent while connected"
+            description: "No SSE frame for 15m although miele_connected is 1 — a half-open connection the read timeout has not yet cut. Restart the pod if it persists; an honest disconnect is covered by MieleCloudDisconnected."
+
+        - alert: BridgeSilent
+          # Publishes move only on state changes (silent for hours on a quiet
+          # day), so liveness is the device->bridge receive stream, which
+          # never paused while connected in 7 days of history.
+          expr: sum by (device) (rate(midea_messages_received_total[15m])) == 0 and max by (device) (midea_connected) == 1
+          for: 10m
+          labels:
+            severity: warning
+            bridge: midea
+          annotations:
+            summary: "Midea session silent for {{ $labels.device }}"
+            description: "midea_connected is 1 for {{ $labels.device }} but no message arrived for 25m — the appliance session is dead without the bridge noticing. An honest disconnect is covered by MideaDeviceDisconnected."
+
+        - alert: BridgeSilent
+          # State/environment polls publish continuously while connected.
+          expr: sum by (device) (rate(dyson_messages_published_total[10m])) == 0 and max by (device) (dyson_connected) == 1
+          for: 10m
+          labels:
+            severity: warning
+            bridge: dyson
+          annotations:
+            summary: "Dyson bridge publishing nothing for {{ $labels.device }}"
+            description: "dyson_connected is 1 for {{ $labels.device }} but nothing was published for 20m — the device MQTT session hangs or NATS publishing fails. An honest disconnect is covered by DysonDeviceDisconnected."
+
+        - alert: BridgeSilent
+          # The wallbox publishes meter data every few seconds around the
+          # clock (minimum 15m rate over 30d: 1.8/s). warp.> holds primary
+          # wallbox data only — the KNX republish lives in WALLBOX_KNX.
+          expr: sum(rate(nats_stream_last_seq{stream_name="WARP"}[15m])) == 0
+          for: 10m
+          labels:
+            severity: warning
+            bridge: warp
+          annotations:
+            summary: "WARP wallbox delivering nothing"
+            description: "The WARP stream sequence has not advanced for 25m although the wallbox publishes every few seconds. Check the wallbox and the NATS MQTT gateway. Charge tracking, KNX republishing and PV-surplus control are blind meanwhile."
+
+        - alert: BridgeSilent
+          # Heating telemetry arrives every ~5s around the clock.
+          expr: sum(rate(nats_stream_last_seq{stream_name="EMS_ESP"}[15m])) == 0
+          for: 10m
+          labels:
+            severity: warning
+            bridge: ems-esp
+          annotations:
+            summary: "EMS-ESP delivering nothing"
+            description: "The EMS_ESP stream sequence has not advanced for 25m although the gateway publishes every few seconds. A WLAN drop of the device also shows as GatusFlakyDeviceDown; if only this alert fires, the MQTT path is broken while the device still answers pings."
+
+        - alert: BridgeSilent
+          # Protect events are bursty — quiet nights reached 6h of silence in
+          # 30 days of history, a 12h window never froze. Unlike the other
+          # stream-side rules this path runs through a scraped pod (the
+          # webhook receiver), so a dead redpanda-connect stays InstanceDown's
+          # alone instead of surfacing here 12h later.
+          expr: sum(rate(nats_stream_last_seq{stream_name="UNIFI"}[12h])) == 0 and max(up{job="redpanda-connect"}) == 1
+          for: 30m
+          labels:
+            severity: warning
+            bridge: unifi
+          annotations:
+            summary: "UniFi Protect events delivering nothing"
+            description: "No detection or geofence event reached the UNIFI stream for 12h — four cameras never stay silent that long. The Alarm Manager webhook chain (UniFi -> redpanda-connect http input -> NATS) is broken, or Protect stopped detecting."
+
+        - alert: BridgeSilent
+          # The ESP32 heartbeats bordbar.state every 60s (firmware >= 0.2.0);
+          # the LWT only covers a clean death, this catches hung-but-connected.
+          expr: sum(rate(nats_stream_last_seq{stream_name="BORDBAR"}[15m])) == 0
+          for: 10m
+          labels:
+            severity: warning
+            bridge: bordbar
+          annotations:
+            summary: "Bordbar ESP32 delivering nothing"
+            description: "No heartbeat on bordbar.state for 25m. Check the ESP32's WLAN and the NATS MQTT gateway; a clean death would have dropped the availability GA via the last will. RF-send health is not remotely observable."
+
+        - alert: BridgeStreamMetricsAbsent
+          # `up` covers the NATS exporter pod; this covers its PodMonitor
+          # being dropped or a stream being deleted, either of which silently
+          # blinds the four stream-side rules above. A rate over an empty
+          # vector matches nothing, so those rules cannot see their own gap.
+          expr: |
+            absent(nats_stream_last_seq{stream_name="WARP"})
+            or absent(nats_stream_last_seq{stream_name="EMS_ESP"})
+            or absent(nats_stream_last_seq{stream_name="UNIFI"})
+            or absent(nats_stream_last_seq{stream_name="BORDBAR"})
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Bridge watchdog blind for {{ $labels.stream_name }}"
+            description: "nats_stream_last_seq for {{ $labels.stream_name }} has not been scraped for 15m — check the nats pod, its PodMonitor and the Stream CRD. The delivery watchdog for this bridge is blind until this clears."
