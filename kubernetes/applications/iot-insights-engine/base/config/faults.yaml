@@ -76,6 +76,80 @@ faults:
       # anomaly.appliance_runtime.<ga-slug> to the Dauerbetrieb address.
       per_device: true
 
+  - name: appliance_standby
+    sentence: "Die Standby-Aufnahme eines Geräts liegt dauerhaft mehr als 40 mA
+      über ihrem gesunden Wert — ein klemmendes Relais, keine Sparfrage."
+    unit: "× der erlaubten Erhöhung"
+    kind: drift
+    parameters:
+      # A floor, not a noise band: nothing below it ever accumulates, so the
+      # Vorratsraum's real 10 mA step cannot fire however long it stands.
+      rise_ma: 40
+      # How long a larger rise must stand: 60 mA fill this in a day, a stuck
+      # relay drawing amps within the hour.
+      budget_ma_h: 480
+      # Standby is the quietest hour of the trailing day — an hourly floor is
+      # the idle draw only in the hours the device does not run.
+      window_hours: 24
+      min_window_fraction: 0.8
+    scope:
+      # All 21 Stromwert channels: the continuous loads the runtime fault
+      # excludes have a standby level too, and a relay sticks on any of them.
+      dpt: "7.012"
+      name_like: "%.Stromwert"
+    references:
+      # Each device's healthy standby, read once off 30 days of daily floors
+      # and written here: a reference the detector derives for itself would
+      # adopt a fault that has stood for months as the new normal.
+      Garage.K1-L3.Entfeuchter:
+        healthy_ma: 0
+      Technikraum.K1-L1.Heizung:
+        healthy_ma: 0
+      Technikraum.K1-L2.Heizung:
+        healthy_ma: 96
+      # The cabinet's own load swings ±35 mA around this, the narrowest
+      # headroom of the 21 — the first device to revisit if it cries wolf.
+      Technikraum.K2-L1.Netzwerkschrank:
+        healthy_ma: 1960
+      Technikraum.K2-L2.Netzwerkschrank:
+        healthy_ma: 150
+      Technikraum.K3-L3.Entfeuchter:
+        healthy_ma: 0
+      Vorratsraum.K1-L3.Entfeuchter:
+        healthy_ma: 10
+      Vorratsraum.K3-L1.Lüftung:
+        healthy_ma: 238
+      Hauswirtschaftsraum.K1-L3.Entfeuchter:
+        healthy_ma: 0
+      Hauswirtschaftsraum.K3-L1.Trockner:
+        healthy_ma: 0
+      Hauswirtschaftsraum.K4-L1.Waschmaschine:
+        healthy_ma: 0
+      Wohnzimmer.K4-L1.Ofen:
+        healthy_ma: 14
+      Küche.K4-L1.Geschirrspüler:
+        healthy_ma: 21
+      Küche.K5-L1.Haubenlüfter:
+        healthy_ma: 13
+      Küche.K7-L1.Kühlschrank:
+        healthy_ma: 50
+      Küche.K9-L1.Backofen:
+        healthy_ma: 42
+      Küche.K10-L1.Tellerwärmer:
+        healthy_ma: 16
+      Küche.K12-L1.Mikrowelle:
+        healthy_ma: 41
+      Küche.K13-L1.Kaffeemaschine:
+        healthy_ma: 54
+      Küche.K14-L1.Dampfgarer:
+        healthy_ma: 52
+      Küche.K15-L1.Gefrierschrank:
+        healthy_ma: 48
+    target:
+      # One severity address per device: the writer rules carry
+      # anomaly.appliance_standby.<ga-slug> to the Standby address.
+      per_device: true
+
   - name: fbh_cold
     sentence: "Ein Raum liegt bei mehr als 50 % Stellwert seit mindestens 2 h
       weiter unter seiner Soll-Temperatur, als seine je Raum erlaubte Abweichung
