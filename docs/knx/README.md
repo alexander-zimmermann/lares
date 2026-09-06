@@ -50,9 +50,11 @@ Forget either and `check-wiring` reports it.
 | Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `exports/basalte/*.bcfg`) | ~65 | Write+Transmit |
 | Node-Red | flow-export addresses (`scripts/node_red_gas.py` on `exports/node-red/flows.json`) | a handful | Write+Transmit |
 
-Objects are **collectors**: one per main group × DPT main type (per
-direction on the bridge), named after the ETS group-range names and
-grouped per main group in the object tree. Every address of a kind is
+Objects are **collectors**: one per main group × datapoint type — the
+exact subtype (5.001, 9.001, …), with a main-type fallback for
+addresses ETS types loosely — per direction on the bridge, named after
+the ETS group-range names and grouped per main group in the object
+tree. Every address of a kind is
 linked to its collector — which is why wiring is a multi-select per
 object, not per address.
 
@@ -99,8 +101,9 @@ import the `.knxprod` into ETS → link the addresses per worksheet
 
 ## Growth and maintenance
 
-- **New address of an existing kind** (new switch, new fault address):
-  link it to its collector in ETS. No product update. `task
+- **New address of an existing kind** — same main group, datapoint
+  type and direction as an existing collector: link it there in ETS.
+  No product update. A first-of-its-subtype address is a new kind. `task
   knx:check-wiring` nags until the link exists.
 - **New (main group × DPT) combination, or a footprint change** (new
   writer rule kind, new consumer, new Basalte datapoint or flow kind):

@@ -18,7 +18,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   plus consumed addresses; Basalte's is its Studio-export bindings;
   Node-Red's is the addresses its flow export touches.
 - **Collector object** — one ETS communication object carrying every group
-  address of one kind (main group × DPT main type, per direction on the
+  address of one kind (main group × datapoint type, per direction on the
   bridge). The opposite of one-object-per-address.
 - **Consumed address** — a group address whose bus writes a NATS consumer
   acts on (the `*_from_knx` manifests). These make `writable` true via the
