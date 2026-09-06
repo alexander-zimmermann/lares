@@ -33,11 +33,16 @@ tasks:
       # --ignore-write-from Dummy: the GIRA placeholder device receives ~1850
       # addresses purely to get them into the coupler filter tables. Counting
       # its Write flag would mark almost everything writable, status mirrors
-      # included.
+      # included. The named devices are their knx:ets-devices replacements:
+      # a visualisation receives status addresses in order to display them,
+      # which is indistinguishable from acting on them, so their Write flags
+      # must not vote either — only the bridge's may.
       - uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
+        --ignore-write-from "Basalte Core S4"
+        --ignore-write-from "Node-Red"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
       # The extractor strips ETS' Building numbering; nothing here does it
       # any more. An extractor from before that fails silently, and the
@@ -47,6 +52,54 @@ tasks:
         ! grep -qE '^  room: [0-9]+ - ' "{{.KNX_CATALOG_PATH}}" ||
         { echo "rooms still carry ETS' Building numbering: update {{.KNX_BRIDGE_DIR}}
         (needs the extractor that strips it, knx-nats-bridge >= v0.19.0)"; exit 1; }
+
+  ets-devices:
+    desc: "generate Kaenx-Creator projects for the software bus devices [output-dir]"
+    summary: |
+      Build one Kaenx-Creator project per software bus participant —
+      KNX-NATS-Bridge, Basalte, Node-Red — from the ETS export at
+      KNX_PROJECT_PATH: one communication object per group address the
+      device carries, named after its NATS subject. The addresses NATS
+      consumers act on (the *_from_knx manifests) get the Write flag,
+      the mirrored rest Transmit+Read; Basalte and Node-Red get
+      Write+Transmit and stay excluded from the catalog's write vote.
+      Open each .ae-manu in Kaenx-Creator on the ETS VM, export the
+      .knxprod, import it into ETS and move the addresses off the
+      placeholder onto the new device.
+      The *_MATCH vars select the source placeholder devices; when a
+      default misses, the run fails with the project's device list —
+      override with e.g. `task knx:ets-devices BRIDGE_MATCH=1.1.240`,
+      an individual address selects exactly one device.
+      Arguments: [output-dir, default ~/Downloads]
+      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+    vars:
+      OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
+      BRIDGE_MATCH: '{{.BRIDGE_MATCH | default "bridge"}}'
+      BASALTE_MATCH: '{{.BASALTE_MATCH | default "basalte"}}'
+      NODERED_MATCH: '{{.NODERED_MATCH | default "node-red"}}'
+    env:
+      # passed through the environment so the plaintext password never appears
+      # in the command line that task echoes
+      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
+    preconditions:
+      - sh: test -f "{{.KNX_PROJECT_PATH}}"
+        msg: "'{{.KNX_PROJECT_PATH}}' not found"
+    cmds:
+      - >
+        set -e;
+        consumed="$(mktemp)";
+        trap 'rm -f "$consumed"' EXIT;
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
+        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
+        --input "{{.KNX_PROJECT_PATH}}"
+        --template "{{.ROOT_DIR}}/docs/knx/kaenx-template.ae-manu"
+        --write-gas "$consumed"
+        --device "{{.BRIDGE_MATCH}}=KNX-NATS-Bridge:split"
+        --device "{{.BASALTE_MATCH}}=Basalte Core S4:both"
+        --device "{{.NODERED_MATCH}}=Node-Red:both"
+        --output-dir "{{.OUTDIR}}"
+        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
   fault-writer-rules:
     desc: "regenerate the fault writer rules from faults.yaml and the GA catalog"
