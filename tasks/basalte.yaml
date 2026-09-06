@@ -5,7 +5,7 @@ tasks:
   inventory:
     desc: "regenerate the Basalte logic inventory from a Studio export [path/to/export.bcfg]"
     vars:
-      EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
+      EXPORT: '{{.CLI_ARGS | default "exports/basalte/Steinroth.bcfg"}}'
     preconditions:
       - sh: test -f "{{.EXPORT}}"
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
@@ -25,7 +25,7 @@ tasks:
       address created in ETS since would otherwise be reported as one
       Basalte invented. Rebuild with `task knx:catalog` first.
     vars:
-      EXPORT: '{{.CLI_ARGS | default "docs/basalte/Steinroth.bcfg"}}'
+      EXPORT: '{{.CLI_ARGS | default "exports/basalte/Steinroth.bcfg"}}'
     preconditions:
       - sh: test -f "{{.EXPORT}}"
         msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"

@@ -16,7 +16,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   actually touches, as defined by its configuration (not by what ETS
   happens to link to it). The bridge's footprint is writer-rule targets
   plus consumed addresses; Basalte's is its Studio-export bindings;
-  Node-Red's is the addresses its flows use.
+  Node-Red's is the addresses its flow export touches.
 - **Collector object** — one ETS communication object carrying every group
   address of one kind (main group × DPT main type, per direction on the
   bridge). The opposite of one-object-per-address.

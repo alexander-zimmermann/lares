@@ -5,7 +5,7 @@ product databases whose object tables are **collector objects** — one
 communication object per main group × DPT main type, per direction on the
 bridge — and whose address sets come from **lares configuration**
 (writer-rules ∪ `*_from_knx` consumers; Basalte Studio bindings; the
-Node-Red address list), never from what ETS happens to link to a device.
+Node-Red flow export), never from what ETS happens to link to a device.
 ETS is the checkable view; lares is the source. Full concept:
 `docs/knx/README.md`.
 

@@ -2,7 +2,7 @@
 
 ## Where the Studio export goes
 
-`docs/basalte/Steinroth.bcfg` — export it there and leave it there.
+`exports/basalte/Steinroth.bcfg` — export it there and leave it there.
 
 The file is **not** in the repo (`*.bcfg` is in `.gitignore`), the same way the
 ETS export `Steinroth.knxproj` is not. Two reasons: it is 14 MB of binary, and
@@ -12,7 +12,7 @@ reason enough not to publish it.
 ## Regenerating the inventory
 
 ```
-task basalte:inventory                        # uses docs/basalte/Steinroth.bcfg
+task basalte:inventory                        # uses exports/basalte/Steinroth.bcfg
 task basalte:inventory -- /path/to/export.bcfg
 ```
 
@@ -22,7 +22,7 @@ read the diff — that shows what changed without opening Studio.
 ## Does Basalte still agree with ETS?
 
 ```
-task basalte:sync                             # uses docs/basalte/Steinroth.bcfg
+task basalte:sync                             # uses exports/basalte/Steinroth.bcfg
 ```
 
 Basalte holds the bus twice: the imported ETS project, and a copy of the address

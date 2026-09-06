@@ -15,8 +15,8 @@ Migration tracker: issue #1557.
 | Device | Address source (the footprint) | Objects | Flags |
 | --- | --- | --- | --- |
 | KNX-NATS-Bridge | `writer-rules.yaml` targets (Transmit+Read) ∪ consumed addresses from the `*_from_knx` consumer manifests (Write) | ~35 | per direction |
-| Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `docs/basalte/*.bcfg`) | ~65 | Write+Transmit |
-| Node-Red | `docs/knx/node-red-gas.txt`, hand-maintained from the flows | a handful | Write+Transmit |
+| Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `exports/basalte/*.bcfg`) | ~65 | Write+Transmit |
+| Node-Red | flow-export addresses (`scripts/node_red_gas.py` on `exports/node-red/flows.json`) | a handful | Write+Transmit |
 
 Objects are **collectors**: one per main group × DPT main type (per
 direction on the bridge), named after the ETS group-range names and
@@ -48,7 +48,9 @@ KNXPROJ_PASSWORD=… task knx:ets-devices [output-dir]   # default ~/Downloads
 
 Inputs: the in-repo ETS export (names, DPTs, group-range names), the
 writer rules, the consumer manifests, the Basalte Studio export and the
-Node-Red list. Template: `docs/knx/kaenx-template.ae-manu` — an empty
+Node-Red flow export. Foreign-system exports live in `exports/` (see its
+README); lares' own deployed truths stay under `kubernetes/`. Template:
+`exports/kaenx/template.ae-manu` — an empty
 project saved by the ETS VM's Kaenx-Creator installation; it supplies
 everything version-specific (mask, load procedures, language).
 
@@ -69,7 +71,8 @@ import the `.knxprod` into ETS → link the addresses per worksheet
   link it to its collector in ETS. No product update. `task
   knx:check-wiring` nags until the link exists.
 - **New (main group × DPT) combination, or a footprint change** (new
-  writer rule kind, new consumer, new Basalte datapoint kind):
+  writer rule kind, new consumer, new Basalte datapoint or flow kind):
+  re-export the changed system into `exports/` first, then
   regenerate, publish a new application version in Kaenx-Creator, update
   the device in ETS. Collector order is stable, so existing links
   survive the update.
