@@ -21,7 +21,8 @@ alerting:
       success-threshold: 2
       send-on-resolved: true
 
-# External dependencies (dashboard-only, no alerts)
+# Statically declared endpoints; everything else is discovered by the sidecar
+# from the IngressRoute annotations.
 endpoints:
   - name: Cloudflare DNS
     group: External
@@ -43,3 +44,16 @@ endpoints:
     interval: 5m
     conditions:
       - "[STATUS] == any(200, 404)"
+
+  # The UniFi core. Probed directly on the LAN rather than through the
+  # Cloudflare path the other device endpoints use, so the result says
+  # whether the gateway itself answers, not whether the way in from outside
+  # works. Self-signed cert, hence insecure. Feeds KNX 16/0/222 (Netzwerk).
+  - name: UniFi
+    group: Networking
+    url: https://udm-pro.zimmermann.eu.com
+    interval: 60s
+    client:
+      insecure: true
+    conditions:
+      - "[STATUS] < 500"

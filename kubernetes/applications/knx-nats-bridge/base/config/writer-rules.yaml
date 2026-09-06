@@ -2011,3 +2011,52 @@ mappings:
     description: "Haushaltstechnik.Dampfgarer.Statustext"
     min_delta: 0  # text state: write only on change
     seed_on_start: true
+
+  # Infrastruktur-Status (16/0/220..225) — the redpanda-connect infra_status
+  # stream derives these from Alertmanager's active alerts, one state per
+  # scope plus the aggregate over all five on 220. DPT 1.011: 1 = ok,
+  # 0 = disturbed; states, not severities — notification stays with Pushover.
+  # Republished once a minute, so the deadband is what keeps the bus quiet;
+  # seed_on_start primes the read responder from the INFRA stream on restart.
+  - subject: "infra.status.infrastruktur"
+    ga: "16/0/220"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Infrastruktur.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true
+  - subject: "infra.status.internet"
+    ga: "16/0/221"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Internet.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true
+  - subject: "infra.status.netzwerk"
+    ga: "16/0/222"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Netzwerk.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true
+  - subject: "infra.status.server"
+    ga: "16/0/223"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Server.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true
+  - subject: "infra.status.speicher"
+    ga: "16/0/224"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Speicher.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true
+  - subject: "infra.status.kubernetes"
+    ga: "16/0/225"
+    dpt: "1.011"
+    payload_path: "$.value"
+    description: "Informationstechnik.Zentral.Anwesen.Kubernetes.Alle.Status"
+    min_delta: 0 # bool state: write only on change
+    seed_on_start: true

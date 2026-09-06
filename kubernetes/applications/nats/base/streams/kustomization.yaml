@@ -18,3 +18,4 @@ resources:
   - anomaly.yaml
   - forecast.yaml
   - energy.yaml
+  - infra.yaml

@@ -358,6 +358,34 @@ spec:
             summary: "Miele bridge metrics absent"
             description: "miele_connected has not been scraped for 15m — check the pod and its ServiceMonitor. Every other Miele alert is blind until this clears."
 
+    # The infrastructure aggregate on KNX 16/0/220..225 is only as honest as
+    # its source: the redpanda-connect infra_status stream polls Alertmanager
+    # once a minute and holds the last state when the poll fails, rather than
+    # falsely reporting "all clear". That makes a broken poll invisible on the
+    # bus — these two rules are the only way it surfaces.
+    - name: infra-status-alerts
+      rules:
+        - alert: InfraStatusPollFailing
+          expr: min(infra_status_poll_ok) == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Infrastructure status poll failing"
+            description: "The infra_status stream has not reached Alertmanager for 10m. The KNX status addresses 16/0/220..225 are frozen at their last value — the panel may show green through an outage."
+
+        - alert: InfraStatusPollAbsent
+          # `up` covers the redpanda-connect pod; this covers the stream being
+          # removed from the ConfigMap or failing to start, which would freeze
+          # the addresses just as silently.
+          expr: absent(infra_status_poll_ok)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Infrastructure status poll absent"
+            description: "infra_status_poll_ok has not been reported for 15m (expected every 60s) — the redpanda-connect infra_status stream is not running. The KNX status addresses 16/0/220..225 are frozen at their last value."
+
     # Per-bridge delivery watchdog: catches "the pod runs but delivers
     # nothing" — the failure mode `up` cannot see. One rule per bridge on its
     # steadiest throughput signal, windowed to the cadence measured over 7-30
