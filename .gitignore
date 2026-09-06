@@ -56,3 +56,6 @@ build/
 
 # --- Basalte ---
 *.bcfg
+
+# Node-Red flow export carries server details
+exports/node-red/flows.json

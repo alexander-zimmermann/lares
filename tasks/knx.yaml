@@ -68,7 +68,8 @@ tasks:
       carries the bindings from the Studio export at BCFG (Write+
       Transmit, excluded from the catalog's write vote). The ETS export
       at KNX_PROJECT_PATH only supplies names, DPTs and group-range
-      names. Node-Red still mirrors its placeholder (NODERED_MATCH).
+      names. Node-Red carries the addresses its flow export at FLOWS
+      touches. All inputs from foreign systems live in exports/.
       Filter-table coverage is not modelled here at all — the couplers
       are set to forward group telegrams towards the bridge's line.
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
@@ -79,8 +80,8 @@ tasks:
       Pass KNXPROJ_PASSWORD=… for encrypted projects.
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
-      BCFG: '{{.BCFG | default "docs/basalte/Steinroth.bcfg"}}'
-      NODERED_MATCH: '{{.NODERED_MATCH | default "node-red"}}'
+      BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
+      FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
     env:
       # passed through the environment so the plaintext password never appears
       # in the command line that task echoes
@@ -90,11 +91,13 @@ tasks:
         msg: "'{{.KNX_PROJECT_PATH}}' not found"
       - sh: test -f "{{.BCFG}}"
         msg: "'{{.BCFG}}' not found — export from Basalte Studio first"
+      - sh: test -f "{{.FLOWS}}"
+        msg: "'{{.FLOWS}}' not found — Node-Red: menu, Export, all flows"
     cmds:
       - >
         set -e;
-        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)";
-        trap 'rm -f "$consumed" "$bridge" "$basalte"' EXIT;
+        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
+        trap 'rm -f "$consumed" "$bridge" "$basalte" "$nodered"' EXIT;
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
         "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
@@ -102,13 +105,15 @@ tasks:
         "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
         "{{.BCFG}}" > "$basalte";
+        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
+        "{{.FLOWS}}" > "$nodered";
         uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
-        --template "{{.ROOT_DIR}}/docs/knx/kaenx-template.ae-manu"
+        --template "{{.ROOT_DIR}}/exports/kaenx/template.ae-manu"
         --write-gas "$consumed"
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"
-        --device "{{.NODERED_MATCH}}=Node-Red:both"
+        --device "@$nodered=Node-Red:both"
         --output-dir "{{.OUTDIR}}"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
