@@ -1163,6 +1163,16 @@ mappings:
     min_delta: 0
     seed_on_start: true
 
+  # Phase B4: Versorgungstechnik (15/3 KWL). entity = slug of the declared
+  # exchanger reference.
+  - subject: "anomaly.heat_recovery_decay.kwl"
+    ga: "15/3/34"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Versorgungstechnik.KWL.Wärmerückgewinnung-Anomalie"
+    min_delta: 0
+    seed_on_start: true
+
   # Phase C: channel silence, one severity per main group on its Zentral
   # Diagnose address (x/0/250). The engine publishes the group's maximum over
   # its open silence episodes and names the silent channels in the payload,
