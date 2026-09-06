@@ -233,6 +233,51 @@ faults:
       # address.
       per_room: true
 
+  - name: heat_recovery_decay
+    sentence: "Der Wärmetauscher der KWL holt dauerhaft mehr als 10
+      Prozentpunkte weniger Wärme zurück als seine gesunden 94 % — die Zuluft
+      nähert sich der Außenluft, der Tauscher verschmutzt."
+    unit: "× des erlaubten Abfalls"
+    kind: drift
+    # The recovery efficiency in percent of the extract-outdoor gradient —
+    # the one drift series that walks downward.
+    signal: recovery
+    parameters:
+      # A floor, not a noise band: the healthy capability never dropped
+      # below 87.7 % in 15 months, so 10 points under 94 cannot cry wolf.
+      fall_pct: 10
+      # How long a larger fall must stand, in measured winter hours: a
+      # 20-point drop fills this in two days of valid readings.
+      budget_pct_h: 480
+      # The capability is the best valid hour of the trailing three days,
+      # so bypass, defrost and boost transients never set the level.
+      window_hours: 72
+      # Valid hours are gate-limited, so the window asks for few of them.
+      min_window_fraction: 0.1
+      # Below 16 K of gradient the quotient is noise — and the summer
+      # comfort bypass, which reads exactly like fouling hour by hour.
+      # Summer is unmeasured by design, not healthy.
+      min_delta_k: 16
+    roles:
+      outdoor: "%.KWL.Temperatur-Außenluft"
+      extract: "%.KWL.Temperatur-Abluft"
+      supply: "%.KWL.Temperatur-Zuluft"
+    scope:
+      name_like:
+        - "%.KWL.Temperatur-Außenluft"
+        - "%.KWL.Temperatur-Abluft"
+        - "%.KWL.Temperatur-Zuluft"
+    references:
+      # Read once off two heating seasons of capability levels (p50 95.1,
+      # p01 90.5) and written here: a reference the detector derives for
+      # itself would adopt a fouled exchanger as the new normal.
+      KWL:
+        healthy_pct: 94
+    target:
+      # The writer rule carries anomaly.heat_recovery_decay.kwl to the
+      # KWL's Wärmerückgewinnung address.
+      ga: "15/3/34"
+
   # External faults: Basalte detects, writes the severity to the fault
   # address and delivers push/e-mail itself; the engine reads the writes
   # back and records episodes. All dormant until the Studio logic writes
