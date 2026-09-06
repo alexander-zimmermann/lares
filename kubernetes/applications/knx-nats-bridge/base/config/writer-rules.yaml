@@ -2057,6 +2057,6 @@ mappings:
     ga: "16/0/225"
     dpt: "1.011"
     payload_path: "$.value"
-    description: "Informationstechnik.Zentral.Diagnose.Kubernetes.Alle.Status"
+    description: "Informationstechnik.Zentral.Diagnose.Kubernetes.Status"
     min_delta: 0 # bool state: write only on change
     seed_on_start: true
