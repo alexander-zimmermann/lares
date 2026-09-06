@@ -57,24 +57,25 @@ tasks:
     desc: "generate Kaenx-Creator projects for the software bus devices [output-dir]"
     summary: |
       Build one Kaenx-Creator project per software bus participant —
-      KNX-NATS-Bridge, Basalte, Node-Red — from the ETS export at
-      KNX_PROJECT_PATH: one communication object per group address the
-      device carries, named after its NATS subject. The addresses NATS
-      consumers act on (the *_from_knx manifests) get the Write flag,
-      the mirrored rest Transmit+Read; Basalte and Node-Red get
-      Write+Transmit and stay excluded from the catalog's write vote.
+      KNX-NATS-Bridge, Basalte, Node-Red — one communication object per
+      group address the device carries, named after its NATS subject.
+      The bridge's address set is defined by lares, not by ETS: writer
+      rule targets (Transmit+Read) plus the addresses NATS consumers
+      act on (Write, the *_from_knx manifests) — the ETS export at
+      KNX_PROJECT_PATH only supplies names and DPTs. Basalte and
+      Node-Red mirror what the ETS export links to them (Write+Transmit
+      on everything; both stay excluded from the catalog's write vote).
       Open each .ae-manu in Kaenx-Creator on the ETS VM, export the
       .knxprod, import it into ETS and move the addresses off the
       placeholder onto the new device.
-      The *_MATCH vars select the source placeholder devices; when a
-      default misses, the run fails with the project's device list —
-      override with e.g. `task knx:ets-devices BRIDGE_MATCH=1.1.240`,
-      an individual address selects exactly one device.
+      BASALTE_MATCH/NODERED_MATCH select the source devices; when one
+      misses, the run fails with the project's device list — override
+      with e.g. `task knx:ets-devices BASALTE_MATCH=1.1.160`, an
+      individual address selects exactly one device.
       Arguments: [output-dir, default ~/Downloads]
       Pass KNXPROJ_PASSWORD=… for encrypted projects.
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
-      BRIDGE_MATCH: '{{.BRIDGE_MATCH | default "bridge"}}'
       BASALTE_MATCH: '{{.BASALTE_MATCH | default "basalte"}}'
       NODERED_MATCH: '{{.NODERED_MATCH | default "node-red"}}'
     env:
@@ -87,15 +88,18 @@ tasks:
     cmds:
       - >
         set -e;
-        consumed="$(mktemp)";
-        trap 'rm -f "$consumed"' EXIT;
+        consumed="$(mktemp)"; bridge="$(mktemp)";
+        trap 'rm -f "$consumed" "$bridge"' EXIT;
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
         "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
+        "{{.KNX_WRITER_RULES_PATH}}"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
         uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
         --template "{{.ROOT_DIR}}/docs/knx/kaenx-template.ae-manu"
         --write-gas "$consumed"
-        --device "{{.BRIDGE_MATCH}}=KNX-NATS-Bridge:split"
+        --device "@$bridge=KNX-NATS-Bridge:split"
         --device "{{.BASALTE_MATCH}}=Basalte Core S4:both"
         --device "{{.NODERED_MATCH}}=Node-Red:both"
         --output-dir "{{.OUTDIR}}"
