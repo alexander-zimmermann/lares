@@ -10,6 +10,38 @@ migration section. Decisions and their rejected alternatives:
 [ADR-0002](../adr/0002-coupler-forwarding-carries-bus-visibility.md).
 Migration tracker: issue #1557.
 
+## The chain at a glance
+
+```
+1  SOURCES — each system states its own footprint, where it is configured
+     bridge:   writer-rules.yaml + *_from_knx consumers  (kubernetes/, deployed)
+     Basalte:  exports/basalte/Steinroth.bcfg            (Studio export)
+     Node-Red: exports/node-red/flows.json               (flow export)
+
+2  ONE COMMAND:  task knx:ets-devices
+     reads the three sources
+     + exports/ets/Steinroth.knxproj    (only for names and DPTs)
+     + exports/kaenx/template.ae-manu   (Kaenx version specifics)
+     writes per device to ~/Downloads:
+       <device>.ae-manu       Kaenx-Creator project, collector objects
+       <device>-wiring.md     checklist: which addresses on which object
+
+3  ON THE ETS VM (once per device version)
+     Kaenx-Creator: open the .ae-manu → publish → .knxprod
+     ETS: import → link addresses per worksheet, one multi-select per object
+     couplers: 1.2.0 upstream and 1.1.0 downstream forward group telegrams
+
+4  BACK (verification)
+     fresh ETS export into exports/ets/ → task knx:catalog   (writable diff)
+     task knx:check-wiring: ETS held against the three sources
+     both green ⇒ the placeholders can go
+```
+
+Day to day there are only two cases: a **new address of an existing
+kind** is one ETS link onto its collector (no generator run), and a
+**changed system** means re-export, regenerate, publish a new version.
+Forget either and `check-wiring` reports it.
+
 ## Target picture
 
 | Device | Address source (the footprint) | Objects | Flags |
