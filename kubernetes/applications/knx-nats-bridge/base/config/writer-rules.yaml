@@ -721,8 +721,8 @@ mappings:
     description: "Versorgungstechnik.Photovoltaik.Verbrauch-Leistung-Anomalie"
     min_delta: 0
     seed_on_start: true
-  # PV-Gesamt-Anomalie: today's yield vs the forecast.solar expectation
-  # (detect-pv-underperformance job). Active — uses inverter + forecast, both live.
+  # PV-Gesamt-Anomalie: the day's yield against the weather-adjusted
+  # forecast (pv_underperformance, the deviation kind's daily-yield shape).
   - subject: "anomaly.pv_underperformance"
     ga: "15/4/11"
     dpt: "5.010"
