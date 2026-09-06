@@ -2,8 +2,8 @@
 
 The ETS devices for the bridge, Basalte and Node-Red are generated from
 product databases whose object tables are **collector objects** — one
-communication object per main group × DPT main type, per direction on the
-bridge — and whose address sets come from **lares configuration**
+communication object per main group × datapoint type (exact subtype,
+with a main-type fallback), per direction on the bridge — and whose address sets come from **lares configuration**
 (writer-rules ∪ `*_from_knx` consumers; Basalte Studio bindings; the
 Node-Red flow export), never from what ETS happens to link to a device.
 ETS is the checkable view; lares is the source. Full concept:
