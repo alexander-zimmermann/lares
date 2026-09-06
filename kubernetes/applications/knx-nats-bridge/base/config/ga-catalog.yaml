@@ -3140,27 +3140,39 @@
   writable: false
 16/0/220:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Infrastruktur.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Infrastruktur.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/221:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Internet.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Internet.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/222:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Netzwerk.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Netzwerk.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/223:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Server.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Server.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/224:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Speicher.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Speicher.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/225:
   dpt: '1.011'
-  name: Informationstechnik.Zentral.Anwesen.Kubernetes.Alle.Status
+  function: Diagnose
+  name: Informationstechnik.Zentral.Diagnose.Kubernetes.Alle.Status
+  room: Anwesen Steinroth 20
   writable: true
 16/0/250:
   dpt: '5.010'
