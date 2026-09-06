@@ -319,6 +319,30 @@ faults:
       # KWL's Wärmerückgewinnung address.
       ga: "15/3/34"
 
+  - name: pv_underperformance
+    sentence: "Die Anlage hat an einem Tag mehr als 35 % weniger erzeugt, als
+      die wetterbereinigte Prognose für diesen Tag erwartet hat — Verschmutzung,
+      Verschattung, ein toter String oder ein abregelnder Wechselrichter."
+    unit: "× des erlaubten Fehlbetrags"
+    kind: deviation
+    # Where the day's expectation comes from — the one line that swaps the
+    # reference: today the weather-adjusted forecast, tomorrow a sibling
+    # inverter or a clear-sky model. The comparison itself never changes.
+    expectation: forecast_solar
+    parameters:
+      # Clouds are already in the forecast, so only a clear shortfall
+      # against it means anything. Taken from the retired detector's first
+      # tier; to be revisited against the 30-day verification.
+      min_shortfall_pct: 35
+      # Below this the day expected too little for a percentage of it to
+      # mean anything — December overcast, or a forecast that never
+      # arrived. Such a day counts as unmeasured, not as quiet.
+      min_expected_kwh: 3
+    target:
+      # The writer rule carries anomaly.pv_underperformance to the PV
+      # Erzeugung-Leistung-Anomalie address.
+      ga: "15/4/11"
+
   # External faults: Basalte detects, writes the severity to the fault
   # address and delivers push/e-mail itself; the engine reads the writes
   # back and records episodes. All dormant until the Studio logic writes
