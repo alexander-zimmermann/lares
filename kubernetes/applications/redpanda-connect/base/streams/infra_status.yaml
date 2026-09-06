@@ -1,0 +1,131 @@
+# Infrastructure aggregate on the bus (KNX main group 16).
+#
+# Polls Alertmanager for what is firing right now and derives six DPT 1.011
+# states — 1 = ok, 0 = disturbed. The knx-nats-bridge writer rules map them to
+# 16/0/220..225, where 220 is the aggregate over the other five: the single
+# "infrastructure ok/disturbed" light an inhabitant at a panel can act on.
+#
+# Level-triggered on purpose. A webhook receiver would be edge-triggered and
+# would have to track firing/resolved per alert group; one missed delivery and
+# a GA stays wrong forever. A snapshot of the active alerts is idempotent and
+# self-healing — every poll re-derives the truth from scratch.
+#
+# Deliberately coarse: nothing per app and nothing per bridge reaches the bus.
+# Outage *notification* stays with Alertmanager -> Pushover; these addresses
+# only carry state.
+input:
+  generate:
+    interval: 60s
+    mapping: 'root = ""'
+
+pipeline:
+  processors:
+    # Active alerts only: silenced ones are an explicit "known, don't shout",
+    # and inhibited ones are already represented by the alert that inhibits
+    # them (GatusWanDown collapses every other Gatus alert into the uplink).
+    - http:
+        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/api/v2/alerts?silenced=false&inhibited=false&unprocessed=false
+        verb: GET
+        headers:
+          Accept: application/json
+        timeout: 10s
+        retries: 2
+
+    # Watchdog is the always-firing heartbeat, and severity=info carries
+    # HolmesGPT's review-at-leisure findings — neither is a disturbance.
+    - mapping: |
+        meta poll_ok = if errored() { "0" } else { "1" }
+
+    - metric:
+        type: gauge
+        name: infra_status_poll_ok
+        value: ${! meta("poll_ok") }
+
+    # Alertmanager unreachable: publish nothing and let the GAs hold their last
+    # value. Reporting "all clear" because the alert source is gone would be
+    # the one wrong answer; InfraStatusPoll* alerts cover the blindness.
+    - mapping: 'root = if errored() { deleted() } else { this }'
+
+    # Which alert belongs to which status. Gatus endpoint alerts carry the
+    # endpoint's `name` and `group` labels, so a single rule feeds several
+    # scopes without splitting it (and without duplicating notifications).
+    - mapping: |
+        let firing = this.filter(a -> (
+            a.labels.alertname.or("") != "Watchdog" &&
+            a.labels.severity.or("") != "info"
+          )).map_each(a -> a.labels)
+
+        # The cluster platform: nodes, control plane, etcd, kubelet, the
+        # monitoring stack itself and the GitOps engine.
+        let platform_prefixes = [
+          "Kube", "Node", "etcd", "Prometheus", "Alertmanager",
+          "ConfigReloader", "ArgoCD",
+        ]
+
+        # ...but not the workloads running on it. kube-prometheus-stack's
+        # kubernetes-apps group is per-workload — a crash-looping pod, a
+        # CronJob that failed once — and shares the "Kube" prefix with the
+        # platform rules. That is Prometheus' business and stays off the bus,
+        # as does anything else that fires per app.
+        let workload_prefixes = [
+          "KubePod", "KubeDeployment", "KubeStatefulSet", "KubeDaemonSet",
+          "KubeContainer", "KubeJob", "KubeCronJob", "KubeHpa", "KubeReplicaSet",
+          "KubePersistentVolume", # claimed by Speicher below
+          "CPUThrottling",        # per container
+          "TargetDown",           # fires for the house bridges' ServiceMonitors too
+        ]
+
+        # 16/0/221 Internet — all external references unreachable at once.
+        let internet = $firing.any(l -> l.alertname.or("") == "GatusWanDown")
+
+        # 16/0/222 Netzwerk — the house network gear Gatus probes.
+        let netzwerk = $firing.any(l -> (
+          l.alertname.or("").has_prefix("Gatus") && l.group.or("") == "Networking"))
+
+        # 16/0/223 Server — the Proxmox hosts and the machine manager on them.
+        let server = $firing.any(l -> (
+          l.alertname.or("").has_prefix("Gatus") &&
+          ["Proxmox", "Omni"].contains(l.name.or(""))))
+
+        # 16/0/224 Speicher — the backup appliance plus everything that fails
+        # when the NAS behind it goes away (RustFS sits on its NFS export).
+        # Cluster volume alerts are the storage layer's, not the cluster's.
+        let speicher = $firing.any(l -> (
+          (l.alertname.or("").has_prefix("Gatus") && l.name.or("") == "Backup") ||
+          l.alertname.or("").has_prefix("Pbs") ||
+          l.alertname.or("").has_prefix("Rustfs") ||
+          l.alertname.or("").has_prefix("KubePersistentVolume")))
+
+        # 16/0/225 Kubernetes — the cluster as a whole.
+        let kubernetes = $firing.any(l -> (
+          !$workload_prefixes.any(p -> l.alertname.or("").has_prefix(p)) &&
+          $platform_prefixes.any(p -> l.alertname.or("").has_prefix(p))))
+
+        let gestoert = $internet || $netzwerk || $server || $speicher || $kubernetes
+
+        root = [
+          {"subject": "infra.status.infrastruktur", "value": if $gestoert   { 0 } else { 1 }},
+          {"subject": "infra.status.internet",      "value": if $internet   { 0 } else { 1 }},
+          {"subject": "infra.status.netzwerk",      "value": if $netzwerk   { 0 } else { 1 }},
+          {"subject": "infra.status.server",        "value": if $server     { 0 } else { 1 }},
+          {"subject": "infra.status.speicher",      "value": if $speicher   { 0 } else { 1 }},
+          {"subject": "infra.status.kubernetes",    "value": if $kubernetes { 0 } else { 1 }},
+        ]
+
+    - unarchive:
+        format: json_array
+
+    - mapping: |
+        meta nats_subject = this.subject
+        root = {"value": this.value}
+
+# JetStream-backed so the bridge can seed the read responder on restart; the
+# writer's deadband keeps the once-a-minute republish off the bus unless the
+# state actually changed.
+output:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    subject: ${! meta("nats_subject") }

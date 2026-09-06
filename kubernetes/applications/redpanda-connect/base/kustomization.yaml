@@ -46,6 +46,7 @@ configMapGenerator:
       - streams/bordbar_from_knx.yaml
       - streams/miele_state.yaml
       - streams/miele_eco.yaml
+      - streams/infra_status.yaml
 
 patches:
   # Expose redpanda-connect service via Cilium/BGP-announced LoadBalancer so

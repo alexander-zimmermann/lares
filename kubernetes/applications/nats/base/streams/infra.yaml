@@ -1,0 +1,20 @@
+# DERIVED stream — NOT a primary data source. The `infra.status.*` subjects
+# carry the infrastructure states the redpanda-connect infra_status stream
+# derives from Alertmanager's active alerts. They are republished every poll,
+# but the knx-nats-bridge writer deadband only puts changes on the bus — so
+# after a bridge restart the read responder would answer no_value until the
+# next state change (which may be weeks away). This stream exists so the seed
+# can prime it from the last message per subject instead.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: infra
+  namespace: nats
+spec:
+  name: INFRA
+  subjects:
+    - infra.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1

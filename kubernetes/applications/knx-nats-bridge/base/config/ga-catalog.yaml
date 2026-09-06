@@ -3138,6 +3138,26 @@
   name: Versorgungstechnik.Wallbox.Schütz-Fehlertext
   room: Garage
   writable: false
+16/0/220:
+  dpt: '1.011'
+  name: Informationstechnik.Zentral.Anwesen.Infrastruktur.Status
+  writable: true
+16/0/221:
+  dpt: '1.011'
+  name: Informationstechnik.Zentral.Anwesen.Internet.Status
+  writable: true
+16/0/222:
+  dpt: '1.011'
+  name: Informationstechnik.Zentral.Anwesen.Netzwerk.Status
+  writable: true
+16/0/223:
+  dpt: '1.011'
+  name: Informationstechnik.Zentral.Anwesen.Server.Status
+  writable: true
+16/0/224:
+  dpt: '1.011'
+  name: Informationstechnik.Zentral.Anwesen.Speicher.Status
+  writable: true
 16/0/225:
   dpt: '1.011'
   name: Informationstechnik.Zentral.Anwesen.Kubernetes.Alle.Status
