@@ -114,6 +114,7 @@ tasks:
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"
         --device "@$nodered=Node-Red:both"
+        --catalog-section "Lares"
         --output-dir "{{.OUTDIR}}"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 

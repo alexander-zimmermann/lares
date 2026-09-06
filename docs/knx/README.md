@@ -110,8 +110,13 @@ import the `.knxprod` into ETS → link the addresses per worksheet
   survive the update.
 - **Identity, do not touch**: per-device GUID (deterministic), serial and
   order number (name slug), application number (100/101/102 by task
-  order). `Application.Number` is the version byte (0x10 = V 1.0) and is
-  bumped at publish time only.
+  order).
+- **Versions take care of themselves**: ETS silently refuses to
+  re-import an application version it already knows, so the generator
+  reads the imported version from the ETS export and writes one above
+  it (a never-imported device starts at V 1.0). The version is a single
+  byte shown by ETS as high.low nibble: 16 = 1.0, 17 = 1.1, 32 = 2.0.
+  No hand-bumping in the Kaenx publish tab.
 
 ## Verification
 
