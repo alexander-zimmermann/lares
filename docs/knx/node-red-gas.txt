@@ -1,0 +1,10 @@
+# Node-Red's footprint: every group address its flows read or write.
+# Hand-maintained — when a flow gains or loses a KNX node, update this
+# list; knx:ets-devices builds the ETS device from it and
+# knx:check-wiring holds ETS against it.
+#
+# Feiertage flow — holiday/weekend shading lock (writes):
+5/3/20   # Beschattung.OG.Abstellraum.Raffstore.Sperren
+5/3/80   # Beschattung.OG.Schlafzimmer-Gregory.Vorhang.Sperren
+5/3/120  # Beschattung.OG.Schlafzimmer-Luis.Vorhang.Sperren
+5/3/160  # Beschattung.OG.Schlafzimmer-Eltern.Vorhang.Sperren

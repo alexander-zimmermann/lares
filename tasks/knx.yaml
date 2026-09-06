@@ -68,7 +68,8 @@ tasks:
       carries the bindings from the Studio export at BCFG (Write+
       Transmit, excluded from the catalog's write vote). The ETS export
       at KNX_PROJECT_PATH only supplies names, DPTs and group-range
-      names. Node-Red still mirrors its placeholder (NODERED_MATCH).
+      names. Node-Red carries the hand-maintained flow footprint at
+      docs/knx/node-red-gas.txt.
       Filter-table coverage is not modelled here at all — the couplers
       are set to forward group telegrams towards the bridge's line.
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
@@ -80,7 +81,6 @@ tasks:
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
       BCFG: '{{.BCFG | default "docs/basalte/Steinroth.bcfg"}}'
-      NODERED_MATCH: '{{.NODERED_MATCH | default "node-red"}}'
     env:
       # passed through the environment so the plaintext password never appears
       # in the command line that task echoes
@@ -108,7 +108,7 @@ tasks:
         --write-gas "$consumed"
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"
-        --device "{{.NODERED_MATCH}}=Node-Red:both"
+        --device "@{{.ROOT_DIR}}/docs/knx/node-red-gas.txt=Node-Red:both"
         --output-dir "{{.OUTDIR}}"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
