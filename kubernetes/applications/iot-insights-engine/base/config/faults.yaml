@@ -331,8 +331,11 @@ faults:
     expectation: forecast_solar
     parameters:
       # Clouds are already in the forecast, so only a clear shortfall
-      # against it means anything. Taken from the retired detector's first
-      # tier; to be revisited against the 30-day verification.
+      # against it means anything. This is the lowest line the retired
+      # detector fired on at all (it went info below a 0.65 ratio), read
+      # there over the elapsed day rather than the whole one — so the
+      # number is a starting point, to be revisited against the 30-day
+      # verification, not one already confirmed against a full day.
       min_shortfall_pct: 35
       # Below this the day expected too little for a percentage of it to
       # mean anything — December overcast, or a forecast that never
