@@ -8,24 +8,22 @@ version: "3"
 
 tasks:
   catalog:
-    desc: "rebuild ga-catalog.yaml from an ETS project export [path/to/project.knxproj]"
+    desc: "rebuild ga-catalog.yaml from the ETS export [path/to/project.knxproj]"
     summary: |
-      Run knxproj-to-yaml against the supplied .knxproj and write the catalog
-      into the ConfigMap source file. The extractor strips what ETS adds by
-      itself — the Building numbering around a space name and the description
-      it pre-fills from space plus function — so there is nothing left to
-      post-process here.
-      Arguments: [path/to/project.knxproj]
+      Run knxproj-to-yaml against the ETS export — by default the one at
+      KNX_PROJECT_PATH, or a path given as argument — and write the
+      catalog into the ConfigMap source file. The extractor strips what
+      ETS adds by itself — the Building numbering around a space name and
+      the description it pre-fills from space plus function — so there is
+      nothing left to post-process here.
+      Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
       Pass KNXPROJ_PASSWORD=… for encrypted projects.
     vars:
-      KNXPROJ: "{{index .CLI_ARGS_LIST 0}}"
+      KNXPROJ: '{{.CLI_ARGS | default .KNX_PROJECT_PATH}}'
     env:
       # passed through the environment so the plaintext password never appears
       # in the command line that task echoes
       KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
-    requires:
-      vars:
-        - KNXPROJ
     preconditions:
       - sh: test -f "{{.KNXPROJ}}"
         msg: "'{{.KNXPROJ}}' not found"
