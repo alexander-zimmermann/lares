@@ -52,6 +52,7 @@ tasks:
         ! grep -qE '^  room: [0-9]+ - ' "{{.KNX_CATALOG_PATH}}" ||
         { echo "rooms still carry ETS' Building numbering: update {{.KNX_BRIDGE_DIR}}
         (needs the extractor that strips it, knx-nats-bridge >= v0.19.0)"; exit 1; }
+      - task: check-wiring
 
   ets-devices:
     desc: "generate Kaenx-Creator projects for the software bus devices [output-dir]"
@@ -116,6 +117,55 @@ tasks:
         --device "@$nodered=Node-Red:both"
         --catalog-section "Lares"
         --output-dir "{{.OUTDIR}}"
+        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
+
+  check-wiring:
+    desc: "hold the ETS export against the software-device footprints"
+    summary: |
+      Compare the ETS export at KNX_PROJECT_PATH against what lares says
+      each software device touches: writer rules and *_from_knx
+      consumers for the bridge, the Studio export at BCFG for Basalte,
+      the flow export at FLOWS for Node-Red. Reports footprint
+      addresses without an ETS link, ETS links no configuration claims,
+      and consumed addresses on objects without the Write flag; any
+      finding fails the run, a device not yet imported is reported as
+      such. Runs automatically after knx:catalog — during the migration
+      that makes it the progress tracker.
+      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+    vars:
+      BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
+      FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
+    env:
+      # passed through the environment so the plaintext password never appears
+      # in the command line that task echoes
+      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
+    preconditions:
+      - sh: test -f "{{.KNX_PROJECT_PATH}}"
+        msg: "'{{.KNX_PROJECT_PATH}}' not found"
+      - sh: test -f "{{.BCFG}}"
+        msg: "'{{.BCFG}}' not found — export from Basalte Studio first"
+      - sh: test -f "{{.FLOWS}}"
+        msg: "'{{.FLOWS}}' not found — Node-Red: menu, Export, all flows"
+    cmds:
+      - >
+        set -e;
+        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
+        trap 'rm -f "$consumed" "$bridge" "$basalte" "$nodered"' EXIT;
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
+        "{{.KNX_WRITER_RULES_PATH}}"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
+        "{{.BCFG}}" > "$basalte";
+        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
+        "{{.FLOWS}}" > "$nodered";
+        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
+        --input "{{.KNX_PROJECT_PATH}}"
+        --write-gas "$consumed"
+        --device "KNX-NATS-Bridge=@$bridge"
+        --device "Basalte Core S4=@$basalte"
+        --device "Node-Red=@$nodered"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
   fault-writer-rules:
