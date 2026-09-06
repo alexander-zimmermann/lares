@@ -716,31 +716,6 @@ FROM knx k LEFT JOIN ga_catalog n USING (ga);
 CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit;
 
 -- =========================================================
--- mcp_anomalies — every detected anomaly. The detectors that wrote it are
--- switched off; the retained rows are the fold-in basis for the episodes.
--- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
--- =========================================================
-CREATE TABLE IF NOT EXISTS mcp_anomalies (
-    time        TIMESTAMPTZ      NOT NULL,
-    created_at  TIMESTAMPTZ      NOT NULL DEFAULT now(),
-    source      TEXT             NOT NULL,
-    metric      TEXT             NOT NULL,
-    detector    TEXT             NOT NULL,
-    severity    TEXT             NOT NULL CHECK (severity IN ('info','warning','critical')),
-    uc          TEXT,
-    actual      DOUBLE PRECISION,
-    expected    DOUBLE PRECISION,
-    score       DOUBLE PRECISION,
-    payload     JSONB,
-    PRIMARY KEY (time, source, metric, detector)
-);
-SELECT create_hypertable('mcp_anomalies', 'time', chunk_time_interval => INTERVAL '7 days');
-CREATE INDEX ON mcp_anomalies (severity, time DESC);
-CREATE INDEX ON mcp_anomalies (source, metric, time DESC);
-CREATE INDEX ON mcp_anomalies (uc, time DESC) WHERE uc IS NOT NULL;
-SELECT add_retention_policy('mcp_anomalies', INTERVAL '90 days');
-
--- =========================================================
 -- mcp_forecasts — model predictions (statsforecast + Forecast.Solar)
 -- =========================================================
 CREATE TABLE IF NOT EXISTS mcp_forecasts (
@@ -764,7 +739,7 @@ SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 -- observations stay underneath as evidence, each with its severity — the
 -- episode's trajectory; the events table's key caps notifications at one
 -- appear/escalate/end per episode. `folded` marks episodes imported once
--- from the retained mcp_anomalies history; `externally_delivered` marks
+-- at cutover rather than observed live; `externally_delivered` marks
 -- episodes whose fault Basalte detected and delivered itself — the engine
 -- only records them, nothing downstream notifies a second time.
 -- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
