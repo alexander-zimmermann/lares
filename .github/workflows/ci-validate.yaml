@@ -117,7 +117,9 @@ jobs:
           if [ -z "$APP_ROOTS" ]; then
              echo "No app changes detected."
           else
-             read -r -a apps <<< "$APP_ROOTS"
+             # APP_ROOTS is newline-separated: `read -a` would take the first
+             # line only, so a PR touching several apps validated just one.
+             mapfile -t apps <<< "$APP_ROOTS"
              for app in "${apps[@]}"; do
                if [ -f "$app/overlays/dev/kustomization.yaml" ]; then
                  OVERLAY_DIRS="$OVERLAY_DIRS $app/overlays/dev"
