@@ -372,7 +372,7 @@ spec:
             severity: warning
           annotations:
             summary: "Infrastructure status poll failing"
-            description: "The infra_status stream has not reached Alertmanager for 10m. The KNX status addresses 16/0/220-225 are frozen at their last value — the panel may show green through an outage."
+            description: "The infra_status stream has not reached Alertmanager for 10m. The KNX status addresses 16/0/220..225 are frozen at their last value — the panel may show green through an outage."
 
         - alert: InfraStatusPollAbsent
           # `up` covers the redpanda-connect pod; this covers the stream being
@@ -384,7 +384,7 @@ spec:
             severity: warning
           annotations:
             summary: "Infrastructure status poll absent"
-            description: "infra_status_poll_ok has not been reported for 15m (expected every 60s) — the redpanda-connect infra_status stream is not running. The KNX status addresses 16/0/220-225 are frozen at their last value."
+            description: "infra_status_poll_ok has not been reported for 15m (expected every 60s) — the redpanda-connect infra_status stream is not running. The KNX status addresses 16/0/220..225 are frozen at their last value."
 
     # Per-bridge delivery watchdog: catches "the pod runs but delivers
     # nothing" — the failure mode `up` cannot see. One rule per bridge on its

@@ -20,19 +20,18 @@ input:
 
 pipeline:
   processors:
-    # Active alerts only: silenced ones are an explicit "known, don't shout",
-    # and inhibited ones are already represented by the alert that inhibits
-    # them (GatusWanDown collapses every other Gatus alert into the uplink).
+    # Inhibited alerts drop out because the alert that inhibits them is itself
+    # firing and already carries the state (GatusWanDown collapses every other
+    # Gatus alert into the uplink). Silenced ones are kept: a silence suppresses
+    # notification, and these addresses carry state, not notification.
     - http:
-        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/api/v2/alerts?silenced=false&inhibited=false&unprocessed=false
+        url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093/api/v2/alerts?inhibited=false&unprocessed=false
         verb: GET
         headers:
           Accept: application/json
         timeout: 10s
         retries: 2
 
-    # Watchdog is the always-firing heartbeat, and severity=info carries
-    # HolmesGPT's review-at-leisure findings — neither is a disturbance.
     - mapping: |
         meta poll_ok = if errored() { "0" } else { "1" }
 
@@ -49,6 +48,8 @@ pipeline:
     # Which alert belongs to which status. Gatus endpoint alerts carry the
     # endpoint's `name` and `group` labels, so a single rule feeds several
     # scopes without splitting it (and without duplicating notifications).
+    # Watchdog is the always-firing heartbeat, and severity=info carries
+    # HolmesGPT's review-at-leisure findings — neither is a disturbance.
     - mapping: |
         let firing = this.filter(a -> (
             a.labels.alertname.or("") != "Watchdog" &&
@@ -70,41 +71,51 @@ pipeline:
         let workload_prefixes = [
           "KubePod", "KubeDeployment", "KubeStatefulSet", "KubeDaemonSet",
           "KubeContainer", "KubeJob", "KubeCronJob", "KubeHpa", "KubeReplicaSet",
-          "KubePersistentVolume", # claimed by Speicher below
+          "KubePersistentVolume", # one workload's volume, not the estate's storage
+          "ArgoCDApp",            # per application; ArgoCDMetricsAbsent stays platform
           "CPUThrottling",        # per container
-          "TargetDown",           # fires for the house bridges' ServiceMonitors too
+          # The generic "N% of job X is down". It fires for the house bridges'
+          # ServiceMonitors too; the platform's own down conditions have their
+          # named rules (KubeletDown, KubeAPIDown, etcdMembersDown).
+          "TargetDown",
         ]
 
-        # 16/0/221 Internet — all external references unreachable at once.
-        let internet = $firing.any(l -> l.alertname.or("") == "GatusWanDown")
+        # Four of the five scopes are fed by Gatus probes, so a Gatus that is
+        # not being scraped takes their evidence away — every endpoint alert
+        # simply stops existing. Reading that as "all clear" is the one wrong
+        # answer, so it disturbs each scope it blinds instead.
+        let gatus_blind = $firing.any(l -> l.alertname.or("") == "GatusDown")
 
-        # 16/0/222 Netzwerk — the house network gear Gatus probes.
-        let netzwerk = $firing.any(l -> (
+        # 16/0/221 Internet — all external references unreachable at once.
+        let internet = $gatus_blind || $firing.any(l -> (
+          l.alertname.or("") == "GatusWanDown"))
+
+        # 16/0/222 Netzwerk — the house network gear: the UniFi core and the
+        # uplink modem in front of it.
+        let netzwerk = $gatus_blind || $firing.any(l -> (
           l.alertname.or("").has_prefix("Gatus") && l.group.or("") == "Networking"))
 
         # 16/0/223 Server — the Proxmox hosts and the machine manager on them.
-        let server = $firing.any(l -> (
+        let server = $gatus_blind || $firing.any(l -> (
           l.alertname.or("").has_prefix("Gatus") &&
           ["Proxmox", "Omni"].contains(l.name.or(""))))
 
         # 16/0/224 Speicher — the backup appliance plus everything that fails
         # when the NAS behind it goes away (RustFS sits on its NFS export).
-        # Cluster volume alerts are the storage layer's, not the cluster's.
-        let speicher = $firing.any(l -> (
+        let speicher = $gatus_blind || $firing.any(l -> (
           (l.alertname.or("").has_prefix("Gatus") && l.name.or("") == "Backup") ||
           l.alertname.or("").has_prefix("Pbs") ||
-          l.alertname.or("").has_prefix("Rustfs") ||
-          l.alertname.or("").has_prefix("KubePersistentVolume")))
+          l.alertname.or("").has_prefix("Rustfs")))
 
         # 16/0/225 Kubernetes — the cluster as a whole.
         let kubernetes = $firing.any(l -> (
           !$workload_prefixes.any(p -> l.alertname.or("").has_prefix(p)) &&
           $platform_prefixes.any(p -> l.alertname.or("").has_prefix(p))))
 
-        let gestoert = $internet || $netzwerk || $server || $speicher || $kubernetes
+        let disturbed = $internet || $netzwerk || $server || $speicher || $kubernetes
 
         root = [
-          {"subject": "infra.status.infrastruktur", "value": if $gestoert   { 0 } else { 1 }},
+          {"subject": "infra.status.infrastruktur", "value": if $disturbed  { 0 } else { 1 }},
           {"subject": "infra.status.internet",      "value": if $internet   { 0 } else { 1 }},
           {"subject": "infra.status.netzwerk",      "value": if $netzwerk   { 0 } else { 1 }},
           {"subject": "infra.status.server",        "value": if $server     { 0 } else { 1 }},
