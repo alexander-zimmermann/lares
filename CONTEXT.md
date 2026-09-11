@@ -56,12 +56,12 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   opposed to the state and events it reports. From the KNX side a command
   starts as a bus write on a consumed address and leaves the bus through a
   `*_from_knx` pipeline.
-- **Episode** (German UI: *Vorfall*; avoid: alert, incident, anomaly) —
+- **Episode** (avoid: alert, incident, anomaly) —
   repeated observations of one fault on one subject, folded into a single
   situation with a start, an end and a severity trajectory. The unit that
   reports, notifications and verdicts address; the per-bucket observations
   stay underneath it as evidence.
-- **Verdict** (German UI: *Urteil*; avoid: feedback, rating) — a person's
+- **Verdict** (avoid: feedback, rating) — a person's
   binary judgement on one episode: it was `real`, or it was `nonsense`.
   Given in conversation through `set_episode_verdict`, one row per episode,
   overwritten rather than duplicated on second thought. Nothing reads it to
