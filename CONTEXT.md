@@ -61,6 +61,9 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   situation with a start, an end and a severity trajectory. The unit that
   reports, notifications and verdicts address; the per-bucket observations
   stay underneath it as evidence.
+- **Episode event** — one of the three notification events an episode
+  emits: appeared, escalated, ended. Published by the engine as
+  `episode.<kind>` and the house-side trigger for Explain.
 - **Verdict** (avoid: feedback, rating) — a person's
   binary judgement on one episode: it was `real`, or it was `nonsense`.
   Given in conversation through `set_episode_verdict`, one row per episode,
@@ -81,6 +84,10 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Model source** (avoid: provider, backend, gateway) — where an agent's
   model comes from and how it is paid for: a subscription, a metered API,
   or a machine in the house.
+- **Subject** — what an explanation is about: one episode (house) or one
+  firing alert group (cluster). Not the episode's own `subject` column,
+  which names the channel a fault was measured on; say "channel" for that.
+  Never a NATS subject; say "NATS subject".
 - **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
