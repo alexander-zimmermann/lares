@@ -105,5 +105,9 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   reads episodes, verdicts and data and offers changes to the fault list as
   pull requests: a new fault sentence, a moved threshold, a dormant fault to
   activate. A person merges or discards; nothing is applied automatically.
+- **Proposal** — one pull request from Propose: a new fault sentence, a
+  moved threshold, a dormant fault to activate or a fault to retire, with
+  its evidence and a back-test against history. A person merges or
+  rejects it; a rejection keeps the same proposal away for a while.
 - **Answer** — a person asking about house or
   cluster data in conversation through the MCP bridge. Not an agent role.
