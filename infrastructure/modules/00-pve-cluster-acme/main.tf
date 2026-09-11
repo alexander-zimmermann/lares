@@ -5,7 +5,7 @@ terraform {
   required_providers {
     proxmox = {
       source                = "bpg/proxmox"
-      version               = "~> 0.112.0"
+      version               = "~> 0.113.0"
       configuration_aliases = [proxmox.root]
     }
   }
