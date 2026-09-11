@@ -64,15 +64,13 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Episode event** — one of the three notification events an episode
   emits: appeared, escalated, ended. Published by the engine as
   `episode.<kind>` and the house-side trigger for Explain.
-- **Verdict** (avoid: feedback, rating) — a person's
-  binary judgement on one episode: it was `real`, or it was `nonsense`.
-  Given in conversation through `set_episode_verdict`, one row per episode,
-  overwritten rather than duplicated on second thought. Nothing reads it to
-  change behaviour — the counts per fault are what a threshold gets moved
-  against, by hand.
-
-## Agents
-
+- **Verdict** (avoid: feedback, rating) — a person's binary judgement on
+  one subject. On an episode it says whether the fault was real: `real`
+  or `nonsense`. On a run it says whether the output helped: `helpful` or
+  `useless`. Given in conversation through `set_verdict`, one per
+  subject, overwritten rather than duplicated on second thought. Nothing
+  acts on it automatically; Propose may cite the counts in a pull
+  request, and a person moves the threshold.
 - **Agent** (avoid: bot, AI layer) — a model with tools and a
   standing assignment that runs without a person in the loop, started by an
   event or a schedule. A person chatting through the MCP bridge is not an
