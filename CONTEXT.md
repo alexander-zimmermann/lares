@@ -88,6 +88,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   firing alert group (cluster). Not the episode's own `subject` column,
   which names the channel a fault was measured on; say "channel" for that.
   Never a NATS subject; say "NATS subject".
+- **Use case** — one declared entry of the agent platform: a trigger, an
+  assignment, an allowed tool list, an output kind and a budget. Declared
+  in a file in this repo; adding one is a pull request, never a rebuild.
+- **Run** — one execution of a use case, from trigger to output, recorded
+  as one row with its subject, model, cost, tool trace and verdict.
 - **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
