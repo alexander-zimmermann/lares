@@ -70,7 +70,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 
 ## Agents
 
-- **Agent** (avoid: bot, AI layer, KI-Schicht) — a model with tools and a
+- **Agent** (avoid: bot, AI layer) — a model with tools and a
   standing assignment that runs without a person in the loop, started by an
   event or a schedule. A person chatting through the MCP bridge is not an
   agent: the person drives.
@@ -81,13 +81,13 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Model source** (avoid: provider, backend, gateway) — where an agent's
   model comes from and how it is paid for: a subscription, a metered API,
   or a machine in the house.
-- **Explain** (German UI: *Erklären*) — the agent role that takes one
+- **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
   screening.
-- **Propose** (German UI: *Vorschlagen*) — the agent role that periodically
+- **Propose** — the agent role that periodically
   reads episodes, verdicts and data and offers changes to the fault list as
   pull requests: a new fault sentence, a moved threshold, a dormant fault to
   activate. A person merges or discards; nothing is applied automatically.
-- **Answer** (German UI: *Beantworten*) — a person asking about house or
+- **Answer** — a person asking about house or
   cluster data in conversation through the MCP bridge. Not an agent role.
