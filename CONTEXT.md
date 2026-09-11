@@ -92,6 +92,10 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
   screening.
+- **Explanation** — the stored result of one Explain run: a one-line
+  cause, the evidence with the query behind each claim, what could not be
+  verified, and the run's model and cost. Keyed by its subject and
+  delivered on the subject's own channel; never pushed to KNX.
 - **Propose** — the agent role that periodically
   reads episodes, verdicts and data and offers changes to the fault list as
   pull requests: a new fault sentence, a moved threshold, a dormant fault to
