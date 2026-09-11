@@ -29,6 +29,8 @@ input:
           deliver: last
           ack_wait: 20m
           max_ack_pending: 5000
+          # Join the trace carried in the NATS headers
+          extract_tracing_map: root = @
       - nats_jetstream:
           urls: ["nats://nats.nats.svc:4222"]
           auth:
@@ -40,9 +42,14 @@ input:
           deliver: last
           ack_wait: 20m
           max_ack_pending: 5000
+          # Join the trace carried in the NATS headers
+          extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: warp_knx_republish
     - mapping: |
         let subj = meta("nats_subject")
         let evt = this
@@ -83,3 +90,7 @@ output:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     subject: ${! meta("knx_subject") }
+    # Carry the trace context as a NATS header
+    inject_tracing_map: meta traceparent = this.traceparent
+    metadata:
+      include_patterns: ["^traceparent$"]

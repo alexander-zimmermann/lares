@@ -14,9 +14,14 @@ input:
     stream: KNX
     durable: redpanda-connect-warp-charge-mode-from-knx
     bind: true
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: warp_charge_mode_from_knx
     # knx-nats-bridge publishes {ga, name, value, dpt, ...}; DPT 5.010 -> int.
     # WARP expects power_manager/charge_mode_update payload {"mode": N}.
     - mapping: 'root.mode = this.value'

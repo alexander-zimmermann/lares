@@ -18,9 +18,14 @@ input:
     stream: KNX
     durable: redpanda-connect-warp-mode-buttons-from-knx
     bind: true
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: warp_mode_buttons_from_knx
     # Only a button press (value true/1) selects a mode; release (0) is ignored.
     - mapping: |
         let subj = meta("nats_subject")

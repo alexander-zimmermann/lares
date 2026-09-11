@@ -13,9 +13,14 @@ input:
     stream: KNX
     durable: redpanda-connect-pv-surplus-to-warp
     bind: true
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: pv_surplus_to_warp
     # knx-nats-bridge publishes {ga, name, value, dpt, ...}.
     # WARP firmware expects /meters/1/update payload as a single-element
     # array of watts.

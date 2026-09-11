@@ -21,9 +21,14 @@ input:
     deliver: all
     ack_wait: 20m
     max_ack_pending: 5000
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: solaredge_battery
     - mapping: |
         let evt = this
         # Subject is "solaredge-N.modbus.battery"; pull N for inverter_id.

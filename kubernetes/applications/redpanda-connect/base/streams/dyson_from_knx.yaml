@@ -21,9 +21,14 @@ input:
     stream: KNX
     durable: redpanda-connect-dyson-from-knx
     bind: true
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: dyson_from_knx
     - mapping: |
         let subj = meta("nats_subject")
         root = if $subj == "knx.6.3.164" || $subj == "knx.6.3.166" {
@@ -46,3 +51,7 @@ output:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     subject: ${! meta("dyson_subject") }
+    # Carry the trace context as a NATS header
+    inject_tracing_map: meta traceparent = this.traceparent
+    metadata:
+      include_patterns: ["^traceparent$"]

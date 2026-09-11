@@ -16,9 +16,14 @@ input:
     stream: UNIFI
     durable: redpanda-connect-unifi-events
     bind: true
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: unifi_events
     - mapping: |
         let evt = this
         # camera + key/detection_type already populated by the unifi_webhook

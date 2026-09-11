@@ -20,6 +20,9 @@ input:
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: infra_status
     # Inhibited alerts drop out because the alert that inhibits them is itself
     # firing and already carries the state (GatusWanDown collapses every other
     # Gatus alert into the uplink). Silenced ones are kept: a silence suppresses
@@ -140,3 +143,7 @@ output:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     subject: ${! meta("nats_subject") }
+    # Carry the trace context as a NATS header
+    inject_tracing_map: meta traceparent = this.traceparent
+    metadata:
+      include_patterns: ["^traceparent$"]

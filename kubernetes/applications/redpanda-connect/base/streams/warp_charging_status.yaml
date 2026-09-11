@@ -19,9 +19,14 @@ input:
     deliver: last
     ack_wait: 20m
     max_ack_pending: 5000
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: warp_charging_status
     # Slot 4 = manual/button charge release; blocked == active && max_current 0.
     - mapping: 'root = { "on": !(this.index(4).active && this.index(4).max_current == 0) }'
 
@@ -35,3 +40,7 @@ output:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     subject: wallbox.knx.charging
+    # Carry the trace context as a NATS header
+    inject_tracing_map: meta traceparent = this.traceparent
+    metadata:
+      include_patterns: ["^traceparent$"]

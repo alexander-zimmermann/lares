@@ -13,9 +13,14 @@ input:
     deliver: all
     ack_wait: 20m
     max_ack_pending: 5000
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: warp_meter
     - mapping: |
         let evt = this
         let parts = meta("nats_subject").split(".")
