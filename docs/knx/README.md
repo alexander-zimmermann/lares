@@ -21,7 +21,7 @@ Migration tracker: issue #1557.
 2  ONE COMMAND:  task knx:ets-devices
      reads the three sources
      + exports/ets/Steinroth.knxproj    (only for names and DPTs)
-     + exports/kaenx/template.ae-manu   (Kaenx version specifics)
+     + scripts/kaenx/template.ae-manu   (Kaenx version specifics)
      writes per device to ~/Downloads:
        <device>.ae-manu       Kaenx-Creator project, collector objects
        <device>-wiring.md     checklist: which addresses on which object
@@ -84,9 +84,9 @@ Inputs: the in-repo ETS export (names, DPTs, group-range names), the
 writer rules, the consumer manifests, the Basalte Studio export and the
 Node-Red flow export. Foreign-system exports live in `exports/` (see its
 README); lares' own deployed truths stay under `kubernetes/`. Template:
-`exports/kaenx/template.ae-manu` — an empty
-project saved by the ETS VM's Kaenx-Creator installation; it supplies
-everything version-specific (mask, load procedures, language).
+`scripts/kaenx/template.ae-manu` — an empty project saved once by the
+ETS VM's Kaenx-Creator installation; it supplies everything
+version-specific (mask, load procedures, language).
 
 Output per device: `<slug>.ae-manu` (the Kaenx-Creator project) and
 `<slug>-wiring.md` (the wiring worksheet: per collector, exactly the
