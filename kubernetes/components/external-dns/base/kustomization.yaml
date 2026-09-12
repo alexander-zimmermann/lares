@@ -10,7 +10,7 @@ helmCharts:
   - name: external-dns-chart
     repo: oci://ghcr.io/alexander-zimmermann/charts
     releaseName: external-dns
-    version: 1.21.1
+    version: 1.22.0
     valuesFile: values.yaml
     namespace: external-dns
     includeCRDs: true
