@@ -31,7 +31,7 @@ alertmanager:
             - alertname = "Watchdog"
           receiver: "watchdog"
           repeat_interval: 12h
-        # Review-at-leisure findings (HolmesGPT) go to e-mail, batched per run
+        # Review-at-leisure info alerts (CPUThrottlingHigh and the like) go to e-mail, batched
         - matchers:
             - severity = "info"
           receiver: "email"
