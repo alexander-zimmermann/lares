@@ -108,7 +108,7 @@ tasks:
         "{{.FLOWS}}" > "$nodered";
         uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
-        --template "{{.ROOT_DIR}}/exports/kaenx/template.ae-manu"
+        --template "{{.SCRIPTS_DIR}}/kaenx/template.ae-manu"
         --write-gas "$consumed"
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"

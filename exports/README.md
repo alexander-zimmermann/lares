@@ -10,12 +10,14 @@ never deployed; `kubernetes/` holds lares' own truths, which the cluster
 executes** (writer rules, consumer manifests). Both feed the pipelines;
 nothing lives twice.
 
-| File | Produced by | In git? |
-| --- | --- | --- |
-| `ets/Steinroth.knxproj` | ETS: project export (password-protected) | no — 12 MB binary |
-| `basalte/Steinroth.bcfg` | Basalte Studio: project export | no — 14 MB binary, carries token-like values |
-| `node-red/flows.json` | Node-Red: menu → Export → all flows | no — carries server details |
-| `kaenx/template.ae-manu` | Kaenx-Creator on the ETS VM: empty project, saved once | yes |
+The whole directory is git-ignored: the files are large binaries or
+carry token-like values and server details.
+
+| File | Produced by |
+| --- | --- |
+| `ets/Steinroth.knxproj` | ETS: project export (password-protected), 12 MB |
+| `basalte/Steinroth.bcfg` | Basalte Studio: project export, 14 MB |
+| `node-red/flows.json` | Node-Red: menu → Export → all flows |
 
 Re-export and overwrite in place whenever the system's configuration
 changed; the tasks' preconditions fail with the expected path when a
