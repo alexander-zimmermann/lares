@@ -31,6 +31,9 @@ deployment:
       value: json
     METRICS_PORT:
       value: "9090"
+    # OTLP/HTTP collector for traces; the sampling ratio defaults to 0.1 like connect
+    TRACING_ENDPOINT:
+      value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
     TZ:
       value: Europe/Berlin
 
