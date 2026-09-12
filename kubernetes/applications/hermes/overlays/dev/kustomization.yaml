@@ -12,3 +12,21 @@ replacements:
           name: hermes-data
         fieldPaths:
           - spec.resources.requests.storage
+
+patches:
+  # Sized for one gateway with a Discord session and the MCP results in context.
+  - target:
+      kind: Deployment
+      name: hermes
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: hermes
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 768Mi

@@ -5,7 +5,7 @@ deployment:
   # Config and skills come in as hashed ConfigMaps (pod rolls on change); no Reloader in the cluster.
   reloadOnChange: false
   image:
-    repository: docker.io/nousresearch/hermes-agent
+    repository: nousresearch/hermes-agent
     tag: v2026.9.11
     pullPolicy: IfNotPresent
 
@@ -138,13 +138,6 @@ deployment:
       port: api
     initialDelaySeconds: 30
     periodSeconds: 15
-
-  resources:
-    requests:
-      cpu: 100m
-      memory: 512Mi
-    limits:
-      memory: 1536Mi
 
   # Starts as root (s6-overlay chowns the volume, then drops to UID 10000); writes to /run and /tmp.
   # The added capabilities are the ones root needs for that: own the volume, drop

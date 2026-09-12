@@ -8,7 +8,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn
+  # Retained and backed up daily: sessions, memory and the Codex login live here.
+  storageClassName: longhorn-backup
   resources:
     requests:
       storage: PLACEHOLDER
