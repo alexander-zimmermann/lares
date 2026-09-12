@@ -19,6 +19,11 @@ faults:
       gap_quantile: 0.95
     scope:
       name_like: "%"
+      exclude_name_like:
+        # A severity the engine or Basalte writes on change, never cyclic.
+        - "%-Anomalie"
+        # The diagnosis block: states the bridge writes only on change.
+        - "%.Zentral.Diagnose.%"
     target:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
