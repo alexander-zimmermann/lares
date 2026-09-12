@@ -3,3 +3,21 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: knx-nats-bridge
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: knx-nats-bridge
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 30m
+            memory: 96Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi

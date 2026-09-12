@@ -45,15 +45,6 @@ deployment:
       name: smtp
       protocol: TCP
 
-  resources:
-    # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
-    requests:
-      cpu: 10m
-      memory: 50Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
   # grafana/smtprelay image ships without a non-root USER — pin UID/GID explicitly so
   # the chart's runAsNonRoot default is satisfied. Listening on 2525 is non-privileged.
   containerSecurityContext:

@@ -79,15 +79,6 @@ deployment:
     periodSeconds: 60
     failureThreshold: 5
 
-  # Working set climbs ~15 MiB/day until the limit restarts the pod; request covers the average.
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 256Mi
-
   # Image declares no USER; keep the chart's runAsNonRoot default and pin the UID.
   containerSecurityContext:
     runAsUser: 1000

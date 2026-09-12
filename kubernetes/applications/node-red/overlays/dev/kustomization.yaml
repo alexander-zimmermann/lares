@@ -64,3 +64,21 @@ replacements:
           kind: IngressRoute
         fieldPaths:
           - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
+patches:
+  - target:
+      kind: Deployment
+      name: node-red
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: node-red
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

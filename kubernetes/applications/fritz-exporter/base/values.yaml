@@ -66,15 +66,6 @@ deployment:
     timeoutSeconds: 30
     failureThreshold: 3
 
-  resources:
-    # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
-
   # pdreker/fritz_exporter image runs as root by default — pin UID/GID explicitly so
   # the chart's runAsNonRoot default is satisfied. Listening on 9787 is non-privileged.
   containerSecurityContext:

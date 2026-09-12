@@ -50,14 +50,6 @@ deployment:
     timeoutSeconds: 30
     failureThreshold: 5
 
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 128Mi
-
 service:
   enabled: true
   type: ClusterIP

@@ -3,3 +3,38 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: solaredge2mqtt-1
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: solaredge2mqtt-1
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+
+  - target:
+      kind: Deployment
+      name: solaredge2mqtt-2
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: solaredge2mqtt-2
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi

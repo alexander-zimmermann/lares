@@ -3,3 +3,22 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: fritz-exporter
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: fritz-exporter
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi

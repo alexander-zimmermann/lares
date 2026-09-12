@@ -77,3 +77,20 @@ patches:
       - op: add
         path: /metadata/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.33"
+
+  - target:
+      kind: Deployment
+      name: node-red
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: node-red
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

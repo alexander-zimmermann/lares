@@ -42,14 +42,6 @@ deployment:
     cache-volume:
       mountPath: /app/cache
 
-  resources:
-    requests:
-      cpu: 10m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
   # Image entrypoint runs as root, chown's /app/cache, then `su`'s to the solaredge2mqtt
   # user (UID 1000). The chart's runAsNonRoot default would block kubelet startup —
   # turn it off; readOnlyRootFilesystem must also stay false for the chown to succeed.

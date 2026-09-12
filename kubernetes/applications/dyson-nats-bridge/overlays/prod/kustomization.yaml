@@ -3,3 +3,21 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: dyson-nats-bridge
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: dyson-nats-bridge
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
