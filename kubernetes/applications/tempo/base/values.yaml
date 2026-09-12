@@ -1,7 +1,5 @@
 # Tempo monolithic: traces are a debugging aid, not an archive
 tempo:
-  # GOMEMLIMIT (set per overlay) paces GC; a 1 GiB ballast above that limit would keep GC busy forever
-  memBallastSizeMbs: 0
   reportingEnabled: false
   # Two days covers replaying any incident surfaced by alerts or logs
   retention: 48h
