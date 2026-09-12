@@ -1,0 +1,22 @@
+# Self-signed root for the Hubble mTLS chain; the CA below signs the server and relay leaves
+apiVersion: cert-manager.io/v1
+kind: Issuer
+
+metadata:
+  name: cilium-selfsigned
+  namespace: cilium
+
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+
+metadata:
+  name: cilium-ca
+  namespace: cilium
+
+spec:
+  ca:
+    secretName: cilium-ca

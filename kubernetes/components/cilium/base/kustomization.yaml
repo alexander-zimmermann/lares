@@ -3,6 +3,7 @@ kind: Kustomization
 
 namespace: cilium
 resources:
+  - ./issuer.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
   - ./sealed-secret.yaml

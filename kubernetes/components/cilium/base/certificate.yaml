@@ -12,3 +12,67 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - PLACEHOLDER
+
+---
+# Hubble CA; cert-manager renews it long before the leaves below need a new signer
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: cilium-ca
+  namespace: cilium
+
+spec:
+  secretName: cilium-ca
+  issuerRef:
+    name: cilium-selfsigned
+    kind: Issuer
+  isCA: true
+  commonName: Cilium CA
+  duration: 87600h
+
+---
+# Hubble server (in cilium-agent) and relay client leaves, same names and SANs the chart would issue
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: hubble-server-certs
+  namespace: cilium
+
+spec:
+  secretName: hubble-server-certs
+  issuerRef:
+    name: cilium-ca
+    kind: Issuer
+  commonName: "*.default.hubble-grpc.cilium.io"
+  dnsNames:
+    - "*.default.hubble-grpc.cilium.io"
+  duration: 8760h
+  usages:
+    - signing
+    - key encipherment
+    - server auth
+    - client auth
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+
+metadata:
+  name: hubble-relay-client-certs
+  namespace: cilium
+
+spec:
+  secretName: hubble-relay-client-certs
+  issuerRef:
+    name: cilium-ca
+    kind: Issuer
+  commonName: "*.hubble-relay.cilium.io"
+  dnsNames:
+    - "*.hubble-relay.cilium.io"
+  duration: 8760h
+  usages:
+    - signing
+    - key encipherment
+    - client auth
