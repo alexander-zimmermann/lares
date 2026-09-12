@@ -47,9 +47,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: warp_knx_republish
     - mapping: |
         let subj = meta("nats_subject")
         let evt = this

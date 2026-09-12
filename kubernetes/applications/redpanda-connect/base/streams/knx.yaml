@@ -21,9 +21,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: knx
     - mapping: |
         let evt = this
         let parts = $evt.ga.split("/")

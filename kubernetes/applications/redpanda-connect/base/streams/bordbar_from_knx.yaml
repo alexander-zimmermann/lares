@@ -25,9 +25,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: bordbar_from_knx
     - mapping: |
         # DPT 1.015 defines 0 as "no action" — only a 1 triggers the reset.
         # Dropping it here keeps the reset branch below free of the special case.

@@ -33,9 +33,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: unifi_arm_alarm
     # Tag the intended action from the subject; drop the 0-half of the status
     # pulse. `.bool().or(false)` survives both bool and int payload shapes.
     - mapping: |

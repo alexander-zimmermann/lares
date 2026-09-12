@@ -24,9 +24,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: warp_charging_status
     # Slot 4 = manual/button charge release; blocked == active && max_current 0.
     - mapping: 'root = { "on": !(this.index(4).active && this.index(4).max_current == 0) }'
 
