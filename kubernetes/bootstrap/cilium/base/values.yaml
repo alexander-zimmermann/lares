@@ -69,6 +69,11 @@ tls:
 
 # Hubble network observability
 hubble:
+  # Let an in-cluster job issue the mTLS certificates, so the rendered manifests carry no key material
+  tls:
+    auto:
+      method: cronJob
+
   # Enable flow metrics for advanced observability (drops, dns, tcp, etc.)
   metrics:
     enableOpenMetrics: true
