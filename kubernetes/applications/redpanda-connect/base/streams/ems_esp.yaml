@@ -18,9 +18,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: ems_esp
     - mapping: |
         # Some ems-esp.<topic> sub-topics publish bare strings (e.g. "off",
         # "on", numeric scalars) instead of JSON objects. Accessing `this`

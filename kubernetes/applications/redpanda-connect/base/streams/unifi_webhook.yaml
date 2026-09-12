@@ -12,9 +12,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: unifi_webhook
     # Replace the message with the triggers[] array, then split.
     - mapping: 'root = this.alarm.triggers'
     - unarchive:

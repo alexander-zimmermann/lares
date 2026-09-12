@@ -35,9 +35,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: midea_from_knx
     - mapping: |
         let subj = meta("nats_subject")
         root = if $subj == "knx.6.1.64" || $subj == "knx.6.1.66" || $subj == "knx.6.1.68" || $subj == "knx.6.1.104" || $subj == "knx.6.1.106" || $subj == "knx.6.1.108" {

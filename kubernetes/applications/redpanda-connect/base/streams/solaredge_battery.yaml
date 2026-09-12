@@ -26,9 +26,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: solaredge_battery
     - mapping: |
         let evt = this
         # Subject is "solaredge-N.modbus.battery"; pull N for inverter_id.

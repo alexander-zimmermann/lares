@@ -18,9 +18,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: warp_charge_tracker
     # `warp.charge_tracker.last_charges` is published as a JSON *array* of completed
     # charges. Split each element into its own message so the downstream mapping can
     # extract typed columns per charge. Other subjects (state, current_charge) are

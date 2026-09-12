@@ -19,9 +19,6 @@ input:
 
 pipeline:
   processors:
-    # Pass-through; tags the trace with span.group for TraceQL
-    - group_by_value:
-        value: warp_onoff_from_knx
     # knx-nats-bridge publishes {ga, name, value, dpt, ...}; DPT 1.001 decodes
     # to bool. WARP toggles via two distinct command topics, payload ignored.
     - mapping: |
