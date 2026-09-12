@@ -1,0 +1,80 @@
+# Alerts on what only exists in the line text; each rule names its pattern.
+# Pod logs only (container set): events and syslog carry no such lines.
+groups:
+  - name: log-content-alerts
+    rules:
+      - alert: LogPanic
+        # Go and Rust runtime panics land on stderr unformatted, hence the
+        # anchors; net/http logs a recovered handler panic with a timestamp.
+        expr: |
+          sum by (namespace, pod, container) (
+            count_over_time({namespace=~".+", container=~".+"}
+              |~ `^panic: |^thread '[^']*' panicked at |http: panic serving ` [10m])
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Panic in {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }})"
+          description: "{{ $value }} panic line(s) in the last 10m. A panic that kills the process also shows as a restart; one recovered inside a handler shows only here."
+
+      - alert: LogFatalError
+        # Go runtime aborts and fatal-level lines from structured loggers
+        # (logfmt and JSON); Python's CRITICAL is the same tier.
+        expr: |
+          sum by (namespace, pod, container) (
+            count_over_time({namespace=~".+", container=~".+"}
+              |~ `^fatal error: |level=fatal|"level":"(fatal|FATAL|CRITICAL)"` [10m])
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Fatal error in {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }})"
+          description: "{{ $value }} fatal line(s) in the last 10m — the process gave up on something; if it exited, PodCrashLooping follows."
+
+      - alert: LogStackTrace
+        # Python tracebacks, the sidecar bridges' exc_info; reconnect backoff
+        # logs about ten in the first quarter hour of an outage
+        expr: |
+          sum by (namespace, pod, container) (
+            count_over_time({namespace=~".+", container=~".+"}
+              |= "Traceback (most recent call last):" [15m])
+          ) > 20
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Stack traces looping in {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }})"
+          description: "{{ $value }} Python tracebacks in 15m and still going — an exception on every iteration, not a retry with backoff."
+
+      - alert: LogHttp5xxBurst
+        # Server errors as the apps log them: common log format (nginx),
+        # logfmt (Grafana, Loki) and JSON (Authentik). Traefik's are a
+        # Prometheus rule on its request counters.
+        expr: |
+          sum by (namespace, pod, container) (
+            count_over_time({namespace=~".+", container=~".+", container!="traefik"}
+              |~ `" 5[0-9]{2} |status=5[0-9]{2}\b|"status":\s?5[0-9]{2}\b` [5m])
+          ) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HTTP 5xx burst in {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }})"
+          description: "More than 10 server errors per 5m for 5m straight, as logged by the service itself."
+
+  # Traefik states the error only when it rebuilds its configuration, hours
+  # apart on a quiet night: the window holds the alert instead of flapping
+  - name: ingress-config-alerts
+    interval: 5m
+    rules:
+      - alert: IngressRouteWithoutBackend
+        expr: |
+          sum by (namespace, container) (
+            count_over_time({namespace="ingress-controller", container="traefik"}
+              |~ `kubernetes service not found: |no servers found for |the service \\?"[^"]+" does not exist` [12h])
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "An IngressRoute points at a backend Traefik cannot resolve"
+          description: "{{ $value }} Traefik line(s) in 12h naming a Service that is missing or has no servers. Query the traefik container for 'service not found', 'no servers found' or 'does not exist' to see which."

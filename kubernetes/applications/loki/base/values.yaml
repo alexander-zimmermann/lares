@@ -99,6 +99,16 @@ loki:
     retention_enabled: true
     delete_request_store: filesystem
 
+  rulerConfig:
+    # The folder the loki-sc-rules container fills (see the ConfigMap generator)
+    storage:
+      type: local
+      local:
+        directory: /rules
+    # Scratch copy of the loaded groups; the default is that same folder
+    rule_path: /tmp/loki/rules-scratch
+    alertmanager_url: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
+
 # Chunks cache resources are configured in overlays
 chunksCache:
   allocatedMemory: 256
