@@ -15,7 +15,8 @@ helmCharts:
   - name: rustfs
     repo: https://rustfs.github.io/helm
     releaseName: rustfs
-    version: 1.0.0-rc.6
+    # Pinned: rc.6 retains memory from the nightly backup bursts until OOMKilled on the 1Gi limit.
+    version: 1.0.0-rc.5
     valuesFile: values.yaml
     namespace: rustfs
 

@@ -32,10 +32,11 @@
   },
   "packageRules": [
     {
-      // rustfs chart mirrors the app version and ships only pre-releases since 1.0.0
+      // rustfs ships only pre-releases since 1.0.0; each rc must prove itself first, so gate bumps behind the dashboard
       "matchDatasources": ["helm"],
       "matchPackageNames": ["rustfs"],
-      "ignoreUnstable": false
+      "ignoreUnstable": false,
+      "dependencyDashboardApproval": true
     },
     {
       // Own build; bumping it rolls the TimescaleDB cluster, so gate it behind the dashboard
