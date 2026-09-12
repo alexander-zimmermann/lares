@@ -13,6 +13,48 @@ replacements:
         fieldPaths:
           - spec.resources.requests.storage
 
+  # Dashboard hostname into Certificate dnsNames and IngressRoute Host(...) match
+  - sourceValue: hermes.zimmermann.phd
+    targets:
+      - select:
+          kind: Certificate
+          name: hermes-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: hermes
+        fieldPaths:
+          - spec.routes.0.match
+        options:
+          delimiter: "`"
+          index: 1
+
+  # OIDC issuer (the Authentik application `hermes`) and the dashboard's public URL
+  - sourceValue: https://auth.zimmermann.phd/application/o/hermes/
+    targets:
+      - select:
+          kind: Deployment
+          name: hermes
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=HERMES_DASHBOARD_OIDC_ISSUER].value
+
+  - sourceValue: https://hermes.zimmermann.phd
+    targets:
+      - select:
+          kind: Deployment
+          name: hermes
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=HERMES_DASHBOARD_PUBLIC_URL].value
+
+  # Rewrite external-dns target annotation to the UDM Pro
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # Sized for one gateway with a Discord session and the MCP results in context.
   - target:

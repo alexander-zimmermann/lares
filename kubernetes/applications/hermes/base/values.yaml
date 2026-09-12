@@ -61,6 +61,18 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: api-server-key
+    # Web dashboard, supervised by s6 beside the gateway; the OIDC login against
+    # Authentik is what a non-loopback bind requires, and the public URL fixes the callback
+    HERMES_DASHBOARD:
+      value: "1"
+    HERMES_DASHBOARD_PORT:
+      value: "9119"
+    HERMES_DASHBOARD_OIDC_ISSUER:
+      value: PLACEHOLDER_OIDC_ISSUER
+    HERMES_DASHBOARD_OIDC_CLIENT_ID:
+      value: hermes-dashboard
+    HERMES_DASHBOARD_PUBLIC_URL:
+      value: PLACEHOLDER_PUBLIC_URL
     # config.yaml is mounted read-only from the repo; a schema migration could not write it
     HERMES_SKIP_CONFIG_MIGRATION:
       value: "1"
@@ -120,6 +132,9 @@ deployment:
     - containerPort: 8642
       name: api
       protocol: TCP
+    - containerPort: 9119
+      name: dashboard
+      protocol: TCP
 
   # /health is unauthenticated and process-only; the gateway is supervised by s6 inside the container.
   livenessProbe:
@@ -161,3 +176,7 @@ service:
       name: api
       protocol: TCP
       targetPort: api
+    - port: 9119
+      name: dashboard
+      protocol: TCP
+      targetPort: dashboard

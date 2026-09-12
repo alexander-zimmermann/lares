@@ -84,6 +84,12 @@ monitoring:
       enabled: true
       endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318/v1/traces
 
+# Behind Traefik: its forwarded headers are trusted from the pod network only,
+# and the public URL comes from the environment per cluster.
+dashboard:
+  trusted_proxies:
+    - 10.244.0.0/16
+
 mcp_servers:
   lares:
     url: http://iot-mcp-bridge.iot-mcp-bridge.svc.cluster.local:8080/mcp

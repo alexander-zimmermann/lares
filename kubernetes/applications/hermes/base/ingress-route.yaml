@@ -1,0 +1,28 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+
+metadata:
+  name: hermes
+  namespace: agents
+  annotations:
+    # ExternalDNS configuration for Cloudflare
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`PLACEHOLDER`)
+      priority: 10
+      # No forward-auth: the dashboard runs its own OIDC login against Authentik
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
+      services:
+        - kind: Service
+          name: hermes
+          port: 9119
+  tls:
+    secretName: hermes-tls-cert
