@@ -48,8 +48,8 @@ pipeline:
     # Which alert belongs to which status. Gatus endpoint alerts carry the
     # endpoint's `name` and `group` labels, so a single rule feeds several
     # scopes without splitting it (and without duplicating notifications).
-    # Watchdog is the always-firing heartbeat, and severity=info carries
-    # HolmesGPT's review-at-leisure findings — neither is a disturbance.
+    # Watchdog is the always-firing heartbeat, and severity=info is
+    # review-at-leisure by definition — neither is a disturbance.
     - mapping: |
         let firing = this.filter(a -> (
             a.labels.alertname.or("") != "Watchdog" &&

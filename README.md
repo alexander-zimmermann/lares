@@ -246,7 +246,6 @@ A quick taste of what's running — full catalog in [`kubernetes/README.md`](kub
 - **Data plane** — [CloudNativePG](https://cloudnative-pg.io/) with Barman S3 PITR backups, [TimescaleDB](https://www.timescale.com/) for sensor time-series, [Redis](https://redis.io/), [RustFS](https://github.com/rustfs/rustfs) for S3-compatible object storage.
 - **Streaming & agents** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus protocol bridges (KNX, solar) and an MCP bridge that exposes the data to AI agents.
 - **Observability** — [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), [Loki](https://grafana.com/oss/loki/), [Tempo](https://grafana.com/oss/tempo/), [Alloy](https://grafana.com/docs/alloy/), [Gatus](https://gatus.io/), plus [kromgo](https://github.com/kashalls/kromgo) powering the badges above.
-- **AIOps** — [HolmesGPT](https://github.com/robusta-dev/holmesgpt) as an in-cluster SRE agent: investigates Prometheus alerts, answers plain-language questions over the live cluster, Loki logs and Argo CD state, and runs scheduled health-checks — all read-only.
 
 ## Repository structure
 
