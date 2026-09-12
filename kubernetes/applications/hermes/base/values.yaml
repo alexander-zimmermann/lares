@@ -26,6 +26,11 @@ deployment:
           key: discord-bot-token
     DISCORD_ALLOWED_USERS:
       value: "880499253825388565"
+    # Where the house writes first (#Allgemein); /sethome cannot, the config is read-only
+    DISCORD_HOME_CHANNEL:
+      value: "1548229055348736034"
+    DISCORD_HOME_CHANNEL_NAME:
+      value: "#Allgemein"
     # Model: xAI prepaid credits are the spend cap
     XAI_API_KEY:
       valueFrom:
