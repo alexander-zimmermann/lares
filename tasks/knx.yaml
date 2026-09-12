@@ -117,6 +117,61 @@ tasks:
         --output-dir "{{.OUTDIR}}"
         {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
+  link:
+    desc: "write the software devices' group links into the ETS export [output.knxproj]"
+    summary: |
+      Take the ETS export at KNX_PROJECT_PATH and write every generated
+      device's group links into it — the bridge's from writer rules and
+      *_from_knx consumers, Basalte's from the Studio export at BCFG,
+      Node-Red's from the flow export at FLOWS — then import the result
+      into ETS. No hand wiring: after every regenerate-publish-update
+      round this puts all links back in one go. A device whose installed
+      application is not the one the configuration describes is refused;
+      regenerate, publish and update it in ETS first.
+      The result is an unprotected project (ETS5's password archive
+      cannot be written from here): ETS imports it as a new project
+      without password — set one again afterwards. Set DROP_SIGNATURE=1
+      should ETS refuse the carried-over signature files.
+      Arguments: [output path, default ~/Downloads/Steinroth-linked.knxproj]
+      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+    vars:
+      OUTPUT: '{{.CLI_ARGS | default "$HOME/Downloads/Steinroth-linked.knxproj"}}'
+      BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
+      FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
+    env:
+      # the tool reads the password from the environment, so it never
+      # appears in the command line that task echoes
+      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
+    preconditions:
+      - sh: test -f "{{.KNX_PROJECT_PATH}}"
+        msg: "'{{.KNX_PROJECT_PATH}}' not found"
+      - sh: test -f "{{.BCFG}}"
+        msg: "'{{.BCFG}}' not found — export from Basalte Studio first"
+      - sh: test -f "{{.FLOWS}}"
+        msg: "'{{.FLOWS}}' not found — Node-Red: menu, Export, all flows"
+    cmds:
+      - >
+        set -e;
+        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
+        trap 'rm -f "$consumed" "$bridge" "$basalte" "$nodered"' EXIT;
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
+        "{{.KNX_WRITER_RULES_PATH}}"
+        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
+        "{{.BCFG}}" > "$basalte";
+        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
+        "{{.FLOWS}}" > "$nodered";
+        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-link
+        --input "{{.KNX_PROJECT_PATH}}"
+        --write-gas "$consumed"
+        --device "@$bridge=KNX-NATS-Bridge:split"
+        --device "@$basalte=Basalte Core S4:both"
+        --device "@$nodered=Node-Red:both"
+        --output "{{.OUTPUT}}"
+        {{if .DROP_SIGNATURE}}--drop-signature{{end}}
+
   check-wiring:
     desc: "hold the ETS export against the software-device footprints"
     summary: |

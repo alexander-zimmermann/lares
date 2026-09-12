@@ -28,7 +28,8 @@ Migration tracker: issue #1557.
 
 3  ON THE ETS VM (once per device version)
      Kaenx-Creator: open the .ae-manu → publish → .knxprod
-     ETS: import → link addresses per worksheet, one multi-select per object
+     ETS: import the product → add / update the device → export
+     task knx:link → import the linked project (all links written, no hand wiring)
      couplers: 1.2.0 upstream and 1.1.0 downstream forward group telegrams
 
 4  BACK (verification)
@@ -96,21 +97,31 @@ the last case fails the run — configuration pointing at nothing is the
 wiring error this model exists to expose.
 
 On the ETS VM: open the `.ae-manu` in Kaenx-Creator → Veröffentlichen →
-import the `.knxprod` into ETS → link the addresses per worksheet
-(sort the GA list, multi-select a block, drag onto the collector).
+import the `.knxprod` into ETS → add the device (or update the existing
+one: ETS offers "Aktualisieren" because each version declares the ones
+it replaces) → export. Then `task knx:link` writes every link of every
+generated device into that export, and you import the result into ETS
+as the new working project. The worksheet beside the `.ae-manu` is only
+a reference now — nothing is linked by hand any more. Two things to
+know about the linked project: it comes without the project password
+(set it again in ETS), and ETS may report its signature as not
+matching, which is expected for a project edited outside ETS.
 
 ## Growth and maintenance
 
 - **New address of an existing kind** — same main group, datapoint
-  type and direction as an existing collector: link it there in ETS.
-  No product update. A first-of-its-subtype address is a new kind. `task
+  type and direction as an existing collector: `task knx:link` after
+  the next export puts it on its collector; a manual link in ETS works
+  just as well. No product update. A first-of-its-subtype address is a
+  new kind. `task
   knx:check-wiring` nags until the link exists.
 - **New (main group × DPT) combination, or a footprint change** (new
   writer rule kind, new consumer, new Basalte datapoint or flow kind):
   re-export the changed system into `exports/` first, then
   regenerate, publish a new application version in Kaenx-Creator, update
-  the device in ETS. Collector order is stable, so existing links
-  survive the update.
+  the device in ETS, export, `task knx:link`, import. Whether ETS kept
+  the old links through the update no longer matters — the link step
+  rewrites all of them from the configuration.
 - **Identity, do not touch**: per-device GUID (deterministic), serial and
   order number (name slug), application number (100/101/102 by task
   order).
