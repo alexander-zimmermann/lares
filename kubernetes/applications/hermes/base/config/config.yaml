@@ -31,6 +31,8 @@ agent:
     - connections
   # Wall-clock budget per run
   run_budget_seconds: 600
+  # The first live answers stopped after one tool call at the default (medium)
+  reasoning_effort: high
 
 approvals:
   # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.
