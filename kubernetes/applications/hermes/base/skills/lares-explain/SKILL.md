@@ -18,9 +18,9 @@ Ziel; vier bis sechs sind der Normalfall.
 
 1. **Subjekt.** `list_episodes` mit der genannten `episode_id`. Notiere
    Fault, Kanal, Beginn, Severity, Beobachtungen.
-2. **Kanal.** `resolve` mit dem Kanalnamen: Raum, Gerät, Datenpunkt,
-   Einheit, und die Geschwisterkanäle desselben Geräts. Ohne Einheit keine
-   Zahl in der Antwort.
+2. **Kanal.** `get_current_knx` mit `room` und `name` (Teil des Kanalnamens):
+   aktueller Wert, Alter, Raum, Gerät, Datenpunkt, Einheit, und die
+   Geschwisterkanäle desselben Geräts. Ohne Einheit keine Zahl in der Antwort.
 3. **Verlauf.** `query_timeseries` auf `knx_1h` für den Kanal, vom Tag vor
    dem Beginn bis jetzt, Bucket eine Stunde. Wann war der letzte Wert, wo
    ist der Bruch?
@@ -39,7 +39,7 @@ in den Daten" die richtige erste Zeile, aber erst nach den vier Schritten.
 <Ursache in einem Satz, oder: Keine Ursache in den Daten.>
 
 Subjekt: <Fault, Kanal, seit wann, Severity> (list_episodes)
-Kanal: <Gerät, Raum, Einheit, Geschwister> (resolve)
+Kanal: <Wert, Alter, Gerät, Raum, Einheit, Geschwister> (get_current_knx)
 Verlauf: <letzter Wert und Zeitpunkt, Bruch> (query_timeseries)
 Umfeld: <Befund mit Zahl und Einheit> (<Tool>: <Parameter>)
 
@@ -51,9 +51,15 @@ Offen: <nur, was mit den Werkzeugen nicht prüfbar war, und warum>
 - **channel_silence auf einem Schaltkanal** (DPT 1.x, Name endet auf
   Ein/Aus): der Kanal sendet nur, wenn geschaltet wird. Schweigen heißt
   zuerst "niemand hat geschaltet", nicht "Sensor tot". Prüfe mit
-  `get_current_knx` den letzten Wert und Zeitpunkt, und mit `resolve` den
+  `get_current_knx` den letzten Wert und Zeitpunkt, und darüber auch den
   Rückmelde- oder Statuskanal desselben Geräts. Sag, ob das Gerät aus ist
   oder ob auch die Rückmeldung fehlt; nur das zweite ist ein Defekt.
+- **channel_silence auf einem Status- oder Diagnosekanal** (Name endet auf
+  `-Status` oder `-Anomalie`, Wert wahr/falsch oder 0 bis 3): diese Kanäle
+  werden nur bei Änderung geschrieben. Schweigen heißt "unverändert", und
+  der aktuelle Wert aus `get_current_knx` sagt, ob das gut ist (Status wahr,
+  Anomalie 0). Geschwister, die zwischendurch geschrieben wurden, haben sich
+  geändert, nicht "gelebt". Kein Defekt, solange der Wert stimmt.
 - **channel_silence auf einem Messkanal** (Temperatur, Feuchte, Strom): der
   Sender selbst oder seine Bridge ist verdächtig. Prüfe Nachbarkanäle
   desselben Geräts und desselben Raums: schweigen alle, ist es das Gerät
