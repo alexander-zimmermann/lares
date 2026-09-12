@@ -37,6 +37,12 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: xai-api-key
+    # Second provider for the model comparison, selected per API request; Discord stays on the default model
+    ANTHROPIC_API_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: anthropic-api-key
     # Bridge: the machine-client key the bridge maps to client lares-agent
     LARES_MCP_KEY:
       valueFrom:
