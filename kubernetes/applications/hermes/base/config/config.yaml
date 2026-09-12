@@ -38,6 +38,16 @@ approvals:
 skills:
   write_approval: true
 
+# First-touch hints latch into config.yaml, which is read-only here: no profile
+# offer, and every hint pre-marked as seen, else the intro repeats on every message.
+onboarding:
+  profile_build: "off"
+  seen:
+    profile_build_offered: true
+    busy_input_prompt: true
+    tool_progress_prompt: true
+    openclaw_residue_cleanup: true
+
 # Bounded working notes per install; facts live in the database, not here.
 memory:
   memory_enabled: true
