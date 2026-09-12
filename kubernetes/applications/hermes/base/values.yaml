@@ -70,7 +70,7 @@ deployment:
   volumes:
     hermes-data:
       persistentVolumeClaim:
-        claimName: hermes-home
+        claimName: hermes-data
     hermes-config:
       configMap:
         name: hermes-config

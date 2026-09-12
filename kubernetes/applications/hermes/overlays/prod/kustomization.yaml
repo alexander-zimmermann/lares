@@ -9,7 +9,7 @@ replacements:
     targets:
       - select:
           kind: PersistentVolumeClaim
-          name: hermes-home
+          name: hermes-data
         fieldPaths:
           - spec.resources.requests.storage
 
