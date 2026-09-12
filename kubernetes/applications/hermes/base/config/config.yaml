@@ -26,6 +26,9 @@ agent:
     - discord_admin
     - homeassistant
     - kanban
+    # x_search registers itself as soon as XAI_API_KEY is set; connections is the Nous tool gateway
+    - x_search
+    - connections
   # Wall-clock budget per run
   run_budget_seconds: 600
 
@@ -62,6 +65,18 @@ discord:
 
 # Session isolation on every gateway platform
 group_sessions_per_user: true
+
+# Gateway and Discord liveness as metrics into the Alloy receiver; Kubernetes
+# cannot see a gateway crash under s6, the alert rules on hermes_gateway_up can.
+monitoring:
+  gateway_health_export:
+    enabled: true
+    # The receiver takes metrics and traces only; the OTLP log signal would 404 every 5 s
+    warning_error_events_enabled: false
+  export:
+    otlp:
+      enabled: true
+      endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318/v1/traces
 
 mcp_servers:
   lares:
