@@ -1,0 +1,61 @@
+# Hermes settings for the lares agent platform. Mounted read-only from the
+# repo: what runs is what is reviewed here, never a runtime edit.
+
+# Grok 4.3 via the xAI Responses API; the prepaid balance is the spend cap.
+model:
+  provider: xai
+  default: grok-4.3
+
+agent:
+  # Unattended and read-only: everything the agent may read comes through the
+  # bridge's MCP tools, and the bridge denies the rest a second time.
+  disabled_toolsets:
+    - terminal
+    - file
+    - code_execution
+    - browser
+    - web
+    - search
+    - image_gen
+    - video_gen
+    - tts
+    - vision
+    - cronjob
+    - delegation
+    - computer_use
+    - discord_admin
+    - homeassistant
+    - kanban
+  # Wall-clock budget per run
+  run_budget_seconds: 600
+
+approvals:
+  # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.
+  unattended_mode: deny
+  cron_mode: deny
+
+# Skills are files in the repo; agent edits are staged and never approved.
+skills:
+  write_approval: true
+
+# Bounded working notes per install; facts live in the database, not here.
+memory:
+  memory_enabled: true
+  user_profile_enabled: false
+  memory_char_limit: 2200
+  write_approval: false
+
+discord:
+  # One private server, one user: answer everywhere, no threads per message
+  require_mention: false
+  auto_thread: false
+
+# Session isolation on every gateway platform
+group_sessions_per_user: true
+
+mcp_servers:
+  lares:
+    url: http://iot-mcp-bridge.iot-mcp-bridge.svc.cluster.local:8080/mcp
+    headers:
+      Authorization: "Bearer ${env:LARES_MCP_KEY}"
+    timeout: 60

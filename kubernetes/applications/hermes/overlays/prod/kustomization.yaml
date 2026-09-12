@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+replacements:
+  - sourceValue: 2Gi
+    targets:
+      - select:
+          kind: PersistentVolumeClaim
+          name: hermes-data
+        fieldPaths:
+          - spec.resources.requests.storage

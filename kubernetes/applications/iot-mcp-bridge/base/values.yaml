@@ -42,6 +42,12 @@ deployment:
       value: iot-mcp-bridge
     MCP_AUTH_RESOURCE_URL:
       value: PLACEHOLDER_AUTH_RESOURCE_URL
+    # Machine clients (agents) authenticate with a key from this file instead of a JWT
+    MCP_AUTH_CLIENTS_FILE:
+      value: /etc/iot-mcp-bridge/auth-clients.json
+    # What each machine client may see and call; the verdict, cache and NATS-subscribe tools stay out
+    MCP_AUTH_CLIENT_TOOLS:
+      value: '{"lares-agent": ["list_*", "get_*", "query_*", "correlate_events", "resolve", "search_wiki"]}'
     MCP_NATS_SERVERS:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
@@ -95,6 +101,12 @@ deployment:
         items:
           - key: token
             path: token
+    auth-clients:
+      secret:
+        secretName: iot-mcp-bridge-auth-clients
+        items:
+          - key: clients.json
+            path: clients.json
 
   volumeMounts:
     db-username:
@@ -120,6 +132,10 @@ deployment:
     wikijs-token:
       mountPath: /etc/iot-mcp-bridge/wikijs-token
       subPath: token
+      readOnly: true
+    auth-clients:
+      mountPath: /etc/iot-mcp-bridge/auth-clients.json
+      subPath: clients.json
       readOnly: true
 
   ports:

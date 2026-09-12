@@ -1,0 +1,148 @@
+applicationName: hermes
+
+deployment:
+  enabled: true
+  # Config and skills come in as hashed ConfigMaps (pod rolls on change); no Reloader in the cluster.
+  reloadOnChange: false
+  image:
+    repository: docker.io/nousresearch/hermes-agent
+    tag: v2026.9.11
+    pullPolicy: IfNotPresent
+
+  # One gateway per data volume, never two; the PVC is ReadWriteOnce anyway.
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  # The image entrypoint (s6-overlay) stays; only the command changes.
+  args: ["gateway", "run"]
+
+  env:
+    # Discord: the bot token and the one user allowed to talk to it
+    DISCORD_BOT_TOKEN:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: discord-bot-token
+    DISCORD_ALLOWED_USERS:
+      value: "880499253825388565"
+    # Model: xAI prepaid credits are the spend cap
+    XAI_API_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: xai-api-key
+    # Bridge: the machine-client key the bridge maps to client lares-agent
+    LARES_MCP_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: lares-mcp-key
+    # API server: /health for the probes now, run creation for agent-trigger later
+    API_SERVER_ENABLED:
+      value: "true"
+    API_SERVER_HOST:
+      value: 0.0.0.0
+    API_SERVER_PORT:
+      value: "8642"
+    API_SERVER_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: api-server-key
+    # config.yaml is mounted read-only from the repo; a schema migration could not write it
+    HERMES_SKIP_CONFIG_MIGRATION:
+      value: "1"
+    TZ:
+      value: Europe/Berlin
+
+  volumes:
+    hermes-data:
+      persistentVolumeClaim:
+        claimName: hermes-data
+    hermes-config:
+      configMap:
+        name: hermes-config
+        items:
+          - key: config.yaml
+            path: config.yaml
+    hermes-soul:
+      configMap:
+        name: hermes-config
+        items:
+          - key: SOUL.md
+            path: SOUL.md
+    hermes-skills:
+      configMap:
+        name: hermes-skills
+
+  volumeMounts:
+    # All Hermes state: sessions, memories, cron ledger, logs
+    hermes-data:
+      mountPath: /opt/data
+    # The repo wins over runtime edits: config and persona are read-only files inside the data volume
+    hermes-config:
+      mountPath: /opt/data/config.yaml
+      subPath: config.yaml
+      readOnly: true
+    hermes-soul:
+      mountPath: /opt/data/SOUL.md
+      subPath: SOUL.md
+      readOnly: true
+    hermes-skills:
+      mountPath: /opt/data/skills/lares-explain/SKILL.md
+      subPath: SKILL.md
+      readOnly: true
+
+  ports:
+    - containerPort: 8642
+      name: api
+      protocol: TCP
+
+  # /health is unauthenticated and process-only; the gateway is supervised by s6 inside the container.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /health
+      port: api
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    failureThreshold: 4
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /health
+      port: api
+    initialDelaySeconds: 30
+    periodSeconds: 15
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 1536Mi
+
+  # Starts as root (s6-overlay chowns the volume, then drops to UID 10000); writes to /run and /tmp.
+  # The added capabilities are the ones root needs for that: own the volume, drop
+  # privileges, and signal the UID-10000 services it supervises.
+  containerSecurityContext:
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+      add: [CHOWN, DAC_OVERRIDE, FOWNER, KILL, SETGID, SETUID]
+
+  securityContext:
+    fsGroup: 10000
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 8642
+      name: api
+      protocol: TCP
+      targetPort: api
