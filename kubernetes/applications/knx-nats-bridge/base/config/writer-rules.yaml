@@ -615,12 +615,13 @@ mappings:
     description: "Versorgungstechnik.Photovoltaik.Batterie.Ladestand"
     min_delta: 1 # %
 
-  # Anomaly faults -> KNX (iot-insights-engine). The engine publishes the
+  # Fault severities -> KNX (iot-insights-engine). The engine publishes the
   # current tier as $.severity_level (0=ok, 1=info, 2=warning, 3=critical) and
   # re-publishes 0 on auto-clear; a Basalte LUT turns it into a notification.
-  # The boiler, inverter and wallbox anomaly addresses carry no rule: their
-  # threshold faults are Basalte's, which writes the tier onto the bus itself.
-  # Grid/battery anomaly addresses (15/4/1..9, 15/4/51..55) are reservations —
+  # Phase A/B1: only the grid/battery reservations remain. The boiler,
+  # inverter and wallbox anomaly addresses carry no rule: their faults are
+  # external ones, Basalte detects them and writes the tier onto the bus
+  # itself. The reservations (15/4/1,3,5,7,9 and 15/4/51,53,55) stay although
   # nothing publishes these subjects until a declared fault targets them.
   - subject: "anomaly.grid_power"
     ga: "15/4/1"
