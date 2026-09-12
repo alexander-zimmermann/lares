@@ -36,6 +36,7 @@ configMapGenerator:
     files:
       - icons/2n.svg
       - icons/basalte.png
+      - icons/hermes.png
       - icons/hubble.svg
       - icons/mdt.svg
       - icons/telenot.svg

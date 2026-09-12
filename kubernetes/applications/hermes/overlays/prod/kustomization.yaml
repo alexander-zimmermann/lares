@@ -29,6 +29,14 @@ replacements:
         options:
           delimiter: "`"
           index: 1
+      - select:
+          kind: IngressRoute
+          name: hermes
+        fieldPaths:
+          - metadata.annotations.[gethomepage.dev/href]
+        options:
+          delimiter: "//"
+          index: 1
 
   # OIDC issuer (the Authentik application `hermes`) and the dashboard's public URL
   - sourceValue: https://auth.zimmermann.sh/application/o/hermes/
