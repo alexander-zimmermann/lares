@@ -13,6 +13,19 @@ helmCharts:
     valuesFile: values.yaml
     namespace: loki
 
+# The chart's loki-sc-rules container mirrors ConfigMaps labelled loki_rule
+# into the ruler's folder, the annotation picks the tenant ("fake": auth off)
+configMapGenerator:
+  - name: loki-alert-rules
+    options:
+      disableNameSuffixHash: true
+      labels:
+        loki_rule: ""
+      annotations:
+        k8s-sidecar-target-directory: /rules/fake
+    files:
+      - rules/alerts.yaml
+
 labels:
   - includeSelectors: false
     pairs:

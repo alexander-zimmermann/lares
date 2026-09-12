@@ -563,3 +563,26 @@ spec:
           annotations:
             summary: "Bridge watchdog blind for {{ $labels.stream_name }}"
             description: "nats_stream_last_seq for {{ $labels.stream_name }} has not been scraped for 15m — check the nats pod, its PodMonitor and the Stream CRD. The delivery watchdog for this bridge is blind until this clears."
+
+    # The log-content alerts live in the Loki ruler, which fails an
+    # evaluation silently; these two watch the path, not the content.
+    - name: loki-ruler-alerts
+      rules:
+        - alert: LokiRulerEvaluationFailing
+          expr: sum by (user, rule_group) (increase(loki_prometheus_rule_evaluation_failures_total[30m])) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki ruler group {{ $labels.rule_group }} failing"
+            description: "{{ $value | humanize }} evaluation(s) failed in 30m — the queries time out or the group cannot be loaded. Every log-content alert in the group is blind until this clears; check the loki container's logs for the ruler's error."
+
+        - alert: LokiRulerNoRulesLoaded
+          # A tenant with no groups has no manager and no series at all
+          expr: absent(loki_prometheus_rule_group_rules)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki ruler has no rules loaded"
+            description: "loki_prometheus_rule_group_rules has been absent for 15m — the ruler found nothing under /rules/fake. Check that the loki-alert-rules ConfigMap exists and the loki-sc-rules container wrote it. Every log-content alert is blind until this clears."
