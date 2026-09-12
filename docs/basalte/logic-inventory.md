@@ -6,7 +6,7 @@ Regenerate after every change in Basalte and read the diff.
 The export itself is not in the repo: 14 MB of binary, and it carries at least one
 value that looks like an access token. See `docs/basalte/README.md` for where it goes.
 
-**166 logic blocks**, **28 of them notifying**, carrying **127 distinct notifications** between them. 878 named objects in the export.
+**183 logic blocks**, **45 of them notifying**, carrying **267 distinct notifications** between them. 895 named objects in the export.
 
 ## Notifications
 
@@ -19,6 +19,146 @@ One row per notification — a block often carries several, one per room or devi
 | Alarmauslösung EMA Extern Scharf | Linienüberschreitung auf der Terrasse! | 1, False | Pollerleuchte |
 | An/Abwesend - Meldung | Willkommen zu Hause. | — | — |
 | An/Abwesend - Meldung | Außer Haus. | — | — |
+| Anomalie | Info: Ein Sensorikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Sensorikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Sensorikkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Kein Sensorikkanal hängt mehr fest. | — | — |
+| Anomalie | Ende: Alle Sensorikkanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Sensorikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Sensorikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Sensorikkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Bedienelementekanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Bedienelementkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Bedienelementkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Bedienelementkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Bedienelementkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Bedienelementkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Bedienelementkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Kein Bedienelementkanal hängt mehr fest. | — | — |
+| Anomalie | Kritisch: Ein Beschattungskanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Beschattungskanäle melden wieder. | — | — |
+| Anomalie | Info: Ein Beschattungskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Beschattungskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Beschattungskanal hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Beschattungskanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Beschattungskanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Beschattungskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Raumklimakanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Raumklimakanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Raumklimakanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Alle Raumklimakanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Raumklimakanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Raumklimakanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Raumklimakanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Raumklimakanal hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Beleuchtungskanal Einrichtung hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Beleuchtungskanal Einrichtung meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Beleuchtungskanal Einrichtung hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Beleuchtungskanal Einrichtung hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Beleuchtungskanal Einrichtung meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Beleuchtungskanäle Einrichtung melden wieder. | — | — |
+| Anomalie | Warnung: Ein Beleuchtungskanal Einrichtung meldet nicht mehr. | — | — |
+| Anomalie | Ende: Kein Beleuchtungskanal Einrichtung hängt mehr fest. | — | — |
+| Anomalie | Info: Ein Beleuchtungskanal Gebäude hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Beleuchtungskanal Gebäude meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Beleuchtungskanal Gebäude meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Beleuchtungskanal Gebäude hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Beleuchtungskanal Gebäude hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Alle Beleuchtungskanäle Gebäude melden wieder. | — | — |
+| Anomalie | Kritisch: Ein Beleuchtungskanal Gebäude meldet nicht mehr. | — | — |
+| Anomalie | Ende: Kein Beleuchtungskanal Gebäude hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Schaltenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Schaltenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Schaltenkanal hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Schaltenkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Schaltenkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Schaltenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Alle Schaltenkanäle melden wieder. | — | — |
+| Anomalie | Info: Ein Schaltenkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Allgemeinkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Allgemeinkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Meldungsmenge wieder unter 5 Vorfällen pro Woche. | — | — |
+| Anomalie | Warnung: Mehr als 5 Vorfälle in sieben Tagen, die Meldungsmenge driftet ins Rauschen. | — | — |
+| Anomalie | Info: Mehr als 5 Vorfälle in sieben Tagen, die Meldungsmenge driftet ins Rauschen. | — | — |
+| Anomalie | Ende: Alle Allgemeinkanäle melden wieder. | — | — |
+| Anomalie | Kritisch: Mehr als 5 Vorfälle in sieben Tagen, die Meldungsmenge driftet ins Rauschen. | — | — |
+| Anomalie | Warnung: Ein Allgemeinkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Allgemeinkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Allgemeinkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Allgemeinkanal hängt mehr fest. | — | — |
+| Anomalie | Info: Ein Allgemeinkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Bewegungsmelderkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Bewegungsmelderkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Bewegungsmelderkanäle melden wieder. | — | — |
+| Anomalie | Info: Ein Bewegungsmelderkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Bewegungsmelderkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Bewegungsmelderkanal hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Bewegungsmelderkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Bewegungsmelderkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Sicherheitskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Sicherheitskanal hängt mehr fest. | — | — |
+| Anomalie | Ende: Alle Sicherheitskanäle melden wieder. | — | — |
+| Anomalie | Info: Ein Sicherheitskanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Sicherheitskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Sicherheitskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Sicherheitskanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Sicherheitskanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Zutrittskanäle melden wieder. | — | — |
+| Anomalie | Ende: Kein Zutrittskanal hängt mehr fest. | — | — |
+| Anomalie | Kritisch: Ein Zutrittskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Zutrittskanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Zutrittskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Zutrittskanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Zutrittskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Zutrittskanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Entertainmentskanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Entertainmentskanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Entertainmentskanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Entertainmentskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Entertainmentskanal hängt mehr fest. | — | — |
+| Anomalie | Ende: Alle Entertainmentskanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Entertainmentskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Entertainmentskanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Alle Sicherheitstechnikkanäle melden wieder. | — | — |
+| Anomalie | Kritisch: Ein Sicherheitstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Sicherheitstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Sicherheitstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Sicherheitstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Sicherheitstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Kein Sicherheitstechnikkanal hängt mehr fest. | — | — |
+| Anomalie | Warnung: Ein Sicherheitstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Versorgungstechnikkanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Versorgungstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Versorgungstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Versorgungstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Versorgungstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Versorgungstechnikkanal hängt mehr fest. | — | — |
+| Anomalie | Info: Ein Versorgungstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Warnung: Ein Versorgungstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Informationstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Informationstechnikkanal hängt mehr fest. | — | — |
+| Anomalie | Kritisch: Ein Informationstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Alle Informationstechnikkanäle melden wieder. | — | — |
+| Anomalie | Info: Ein Informationstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Informationstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Informationstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Informationstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Haushaltstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Haushaltstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Kritisch: Ein Haushaltstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Haushaltstechnikkanal hängt mehr fest. | — | — |
+| Anomalie | Ende: Alle Haushaltstechnikkanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Haushaltstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Haushaltstechnikkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Haushaltstechnikkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Personenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Info: Ein Personenkanal meldet nicht mehr. | — | — |
+| Anomalie | Warnung: Ein Personenkanal meldet nicht mehr. | — | — |
+| Anomalie | Ende: Alle Personenkanäle melden wieder. | — | — |
+| Anomalie | Warnung: Ein Personenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Kritisch: Ein Personenkanal meldet nicht mehr. | — | — |
+| Anomalie | Info: Ein Personenkanal hängt auf einem Wert fest. | — | — |
+| Anomalie | Ende: Kein Personenkanal hängt mehr fest. | — | — |
 | Anomalie Temperatur | Kritisch: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
 | Anomalie Temperatur | Warnung: Heizung Vorlauf Ist-Temperatur auffällig. | — | — |
 | Anomalie Temperatur | Warnung: Heizung Rücklauf Ist-Temperatur auffällig. | — | — |
@@ -165,6 +305,23 @@ One row per notification — a block often carries several, one per room or devi
 | An/Abwesend - Home Szenen | 5 | linkinput×2, not×1, or×1, scenes×1 |
 | An/Abwesend - Meldung | 17 | compare×2, debouncer×2, gate×1, linkinput×2, memory×1, not×1, notification×2, or×1 |
 | An/Abwesend - Zustand | 8 | debouncer×2, init×1, knxbool×2, linkoutput×2, memory×1 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 21 | changedetector×3, knxnumber×3, lookuptable×3, notification×12 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
+| Anomalie | 14 | changedetector×2, knxnumber×2, lookuptable×2, notification×8 |
 | Anomalie Temperatur | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
 | Anomalie Therme | 6 | changedetector×1, knxnumber×1, lookuptable×1, notification×3 |
 | Anomalie Warmwasser | 12 | changedetector×2, knxnumber×2, lookuptable×2, notification×6 |
