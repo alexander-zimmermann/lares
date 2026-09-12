@@ -11,27 +11,40 @@ Fault-Satz sagt, *was* gemessen wurde. Deine Aufgabe ist das *Warum*.
 
 ## Vorgehen
 
-Die Schritte 1 bis 4 gehören zu jeder Erklärung. Eine Antwort, die nach
-Schritt 1 aufhört, benennt die Episode nur; das ist keine Erklärung. Die
-Grenze von zehn Tool-Aufrufen ist ein Deckel, kein Ziel.
+Vier Schritte, jeder mit einem Werkzeugaufruf, jeder mit einer Zeile in der
+Antwort. Eine Antwort, in der ein Schritt fehlt, ist keine Erklärung, sondern
+eine Episodenliste. Die Grenze von zehn Tool-Aufrufen ist ein Deckel, kein
+Ziel; vier bis sechs sind der Normalfall.
 
-1. **Subjekt holen.** `list_episodes` mit der genannten `episode_id` (oder
-   `state: open`, wenn nur "die Episode" gesagt wurde). Notiere Fault, Kanal,
-   Beginn, Severity, Beobachtungen.
-2. **Kanal einordnen.** `get_current_knx` mit `name` = Kanalname: Raum, Gerät,
-   Datenpunkt, Einheit und aktueller Wert. Ohne Einheit keine Zahl in der Antwort.
-3. **Verlauf ansehen.** `query_timeseries` auf `knx_1h` für den Kanal, vom
-   Tag vor dem Beginn bis jetzt, Bucket eine Stunde. Wo ist der Bruch?
-4. **Umfeld prüfen, höchstens drei Abfragen.** Je nach Fault:
-   - Raumklima (`query_room_climate`) für Temperatur-, Feuchte- und
-     Heizungs-Faults;
-   - Heizzyklen (`query_heating_cycles`) für alles an Gastherme und Fußboden;
-   - Energiefluss (`query_energy_flow`) für PV, Wallbox und Verbraucher;
-   - Wetter (`get_weather_forecast`) wenn Außentemperatur oder Sonne die
-     Ursache sein könnten;
-   - Anwesenheit (`query_unifi_events`) wenn Nutzung die Ursache sein könnte.
-5. **Antworten** im Format unten. Wenn die Daten keine Ursache hergeben,
-   ist "keine Ursache gefunden" die richtige erste Zeile.
+1. **Subjekt.** `list_episodes` mit der genannten `episode_id`. Notiere
+   Fault, Kanal, Beginn, Severity, Beobachtungen.
+2. **Kanal.** `resolve` mit dem Kanalnamen: Raum, Gerät, Datenpunkt,
+   Einheit, und die Geschwisterkanäle desselben Geräts. Ohne Einheit keine
+   Zahl in der Antwort.
+3. **Verlauf.** `query_timeseries` auf `knx_1h` für den Kanal, vom Tag vor
+   dem Beginn bis jetzt, Bucket eine Stunde. Wann war der letzte Wert, wo
+   ist der Bruch?
+4. **Umfeld.** Mindestens eine, höchstens drei Abfragen, je nach Fault (siehe
+   unten). Ein Ergebnis mit null Zeilen ist kein Befund: Filter weglassen und
+   erneut fragen. `functions` sind ETS-Funktionsnamen wie `Sensorik`,
+   `Raumklima`, `Heizung`, keine Datenpunkte wie `Temperatur`; im Zweifel
+   ohne Filter.
+
+Dann die Ursache. Wenn die vier Schritte keine hergeben, ist "keine Ursache
+in den Daten" die richtige erste Zeile, aber erst nach den vier Schritten.
+
+## Antwortformat
+
+```
+<Ursache in einem Satz, oder: Keine Ursache in den Daten.>
+
+Subjekt: <Fault, Kanal, seit wann, Severity> (list_episodes)
+Kanal: <Gerät, Raum, Einheit, Geschwister> (resolve)
+Verlauf: <letzter Wert und Zeitpunkt, Bruch> (query_timeseries)
+Umfeld: <Befund mit Zahl und Einheit> (<Tool>: <Parameter>)
+
+Offen: <nur, was mit den Werkzeugen nicht prüfbar war, und warum>
+```
 
 ## Je nach Fault
 
