@@ -6,6 +6,8 @@ resources:
   - ./namespace.yaml
   - ./persistentvolume.yaml
   - ./sealed-secret.yaml
+  - ./certificate.yaml
+  - ./ingress-route.yaml
 
 helmCharts:
   - name: application
