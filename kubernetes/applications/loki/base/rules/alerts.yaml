@@ -1,5 +1,7 @@
 # Alerts on what only exists in the line text; each rule names its pattern.
-# Pod logs only (container set): events and syslog carry no such lines.
+# Pod logs only (container set): events and syslog carry no such lines. The
+# loki container is out: it logs every query it evaluates, pattern included,
+# and its own crashes are metric-visible (restarts, LokiRulerNoRulesLoaded).
 groups:
   - name: log-content-alerts
     rules:
@@ -8,7 +10,7 @@ groups:
         # anchors; net/http logs a recovered handler panic with a timestamp.
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+"}
+            count_over_time({namespace=~".+", container=~".+", container!="loki"}
               |~ `^panic: |^thread '[^']*' panicked at |http: panic serving ` [10m])
           ) > 0
         labels:
@@ -22,7 +24,7 @@ groups:
         # (logfmt and JSON); Python's CRITICAL is the same tier.
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+"}
+            count_over_time({namespace=~".+", container=~".+", container!="loki"}
               |~ `^fatal error: |level=fatal|"level":"(fatal|FATAL|CRITICAL)"` [10m])
           ) > 0
         labels:
@@ -36,7 +38,7 @@ groups:
         # logs about ten in the first quarter hour of an outage
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+"}
+            count_over_time({namespace=~".+", container=~".+", container!="loki"}
               |= "Traceback (most recent call last):" [15m])
           ) > 20
         for: 5m
@@ -52,7 +54,7 @@ groups:
         # Prometheus rule on its request counters.
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+", container!="traefik"}
+            count_over_time({namespace=~".+", container=~".+", container!~"loki|traefik"}
               |~ `" 5[0-9]{2} |status=5[0-9]{2}\b|"status":\s?5[0-9]{2}\b` [5m])
           ) > 10
         for: 5m
