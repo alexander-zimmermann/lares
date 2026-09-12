@@ -47,7 +47,7 @@ deployment:
       value: /etc/iot-mcp-bridge/auth-clients.json
     # What each machine client may see and call; the verdict, cache and NATS-subscribe tools stay out
     MCP_AUTH_CLIENT_TOOLS:
-      value: '{"lares-agent": ["list_*", "get_*", "query_*", "correlate_events", "resolve", "search_wiki"]}'
+      value: '{"lares-agent": ["list_*", "get_*", "query_*", "correlate_events", "search_wiki"]}'
     MCP_NATS_SERVERS:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)

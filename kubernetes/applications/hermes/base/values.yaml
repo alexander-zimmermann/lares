@@ -72,6 +72,12 @@ deployment:
         items:
           - key: SOUL.md
             path: SOUL.md
+    hermes-no-bundled-skills:
+      configMap:
+        name: hermes-config
+        items:
+          - key: .no-bundled-skills
+            path: .no-bundled-skills
     hermes-skills:
       configMap:
         name: hermes-skills
@@ -88,6 +94,11 @@ deployment:
     hermes-soul:
       mountPath: /opt/data/SOUL.md
       subPath: SOUL.md
+      readOnly: true
+    # Marker only; the skill index then holds lares-explain and Hermes' own essential skill
+    hermes-no-bundled-skills:
+      mountPath: /opt/data/.no-bundled-skills
+      subPath: .no-bundled-skills
       readOnly: true
     hermes-skills:
       mountPath: /opt/data/skills/lares-explain/SKILL.md
