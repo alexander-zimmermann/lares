@@ -89,6 +89,8 @@ global:
       value: https://PLACEHOLDER_RUSTFS_HOST/rustfs/admin/v3/oidc/callback/default
     - name: ANTHROPIC_OAUTH_REDIRECT_URI
       value: https://claude.ai/api/mcp/auth_callback
+    - name: AUTHENTIK_HERMES_REDIRECT_URI
+      value: https://PLACEHOLDER_HERMES_HOST/auth/callback
 
     # Optimization: Fewer workers and no preloading saves RAM in small setups
     - name: AUTHENTIK_WEB__WORKERS
@@ -128,6 +130,7 @@ blueprints:
     - authentik-blueprint-wikijs
     - authentik-blueprint-iot-mcp-bridge
     - authentik-blueprint-rustfs
+    - authentik-blueprint-hermes
 
 server:
   # Expose Authentik service via Cilium/BGP-announced LoadBalancer
