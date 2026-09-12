@@ -50,6 +50,9 @@ configMapGenerator:
   - name: authentik-blueprint-rustfs
     files:
       - blueprints/rustfs.yaml
+  - name: authentik-blueprint-hermes
+    files:
+      - blueprints/hermes.yaml
 
 labels:
   - includeSelectors: false
