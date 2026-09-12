@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agents
+resources:
+  - ./namespace.yaml
+  - ./persistentvolume.yaml
+  - ./sealed-secret.yaml
+
+helmCharts:
+  - name: application
+    repo: https://stakater.github.io/stakater-charts
+    releaseName: hermes
+    version: 9.3.1
+    valuesFile: values.yaml
+    namespace: agents
+
+# Hash on: the Deployment mounts these, so the pod rolls when config or a skill changes.
+configMapGenerator:
+  - name: hermes-config
+    files:
+      - config/config.yaml
+      - config/SOUL.md
+  - name: hermes-skills
+    files:
+      - skills/lares-explain/SKILL.md
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: hermes
+
+# Wave 12 = after iot-mcp-bridge (11), the only in-cluster dependency.
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "12"

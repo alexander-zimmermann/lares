@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+
+metadata:
+  name: agents
+  labels:
+    # The Hermes image starts as root to own its data volume and supervise
+    # its gateway, then drops every process to UID 10000 itself.
+    pod-security.kubernetes.io/enforce: baseline
