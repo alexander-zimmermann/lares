@@ -69,10 +69,12 @@ tls:
 
 # Hubble network observability
 hubble:
-  # Let an in-cluster job issue the mTLS certificates, so the rendered manifests carry no key material
+  # cert-manager issues the mTLS certificates (see components/cilium), so the render carries no key material
   tls:
     auto:
-      method: cronJob
+      enabled: false
+    server:
+      existingSecret: hubble-server-certs
 
   # Enable flow metrics for advanced observability (drops, dns, tcp, etc.)
   metrics:
@@ -89,6 +91,9 @@ hubble:
   # Enable Hubble Relay to aggregate data from all nodes
   relay:
     enabled: true
+    tls:
+      client:
+        existingSecret: hubble-relay-client-certs
     networkPolicy:
       enabled: true
       ingress:
