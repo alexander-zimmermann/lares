@@ -3,3 +3,21 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: pbs-exporter
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: pbs-exporter
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi

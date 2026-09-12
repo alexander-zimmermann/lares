@@ -16,3 +16,21 @@ patches:
       - op: add
         path: /metadata/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.25"
+
+  - target:
+      kind: Deployment
+      name: smtprelay
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: smtprelay
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi

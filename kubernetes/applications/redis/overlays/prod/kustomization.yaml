@@ -3,3 +3,22 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # Sized from observed usage (~10Mi, bursty CPU); the nano preset over-reserved and throttled it
+  - target:
+      kind: StatefulSet
+      name: redis-master
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: redis
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 32Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi

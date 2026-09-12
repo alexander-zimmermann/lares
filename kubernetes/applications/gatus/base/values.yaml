@@ -111,14 +111,6 @@ deployment:
       path: /health
       port: http
 
-  resources:
-    requests:
-      cpu: 25m
-      memory: 64Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
-
   # Gatus image ships without a non-root USER — pin UID/GID explicitly so runAsNonRoot is satisfied
   containerSecurityContext:
     runAsUser: 65534

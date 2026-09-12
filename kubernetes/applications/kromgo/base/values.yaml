@@ -56,15 +56,6 @@ deployment:
       path: /-/ready
       port: health
 
-  resources:
-    # Ensure Burstable QoS (no BestEffort) and prevent runaway usage
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 64Mi
-
   # Upstream image ships without a non-root USER — pin UID/GID explicitly so runAsNonRoot is satisfied
   containerSecurityContext:
     runAsUser: 1000

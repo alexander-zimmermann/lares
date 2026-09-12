@@ -15,14 +15,6 @@ auth:
   existingSecretPasswordKey: "redis-password"
 
 master:
-  # Sized from observed usage (~10Mi, bursty CPU); the nano preset over-reserved and throttled it
-  resources:
-    requests:
-      cpu: 25m
-      memory: 32Mi
-    limits:
-      cpu: 500m
-      memory: 128Mi
   # Persistence is disabled as Redis is used only as a volatile cache
   persistence:
     enabled: false

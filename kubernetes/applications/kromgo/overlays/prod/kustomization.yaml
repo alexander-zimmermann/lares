@@ -42,3 +42,21 @@ patches:
       - op: add
         path: /metadata/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.36"
+
+  - target:
+      kind: Deployment
+      name: kromgo
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: kromgo
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          # Ensure Burstable QoS (no BestEffort) and prevent runaway usage
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi

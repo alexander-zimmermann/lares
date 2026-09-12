@@ -46,3 +46,22 @@ replacements:
           kind: IngressRoute
         fieldPaths:
           - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
+patches:
+  # Working set climbs ~15 MiB/day until the limit restarts the pod; request covers the average.
+  - target:
+      kind: Deployment
+      name: devolutions-gateway
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: devolutions-gateway
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi

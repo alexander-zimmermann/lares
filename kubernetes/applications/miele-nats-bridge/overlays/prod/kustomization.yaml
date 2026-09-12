@@ -13,3 +13,21 @@ replacements:
           name: miele-nats-bridge-token-state
         fieldPaths:
           - spec.resources.requests.storage
+
+patches:
+  - target:
+      kind: Deployment
+      name: miele-nats-bridge
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: miele-nats-bridge
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi

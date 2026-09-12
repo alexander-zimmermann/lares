@@ -117,14 +117,6 @@ deployment:
     initialDelaySeconds: 5
     periodSeconds: 15
 
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 512Mi
-
   containerSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

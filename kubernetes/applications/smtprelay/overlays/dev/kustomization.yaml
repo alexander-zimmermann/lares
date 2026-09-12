@@ -3,3 +3,22 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  - target:
+      kind: Deployment
+      name: smtprelay
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: smtprelay
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          # Ensure Burstable QoS (no BestEffort) and prevent runaway usage.
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
