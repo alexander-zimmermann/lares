@@ -18,9 +18,14 @@ input:
     deliver: all
     ack_wait: 20m
     max_ack_pending: 5000
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
 
 pipeline:
   processors:
+    # Pass-through; tags the trace with span.group for TraceQL
+    - group_by_value:
+        value: midea_state
     - mapping: |
         root = {
           "time":             (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
