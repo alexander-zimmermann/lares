@@ -1,10 +1,14 @@
 # Hermes settings for the lares agent platform. Mounted read-only from the
 # repo: what runs is what is reviewed here, never a runtime edit.
 
-# Grok 4.3 via the xAI Responses API; the prepaid balance is the spend cap.
+# Codex via the ChatGPT login (flat, token on the data volume); Grok on prepaid
+# credits takes over when Codex fails: auth, rate window, outage.
 model:
-  provider: xai
-  default: grok-4.3
+  provider: openai-codex
+  default: gpt-5.5
+fallback_providers:
+  - provider: xai
+    model: grok-4.3
 
 agent:
   # Unattended and read-only: everything the agent may read comes through the
