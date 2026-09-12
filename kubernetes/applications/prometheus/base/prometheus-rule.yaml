@@ -260,6 +260,45 @@ spec:
             summary: "Container {{ $labels.namespace }}/{{ $labels.pod }} OOMKilled"
             description: "Container {{ $labels.container }} was OOMKilled and restarted in the last 10m."
 
+    # What a misconfiguration leaves behind, as level-triggered rules on
+    # kube-state-metrics and cert-manager state. A CR selector matching
+    # nothing is not one: every dashboard selects the same fixed label,
+    # a typo in a copy is gated by review.
+    - name: config-coherence-alerts
+      rules:
+        - alert: PersistentVolumeClaimPending
+          expr: kube_persistentvolumeclaim_status_phase{phase=~"Pending|Lost"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} {{ $labels.phase }}"
+            description: "The claim has been {{ $labels.phase }} for 15m — nothing provisioned or bound a volume. Check the StorageClass, the events on the claim and Longhorn or the NFS export behind it."
+
+        - alert: CertificateNotReady
+          # Issuance takes minutes, renewal starts 30 days early
+          expr: certmanager_certificate_ready_status{condition="False"} == 1
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} not ready"
+            description: "cert-manager has reported Ready=False for 1h — issuance or renewal failed. Check the CertificateRequest and Order behind it; a renewal has weeks of buffer, a new certificate has none."
+
+        - alert: ServiceWithoutReadyEndpoints
+          # Every Service with a selector owns a slice, no slice here is
+          # hand-written; an unset ready condition counts as ready (API)
+          expr: |
+            kube_endpointslice_info
+            unless on (namespace, endpointslice)
+            kube_endpointslice_endpoints{ready!="false"}
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Service behind {{ $labels.namespace }}/{{ $labels.endpointslice }} has no ready endpoint"
+            description: "EndpointSlice {{ $labels.namespace }}/{{ $labels.endpointslice }} (prefixed with its Service name) has had no ready endpoint for 15m — the selector matches no running, ready pod. A typo in the selector or a workload that never came up."
+
     - name: dyson-alerts
       rules:
         # Slow-moving: a filter loses a few percent a month, so a long `for`

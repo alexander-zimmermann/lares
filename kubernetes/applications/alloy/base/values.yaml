@@ -32,6 +32,12 @@ clusterMetrics:
   destinations:
     - prometheus
   collector: alloy-metrics
+  # EndpointSlice state for ServiceWithoutReadyEndpoints; the default allow list drops it
+  kube-state-metrics:
+    metricsTuning:
+      includeMetrics:
+        - kube_endpointslice_info
+        - kube_endpointslice_endpoints
 
 clusterEvents:
   enabled: true
