@@ -17,7 +17,7 @@ tasks:
       the description it pre-fills from space plus function — so there is
       nothing left to post-process here.
       Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
-      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
       KNXPROJ: '{{.CLI_ARGS | default .KNX_PROJECT_PATH}}'
     env:
@@ -41,7 +41,6 @@ tasks:
         --ignore-write-from Dummy
         --ignore-write-from "Basalte Core S4"
         --ignore-write-from "Node-Red"
-        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
       # The extractor strips ETS' Building numbering; nothing here does it
       # any more. An extractor from before that fails silently, and the
       # numbering reaches ga_catalog.room, which iot-mcp-bridge lists rooms
@@ -71,12 +70,19 @@ tasks:
       touches. All inputs from foreign systems live in exports/.
       Filter-table coverage is not modelled here at all — the couplers
       are set to forward group telegrams towards the bridge's line.
+      Object numbers come from scripts/kaenx/objects.yaml, which this
+      task maintains (commit it after every run): an object keeps its
+      number forever, so an application update in ETS keeps the group
+      links. The run says per device whether anything changed — "no
+      publish needed, only links" or "N new objects: publish and update"
+      — and refuses to write when an installed object with links would
+      be dropped or renumbered.
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
-      .knxprod, import it into ETS, link the addresses per worksheet;
-      the placeholders stay until knx:catalog and check-wiring are
-      green, then they go.
+      .knxprod, import it into ETS, update the device, link the new
+      addresses per worksheet; the placeholders stay until knx:catalog
+      and check-wiring are green, then they go.
       Arguments: [output-dir, default ~/Downloads]
-      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
       BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
@@ -114,8 +120,8 @@ tasks:
         --device "@$basalte=Basalte Core S4:both"
         --device "@$nodered=Node-Red:both"
         --catalog-section "Lares"
+        --registry "{{.SCRIPTS_DIR}}/kaenx/objects.yaml"
         --output-dir "{{.OUTDIR}}"
-        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
   check-wiring:
     desc: "hold the ETS export against the software-device footprints"
@@ -132,7 +138,7 @@ tasks:
       to make, grouped under the generated object numbers. Runs
       automatically after knx:catalog — during the migration that makes
       it the progress tracker.
-      Pass KNXPROJ_PASSWORD=… for encrypted projects.
+      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
       BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
       FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
@@ -168,8 +174,8 @@ tasks:
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"
         --device "@$nodered=Node-Red:both"
+        --registry "{{.SCRIPTS_DIR}}/kaenx/objects.yaml"
         --todo-dir "{{.TODO_DIR}}"
-        {{if .KNXPROJ_PASSWORD}}--password "$KNXPROJ_PASSWORD"{{end}}
 
   fault-writer-rules:
     desc: "regenerate the fault writer rules from faults.yaml and the GA catalog"
