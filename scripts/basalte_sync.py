@@ -25,8 +25,11 @@ Three findings, by how much they cost:
   value that measures something else. This is the class that matters.
 * **stale label** — the address is right, the name beside it is what ETS
   called it once. Cosmetic; a re-assignment in Studio refreshes it.
-* **unknown** — neither the address nor the name is in ETS. Datapoints
-  Basalte uses that were never created live here, so this needs deciding
+* **not in the catalog** — neither the address nor the name is in the
+  catalog. Two causes, which the catalog cannot tell apart: the address
+  was created in ETS without a datapoint type (the catalog only lists
+  typed addresses — set the DPT and it appears), or it was never created
+  in ETS at all. Datapoints Basalte uses that fall in here need deciding
   once rather than reading every run.
 
 Only a stale binding fails the run.
@@ -150,7 +153,9 @@ def main() -> int:
             print(f"  {ga:9s} ETS      {ets}")
             print(f"  {'':9s} Basalte  {basalte}")
 
-    print(f"\n=== {len(unknown)} unknown to ETS")
+    print(
+        f"\n=== {len(unknown)} not in the catalog — in ETS without a DPT, or not in ETS at all"
+    )
     for prefix, count in Counter(name.split(".")[0] for _ga, name in unknown).most_common():
         print(f"  {prefix:22s} {count}")
     for ga, name in unknown:
