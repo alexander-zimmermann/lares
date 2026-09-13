@@ -13,11 +13,11 @@ nothing lives twice.
 The whole directory is git-ignored: the files are large binaries or
 carry token-like values and server details.
 
-| File | Produced by |
-| --- | --- |
-| `ets/Steinroth.knxproj` | ETS: project export (password-protected), 12 MB |
-| `basalte/Steinroth.bcfg` | Basalte Studio: project export, 14 MB |
-| `node-red/flows.json` | Node-Red: menu → Export → all flows |
+| File                     | Produced by                                     |
+| ------------------------ | ----------------------------------------------- |
+| `ets/Steinroth.knxproj`  | ETS: project export (password-protected), 12 MB |
+| `basalte/Steinroth.bcfg` | Basalte Studio: project export, 14 MB           |
+| `node-red/flows.json`    | Node-Red: menu → Export → all flows             |
 
 Re-export and overwrite in place whenever the system's configuration
 changed; the tasks' preconditions fail with the expected path when a
