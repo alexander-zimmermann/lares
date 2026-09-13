@@ -2,12 +2,13 @@
 # last handed to Kaenx-Creator, and every object's number. knxproj-to-kaenx
 # maintains this file — it seeds a section from the device in the ETS export,
 # appends every new collector with the next free number and never renumbers.
-# Keep it committed: the numbers are what lets an application update in ETS
-# keep the group links, the version keeps every publish above the last one.
-# A key the configuration no longer produces stays here and is still emitted,
-# so links on it survive; delete it only when its links are gone.
+# Keep it committed: stable numbers make moving the links onto a new device
+# version a 1:1 job (object 1 to 1, 2 to 2, ...), and the version keeps every
+# publish above the last one. A key the configuration no longer produces stays
+# here and is still emitted, so its object keeps existing; delete it only when
+# its links are gone.
 Basalte Core S4:
-  version: 17
+  version: 18
   objects:
     hg2-dpt1.001-both: 1
     hg2-dpt1.011-both: 2
@@ -103,8 +104,9 @@ Basalte Core S4:
     hg18-dpt5.001-both: 92
     hg18-dpt5.010-both: 93
     hg18-dpt16.001-both: 94
+    hg15-dpt1.017-both: 95
 KNX-NATS-Bridge:
-  version: 17
+  version: 18
   objects:
     hg0-dpt5.010-transmit: 1
     hg2-dpt5.010-transmit: 2
@@ -159,8 +161,9 @@ KNX-NATS-Bridge:
     hg17-dpt9.001-transmit: 51
     hg17-dpt16.001-transmit: 52
     hg18-dpt5.010-transmit: 53
+    hg15-dpt1.017-write: 54
 Node-Red:
-  version: 18
+  version: 20
   objects:
     hg5-dpt1.003-both: 1
     hg18-dpt1.011-both: 2
