@@ -201,14 +201,8 @@ Order matters: generate → publish → import → wire per worksheet → set th
 coupler forwarding → fresh ETS export into the repo → `task knx:catalog`
 green → `task knx:check-wiring` green → **only then** delete the
 placeholders. Until then the placeholders stay as the safety net that
-keeps every address crossing the couplers. Bridge and Node-Red are done.
-
-Basalte lost its 973 hand-made links on 2026-09-12 to an update that
-renumbered objects. The way back, with the registry in place: import
-`exports/ets/backups/Steinroth-2026-09-12-2058-basalte-v1.0-973-links.knxproj`
-into ETS as the working project (Basalte at V 1.0, 973 links) → export
-it into `exports/ets/` → `task knx:ets-devices` (the registry keeps the
-83 installed objects on their numbers and appends the 11 new ones as
-84–94; the run says "11 new objects") → publish V 1.2 → import → device
-→ Aktualisieren → the 973 links stay → link the remaining addresses per
-worksheet → export → `task knx:catalog`. Status lives in issue #1557.
+keeps every address crossing the couplers. Bridge and Node-Red are done;
+Basalte is installed at V 1.1 with its 94 objects and is being linked
+per worksheet — `task knx:catalog` leaves the rest list in
+`~/Downloads/basalte-core-s4-wiring-todo.md` after every export.
+Status lives in issue #1557.
