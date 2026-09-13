@@ -21,9 +21,9 @@ flowchart TD
     C["Something changed in ETS<br/>(addresses, links, devices)"] --> X
     G["<b>task knx:ets-devices</b>"] --> D{"What does it say<br/>per device?"}
     D -- "same objects —<br/>no publish needed" --> L["ETS: link the new addresses<br/>per <i>device</i>-wiring.md"]
-    D -- "N new objects —<br/>publish and update" --> K["Kaenx-Creator: open .ae-manu<br/>→ Veröffentlichen"]
-    D -- "would lose links —<br/>nothing written" --> S["STOP. Read the message.<br/>Do not update the device."]
-    K --> I["ETS: import .knxprod<br/>→ device → Aktualisieren"] --> L
+    D -- "N new objects —<br/>publish" --> K["Kaenx-Creator: open .ae-manu<br/>→ Veröffentlichen"]
+    D -- "links need a new home —<br/>nothing written" --> S["STOP. Read the message.<br/>Fix the registry first."]
+    K --> I["ETS: import .knxprod → add the new version<br/>as a 2nd device → drag the links over,<br/>object by object → delete the old device"] --> L
     L --> X["ETS: export → exports/ets/"]
     X --> V["<b>task knx:catalog</b><br/>(runs check-wiring)"]
     V --> R{"all devices OK?"}
@@ -58,9 +58,11 @@ stop with one sentence saying so.
        <device>-wiring.md     checklist: which addresses on which object
      and tells you per device: "only links" or "publish and update"
 
-3  ON THE ETS VM (only when step 2 said "publish and update")
+3  ON THE ETS VM (only when step 2 said "publish")
      Kaenx-Creator: open the .ae-manu → publish → .knxprod
-     ETS: import the product → device → Aktualisieren (links stay)
+     ETS: import the product → add the new version as a second device
+          → drag the links over, object by object (same numbers)
+          → delete the old device, give the new one its address
      then, always: link the new addresses per worksheet
 
 4  BACK (verification)
@@ -69,13 +71,19 @@ stop with one sentence saying so.
      all green ⇒ commit ga-catalog.yaml and objects.yaml
 ```
 
-## Why links survive an update — the object registry
+## Why object numbers never move — the object registry
 
-ETS keeps a group link on an object *number*. An application update
-keeps the links of every object whose number and identity are unchanged
-and drops the rest — silently. So the object numbers must never move.
+ETS's own "Aktualisieren" keeps a device's parameters but **not its
+group links** — tested twice on these products on 2026-09-13, with
+unchanged numbers as much as with shifted ones. A new application
+version therefore goes in as a **second device** next to the installed
+one, and the links are dragged over object by object; then the old
+device is deleted and the new one takes its address. Under five minutes
+for a hundred objects — *if* the objects line up 1:1, object 1 to 1,
+2 to 2, new ones empty at the end. That is what the registry guarantees:
+a number, once given, never moves.
 
-`scripts/kaenx/objects.yaml` is where they live. The generator
+`scripts/kaenx/objects.yaml` is where the numbers live. The generator
 maintains it and you commit it:
 
 - an object keeps its number forever; a new collector takes the next
@@ -90,9 +98,9 @@ maintains it and you commit it:
   a re-import of a version it already knows).
 
 On top of that the generator refuses to write when an installed object
-that carries links would be dropped or renumbered — the situation that
-lost 973 links on 2026-09-12. That message means: stop, look at the
-registry, and only pass `--accept-loss` if the loss is intended.
+that carries links has no same-numbered object in the new version — its
+links would need a new home by hand. That message means: stop, look at
+the registry, and only pass `--accept-loss` if that is intended.
 
 ## Target picture
 
@@ -147,13 +155,15 @@ with a DPT unknown to Kaenx-Creator, or listed in a footprint but absent
 from ETS are reported; the last case fails the run — configuration
 pointing at nothing is the wiring error this model exists to expose.
 
-On the ETS VM, when the run said "publish and update": open the
-`.ae-manu` in Kaenx-Creator → Veröffentlichen → import the `.knxprod`
-into ETS → select the device → Eigenschaften → Information →
-Applikationsprogramm → **Aktualisieren**. Never delete and re-add the
-device; that is what loses the links. Then link the new addresses per
-worksheet (sort the GA list, multi-select a block, drag onto the
-collector).
+On the ETS VM, when the run said "publish": open the `.ae-manu` in
+Kaenx-Creator → Veröffentlichen → import the `.knxprod` into ETS → add
+the new version as a **second device** next to the installed one → in
+the old device's object list, drag each object's links onto the
+same-numbered object of the new device → delete the old device → give
+the new one the old individual address. Do **not** use "Aktualisieren"
+on the existing device: it keeps parameters and drops every link. Then
+link the new addresses per worksheet (sort the GA list, multi-select a
+block, drag onto the collector).
 
 ## Growth and maintenance
 
@@ -164,9 +174,9 @@ collector).
 - **New kind, or a footprint change** (first address of a subtype in a
   main group, new consumer, new Basalte datapoint or flow kind):
   re-export the changed system into `exports/` first, then regenerate;
-  the generator says "N new objects — publish and update". The new
-  objects are appended, every existing one keeps its number, the update
-  keeps the links.
+  the generator says "N new objects — publish". The new objects are
+  appended, every existing one keeps its number, so moving the links to
+  the new device instance is 1:1.
 - **Identity, do not touch**: per-device GUID (deterministic), serial and
   order number (name slug), application number (100/101/102 by task
   order), and the object numbers in `objects.yaml`.
