@@ -1,0 +1,8 @@
+# The application version (byte: 0x11 = 17 = V 1.1) last handed to Kaenx-Creator
+# per generated ETS device. knxproj-to-kaenx maintains this file. Keep it
+# committed: ETS remembers every version it ever imported, also ones deleted
+# from the catalog, so the next publish must go above the last one handed
+# out — the ETS export only knows which version is installed.
+Basalte Core S4: 19
+KNX-NATS-Bridge: 19
+Node-Red: 20

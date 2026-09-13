@@ -21,21 +21,21 @@ flowchart TD
     C["Something changed in ETS<br/>(addresses, links, devices)"] --> X
     G["<b>task knx:ets-devices</b>"] --> D{"What does it say<br/>per device?"}
     D -- "same objects —<br/>no publish needed" --> L["ETS: link the new addresses<br/>per <i>device</i>-wiring.md"]
-    D -- "N new objects —<br/>publish" --> K["Kaenx-Creator: open .ae-manu<br/>→ Veröffentlichen"]
-    D -- "links need a new home —<br/>nothing written" --> S["STOP. Read the message.<br/>Fix the registry first."]
-    K --> I["ETS: import .knxprod → add the new version<br/>as a 2nd device → drag the links over,<br/>object by object → delete the old device"] --> L
+    D -- "N new, M renumbered —<br/>publish" --> K["Kaenx-Creator: open .ae-manu<br/>→ Veröffentlichen"]
+    D -- "links on dropped objects —<br/>nothing written" --> S["STOP. Unlink them in ETS<br/>(check-wiring: 'unclaimed')."]
+    K --> I["ETS: import .knxprod → add the new version<br/>as a 2nd device → drag the links over<br/>per worksheet ('war N') → delete the old device"] --> L
     L --> X["ETS: export → exports/ets/"]
     X --> V["<b>task knx:catalog</b><br/>(runs check-wiring)"]
     V --> R{"all devices OK?"}
     R -- no --> T["work through<br/><i>device</i>-wiring-todo.md"] --> X
-    R -- yes --> Z["commit catalog + objects.yaml"]
+    R -- yes --> Z["commit catalog + versions.yaml"]
 ```
 
 | Task | Run it when | Reads | Writes |
 | --- | --- | --- | --- |
-| `task knx:ets-devices` | a footprint changed (lares config, Studio export, flows) — or you are unsure whether it did | the three footprints, the ETS export, the template, `scripts/kaenx/objects.yaml` | `~/Downloads/<device>.ae-manu` + `-wiring.md`; updates `objects.yaml` |
+| `task knx:ets-devices` | a footprint changed (lares config, Studio export, flows) — or you are unsure whether it did | the three footprints, the ETS export, the template, `scripts/kaenx/versions.yaml` | `~/Downloads/<device>.ae-manu` + `-wiring.md`; updates `versions.yaml` |
 | `task knx:catalog` | after **every** ETS export | the ETS export | `ga-catalog.yaml`, then runs `check-wiring` |
-| `task knx:check-wiring` | on demand, to see what is still open | the ETS export, the three footprints, `objects.yaml` | `~/Downloads/<device>-wiring-todo.md` per device with findings |
+| `task knx:check-wiring` | on demand, to see what is still open | the ETS export, the three footprints | `~/Downloads/<device>-wiring-todo.md` per device with findings |
 
 All three need `KNXPROJ_PASSWORD=…` in the environment; without it they
 stop with one sentence saying so.
@@ -52,26 +52,28 @@ stop with one sentence saying so.
      reads the three sources
      + exports/ets/Steinroth.knxproj    (names, DPTs, and what is installed)
      + scripts/kaenx/template.ae-manu   (Kaenx version specifics)
-     + scripts/kaenx/objects.yaml       (object numbers — see below)
+     + scripts/kaenx/versions.yaml      (version last handed out — see below)
      writes per device to ~/Downloads:
        <device>.ae-manu       Kaenx-Creator project, collector objects
-       <device>-wiring.md     checklist: which addresses on which object
-     and tells you per device: "only links" or "publish and update"
+       <device>-wiring.md     checklist: which addresses on which object,
+                              per object "NEU" or "war N" (old number)
+     and tells you per device: "only links" or "publish"
 
 3  ON THE ETS VM (only when step 2 said "publish")
      Kaenx-Creator: open the .ae-manu → publish → .knxprod
      ETS: import the product → add the new version as a second device
-          → drag the links over, object by object (same numbers)
+          → drag the links over per worksheet: object "war N" gets
+            the links of the old device's object N
           → delete the old device, give the new one its address
      then, always: link the new addresses per worksheet
 
 4  BACK (verification)
      fresh ETS export into exports/ets/ → task knx:catalog
      check-wiring runs with it and leaves a todo worksheet per open device
-     all green ⇒ commit ga-catalog.yaml and objects.yaml
+     all green ⇒ commit ga-catalog.yaml and versions.yaml
 ```
 
-## Why object numbers never move — the object registry
+## Why every change is a new device — and numbers are positional
 
 ETS's own "Aktualisieren" keeps a device's parameters but **not its
 group links** — tested twice on these products on 2026-09-13, with
@@ -79,28 +81,28 @@ unchanged numbers as much as with shifted ones. A new application
 version therefore goes in as a **second device** next to the installed
 one, and the links are dragged over object by object; then the old
 device is deleted and the new one takes its address. Under five minutes
-for a hundred objects — *if* the objects line up 1:1, object 1 to 1,
-2 to 2, new ones empty at the end. That is what the registry guarantees:
-a number, once given, never moves.
+for a hundred objects.
 
-`scripts/kaenx/objects.yaml` is where the numbers live. The generator
-maintains it and you commit it:
+Since the links move by hand anyway, stable numbers buy nothing. The
+object numbers are **positional** — main group, datapoint type, sending
+before receiving — so every object sits where it belongs and the
+object list reads like the group-address tree. When the object set
+changes, numbers shift; the worksheet says per object `NEU` or `war N`
+(its number on the old device), which is all the drag-over needs.
 
-- an object keeps its number forever; a new collector takes the next
-  free number, appended, never inserted;
-- a device's section is seeded from the device in the ETS export, so
-  the file can never contradict what is installed;
-- a key the configuration no longer produces stays in the file and is
-  still emitted as a legacy object, so links on it survive — delete it
-  only once its links are gone;
-- the section also records the application version last handed to
-  Kaenx-Creator, so every publish lands above it (ETS silently ignores
-  a re-import of a version it already knows).
+The generator compares against the device in the ETS export (objects
+matched by name) and says per device: "same objects — only links", or
+"N new, M renumbered — publish". It refuses to write when an installed
+object that still carries links has disappeared — no source claims those
+addresses any more; unlink them in ETS (check-wiring lists them as
+"unclaimed"), or pass `--accept-loss` if dropping them is intended.
 
-On top of that the generator refuses to write when an installed object
-that carries links has no same-numbered object in the new version — its
-links would need a new home by hand. That message means: stop, look at
-the registry, and only pass `--accept-loss` if that is intended.
+`scripts/kaenx/versions.yaml` records the application version last
+handed to Kaenx-Creator per device; the generator maintains it and you
+commit it. It exists because ETS remembers every version it ever
+imported — also ones deleted from the catalog — and silently ignores a
+re-import, so the next publish must go above what was handed out, not
+just above what the export shows installed.
 
 ## Target picture
 
@@ -141,8 +143,8 @@ KNXPROJ_PASSWORD=… task knx:ets-devices [output-dir]   # default ~/Downloads
 
 Inputs: the in-repo ETS export (names, DPTs, group-range names, and the
 installed applications), the writer rules, the consumer manifests, the
-Basalte Studio export, the Node-Red flow export and the object
-registry. Foreign-system exports live in `exports/` (see its README);
+Basalte Studio export, the Node-Red flow export and the versions file.
+Foreign-system exports live in `exports/` (see its README);
 lares' own deployed truths stay under `kubernetes/`. Template:
 `scripts/kaenx/template.ae-manu` — an empty project saved once by the
 ETS VM's Kaenx-Creator installation; it supplies everything
@@ -150,17 +152,18 @@ version-specific (mask, load procedures, language).
 
 Output per device: `<slug>.ae-manu` (the Kaenx-Creator project) and
 `<slug>-wiring.md` (the wiring worksheet: per collector, exactly the
-addresses to link; new objects are marked). Addresses without a DPT,
+addresses to link; against the installed device each object is marked
+`NEU` or `war N`, and dropped objects are listed). Addresses without a DPT,
 with a DPT unknown to Kaenx-Creator, or listed in a footprint but absent
 from ETS are reported; the last case fails the run — configuration
 pointing at nothing is the wiring error this model exists to expose.
 
 On the ETS VM, when the run said "publish": open the `.ae-manu` in
 Kaenx-Creator → Veröffentlichen → import the `.knxprod` into ETS → add
-the new version as a **second device** next to the installed one → in
-the old device's object list, drag each object's links onto the
-same-numbered object of the new device → delete the old device → give
-the new one the old individual address. Do **not** use "Aktualisieren"
+the new version as a **second device** next to the installed one → per
+worksheet, drag the links of the old device's object N onto the new
+object marked `war N` → delete the old device → give the new one the
+old individual address. Do **not** use "Aktualisieren"
 on the existing device: it keeps parameters and drops every link. Then
 link the new addresses per worksheet (sort the GA list, multi-select a
 block, drag onto the collector).
@@ -174,14 +177,14 @@ block, drag onto the collector).
 - **New kind, or a footprint change** (first address of a subtype in a
   main group, new consumer, new Basalte datapoint or flow kind):
   re-export the changed system into `exports/` first, then regenerate;
-  the generator says "N new objects — publish". The new objects are
-  appended, every existing one keeps its number, so moving the links to
-  the new device instance is 1:1.
+  the generator says "N new, M renumbered — publish". The worksheet maps
+  every object to its number on the old device, so the drag-over onto
+  the new device instance is one look-up per object.
 - **Identity, do not touch**: per-device GUID (deterministic), serial and
   order number (name slug), application number (100/101/102 by task
-  order), and the object numbers in `objects.yaml`.
+  order).
 - **Versions take care of themselves**: the generator takes the highest
-  of the installed version and the registry's last-published one and
+  of the installed version and `versions.yaml`'s last-published one and
   bumps it — only when the objects changed. The version is a single byte
   shown by ETS as high.low nibble: 16 = 1.0, 17 = 1.1, 32 = 2.0. No
   hand-bumping in the Kaenx publish tab.
@@ -192,7 +195,9 @@ block, drag onto the collector).
   acceptance test for flag correctness.
 - `task knx:check-wiring` compares the ETS export against the
   footprints: rule without link, link without rule, wrong or additional
-  direction, and leaves a rest worksheet per device with findings. Runs
+  direction, link on the wrong object, and leaves a rest worksheet per
+  device with findings — under the object numbers of the device in the
+  project, also while that is still an older version. Runs
   after every `knx:catalog` and on demand; it is deliberately not a CI
   gate, because the in-repo ETS export legitimately lags lares changes.
 
@@ -211,8 +216,9 @@ Order matters: generate → publish → import → wire per worksheet → set th
 coupler forwarding → fresh ETS export into the repo → `task knx:catalog`
 green → `task knx:check-wiring` green → **only then** delete the
 placeholders. Until then the placeholders stay as the safety net that
-keeps every address crossing the couplers. Bridge and Node-Red are done;
-Basalte is installed at V 1.1 with its 94 objects and is being linked
-per worksheet — `task knx:catalog` leaves the rest list in
-`~/Downloads/basalte-core-s4-wiring-todo.md` after every export.
-Status lives in issue #1557.
+keeps every address crossing the couplers. Node-Red is done. The bridge
+is wired, but the wallbox trigger addresses (1.017) gave it and Basalte
+a new object each, so both go through a V 1.3 rebuild; Basalte is
+installed at V 1.1 and being linked per worksheet — `task knx:catalog`
+leaves the rest list in `~/Downloads/basalte-core-s4-wiring-todo.md`
+after every export. Status lives in issue #1557.
