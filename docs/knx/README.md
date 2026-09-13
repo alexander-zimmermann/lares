@@ -2,7 +2,7 @@
 
 Three bus participants exist as software, not hardware: the **KNX-NATS
 bridge**, the **Basalte Core S4** visualisation and **Node-Red**. Each is
-modelled in ETS as a real device whose product database is *generated*
+modelled in ETS as a real device whose product database is _generated_
 from this repo — ETS is the checkable view, lares is the source. The
 historical GIRA placeholders ("dummies") are being retired; see the
 migration section. Decisions and their rejected alternatives:
@@ -31,11 +31,11 @@ flowchart TD
     R -- yes --> Z["commit catalog + versions.yaml"]
 ```
 
-| Task | Run it when | Reads | Writes |
-| --- | --- | --- | --- |
-| `task knx:ets-devices` | a footprint changed (lares config, Studio export, flows) — or you are unsure whether it did | the three footprints, the ETS export, the template, `scripts/kaenx/versions.yaml` | `~/Downloads/<device>.ae-manu` + `-wiring.md`; updates `versions.yaml` |
-| `task knx:catalog` | after **every** ETS export | the ETS export | `ga-catalog.yaml`, then runs `check-wiring` |
-| `task knx:check-wiring` | on demand, to see what is still open | the ETS export, the three footprints | `~/Downloads/<device>-wiring-todo.md` per device with findings |
+| Task                    | Run it when                                                                                 | Reads                                                                             | Writes                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `task knx:ets-devices`  | a footprint changed (lares config, Studio export, flows) — or you are unsure whether it did | the three footprints, the ETS export, the template, `scripts/kaenx/versions.yaml` | `~/Downloads/<device>.ae-manu` + `-wiring.md`; updates `versions.yaml` |
+| `task knx:catalog`      | after **every** ETS export                                                                  | the ETS export                                                                    | `ga-catalog.yaml`, then runs `check-wiring`                            |
+| `task knx:check-wiring` | on demand, to see what is still open                                                        | the ETS export, the three footprints                                              | `~/Downloads/<device>-wiring-todo.md` per device with findings         |
 
 All three need `KNXPROJ_PASSWORD=…` in the environment; without it they
 stop with one sentence saying so.
@@ -106,11 +106,11 @@ just above what the export shows installed.
 
 ## Target picture
 
-| Device | Address source (the footprint) | Objects | Flags |
-| --- | --- | --- | --- |
-| KNX-NATS-Bridge | `writer-rules.yaml` targets (Transmit+Read) ∪ consumed addresses from the `*_from_knx` consumer manifests (Write) | ~55 | per direction |
-| Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `exports/basalte/*.bcfg`) | ~95 | Write+Transmit |
-| Node-Red | flow-export addresses (`scripts/node_red_gas.py` on `exports/node-red/flows.json`) | a handful | Write+Transmit |
+| Device          | Address source (the footprint)                                                                                    | Objects   | Flags          |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | -------------- |
+| KNX-NATS-Bridge | `writer-rules.yaml` targets (Transmit+Read) ∪ consumed addresses from the `*_from_knx` consumer manifests (Write) | ~55       | per direction  |
+| Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `exports/basalte/*.bcfg`)                                     | ~95       | Write+Transmit |
+| Node-Red        | flow-export addresses (`scripts/node_red_gas.py` on `exports/node-red/flows.json`)                                | a handful | Write+Transmit |
 
 Objects are **collectors**: one per main group × datapoint type — the
 exact subtype (5.001, 9.001, …), with a main-type fallback for
