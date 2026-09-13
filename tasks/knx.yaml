@@ -70,17 +70,22 @@ tasks:
       touches. All inputs from foreign systems live in exports/.
       Filter-table coverage is not modelled here at all — the couplers
       are set to forward group telegrams towards the bridge's line.
-      Object numbers come from scripts/kaenx/objects.yaml, which this
-      task maintains (commit it after every run): an object keeps its
-      number forever, so an application update in ETS keeps the group
-      links. The run says per device whether anything changed — "no
-      publish needed, only links" or "N new objects: publish and update"
-      — and refuses to write when an installed object with links would
-      be dropped or renumbered.
+      Object numbers are positional (main group, DPT, direction). ETS
+      keeps no link across an application update of these products, so
+      a changed object set is always a new version built as a second
+      device with the links dragged over; the worksheet says per object
+      "NEU" or "war N" (its number on the old device). The run says per
+      device whether anything changed — "no publish needed, only links"
+      or "N new, M renumbered: publish" — and refuses to write when an
+      installed object with links is dropped. scripts/kaenx/versions.yaml
+      holds the version last handed out per device (commit it after
+      every run): ETS remembers every version it ever imported, so the
+      next one must go above what was published, not just above what
+      is installed.
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
-      .knxprod, import it into ETS, update the device, link the new
-      addresses per worksheet; the placeholders stay until knx:catalog
-      and check-wiring are green, then they go.
+      .knxprod, import it into ETS, rebuild the device per worksheet;
+      the placeholders stay until knx:catalog and check-wiring are
+      green, then they go.
       Arguments: [output-dir, default ~/Downloads]
       Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
@@ -120,7 +125,7 @@ tasks:
         --device "@$basalte=Basalte Core S4:both"
         --device "@$nodered=Node-Red:both"
         --catalog-section "Lares"
-        --registry "{{.SCRIPTS_DIR}}/kaenx/objects.yaml"
+        --versions "{{.SCRIPTS_DIR}}/kaenx/versions.yaml"
         --output-dir "{{.OUTDIR}}"
 
   check-wiring:
@@ -135,7 +140,9 @@ tasks:
       finding fails the run, a device not yet imported is reported as
       such. Per device with findings a rest worksheet
       (<gerät>-wiring-todo.md) lands in TODO_DIR: only the links still
-      to make, grouped under the generated object numbers. Runs
+      to make, grouped under the object numbers of the device in the
+      project (matched by object name, so an older installed version
+      is checked correctly and objects it lacks are flagged). Runs
       automatically after knx:catalog — during the migration that makes
       it the progress tracker.
       Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
@@ -174,7 +181,6 @@ tasks:
         --device "@$bridge=KNX-NATS-Bridge:split"
         --device "@$basalte=Basalte Core S4:both"
         --device "@$nodered=Node-Red:both"
-        --registry "{{.SCRIPTS_DIR}}/kaenx/objects.yaml"
         --todo-dir "{{.TODO_DIR}}"
 
   fault-writer-rules:
