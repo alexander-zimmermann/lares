@@ -28,13 +28,13 @@ tasks:
       - sh: test -f "{{.KNXPROJ}}"
         msg: "'{{.KNXPROJ}}' not found"
     cmds:
-      # --ignore-write-from Dummy: the GIRA placeholder device receives ~1850
-      # addresses purely to get them into the coupler filter tables. Counting
-      # its Write flag would mark almost everything writable, status mirrors
-      # included. The named devices are their knx:ets-devices replacements:
-      # a visualisation receives status addresses in order to display them,
-      # which is indistinguishable from acting on them, so their Write flags
-      # must not vote either — only the bridge's may.
+      # --ignore-write-from Dummy: the GIRA dummy products. The software
+      # placeholders are gone; what is left is the Telenot alarm panel, whose
+      # flags were never curated, so it does not vote. The named devices are
+      # the generated visualisation devices: a visualisation receives status
+      # addresses in order to display them, which is indistinguishable from
+      # acting on them, so their Write flags must not vote either — only the
+      # bridge's may, and those are exact (Write on consumed addresses only).
       - uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
@@ -83,9 +83,7 @@ tasks:
       next one must go above what was published, not just above what
       is installed.
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
-      .knxprod, import it into ETS, rebuild the device per worksheet;
-      the placeholders stay until knx:catalog and check-wiring are
-      green, then they go.
+      .knxprod, import it into ETS, rebuild the device per worksheet.
       Arguments: [output-dir, default ~/Downloads]
       Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
@@ -143,8 +141,7 @@ tasks:
       to make, grouped under the object numbers of the device in the
       project (matched by object name, so an older installed version
       is checked correctly and objects it lacks are flagged). Runs
-      automatically after knx:catalog — during the migration that makes
-      it the progress tracker.
+      automatically after knx:catalog.
       Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
     vars:
       BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
