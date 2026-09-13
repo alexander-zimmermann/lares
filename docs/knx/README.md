@@ -4,11 +4,11 @@ Three bus participants exist as software, not hardware: the **KNX-NATS
 bridge**, the **Basalte Core S4** visualisation and **Node-Red**. Each is
 modelled in ETS as a real device whose product database is _generated_
 from this repo — ETS is the checkable view, lares is the source. The
-historical GIRA placeholders ("dummies") are being retired; see the
-migration section. Decisions and their rejected alternatives:
+historical GIRA placeholders ("dummies") that carried their addresses
+are gone since 2026-09-13 (issue #1557). Decisions and their rejected
+alternatives:
 [ADR-0001](../adr/0001-collector-objects-from-config-for-software-bus-devices.md),
 [ADR-0002](../adr/0002-coupler-forwarding-carries-bus-visibility.md).
-Migration tracker: issue #1557.
 
 ## Which command, when
 
@@ -210,15 +210,17 @@ count per device before and after. Keep the previous export under
 verified. Writing links into an export from outside ETS was tried and
 ETS refuses to import the result — the export is for reading only.
 
-## Migration (one-time)
+## Migration (done 2026-09-13)
 
-Order matters: generate → publish → import → wire per worksheet → set the
-coupler forwarding → fresh ETS export into the repo → `task knx:catalog`
-green → `task knx:check-wiring` green → **only then** delete the
-placeholders. Until then the placeholders stay as the safety net that
-keeps every address crossing the couplers. Node-Red is done. The bridge
-is wired, but the wallbox trigger addresses (1.017) gave it and Basalte
-a new object each, so both go through a V 1.3 rebuild; Basalte is
-installed at V 1.1 and being linked per worksheet — `task knx:catalog`
-leaves the rest list in `~/Downloads/basalte-core-s4-wiring-todo.md`
-after every export. Status lives in issue #1557.
+The order was: generate → publish → import → wire per worksheet → set
+the coupler forwarding → fresh ETS export → `task knx:catalog` and
+`task knx:check-wiring` green on all three devices → delete the
+placeholders. End state: bridge V 1.3 (322 addresses on 54 objects),
+Basalte V 1.3 (1474 on 94), Node-Red V 1.2 (6 on 2); the only GIRA
+dummy left is the Telenot alarm panel, which is not a software
+participant. With the placeholders gone, `writable` in the catalog is
+exact for the bridge: its 26 consumed addresses vote, its 296 mirrored
+ones do not — the consumer manifests need no second list anywhere.
+Addresses that only a placeholder linked lost their derived datapoint
+type with the last link and left the catalog; that is the intended
+reading, not a loss.
