@@ -443,12 +443,6 @@
   name: Allgemein.A.Dach.Szenen
   room: Dach
   writable: true
-0/5/61:
-  dpt: '1.001'
-  function: Allgemein
-  name: Allgemein.A.Dach.Alles-Aus
-  room: Dach
-  writable: false
 0/6/20:
   dpt: '17.001'
   function: Allgemein
@@ -9334,12 +9328,6 @@
   name: Beleuchtung.Einrichtung.Zentral.Diagnose.Konstanz-Anomalie
   room: Anwesen Steinroth 20
   writable: false
-4/2/60:
-  dpt: '1.003'
-  function: Beleuchtung
-  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Sperren
-  room: Wohnzimmer
-  writable: false
 4/2/61:
   dpt: '1.001'
   function: Beleuchtung
@@ -10195,7 +10183,7 @@
 5/3/105:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.OG.Schlafzimmer-Luis.Raffstore.Postion
+  name: Beschattung.OG.Schlafzimmer-Luis.Raffstore.Position
   room: Schlafzimmer Luis
   writable: true
 5/3/106:
@@ -10294,12 +10282,6 @@
   name: Beschattung.OG.Schlafzimmer-Luis.Vorhang.Geschlossen-Status
   room: Schlafzimmer Luis
   writable: true
-5/3/131:
-  dpt: '1.010'
-  function: Beschattung
-  name: Beschattung.OG.Schlafzimmer-Luis.Vorhang.Fahrzeit
-  room: Schlafzimmer Luis
-  writable: false
 5/3/140:
   dpt: '1.003'
   function: Beschattung
@@ -10426,12 +10408,6 @@
   name: Beschattung.OG.Schlafzimmer-Eltern.Vorhang.Geschlossen-Status
   room: Schlafzimmer Eltern
   writable: true
-5/3/171:
-  dpt: '1.010'
-  function: Beschattung
-  name: Beschattung.OG.Schlafzimmer-Eltern.Vorhang.Fahrzeit
-  room: Schlafzimmer Eltern
-  writable: false
 5/3/180:
   dpt: '1.003'
   function: Beschattung
@@ -10627,7 +10603,7 @@
 5/3/45:
   dpt: '5.001'
   function: Beschattung
-  name: Beschattung.OG.Badezimmer-Kinder.Raffstore.Postion
+  name: Beschattung.OG.Badezimmer-Kinder.Raffstore.Position
   room: Badezimmer Kinder
   writable: true
 5/3/46:
@@ -10822,12 +10798,6 @@
   name: Beschattung.OG.Schlafzimmer-Gregory.Vorhang.Geschlossen-Status
   room: Schlafzimmer Gregory
   writable: true
-5/3/91:
-  dpt: '1.010'
-  function: Beschattung
-  name: Beschattung.OG.Schlafzimmer-Gregory.Vorhang.Fahrzeit
-  room: Schlafzimmer Gregory
-  writable: false
 6/0/180:
   description: 1 - Innen Raumklima
   dpt: '5.010'
@@ -12926,12 +12896,6 @@
   name: Sensorik.KG.Garage.Sensor.Luftdruck-Alarm-1
   room: Garage
   writable: false
-8/1/6:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.KG.Flur.Sensor.Luftfeuchtigkeit-Alarm-2
-  room: Flur
-  writable: false
 8/1/61:
   dpt: '9.001'
   function: Sensorik
@@ -13484,12 +13448,6 @@
   name: Sensorik.EG.Wohnzimmer.Sensor.Taupunkt-Alarm-1
   room: Wohnzimmer
   writable: true
-8/3/100:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Schlafzimmer-Gregory.Sensor.VOC-Alarm-1
-  room: Schlafzimmer Gregory
-  writable: false
 8/3/101:
   dpt: '9.008'
   function: Sensorik
@@ -13568,12 +13526,6 @@
   name: Sensorik.OG.Schlafzimmer-Luis.Sensor.Taupunkt-Alarm-1
   room: Schlafzimmer Luis
   writable: true
-8/3/130:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Schlafzimmer-Luis.Sensor.VOC-Alarm-1
-  room: Schlafzimmer Luis
-  writable: false
 8/3/131:
   dpt: '9.008'
   function: Sensorik
@@ -13652,12 +13604,6 @@
   name: Sensorik.OG.Schlafzimmer-Eltern.Sensor.Taupunkt-Alarm-1
   room: Schlafzimmer Eltern
   writable: true
-8/3/160:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Schlafzimmer-Eltern.Sensor.VOC-Alarm-1
-  room: Schlafzimmer Eltern
-  writable: false
 8/3/161:
   dpt: '9.008'
   function: Sensorik
@@ -13705,66 +13651,6 @@
   function: Sensorik
   name: Sensorik.OG.Schlafzimmer-Eltern.BWM.Temperatur
   room: Schlafzimmer Eltern
-  writable: false
-8/3/183:
-  dpt: '9.001'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Temperatur-Alarm-2
-  room: Begehbarer Schrank
-  writable: false
-8/3/184:
-  dpt: '9.007'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Luftfeuchtigkeit
-  room: Begehbarer Schrank
-  writable: false
-8/3/185:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Luftfeuchtigkeit-Alarm-1
-  room: Begehbarer Schrank
-  writable: false
-8/3/186:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Luftfeuchtigkeit-Alarm-2
-  room: Begehbarer Schrank
-  writable: false
-8/3/187:
-  dpt: '9.001'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Taupunkt
-  room: Begehbarer Schrank
-  writable: false
-8/3/188:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.Taupunkt-Alarm-1
-  room: Begehbarer Schrank
-  writable: false
-8/3/191:
-  dpt: '9.008'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.CO2
-  room: Begehbarer Schrank
-  writable: false
-8/3/192:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.CO2-Alarm-1
-  room: Begehbarer Schrank
-  writable: false
-8/3/193:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.CO2-Alarm-2
-  room: Begehbarer Schrank
-  writable: false
-8/3/194:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Begehbarer-Schrank.Sensor.CO2-Alarm-3
-  room: Begehbarer Schrank
   writable: false
 8/3/20:
   dpt: '9.001'
@@ -13832,12 +13718,6 @@
   name: Sensorik.OG.Badezimmer-Eltern.Sensor.Taupunkt-Alarm-1
   room: Badezimmer Eltern
   writable: true
-8/3/220:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Badezimmer-Eltern.Sensor.VOC-Alarm-1
-  room: Badezimmer Eltern
-  writable: false
 8/3/221:
   dpt: '9.008'
   function: Sensorik
@@ -13922,12 +13802,6 @@
   name: Sensorik.OG.Abstellraum.Sensor.Taupunkt-Alarm-1
   room: Abstellraum
   writable: true
-8/3/40:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Abstellraum.Sensor.VOC-Alarm-1
-  room: Abstellraum
-  writable: false
 8/3/41:
   dpt: '9.008'
   function: Sensorik
@@ -14006,12 +13880,6 @@
   name: Sensorik.OG.Badezimmer-Kinder.Sensor.Taupunkt-Alarm-1
   room: Badezimmer Kinder
   writable: true
-8/3/70:
-  dpt: '1.005'
-  function: Sensorik
-  name: Sensorik.OG.Badezimmer-Kinder.Sensor.VOC-Alarm-1
-  room: Badezimmer Kinder
-  writable: false
 8/3/71:
   dpt: '9.008'
   function: Sensorik
@@ -14570,12 +14438,6 @@
   name: Bewegungsmelder.KG.Garage.EMA.Präsenz
   room: Garage
   writable: false
-9/1/109:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.EMA.Tag/Nacht
-  room: Garage
-  writable: false
 9/1/120:
   dpt: '1.003'
   function: Bewegungsmelder
@@ -14606,12 +14468,6 @@
   name: Bewegungsmelder.KG.Technikraum.KNX.Schaltschwelle
   room: Technikraum
   writable: true
-9/1/126:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Technikraum.KNX.HLK
-  room: Technikraum
-  writable: false
 9/1/127:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -14666,12 +14522,6 @@
   name: Bewegungsmelder.KG.Vorratsraum.KNX.Schaltschwelle
   room: Vorratsraum
   writable: true
-9/1/146:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Vorratsraum.KNX.HLK
-  room: Vorratsraum
-  writable: false
 9/1/147:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -14726,12 +14576,6 @@
   name: Bewegungsmelder.KG.Hauswirtschaftsraum.KNX.Schaltschwelle
   room: Hauswirtschaftsraum
   writable: true
-9/1/166:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Hauswirtschaftsraum.KNX.HLK
-  room: Hauswirtschaftsraum
-  writable: false
 9/1/167:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -14858,12 +14702,6 @@
   name: Bewegungsmelder.KG.Flur.EMA.Präsenz
   room: Flur
   writable: false
-9/1/49:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Flur.EMA.Tag/Nacht
-  room: Flur
-  writable: false
 9/1/5:
   dpt: '1.011'
   function: Bewegungsmelder
@@ -14906,12 +14744,6 @@
   name: Bewegungsmelder.KG.Garage.KNX.Decke.Schaltschwelle
   room: Garage
   writable: true
-9/1/66:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Decke.HLK
-  room: Garage
-  writable: false
 9/1/67:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -14948,40 +14780,10 @@
   name: Bewegungsmelder.KG.Flur.KNX.Decke.Helligkeit
   room: Flur
   writable: false
-9/1/82:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.Ein/Aus
-  room: Garage
-  writable: false
-9/1/83:
-  dpt: '5.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.Dimmen
-  room: Garage
-  writable: false
-9/1/86:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.HLK
-  room: Garage
-  writable: false
-9/1/87:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.Präsenz
-  room: Garage
-  writable: false
 9/1/88:
   dpt: '9.004'
   function: Bewegungsmelder
   name: Bewegungsmelder.KG.Garage.KNX.Wand.Helligkeit
-  room: Garage
-  writable: false
-9/1/89:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.Tag/Nacht
   room: Garage
   writable: false
 9/1/9:
@@ -14990,12 +14792,6 @@
   name: Bewegungsmelder.KG.Flur.KNX.Decke.Tag/Nacht
   room: Flur
   writable: true
-9/1/90:
-  dpt: '1.001'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.KG.Garage.KNX.Wand.Slave
-  room: Garage
-  writable: false
 9/2/0:
   dpt: '1.003'
   function: Bewegungsmelder
@@ -15176,12 +14972,6 @@
   name: Bewegungsmelder.EG.Flur.KNX.Diele.Slave
   room: Flur
   writable: true
-9/2/41:
-  dpt: '1.003'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.EG.Flur.KNX.Garderobe.Sperren-Status
-  room: Flur
-  writable: false
 9/2/47:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -15192,12 +14982,6 @@
   dpt: '9.004'
   function: Bewegungsmelder
   name: Bewegungsmelder.EG.Flur.KNX.Garderobe.Helligkeit
-  room: Flur
-  writable: false
-9/2/49:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.EG.Flur.KNX.Garderobe.Tag/Nacht
   room: Flur
   writable: false
 9/2/5:
@@ -15240,12 +15024,6 @@
   dpt: '1.001'
   function: Bewegungsmelder
   name: Bewegungsmelder.EG.Flur.EMA.Präsenz
-  room: Flur
-  writable: false
-9/2/69:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.EG.Flur.EMA.Tag/Nacht
   room: Flur
   writable: false
 9/2/7:
@@ -15326,18 +15104,6 @@
   name: Bewegungsmelder.EG.Gäste-WC.KNX.Slave
   room: Gäste WC
   writable: true
-9/3/0:
-  dpt: '1.003'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Flur.KNX.Treppe.Sperren
-  room: Flur
-  writable: false
-9/3/1:
-  dpt: '1.011'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Flur.KNX.Treppe.Sperren-Status
-  room: Flur
-  writable: false
 9/3/100:
   dpt: '1.003'
   function: Bewegungsmelder
@@ -15650,12 +15416,6 @@
   name: Bewegungsmelder.OG.Flur.EMA.Treppe.Präsenz
   room: Flur
   writable: false
-9/3/49:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Flur.EMA.Treppe.Tag/Nacht
-  room: Flur
-  writable: false
 9/3/60:
   dpt: '1.003'
   function: Bewegungsmelder
@@ -15686,12 +15446,6 @@
   name: Bewegungsmelder.OG.Flur.EMA.Gang.Präsenz
   room: Flur
   writable: false
-9/3/69:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Flur.EMA.Gang.Tag/Nacht
-  room: Flur
-  writable: false
 9/3/7:
   dpt: '1.001'
   function: Bewegungsmelder
@@ -15702,12 +15456,6 @@
   dpt: '9.004'
   function: Bewegungsmelder
   name: Bewegungsmelder.OG.Flur.KNX.Treppe.Helligkeit
-  room: Flur
-  writable: false
-9/3/9:
-  dpt: '1.024'
-  function: Bewegungsmelder
-  name: Bewegungsmelder.OG.Flur.KNX.Treppe.Tag/Nacht
   room: Flur
   writable: false
 9/4/0:
