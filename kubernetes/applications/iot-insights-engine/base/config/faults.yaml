@@ -507,7 +507,7 @@ faults:
     unit: "%"
     kind: external
     scope:
-      name_like: "Raumklima.%.Entfeuchter.Anomalie"
+      name_like: "Raumklima.%.Entfeuchter-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; beide Adressen stehen im
         Katalog, und niemand schreibt sie."
