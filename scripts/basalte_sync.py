@@ -58,8 +58,10 @@ _IMPORT_FIELD = 19
 
 # A name Basalte would have taken from ETS: starts like a function prefix
 # and carries no markup. Keeps the scan off the many other strings in the
-# export that happen to sit beside a number.
-_NAME = re.compile(r"^[A-ZÄÖÜ][\w.\-/äöüßÄÖÜ ]+$")
+# export that happen to sit beside a number. ETS names also carry "+"
+# (Lademodus-PV+Min) and, for some umlauts, a combining diaeresis instead
+# of the precomposed letter — both are names, not markup.
+_NAME = re.compile(r"^[A-ZÄÖÜ][\w.\-/+äöüßÄÖÜ\u0308 ]+$")
 
 
 def group_address(value: int) -> str:
