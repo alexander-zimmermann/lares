@@ -38,6 +38,10 @@ agent:
   # The first live answers stopped after one tool call at the default (medium)
   reasoning_effort: high
 
+# Context files (AGENTS.md) are discovered from the gateway's working directory
+terminal:
+  cwd: /opt/data
+
 approvals:
   # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.
   unattended_mode: deny
