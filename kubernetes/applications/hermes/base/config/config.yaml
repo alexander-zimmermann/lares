@@ -69,6 +69,12 @@ discord:
   require_mention: false
   auto_thread: false
 
+display:
+  platforms:
+    discord:
+      # No tool-call bubbles in the channel; the answer names its sources itself
+      tool_progress: "off"
+
 # Session isolation on every gateway platform
 group_sessions_per_user: true
 
