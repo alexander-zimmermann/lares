@@ -56,12 +56,14 @@ from basalte_inventory import parse
 # logic block — the layers whose copies go stale.
 _IMPORT_FIELD = 19
 
-# A name Basalte would have taken from ETS: starts like a function prefix
-# and carries no markup. Keeps the scan off the many other strings in the
-# export that happen to sit beside a number. ETS names also carry "+"
-# (Lademodus-PV+Min) and, for some umlauts, a combining diaeresis instead
-# of the precomposed letter — both are names, not markup.
-_NAME = re.compile(r"^[A-ZÄÖÜ][\w.\-/+äöüßÄÖÜ\u0308 ]+$")
+# A name Basalte would have taken from ETS: Funktion.Gerät.Datenpunkt, so a
+# capitalised prefix, at least one dot, no markup. Keeps the scan off the
+# many other strings in the export that happen to sit beside a number — the
+# media remotes' key names ("VOLUME UP", "DIGIT 0") share the low range
+# with main group 0 and only the dot tells them apart. ETS names also carry
+# "+" (Lademodus-PV+Min) and, for some umlauts, a combining diaeresis
+# instead of the precomposed letter — both are names, not markup.
+_NAME = re.compile(r"^[A-ZÄÖÜ][\w\-/+äöüßÄÖÜ\u0308 ]*\.[\w.\-/+äöüßÄÖÜ\u0308 ]+$")
 
 
 def group_address(value: int) -> str:
@@ -78,9 +80,8 @@ def bindings(node: list, found: list[tuple[str, str]]) -> None:
             name = value
         elif kind == "msg":
             bindings(value, found)
-    # Below 2048 is main group 0, which this house does not use for
-    # bindings; above 65535 is not a group address at all.
-    if address and name and 2048 <= address < 65536 and _NAME.match(name):
+    # 0/0/0 is the broadcast address; above 65535 is not a group address.
+    if address and name and address < 65536 and _NAME.match(name):
         found.append((group_address(address), name))
 
 
