@@ -9,15 +9,16 @@ ETS export `Steinroth.knxproj` is not. Two reasons: it is 14 MB of binary, and
 it carries at least one value that looks like an access token — unverified, but
 reason enough not to publish it.
 
-## Regenerating the inventory
+## What is configured in Studio?
 
 ```
 task basalte:inventory                        # uses exports/basalte/Steinroth.bcfg
 task basalte:inventory -- /path/to/export.bcfg
 ```
 
-Writes `logic-inventory.md`. Regenerate after every change in Basalte Studio and
-read the diff — that shows what changed without opening Studio.
+Prints the logic inventory — every block with its devices, thresholds and
+notifications — to stdout. It is generated when needed, not kept: a committed
+copy would be a snapshot of a file git ignores, stale the moment Studio changes.
 
 ## Does Basalte still agree with ETS?
 

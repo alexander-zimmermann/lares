@@ -1,6 +1,6 @@
 """Generate the Basalte logic inventory from a Studio export.
 
-    uv run --no-project python scripts/basalte_inventory.py <export.bcfg> <output.md>
+    uv run --no-project python scripts/basalte_inventory.py <export.bcfg> > inventory.md
 
 The export is Protocol Buffers with no schema shipped, so the wire format is
 read generically. Decoded so far:
@@ -157,11 +157,7 @@ def render(blocks: list[dict], named: int) -> str:
     )
     out = ["# Basalte logic: inventory", ""]
     out += [
-        "Generated from the Studio export with `task basalte:inventory` — **do not hand-edit**.",
-        "Regenerate after every change in Basalte and read the diff.",
-        "",
-        "The export itself is not in the repo: 14 MB of binary, and it carries at least one",
-        "value that looks like an access token. See `docs/basalte/README.md` for where it goes.",
+        "Generated from the Studio export with `task basalte:inventory`.",
         "",
         summary,
         "",
@@ -190,5 +186,5 @@ def render(blocks: list[dict], named: int) -> str:
 if __name__ == "__main__":
     export_path = Path(sys.argv[1])
     blocks, named = extract(export_path)
-    Path(sys.argv[2]).write_text(render(blocks, named), encoding="utf-8")
-    print(f"{len(blocks)} blocks from {export_path.name}, {named} named objects")
+    sys.stdout.write(render(blocks, named))
+    print(f"{len(blocks)} blocks from {export_path.name}, {named} named objects", file=sys.stderr)
