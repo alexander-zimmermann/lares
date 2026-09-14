@@ -1,10 +1,13 @@
 version: "3"
 
+# Local inputs — the foreign-system exports and the ETS project password —
+# come from the git-ignored .env (keys and producers in .env.example).
+dotenv: [".env"]
+
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
   KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml"
-  KNX_PROJECT_PATH: "{{.ROOT_DIR}}/exports/ets/Steinroth.knxproj"
   KNX_WRITER_RULES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/writer-rules.yaml"
   INSIGHTS_ENGINE_DIR: "{{.ROOT_DIR}}/../iot-insights-engine"
   INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"

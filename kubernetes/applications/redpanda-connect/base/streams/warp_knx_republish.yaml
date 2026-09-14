@@ -5,7 +5,7 @@
 # bridge can only read named JSON fields, no array indices. This stream pulls
 # the values we route to KNX out of the array and onto two clean subjects.
 #
-# value_ids index -> MeterValueID (current Steinroth meter config):
+# value_ids index -> MeterValueID (current meter config of the wallbox):
 #   3/4/5 = 13/17/21 phase current L1/L2/L3 (A)
 #   12    = 74       total active power (W)
 #   14    = 209      active energy import since manufacture (kWh, lifetime)

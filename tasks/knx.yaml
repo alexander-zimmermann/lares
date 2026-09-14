@@ -5,6 +5,11 @@ version: "3"
 #   KNX_CATALOG_PATH      — destination ConfigMap source file in lares
 #   KNX_WRITER_RULES_PATH — writer-rules ConfigMap source file in lares
 #   INSIGHTS_FAULTS_PATH  — the fault-list source file in lares
+# The local inputs come from .env (see .env.example):
+#   KNX_PROJECT_PATH      — the ETS project export
+#   KNXPROJ_PASSWORD      — its password, read by the knxproj tools
+#   BASALTE_EXPORT_PATH   — the Basalte Studio project export
+#   NODE_RED_FLOWS_PATH   — the Node-Red flow export
 
 tasks:
   catalog:
@@ -17,16 +22,14 @@ tasks:
       the description it pre-fills from space plus function — so there is
       nothing left to post-process here.
       Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
-      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
+      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
     vars:
       KNXPROJ: '{{.CLI_ARGS | default .KNX_PROJECT_PATH}}'
-    env:
-      # passed through the environment so the plaintext password never appears
-      # in the command line that task echoes
-      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
     preconditions:
       - sh: test -f "{{.KNXPROJ}}"
-        msg: "'{{.KNXPROJ}}' not found"
+        msg: "ETS project export not found at '{{.KNXPROJ}}' — set KNX_PROJECT_PATH in .env (see .env.example) or pass a path"
+      - sh: test -n "$KNXPROJ_PASSWORD"
+        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
       # --ignore-write-from Dummy: the GIRA dummy products. The software
       # placeholders are gone; what is left is the Telenot alarm panel, whose
@@ -35,7 +38,9 @@ tasks:
       # addresses in order to display them, which is indistinguishable from
       # acting on them, so their Write flags must not vote either — only the
       # bridge's may, and those are exact (Write on consumed addresses only).
-      - uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
+      # --project keeps the cwd here, so a relative path in .env resolves
+      # from the repository root.
+      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
@@ -63,11 +68,11 @@ tasks:
       The address sets are defined by lares, not by ETS: the bridge
       carries writer-rule targets (Transmit+Read) plus the addresses
       NATS consumers act on (Write, the *_from_knx manifests); Basalte
-      carries the bindings from the Studio export at BCFG (Write+
-      Transmit, excluded from the catalog's write vote). The ETS export
-      at KNX_PROJECT_PATH only supplies names, DPTs and group-range
-      names. Node-Red carries the addresses its flow export at FLOWS
-      touches. All inputs from foreign systems live in exports/.
+      carries the bindings from the Studio export at BASALTE_EXPORT_PATH
+      (Write+Transmit, excluded from the catalog's write vote). The ETS
+      export at KNX_PROJECT_PATH only supplies names, DPTs and
+      group-range names. Node-Red carries the addresses its flow export
+      at NODE_RED_FLOWS_PATH touches. All three come from .env.
       Filter-table coverage is not modelled here at all — the couplers
       are set to forward group telegrams towards the bridge's line.
       Object numbers are positional (main group, DPT, direction). ETS
@@ -85,23 +90,21 @@ tasks:
       Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
       .knxprod, import it into ETS, rebuild the device per worksheet.
       Arguments: [output-dir, default ~/Downloads]
-      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
+      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
-      BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
-      FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
-    env:
-      # passed through the environment so the plaintext password never appears
-      # in the command line that task echoes
-      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
-        msg: "'{{.KNX_PROJECT_PATH}}' not found"
-      - sh: test -f "{{.BCFG}}"
-        msg: "'{{.BCFG}}' not found — export from Basalte Studio first"
-      - sh: test -f "{{.FLOWS}}"
-        msg: "'{{.FLOWS}}' not found — Node-Red: menu, Export, all flows"
+        msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
+      - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
+        msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
+      - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
+        msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
+      - sh: test -n "$KNXPROJ_PASSWORD"
+        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
+      # --project keeps the cwd here, so relative paths (.env, output dirs)
+      # resolve from the repository root.
       - >
         set -e;
         consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
@@ -112,10 +115,10 @@ tasks:
         "{{.KNX_WRITER_RULES_PATH}}"
         "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
-        "{{.BCFG}}" > "$basalte";
+        "{{.BASALTE_EXPORT_PATH}}" > "$basalte";
         uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
-        "{{.FLOWS}}" > "$nodered";
-        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
+        "{{.NODE_RED_FLOWS_PATH}}" > "$nodered";
+        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
         --template "{{.SCRIPTS_DIR}}/kaenx/template.ae-manu"
         --write-gas "$consumed"
@@ -131,8 +134,9 @@ tasks:
     summary: |
       Compare the ETS export at KNX_PROJECT_PATH against what lares says
       each software device touches: writer rules and *_from_knx
-      consumers for the bridge, the Studio export at BCFG for Basalte,
-      the flow export at FLOWS for Node-Red. Reports footprint
+      consumers for the bridge, the Studio export at BASALTE_EXPORT_PATH
+      for Basalte, the flow export at NODE_RED_FLOWS_PATH for Node-Red.
+      All three come from .env. Reports footprint
       addresses without an ETS link, ETS links no configuration claims,
       and consumed addresses on objects without the Write flag; any
       finding fails the run, a device not yet imported is reported as
@@ -142,23 +146,21 @@ tasks:
       project (matched by object name, so an older installed version
       is checked correctly and objects it lacks are flagged). Runs
       automatically after knx:catalog.
-      Needs KNXPROJ_PASSWORD=… (the tools read it from the environment).
+      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
     vars:
-      BCFG: '{{.BCFG | default "exports/basalte/Steinroth.bcfg"}}'
-      FLOWS: '{{.FLOWS | default "exports/node-red/flows.json"}}'
       TODO_DIR: '{{.TODO_DIR | default "$HOME/Downloads"}}'
-    env:
-      # passed through the environment so the plaintext password never appears
-      # in the command line that task echoes
-      KNXPROJ_PASSWORD: "{{.KNXPROJ_PASSWORD}}"
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
-        msg: "'{{.KNX_PROJECT_PATH}}' not found"
-      - sh: test -f "{{.BCFG}}"
-        msg: "'{{.BCFG}}' not found — export from Basalte Studio first"
-      - sh: test -f "{{.FLOWS}}"
-        msg: "'{{.FLOWS}}' not found — Node-Red: menu, Export, all flows"
+        msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
+      - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
+        msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
+      - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
+        msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
+      - sh: test -n "$KNXPROJ_PASSWORD"
+        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
+      # --project keeps the cwd here, so relative paths (.env, output dirs)
+      # resolve from the repository root.
       - >
         set -e;
         consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
@@ -169,10 +171,10 @@ tasks:
         "{{.KNX_WRITER_RULES_PATH}}"
         "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
-        "{{.BCFG}}" > "$basalte";
+        "{{.BASALTE_EXPORT_PATH}}" > "$basalte";
         uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
-        "{{.FLOWS}}" > "$nodered";
-        uv run --directory "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
+        "{{.NODE_RED_FLOWS_PATH}}" > "$nodered";
+        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
         --input "{{.KNX_PROJECT_PATH}}"
         --write-gas "$consumed"
         --device "@$bridge=KNX-NATS-Bridge:split"

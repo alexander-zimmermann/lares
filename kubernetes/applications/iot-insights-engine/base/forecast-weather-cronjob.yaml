@@ -59,7 +59,7 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # Open-Meteo location (Steinroth 20, Eupen). Keyless — the job
+                # Open-Meteo location (the house). Keyless — the job
                 # requests timezone=UTC, so no API key or local-tz handling.
                 - name: MCP_FORECAST_WEATHER_LAT
                   value: "50.62598"

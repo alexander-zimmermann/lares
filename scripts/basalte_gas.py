@@ -1,7 +1,7 @@
 """List the group addresses Basalte actually binds.
 
     uv run --no-project --with pyyaml python scripts/basalte_gas.py \
-        exports/basalte/Steinroth.bcfg
+        path/to/project.bcfg
 
 The Studio export holds the bus twice: the import layer mirrors the
 whole ETS project, while the device and logic layers bind only the
