@@ -65,6 +65,9 @@ faults:
         - "Haushaltstechnik.%"
         # A threshold, not a measurement.
         - "%-Alarm-%"
+        # Push-button sensors repeat their last value until the room moves
+        # ~0.5 K — days, in a quiet room. Constant by configuration, not dead.
+        - "Sensorik.%.Schalter.%"
     target:
       # The main group's own Konstanz-Anomalie address, beside the
       # Telegrammstille one silence writes: two writers on one address
