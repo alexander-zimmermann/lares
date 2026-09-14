@@ -24,6 +24,9 @@ faults:
         - "%-Anomalie"
         # The diagnosis block: states the bridge writes only on change.
         - "%.Zentral.Diagnose.%"
+        # A scene number is a command someone issues, not a state anything
+        # reports; months without one are normal.
+        - "%.Szenen"
     target:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
