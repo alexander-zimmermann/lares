@@ -516,7 +516,11 @@ mappings:
   # Lademodi 15/6/22, per-mode buttons 15/6/25/27/29) are driven KNX->WARP by
   # redpanda-connect streams; these rules report the actual state back so
   # Basalte reflects reality.
-  - subject: "warp.power_manager.charge_mode"
+  # Mode state comes from the charge manager's per-charger array via
+  # warp_mode_flags, not from power_manager.charge_mode: that one is only the
+  # global setter and keeps the last button press while the box itself falls
+  # back to default_mode on vehicle disconnect.
+  - subject: "wallbox.knx.mode_flags"
     ga: "15/6/23"
     dpt: "5.010"
     payload_path: "$.mode" # 0=Schnell 1=Aus 2=PV 3=Min+PV
@@ -531,7 +535,7 @@ mappings:
     min_delta: 0 # bool state: write only on change
     seed_on_start: true
   # Per-mode status bits for Basalte (radio: exactly one set, all 0 when Aus).
-  # Derived in warp_mode_flags from warp.power_manager.charge_mode.
+  # Derived in warp_mode_flags from warp.charge_manager.charge_modes[0].
   - subject: "wallbox.knx.mode_flags"
     ga: "15/6/26"
     dpt: "1.011"

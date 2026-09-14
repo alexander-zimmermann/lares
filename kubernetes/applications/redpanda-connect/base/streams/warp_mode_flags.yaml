@@ -1,11 +1,19 @@
-# Per-mode status bits: WARP charge mode -> KNX Lademodus status GAs.
+# Effective charge mode: WARP charge manager -> KNX Lademodus status GAs.
 #
-#   mode 2 (PV)      -> wallbox.knx.mode_flags $.pv    -> knx.15.6.26 (1.011)
-#   mode 3 (Min+PV)  -> wallbox.knx.mode_flags $.pvmin -> knx.15.6.28 (1.011)
-#   mode 0 (Schnell) -> wallbox.knx.mode_flags $.fast  -> knx.15.6.30 (1.011)
+#   charge_modes[0] -> wallbox.knx.mode_flags $.mode  -> knx.15.6.23 (5.010)
+#   mode 2 (PV)     -> wallbox.knx.mode_flags $.pv    -> knx.15.6.26 (1.011)
+#   mode 3 (Min+PV) -> wallbox.knx.mode_flags $.pvmin -> knx.15.6.28 (1.011)
+#   mode 0 (Schnell)-> wallbox.knx.mode_flags $.fast  -> knx.15.6.30 (1.011)
 #
-# Exactly one is true; all false when mode is Aus (1). The bridge cannot do
-# enum->bool, so the derivation lives here.
+# Exactly one flag is true; all false when mode is Aus (1). The bridge cannot
+# do enum->bool, so the derivation lives here.
+#
+# Source is charge_manager/charge_modes (one entry per controlled charger, this
+# box is index 0), NOT power_manager/charge_mode: since the charge-manager
+# rework the latter is only the global setter behind the "set all chargers"
+# buttons and keeps the last value that was set. The per-charger mode is what
+# the allocator uses, and the firmware resets it to default_mode on vehicle
+# disconnect and publishes that only here.
 input:
   nats_jetstream:
     urls: ["nats://nats.nats.svc:4222"]
@@ -13,8 +21,9 @@ input:
       user: redpanda-connect
       password: ${NATS_PASSWORD}
     stream: WARP
-    subject: warp.power_manager.charge_mode
-    durable: redpanda-connect-warp-mode-flags
+    subject: warp.charge_manager.charge_modes
+    # A durable cannot change its filter subject; renamed with the source.
+    durable: redpanda-connect-warp-charge-modes
     deliver: last
     ack_wait: 20m
     max_ack_pending: 5000
@@ -24,15 +33,17 @@ input:
 pipeline:
   processors:
     - mapping: |
+        let mode = this.index(0)
         root = {
-          "pv":    this.mode == 2,
-          "pvmin": this.mode == 3,
-          "fast":  this.mode == 0,
+          "mode":  $mode,
+          "pv":    $mode == 2,
+          "pvmin": $mode == 3,
+          "fast":  $mode == 0,
         }
 
 output:
-  # Core NATS publish — the bridge writer uses a core subscription, and
-  # `wallbox.>` is not bound to any JetStream, so nothing archives it.
+  # Core NATS publish; the derived wallbox-knx stream archives `wallbox.knx.>`
+  # so the bridge can seed its responder cache from the last value.
   nats:
     urls: ["nats://nats.nats.svc:4222"]
     auth:
