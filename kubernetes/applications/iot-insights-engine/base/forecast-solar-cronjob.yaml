@@ -60,7 +60,7 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # Forecast.Solar location (Steinroth 20, Eupen).
+                # Forecast.Solar location (the house).
                 - name: MCP_FORECAST_SOLAR_LAT
                   value: "50.62598"
                 - name: MCP_FORECAST_SOLAR_LON

@@ -36,6 +36,7 @@ secret.yaml
 master-key.yaml
 .env
 .env.*
+!.env.example
 charts/
 
 # --- Build & Temp ---
@@ -51,5 +52,5 @@ build/
 # --- KI ---
 .claude/
 
-# --- Exports of foreign systems (binaries, tokens, server details) ---
+# --- Exports of foreign systems, should they live under the repo root (binaries, tokens, server details) ---
 exports/

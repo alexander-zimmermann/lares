@@ -1,7 +1,7 @@
 """List the group addresses Node-Red's flows touch.
 
     uv run --no-project python scripts/node_red_gas.py \
-        exports/node-red/flows.json
+        path/to/flows.json
 
 The flow export is Node-Red's own configuration and therefore the
 source of truth for its bus footprint. Every node whose type mentions

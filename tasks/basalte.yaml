@@ -5,10 +5,10 @@ tasks:
   inventory:
     desc: "print the Basalte logic inventory from a Studio export [path/to/export.bcfg]"
     vars:
-      EXPORT: '{{.CLI_ARGS | default "exports/basalte/Steinroth.bcfg"}}'
+      EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
     preconditions:
       - sh: test -f "{{.EXPORT}}"
-        msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
+        msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
     cmds:
       - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}"
 
@@ -25,10 +25,10 @@ tasks:
       address created in ETS since would otherwise be reported as one
       Basalte invented. Rebuild with `task knx:catalog` first.
     vars:
-      EXPORT: '{{.CLI_ARGS | default "exports/basalte/Steinroth.bcfg"}}'
+      EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
     preconditions:
       - sh: test -f "{{.EXPORT}}"
-        msg: "export not found: {{.EXPORT}} — see docs/basalte/README.md"
+        msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
       # Absent .knxproj: nothing to be stale against, so the check runs.
       - sh: '! test "{{.KNX_PROJECT_PATH}}" -nt "{{.KNX_CATALOG_PATH}}"'
         msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:catalog` first"
