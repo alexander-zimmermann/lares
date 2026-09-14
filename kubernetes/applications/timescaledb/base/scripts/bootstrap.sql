@@ -742,6 +742,9 @@ SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 -- at cutover rather than observed live; `externally_delivered` marks
 -- episodes whose fault Basalte detected and delivered itself — the engine
 -- only records them, nothing downstream notifies a second time.
+-- `fingerprint` is the rule that last made the row — the fault's kind and
+-- parameters — so a later rule can tell its own rows from an earlier
+-- rule's leftovers; NULL on rows older than the stamp.
 -- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
 -- Plain tables, no hypertable — episode volume is a handful a week.
 -- =========================================================
@@ -757,6 +760,7 @@ CREATE TABLE IF NOT EXISTS episodes (
     peak_score   DOUBLE PRECISION NOT NULL,
     folded       BOOLEAN          NOT NULL DEFAULT false,
     externally_delivered BOOLEAN  NOT NULL DEFAULT false,
+    fingerprint  TEXT,
     created_at   TIMESTAMPTZ      NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS episodes_fault_started_at_idx ON episodes (fault, started_at DESC);
