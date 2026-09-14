@@ -47,11 +47,8 @@ newer and tells you to rebuild first. When the export's own import layer
 is behind, the check says so and stops listing the name drift — everything is
 stale by construction until Studio has re-imported.
 
-## What else lives here
+## The logic blocks themselves
 
-`logic-blocks-reference.md` — the reference for Basalte's logic blocks (what
-`chrono`, `multiplexer` and `changedetector` do, with inputs and outputs).
-
-It describes the **product**, not this house, so it belongs in the wiki. It sits
-here only until the wiki can be read by an agent; without that it would not be
-reachable at all. Delete it on the move rather than keeping two copies.
+What `chrono`, `mux` or `changedetector` do is product knowledge, not this
+house: wiki page `basalte-logic-blocks`, readable by agents through the MCP
+bridge's wiki tools.
