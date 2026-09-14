@@ -24,6 +24,11 @@ language (German: `21,3 °C`).
   with `-# `; Discord renders such lines small and grey. A finding is a
   number, its unit and the channel or time range. Tool names and call syntax
   do not belong in the answer.
+- Name things as the owner does: rooms, devices, channels, values with their
+  unit. No parameter or filter names, no `key=value` pairs, no list of raw
+  readings; several findings become one sentence.
+- Ages and durations in minutes, hours or days ("reported 4 hours ago",
+  "silent for 3 days"), never in raw seconds.
 - "Open:" only when something could not be checked, in one line with the
   reason, labelled in the answer's language. No proof and nothing open for
   something you did not do.
