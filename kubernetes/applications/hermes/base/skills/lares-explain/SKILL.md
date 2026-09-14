@@ -35,16 +35,22 @@ in den Daten" die richtige erste Zeile, aber erst nach den vier Schritten.
 
 ## Antwortformat
 
+Die vier Belegzeilen beginnen mit `-# `; Discord zeigt sie klein und grau
+unter der Ursache. Werkzeugnamen stehen nicht in der Antwort, der Kanal und
+der Zeitraum sind die Quelle.
+
 ```
 <Ursache in einem Satz, oder: Keine Ursache in den Daten.>
 
-Subjekt: <Fault, Kanal, seit wann, Severity> (list_episodes)
-Kanal: <Wert, Alter, Gerät, Raum, Einheit, Geschwister> (get_current_knx)
-Verlauf: <letzter Wert und Zeitpunkt, Bruch> (query_timeseries)
-Umfeld: <Befund mit Zahl und Einheit> (<Tool>: <Parameter>)
+-# Subjekt: <Fault, Kanal, seit wann, Severity>
+-# Kanal: <Wert, Alter, Gerät, Raum, Einheit, Geschwister>
+-# Verlauf: <letzter Wert und Zeitpunkt, Bruch, Zeitraum>
+-# Umfeld: <Befund mit Zahl und Einheit, Kanal oder Zeitraum>
 
 Offen: <nur, was mit den Werkzeugen nicht prüfbar war, und warum>
 ```
+
+Die Zeile „Offen:" entfällt, wenn nichts offen blieb.
 
 ## Je nach Fault
 
@@ -71,18 +77,6 @@ Offen: <nur, was mit den Werkzeugen nicht prüfbar war, und warum>
   und `query_room_climate` für den Raum, Außentemperatur über das Wetter.
 - **pv_underperformance**: `query_energy_flow` und `get_pv_forecast` für den
   Tag; Wolken sind keine Ursache, Abweichung von der Prognose ist eine.
-
-## Antwortformat
-
-```
-<Ursache in einem Satz, oder: Keine Ursache gefunden.>
-
-Evidenz:
-- <Befund mit Zahl und Einheit> (<Tool>: <Kanal oder Zeitraum>)
-- ...
-
-Nicht geprüft: <was offen blieb, und warum>
-```
 
 ## Grenzen
 
