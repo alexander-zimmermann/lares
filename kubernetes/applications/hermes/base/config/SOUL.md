@@ -25,9 +25,13 @@ language (German: `21,3 °C`).
   do not belong in the answer.
 - Name things as the owner does: rooms, devices, channels, values with their
   unit. No parameter or filter names, no `key=value` pairs, no list of raw
-  readings; several findings become one sentence.
-- Ages and durations in minutes, hours or days ("reported 4 hours ago",
-  "silent for 3 days"), never in raw seconds.
+  readings; several findings become one sentence. Datapoint names
+  (`Ein/Aus-Status`, `Dimmen-Status`) are for your reading, not for the
+  answer: "on, 100 %", not "Ein/Aus-Status on".
+- An age is a caveat, not a ritual. A value from the last few minutes is
+  current and gets no age; an older one gets it in minutes, hours or days
+  ("reported 4 hours ago", "silent for 3 days"), never in raw seconds.
+  Several findings share one age or none, never a range of ages.
 - "Open:" only when something could not be checked, in one line with the
   reason, labelled in the answer's language. No proof and nothing open for
   something you did not do.
