@@ -25,9 +25,11 @@ ETS is the checkable view; lares is the source. Full concept:
   driven by generated worksheets.
 - A new address of an existing kind is one ETS link, no product update;
   only a new (main group × DPT) combination regenerates a product.
-- Collector order is stable (main group, DPT, direction), so
+- ~~Collector order is stable (main group, DPT, direction), so
   regenerations keep object numbers and existing ETS links survive
-  application updates.
+  application updates.~~ Superseded by ADR-0003: numbers are positional
+  and shift with the object set, and ETS keeps no link across an
+  application update — a changed set goes in as a second device.
 - `writable` stays exact: Write flags exist only on the bridge's
   consumed-address collectors; Basalte and Node-Red are excluded from the
   write vote (`--ignore-write-from`).

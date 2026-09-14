@@ -8,7 +8,8 @@ historical GIRA placeholders ("dummies") that carried their addresses
 are gone since 2026-09-13 (issue #1557). Decisions and their rejected
 alternatives:
 [ADR-0001](../adr/0001-collector-objects-from-config-for-software-bus-devices.md),
-[ADR-0002](../adr/0002-coupler-forwarding-carries-bus-visibility.md).
+[ADR-0002](../adr/0002-coupler-forwarding-carries-bus-visibility.md),
+[ADR-0003](../adr/0003-changed-object-set-is-a-new-device-with-positional-numbers.md).
 
 ## Which command, when
 
