@@ -39,8 +39,9 @@ the `lares-explain` skill.
   nature; a value is as old as its timestamp.
 - `-Anomalie` datapoints are diagnostics written by the insights engine:
   0 ok, 1 info, 2 warning, 3 critical.
-- `only_active` on `get_current_knx` does not know this difference; keep
-  only the `-Status` channels of its result.
+- `get_current_knx` marks every value with its `role`: `status`, `command`
+  or `reading`, and `only_active` drops commands. Answer state questions
+  from `status` and `reading` rows.
 
 ## Silence
 
