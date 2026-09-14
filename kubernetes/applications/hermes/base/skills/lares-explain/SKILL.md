@@ -1,92 +1,87 @@
 ---
 name: lares-explain
-description: Erklärt eine Episode des Hauses Lares aus ihren Beobachtungen, dem Katalog und den Nachbarkanälen; benutzen, wenn der Eigentümer nach dem Warum einer Episode fragt.
+description: Explains an episode of the house Lares from its observations, the catalog and the neighbouring channels; use it when the owner asks why an episode happened.
 ---
 
-# Eine Episode erklären
+# Explaining an episode
 
-Eine Episode ist ein gefalteter Vorfall eines Faults auf einem Kanal: sie hat
-einen Anfang, eine Severity-Kurve und ihre Beobachtungen als Evidenz. Der
-Fault-Satz sagt, *was* gemessen wurde. Deine Aufgabe ist das *Warum*.
+An episode is a folded incident of one fault on one channel: it has a start,
+a severity curve and its observations as evidence. The fault sentence says
+*what* was measured. Your job is the *why*.
 
-## Vorgehen
+## Procedure
 
-Vier Schritte, jeder mit einem Werkzeugaufruf, jeder mit einer Zeile in der
-Antwort. Eine Antwort, in der ein Schritt fehlt, ist keine Erklärung, sondern
-eine Episodenliste. Die Grenze von zehn Tool-Aufrufen ist ein Deckel, kein
-Ziel; vier bis sechs sind der Normalfall.
+Four steps, each with one tool call, each with one line in the answer. An
+answer missing a step is not an explanation but an episode listing. The cap
+of ten tool calls is a ceiling, not a target; four to six is the usual case.
 
-1. **Subjekt.** `list_episodes` mit der genannten `episode_id`. Notiere
-   Fault, Kanal, Beginn, Severity, Beobachtungen.
-2. **Kanal.** `get_current_knx` mit `room` und `name` (Teil des Kanalnamens):
-   aktueller Wert, Alter, Raum, Gerät, Datenpunkt, Einheit, und die
-   Geschwisterkanäle desselben Geräts. Ohne Einheit keine Zahl in der Antwort.
-3. **Verlauf.** `query_timeseries` auf `knx_1h` für den Kanal, vom Tag vor
-   dem Beginn bis jetzt, Bucket eine Stunde. Wann war der letzte Wert, wo
-   ist der Bruch?
-4. **Umfeld.** Mindestens eine, höchstens drei Abfragen, je nach Fault (siehe
-   unten). Ein Ergebnis mit null Zeilen ist kein Befund: Filter weglassen und
-   erneut fragen. `functions` sind ETS-Funktionsnamen wie `Sensorik`,
-   `Raumklima`, `Heizung`, keine Datenpunkte wie `Temperatur`; im Zweifel
-   ohne Filter.
+1. **Subject.** `list_episodes` with the given `episode_id`. Note fault,
+   channel, start, severity, observations.
+2. **Channel.** `get_current_knx` with `room` and `name` (part of the channel
+   name): current value, age, room, device, datapoint, unit, and the sibling
+   channels of the same device. No number in the answer without its unit.
+3. **History.** `query_timeseries` on `knx_1h` for the channel, from the day
+   before the start until now, one-hour buckets. When was the last value,
+   where is the break?
+4. **Surroundings.** At least one, at most three queries, depending on the
+   fault (see below). A result with zero rows is not a finding: drop the
+   filter and ask again. `functions` are ETS function names such as
+   `Sensorik`, `Raumklima`, `Heizung`, not datapoints such as `Temperatur`;
+   when in doubt, query without the filter.
 
-Dann die Ursache. Wenn die vier Schritte keine hergeben, ist "keine Ursache
-in den Daten" die richtige erste Zeile, aber erst nach den vier Schritten.
+Then the cause. If the four steps yield none, "no cause in the data" is the
+right first line, but only after the four steps.
 
-## Antwortformat
+## Answer format
 
-```
-<Ursache in einem Satz, oder: Keine Ursache in den Daten.>
-
-Subjekt: <Fault, Kanal, seit wann, Severity> (list_episodes)
-Kanal: <Wert, Alter, Gerät, Raum, Einheit, Geschwister> (get_current_knx)
-Verlauf: <letzter Wert und Zeitpunkt, Bruch> (query_timeseries)
-Umfeld: <Befund mit Zahl und Einheit> (<Tool>: <Parameter>)
-
-Offen: <nur, was mit den Werkzeugen nicht prüfbar war, und warum>
-```
-
-## Je nach Fault
-
-- **channel_silence auf einem Schaltkanal** (DPT 1.x, Name endet auf
-  Ein/Aus): der Kanal sendet nur, wenn geschaltet wird. Schweigen heißt
-  zuerst "niemand hat geschaltet", nicht "Sensor tot". Prüfe mit
-  `get_current_knx` den letzten Wert und Zeitpunkt, und darüber auch den
-  Rückmelde- oder Statuskanal desselben Geräts. Sag, ob das Gerät aus ist
-  oder ob auch die Rückmeldung fehlt; nur das zweite ist ein Defekt.
-- **channel_silence auf einem Status- oder Diagnosekanal** (Name endet auf
-  `-Status` oder `-Anomalie`, Wert wahr/falsch oder 0 bis 3): diese Kanäle
-  werden nur bei Änderung geschrieben. Schweigen heißt "unverändert", und
-  der aktuelle Wert aus `get_current_knx` sagt, ob das gut ist (Status wahr,
-  Anomalie 0). Geschwister, die zwischendurch geschrieben wurden, haben sich
-  geändert, nicht "gelebt". Kein Defekt, solange der Wert stimmt.
-- **channel_silence auf einem Messkanal** (Temperatur, Feuchte, Strom): der
-  Sender selbst oder seine Bridge ist verdächtig. Prüfe Nachbarkanäle
-  desselben Geräts und desselben Raums: schweigen alle, ist es das Gerät
-  oder der Bus, schweigt nur einer, ist es der Kanal.
-- **appliance_runtime, appliance_standby, freezer_icing**: der Stromkanal
-  des Geräts über `query_timeseries`, dazu Raumtemperatur und Nutzung
-  (`query_unifi_events` für Anwesenheit).
-- **fbh_cold, heat_recovery_decay, Gastherme-Faults**: `query_heating_cycles`
-  und `query_room_climate` für den Raum, Außentemperatur über das Wetter.
-- **pv_underperformance**: `query_energy_flow` und `get_pv_forecast` für den
-  Tag; Wolken sind keine Ursache, Abweichung von der Prognose ist eine.
-
-## Antwortformat
+The four proof lines start with `-# `; Discord renders them small and grey
+below the cause. Tool names do not appear in the answer; the channel and the
+time range are the source. Write the answer, including the labels, in the
+language of the question.
 
 ```
-<Ursache in einem Satz, oder: Keine Ursache gefunden.>
+<Cause in one sentence, or: No cause in the data.>
 
-Evidenz:
-- <Befund mit Zahl und Einheit> (<Tool>: <Kanal oder Zeitraum>)
-- ...
+-# Subject: <fault, channel, since when, severity>
+-# Channel: <value, age, device, room, unit, siblings>
+-# History: <last value and time, break, time range>
+-# Surroundings: <finding with number and unit, channel or time range>
 
-Nicht geprüft: <was offen blieb, und warum>
+Open: <only what the tools could not check, and why>
 ```
 
-## Grenzen
+The "Open:" line is dropped when nothing was left open.
 
-- Höchstens zehn Tool-Aufrufe je Erklärung.
-- Nie rohe `knx`-Daten über mehr als einen Tag abfragen; Stundenaggregate
-  reichen, die Datenbank ist klein.
-- Keine Verdikte setzen; das tut der Eigentümer.
+## Per fault
+
+- **channel_silence on a switching channel** (DPT 1.x, name ends in
+  Ein/Aus): the channel only sends when something is switched. Silence means
+  "nobody switched" first, not "sensor dead". Check the last value and time
+  with `get_current_knx`, and through it the feedback or status channel of
+  the same device. Say whether the device is off or whether the feedback is
+  missing too; only the second is a defect.
+- **channel_silence on a status or diagnostic channel** (name ends in
+  `-Status` or `-Anomalie`, value true/false or 0 to 3): these channels are
+  written on change only. Silence means "unchanged", and the current value
+  from `get_current_knx` says whether that is fine (status true, anomaly 0).
+  Siblings written in between have changed, not "lived". No defect as long
+  as the value is right.
+- **channel_silence on a measuring channel** (temperature, humidity,
+  current): the sender itself or its bridge is the suspect. Check
+  neighbouring channels of the same device and the same room: if all are
+  silent it is the device or the bus, if only one is silent it is the
+  channel.
+- **appliance_runtime, appliance_standby, freezer_icing**: the appliance's
+  current channel via `query_timeseries`, plus room temperature and presence
+  (`query_unifi_events`).
+- **fbh_cold, heat_recovery_decay, gas boiler faults**: `query_heating_cycles`
+  and `query_room_climate` for the room, outdoor temperature via the weather.
+- **pv_underperformance**: `query_energy_flow` and `get_pv_forecast` for the
+  day; clouds are not a cause, deviation from the forecast is.
+
+## Limits
+
+- At most ten tool calls per explanation.
+- Never query raw `knx` data over more than one day; hourly aggregates are
+  enough, the database is small.
+- Set no verdicts; the owner does that.
