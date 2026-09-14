@@ -23,6 +23,7 @@ configMapGenerator:
     files:
       - config/config.yaml
       - config/SOUL.md
+      - config/AGENTS.md
     # Empty marker file: without it Hermes seeds its 58 bundled skills into the volume on every boot
     literals:
       - .no-bundled-skills=
