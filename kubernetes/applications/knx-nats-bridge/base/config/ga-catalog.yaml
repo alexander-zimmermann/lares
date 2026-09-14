@@ -58,60 +58,65 @@
   name: Allgemein.Zentral.A.Alles-Aus
   room: Außenbereich
   writable: true
+0/0/181:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.Zentral.Gebäude.Alles-Aus
+  room: Gebäude
+  writable: false
 0/0/220:
   dpt: '17.001'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Szenen
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/221:
   dpt: '1.001'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Alles-Aus
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/225:
   dpt: '10.001'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Uhrzeit
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/226:
   dpt: '11.001'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Datum
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/227:
   dpt: '19.001'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Datum-Uhrzeit
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/228:
   dpt: '1.002'
   function: Allgemein
   name: Allgemein.Zentral.Anwesen.Sommer/Winter
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 0/0/250:
-  description: Anwesen Steinroth 20 Diagnose
   dpt: '5.010'
-  function: Allgemein
+  function: Diagnose
   name: Allgemein.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 0/0/251:
   dpt: '5.010'
   function: Diagnose
   name: Allgemein.Zentral.Diagnose.Meldungsvolumen-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 0/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Allgemein.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 0/1/0:
   dpt: '17.001'
@@ -125,6 +130,12 @@
   name: Allgemein.KG.Flur.Alles-Aus
   room: Flur
   writable: true
+0/1/2:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.KG.Flur.Alles-Aus-Trigger
+  room: Flur
+  writable: false
 0/1/20:
   dpt: '17.001'
   function: Allgemein
@@ -137,6 +148,12 @@
   name: Allgemein.KG.Garage.Alles-Aus
   room: Garage
   writable: true
+0/1/22:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.KG.Garage.Alles-Aus-Trigger
+  room: Garage
+  writable: false
 0/1/40:
   dpt: '17.001'
   function: Allgemein
@@ -149,6 +166,12 @@
   name: Allgemein.KG.Technikraum.Alles-Aus
   room: Technikraum
   writable: true
+0/1/42:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.KG.Technikraum.Alles-Aus-Trigger
+  room: Technikraum
+  writable: false
 0/1/60:
   dpt: '17.001'
   function: Allgemein
@@ -161,6 +184,12 @@
   name: Allgemein.KG.Vorratsraum.Alles-Aus
   room: Vorratsraum
   writable: true
+0/1/62:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.KG.Vorratsraum.Alles-Aus-Trigger
+  room: Vorratsraum
+  writable: false
 0/1/80:
   dpt: '17.001'
   function: Allgemein
@@ -173,6 +202,12 @@
   name: Allgemein.KG.Hauswirtschaftsraum.Alles-Aus
   room: Hauswirtschaftsraum
   writable: true
+0/1/82:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.KG.Hauswirtschaftsraum.Alles-Aus-Trigger
+  room: Hauswirtschaftsraum
+  writable: false
 0/2/0:
   dpt: '17.001'
   function: Allgemein
@@ -197,6 +232,18 @@
   name: Allgemein.EG.Küche.Alles-Aus
   room: Küche
   writable: true
+0/2/102:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.EG.Küche.Alles-Aus-Trigger
+  room: Küche
+  writable: false
+0/2/2:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.EG.Flur.Alles-Aus-Trigger
+  room: Flur
+  writable: false
 0/2/20:
   dpt: '17.001'
   function: Allgemein
@@ -209,6 +256,12 @@
   name: Allgemein.EG.Gäste-WC.Alles-Aus
   room: Gäste WC
   writable: true
+0/2/22:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.EG.Gäste-WC.Alles-Aus-Trigger
+  room: Gäste WC
+  writable: false
 0/2/40:
   dpt: '17.001'
   function: Allgemein
@@ -257,6 +310,12 @@
   name: Allgemein.EG.Esszimmer.Alles-Aus
   room: Esszimmer
   writable: true
+0/2/82:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.EG.Esszimmer.Alles-Aus-Trigger
+  room: Esszimmer
+  writable: false
 0/3/0:
   dpt: '17.001'
   function: Allgemein
@@ -299,6 +358,12 @@
   name: Allgemein.OG.Begehbarer-Schrank.Alles-Aus
   room: Begehbarer Schrank
   writable: true
+0/3/122:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.OG.Begehbarer-Schrank.Alles-Aus-Trigger
+  room: Begehbarer Schrank
+  writable: false
 0/3/140:
   dpt: '17.001'
   function: Allgemein
@@ -316,6 +381,12 @@
   function: Allgemein
   name: Allgemein.OG.Badezimmer-Eltern.Alles-Aus-Trigger
   room: Badezimmer Eltern
+  writable: false
+0/3/2:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.OG.Flur.Alles-Aus-Trigger
+  room: Flur
   writable: false
 0/3/20:
   dpt: '17.001'
@@ -401,6 +472,12 @@
   name: Allgemein.DG.Speicher.Alles-Aus
   room: Speicher (S)
   writable: true
+0/4/2:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.DG.Speicher.Alles-Aus-Trigger
+  room: Speicher (S)
+  writable: false
 0/5/0:
   dpt: '17.001'
   function: Allgemein
@@ -413,6 +490,12 @@
   name: Allgemein.A.Fassade.Alles-Aus
   room: Fassade
   writable: true
+0/5/2:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.A.Fassade.Alles-Aus-Trigger
+  room: Fassade
+  writable: false
 0/5/20:
   dpt: '17.001'
   function: Allgemein
@@ -425,6 +508,12 @@
   name: Allgemein.A.Terrasse.Alles-Aus
   room: Terrasse
   writable: true
+0/5/22:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.A.Terrasse.Alles-Aus-Trigger
+  room: Terrasse
+  writable: false
 0/5/40:
   dpt: '17.001'
   function: Allgemein
@@ -437,6 +526,12 @@
   name: Allgemein.A.Balkon.Alles-Aus
   room: Balkon
   writable: true
+0/5/42:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.A.Balkon.Alles-Aus-Trigger
+  room: Balkon
+  writable: false
 0/5/60:
   dpt: '17.001'
   function: Allgemein
@@ -455,6 +550,12 @@
   name: Allgemein.G.Eingang.Alles-Aus
   room: Eingang
   writable: true
+0/6/22:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.G.Eingang.Alles-Aus-Trigger
+  room: Eingang
+  writable: false
 0/6/40:
   dpt: '17.001'
   function: Allgemein
@@ -467,6 +568,12 @@
   name: Allgemein.G.Garten.Alles-Aus
   room: Garten
   writable: true
+0/6/42:
+  dpt: '1.001'
+  function: Allgemein
+  name: Allgemein.G.Garten.Alles-Aus-Trigger
+  room: Garten
+  writable: false
 10/0/100:
   dpt: '1.011'
   function: Sicherheit
@@ -489,13 +596,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Sicherheit.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 10/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Sicherheit.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 10/1/1:
   dpt: '1.019'
@@ -897,13 +1004,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Zutritt.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 11/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Zutritt.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 11/1/10:
   dpt: '1.003'
@@ -951,13 +1058,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Entertainment.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 12/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Entertainment.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 12/2/101:
   dpt: '1.001'
@@ -1467,13 +1574,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Sicherheitstechnik.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 14/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Sicherheitstechnik.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 14/1/1:
   dpt: '1.011'
@@ -2067,13 +2174,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Versorgungstechnik.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 15/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Versorgungstechnik.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 15/1/0:
   description: 2 - Garage (K2) Energiezähler
@@ -3172,61 +3279,61 @@
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Infrastruktur.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 16/0/221:
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Internet.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/222:
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Netzwerk.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/223:
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Server.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/224:
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Speicher.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/225:
   dpt: '1.011'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Kubernetes.Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/250:
   dpt: '5.010'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 16/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Informationstechnik.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 17/0/250:
   dpt: '5.010'
   function: Diagnose
   name: Haushaltstechnik.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 17/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Haushaltstechnik.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 17/1/0:
   dpt: '1.003'
@@ -3923,301 +4030,296 @@
   dpt: '5.010'
   function: Diagnose
   name: Person.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Person.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/0:
-  description: Anwesen Steinroth 20 Person
   dpt: '1.011'
-  function: Allgemein
+  function: Person
   name: Person.Alexander.Präsenz
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/10:
   dpt: '5.010'
   function: Person
   name: Person.Alexander.Stream.Voreinstellung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/11:
   dpt: '5.010'
   function: Person
   name: Person.Alexander.Stream.Aktion
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/12:
   dpt: '1.001'
   function: Person
   name: Person.Alexander.Stream.Wiederholung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/13:
   dpt: '1.011'
   function: Person
   name: Person.Alexander.Stream.Wiederholung-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/14:
   dpt: '1.001'
   function: Person
   name: Person.Alexander.Stream.Shuffle
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/15:
   dpt: '1.011'
   function: Person
   name: Person.Alexander.Stream.Shuffle-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/16:
   dpt: '16.001'
   function: Person
   name: Person.Alexander.Stream.Album-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/17:
   dpt: '16.001'
   function: Person
   name: Person.Alexander.Stream.Interpret-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/18:
   dpt: '16.001'
   function: Person
   name: Person.Alexander.Stream.Titel-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/1/19:
   dpt: '5.001'
   function: Person
   name: Person.Alexander.Stream.Fortschritt-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/0:
-  description: Anwesen Steinroth 20 Person
   dpt: '1.011'
-  function: Allgemein
+  function: Person
   name: Person.Vanessa.Präsenz
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/10:
   dpt: '5.010'
   function: Person
   name: Person.Vanessa.Stream.Voreinstellung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/11:
   dpt: '5.010'
   function: Person
   name: Person.Vanessa.Stream.Aktion
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/12:
   dpt: '1.001'
   function: Person
   name: Person.Vanessa.Stream.Wiederholung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/13:
   dpt: '1.011'
   function: Person
   name: Person.Vanessa.Stream.Wiederholung-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/14:
   dpt: '1.001'
   function: Person
   name: Person.Vanessa.Stream.Shuffle
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/15:
   dpt: '1.011'
   function: Person
   name: Person.Vanessa.Stream.Shuffle-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/16:
   dpt: '16.001'
   function: Person
   name: Person.Vanessa.Stream.Album-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/17:
   dpt: '16.001'
   function: Person
   name: Person.Vanessa.Stream.Interpret-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/18:
   dpt: '16.001'
   function: Person
   name: Person.Vanessa.Stream.Titel-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/2/19:
   dpt: '5.001'
   function: Person
   name: Person.Vanessa.Stream.Fortschritt-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/0:
-  description: Anwesen Steinroth 20 Person
   dpt: '1.011'
-  function: Allgemein
+  function: Person
   name: Person.Luis.Präsenz
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/10:
   dpt: '5.010'
   function: Person
   name: Person.Luis.Stream.Voreinstellung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/11:
   dpt: '5.010'
   function: Person
   name: Person.Luis.Stream.Aktion
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/12:
   dpt: '1.001'
   function: Person
   name: Person.Luis.Stream.Wiederholung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/13:
   dpt: '1.011'
   function: Person
   name: Person.Luis.Stream.Wiederholung-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/14:
   dpt: '1.001'
   function: Person
   name: Person.Luis.Stream.Shuffle
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/15:
   dpt: '1.011'
   function: Person
   name: Person.Luis.Stream.Shuffle-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/16:
   dpt: '16.001'
   function: Person
   name: Person.Luis.Stream.Album-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/17:
   dpt: '16.001'
   function: Person
   name: Person.Luis.Stream.Interpret-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/18:
   dpt: '16.001'
   function: Person
   name: Person.Luis.Stream.Titel-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/3/19:
   dpt: '5.001'
   function: Person
   name: Person.Luis.Stream.Fortschritt-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/0:
-  description: Anwesen Steinroth 20 Person
   dpt: '1.011'
-  function: Allgemein
+  function: Person
   name: Person.Gregory.Präsenz
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/10:
   dpt: '5.010'
   function: Person
   name: Person.Gregory.Stream.Voreinstellung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/11:
   dpt: '5.010'
   function: Person
   name: Person.Gregory.Stream.Aktion
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/12:
   dpt: '1.001'
   function: Person
   name: Person.Gregory.Stream.Wiederholung
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/13:
   dpt: '1.011'
   function: Person
   name: Person.Gregory.Stream.Wiederholung-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/14:
   dpt: '1.001'
   function: Person
   name: Person.Gregory.Stream.Shuffle
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/15:
   dpt: '1.011'
   function: Person
   name: Person.Gregory.Stream.Shuffle-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/16:
   dpt: '16.001'
   function: Person
   name: Person.Gregory.Stream.Album-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/17:
   dpt: '16.001'
   function: Person
   name: Person.Gregory.Stream.Interpret-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/18:
   dpt: '16.001'
   function: Person
   name: Person.Gregory.Stream.Titel-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 18/4/19:
   dpt: '5.001'
   function: Person
   name: Person.Gregory.Stream.Fortschritt-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 2/0/220:
   description: 1 - Innen Schalten
   dpt: '1.003'
   function: Schalten
   name: Schalten.Zentral.Anwesen.Kilowattstunde-Löschen
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 2/0/250:
-  description: Anwesen Steinroth 20 Diagnose
   dpt: '5.010'
-  function: Schalten
+  function: Diagnose
   name: Schalten.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 2/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Schalten.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 2/1/0:
   dpt: '1.001'
@@ -6671,13 +6773,13 @@
   dpt: '1.001'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Anwesen.Ein/Aus
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: true
 3/0/221:
   dpt: '1.011'
   function: Beleuchtung
   name: Beleuchtung.Gebäude.Zentral.Anwesen.Ein/Aus-Status
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 3/0/23:
   dpt: '1.011'
@@ -6698,17 +6800,16 @@
   room: Abstellraum
   writable: true
 3/0/250:
-  description: Anwesen Steinroth 20 Diagnose
   dpt: '5.010'
-  function: Beleuchtung
+  function: Diagnose
   name: Beleuchtung.Gebäude.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 3/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Beleuchtung.Gebäude.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 3/0/26:
   dpt: '1.001'
@@ -9320,13 +9421,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Beleuchtung.Einrichtung.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 4/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Beleuchtung.Einrichtung.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 4/2/61:
   dpt: '1.001'
@@ -9692,13 +9793,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Beschattung.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 5/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Beschattung.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 5/2/0:
   dpt: '1.003'
@@ -10816,13 +10917,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Raumklima.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 6/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Raumklima.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 6/1/100:
   dpt: '1.003'
@@ -11946,13 +12047,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Bedienelement.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 7/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Bedienelement.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 7/2/0:
   dpt: '1.001'
@@ -12624,13 +12725,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Sensorik.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 8/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Sensorik.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 8/1/100:
   dpt: '1.005'
@@ -14382,13 +14483,13 @@
   dpt: '5.010'
   function: Diagnose
   name: Bewegungsmelder.Zentral.Diagnose.Telegrammstille-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 9/0/252:
   dpt: '5.010'
   function: Diagnose
   name: Bewegungsmelder.Zentral.Diagnose.Konstanz-Anomalie
-  room: Anwesen Steinroth 20
+  room: Anwesen
   writable: false
 9/1/0:
   dpt: '1.003'
