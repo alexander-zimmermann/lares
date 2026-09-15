@@ -554,8 +554,9 @@ module "fleet_vm" {
   template_node = module.template_vm[each.value.template_id].node
 
   ## Startup variables
-  wait_for_agent = each.value.wait_for_agent
-  protection     = each.value.protection
+  qemu_guest_agent = each.value.qemu_guest_agent
+  wait_for_agent   = each.value.wait_for_agent
+  protection       = each.value.protection
 
   ## Cloud-init configuration (inherited from template)
   cloud-init_override = true
