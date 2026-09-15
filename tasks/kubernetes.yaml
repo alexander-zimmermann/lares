@@ -131,12 +131,7 @@ tasks:
   unseal:
     desc: "unseal a sealed-secret.yaml [path/to/sealed-secret.yaml]"
     summary: |
-      Decrypts a sealed-secret.yaml back to plaintext secret.yaml in the same directory.
-      Handles multi-document YAML (each `---`-separated SealedSecret is unsealed
-      and concatenated into the output). Extracts the PEM private key from the
-      controller's master-key Secret-list before invoking kubeseal — passing the
-      raw list YAML to `--recovery-private-key` made kubeseal fall back to
-      contacting the cluster, which fails outside the cluster.
+      Decrypts a sealed-secret.yaml (multi-document) back to secret.yaml in the same directory.
       Arguments: [path/to/sealed-secret.yaml]
     vars:
       INPUT: "{{index .CLI_ARGS_LIST 0}}"
@@ -162,6 +157,7 @@ tasks:
         KEY=$(mktemp -t sealed-unseal-key.XXXXXX)
         SPLIT=$(mktemp -d -t sealed-unseal-split.XXXXXX)
         trap 'rm -f "$KEY"; rm -rf "$SPLIT"' EXIT
+        # bare PEM key: handed the master-key list YAML, kubeseal falls back to the cluster
         yq '.items[0].data["tls.key"]' {{.MASTER_KEY}} \
           | base64 -d > "$KEY"
         gcsplit -sz -f "$SPLIT/doc_" -b "%02d.yaml" "{{.INPUT}}" '/^---$/' '{*}'
