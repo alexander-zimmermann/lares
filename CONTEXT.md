@@ -27,7 +27,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **GA mapping** — one writer rule: a NATS subject and a payload path on
   the left, a group address and its DPT on the right, one file per source
   under `ga-mappings/`. Generated where a package can describe its fields
-  (Miele, Midea, Dyson, the engine's anomalies), hand-written elsewhere.
+  (Miele, Midea, Dyson, the engine's fault severities), hand-written
+  elsewhere.
 - **Descriptor** — a sidecar bridge's declaration of its KNX-relevant
   fields: `knx.yaml` at the package root, per published field the datapoint
   name, the DPT and the writer behaviour. Describes the product family,
