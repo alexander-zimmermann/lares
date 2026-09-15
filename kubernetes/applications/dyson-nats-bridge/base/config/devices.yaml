@@ -1,8 +1,8 @@
 # Dyson devices served by the bridge. `name` is the NATS subject slug
 # (dyson.<name>.state) and the key of the matching credential in the
-# dyson-nats-bridge-device-credentials Secret. `ga_name` binds the device to
-# its group-address block: the name prefix every datapoint of the bridge's
-# descriptor is resolved under when ga-mappings/dyson.yaml is generated
+# dyson-nats-bridge-device-credentials Secret. `ga_name` names the device's
+# address block: the group-address name prefix every datapoint of the bridge's
+# descriptor resolves under when ga-mappings/dyson.yaml is generated
 # (task knx:create-ga-mappings).
 devices:
   - name: ventilator-og7

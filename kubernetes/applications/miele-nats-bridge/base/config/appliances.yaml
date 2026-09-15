@@ -2,8 +2,8 @@
 # (miele.<name>.state) and drives the program/phase offsets in the bridge.
 # `device_id` is the fabrication number from GET /devices — the API reports
 # deviceName as empty for every appliance, so the id is the only stable key.
-# `ga_name` binds the appliance to its group-address block: the name prefix
-# every datapoint of the bridge's descriptor is resolved under when
+# `ga_name` names the appliance's address block: the group-address name prefix
+# every datapoint of the bridge's descriptor resolves under when
 # ga-mappings/miele.yaml is generated (task knx:create-ga-mappings).
 appliances:
   - device_id: "000105454657"
