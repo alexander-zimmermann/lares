@@ -2,22 +2,31 @@
 # (miele.<name>.state) and drives the program/phase offsets in the bridge.
 # `device_id` is the fabrication number from GET /devices — the API reports
 # deviceName as empty for every appliance, so the id is the only stable key.
+# `ga_name` binds the appliance to its group-address block: the name prefix
+# every datapoint of the bridge's descriptor is resolved under when
+# ga-mappings/miele.yaml is generated (task knx:create-ga-mappings).
 appliances:
   - device_id: "000105454657"
     name: geschirrspueler
     model: G7560
+    ga_name: Haushaltstechnik.Geschirrspüler
   - device_id: "000138283781"
     name: backofen
     model: H7860BPX
+    ga_name: Haushaltstechnik.Backofen
   - device_id: "000175853376"
     name: tellerwaermer
     model: ESW7020
+    ga_name: Haushaltstechnik.Tellerwärmer
   - device_id: "000138262731"
     name: mikrowelle
     model: H7840BMX
+    ga_name: Haushaltstechnik.Mikrowelle
   - device_id: "000703326754"
     name: kaffeemaschine
     model: CVA7845
+    ga_name: Haushaltstechnik.Kaffeemaschine
   - device_id: "000175805475"
     name: dampfgarer
     model: DGC7845X
+    ga_name: Haushaltstechnik.Dampfgarer

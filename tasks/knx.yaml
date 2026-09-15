@@ -6,7 +6,11 @@ version: "3"
 #                            the version the validate tasks install
 #   KNX_CATALOG_PATH       — destination ConfigMap source file in lares
 #   KNX_GA_MAPPINGS_DIR    — the GA mappings directory, one file per source
+#   INSIGHTS_CRONJOB_PATH  — the detect-faults CronJob; its image tag is the
+#                            engine version the generator installs
 #   INSIGHTS_FAULTS_PATH   — the fault-list source file in lares
+#   <MIELE|MIDEA|DYSON>_VALUES_PATH / _CONFIG_PATH — the sidecar bridges whose
+#                            mappings are generated: deployed tag, device list
 # The local inputs come from .env (see .env.example):
 #   KNX_PROJECT_PATH      — the ETS project export
 #   KNXPROJ_PASSWORD      — its password, read by the knxproj tools
@@ -184,20 +188,66 @@ tasks:
         --device "@$nodered=Node-Red:both"
         --todo-dir "{{.TODO_DIR}}"
 
-  fault-writer-rules:
-    desc: "regenerate ga-mappings/channels.yaml from faults.yaml and the GA catalog"
+  create-ga-mappings:
+    desc: "regenerate the generated files in ga-mappings/ from descriptors, bindings, faults.yaml and the catalog"
     summary: |
-      Write channels.yaml whole: one rule per main group for every fault the
-      fault list declares as delivering per main group (channel silence and
-      constancy) and one rule per fault delivering to a declared house-wide
-      address, each resolved against the catalog for address, DPT and name.
-      The rules follow the address plan, so run this after every catalog
-      change; it validates the result on the way out.
+      Write every generated GA-mapping file whole, each in the environment
+      of the package that describes it, installed from GitHub at the tag
+      the app manifest deploys:
+      - miele.yaml, midea.yaml, dyson.yaml — from the bridge's descriptor
+        (knx.yaml in its package) and the ga_name bindings in its app
+        config: device × field → the address named <ga_name>.<datapoint>
+      - insights.yaml — from the per-device and per-room faults' name
+        templates: entity × fault → the address the template renders to
+      - channels.yaml — from the per-main-group faults and the house-wide
+        ones
+      Every rule is resolved against the catalog by name, so run this after
+      every catalog change; a DPT disagreement between descriptor and
+      catalog fails the run, a field the catalog has no name for is left
+      out and listed per device. Validates the result on the way out.
     cmds:
-      - >
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/fault_writer_rules.py"
-        "{{.INSIGHTS_FAULTS_PATH}}" "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}"
+      - task: generate-ga-mappings
+        vars: { OUT_DIR: "{{.KNX_GA_MAPPINGS_DIR}}" }
       - task: validate-ga-mappings
+
+  generate-ga-mappings:
+    internal: true
+    desc: "write the generated GA-mapping files into OUT_DIR"
+    requires:
+      vars: [OUT_DIR]
+    vars:
+      MIELE_TAG:
+        sh: yq '.deployment.image.tag' "{{.MIELE_VALUES_PATH}}"
+      MIDEA_TAG:
+        sh: yq '.deployment.image.tag' "{{.MIDEA_VALUES_PATH}}"
+      DYSON_TAG:
+        sh: yq '.deployment.image.tag' "{{.DYSON_VALUES_PATH}}"
+      INSIGHTS_ENGINE_TAG:
+        sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.INSIGHTS_CRONJOB_PATH}}"
+    cmds:
+      # One environment per package: the bridges pin nats-bridge-core at
+      # their own tags, which one shared resolve could not satisfy.
+      - >
+        uv run --no-project --python 3.14
+        --with "miele-nats-bridge @ git+https://github.com/alexander-zimmermann/miele-nats-bridge@v{{.MIELE_TAG}}"
+        python "{{.SCRIPTS_DIR}}/ga_mappings.py" miele
+        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIELE_CONFIG_PATH}}"
+      - >
+        uv run --no-project --python 3.14
+        --with "midea-nats-bridge @ git+https://github.com/alexander-zimmermann/midea-nats-bridge@v{{.MIDEA_TAG}}"
+        python "{{.SCRIPTS_DIR}}/ga_mappings.py" midea
+        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIDEA_CONFIG_PATH}}"
+      - >
+        uv run --no-project --python 3.14
+        --with "dyson-nats-bridge @ git+https://github.com/alexander-zimmermann/dyson-nats-bridge@v{{.DYSON_TAG}}"
+        python "{{.SCRIPTS_DIR}}/ga_mappings.py" dyson
+        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DYSON_CONFIG_PATH}}"
+      - for: [insights, channels]
+        cmd: >
+          uv run --no-project --python 3.14
+          --with "iot-insights-engine @ git+https://github.com/alexander-zimmermann/iot-insights-engine@v{{.INSIGHTS_ENGINE_TAG}}"
+          python "{{.SCRIPTS_DIR}}/ga_mappings.py" {{.ITEM}}
+          "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.INSIGHTS_FAULTS_PATH}}"
 
   validate-ga-mappings:
     desc: "validate ga-mappings/ with the bridge's loader at the deployed tag"
@@ -209,12 +259,15 @@ tasks:
       target GA against ga-catalog.yaml, and regenerate every generated file
       into a temporary directory and diff — a stale one fails with the diff
       shown. What passes here is what the cluster accepts.
-      Called by the pre-commit hook. Needs network (the git tag is fetched on
-      every run) and a uv that knows the bridge's Python floor.
+      Called by the pre-commit hook. Needs network (the git tags are fetched
+      on every run) and a uv that knows the packages' Python floors.
     vars:
       KNX_BRIDGE_TAG:
         sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"
+      TMP_DIR:
+        sh: mktemp -d
     cmds:
+      - defer: rm -rf "{{.TMP_DIR}}"
       - >
         uv run --no-project --python 3.14
         --with "knx-nats-bridge @ git+https://github.com/alexander-zimmermann/knx-nats-bridge@v{{.KNX_BRIDGE_TAG}}"
@@ -229,13 +282,12 @@ tasks:
         print(f'OK: {len(rules)} rules on {len(rules.subjects())} subjects, all GAs in catalog (bridge v{{.KNX_BRIDGE_TAG}})')"
         "{{.KNX_GA_MAPPINGS_DIR}}" "{{.KNX_CATALOG_PATH}}"
       # Freshness: every generated file must match a fresh run of its generator.
+      - task: generate-ga-mappings
+        vars: { OUT_DIR: "{{.TMP_DIR}}" }
       - >
-        set -e; tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT;
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/fault_writer_rules.py"
-        "{{.INSIGHTS_FAULTS_PATH}}" "{{.KNX_CATALOG_PATH}}" "$tmp" >/dev/null;
-        for f in "$tmp"/*.yaml; do
+        for f in "{{.TMP_DIR}}"/*.yaml; do
         diff -u "{{.KNX_GA_MAPPINGS_DIR}}/$(basename "$f")" "$f" ||
-        { echo "$(basename "$f") is stale: run 'task knx:fault-writer-rules'"; exit 1; };
+        { echo "$(basename "$f") is stale: run 'task knx:create-ga-mappings'"; exit 1; };
         done;
         echo "OK: generated files current"
 

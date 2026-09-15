@@ -24,6 +24,17 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Consumed address** — a group address whose bus writes a NATS consumer
   acts on (the `*_from_knx` manifests). These make `writable` true via the
   bridge's Write-flagged collectors.
+- **GA mapping** — one writer rule: a NATS subject and a payload path on
+  the left, a group address and its DPT on the right, one file per source
+  under `ga-mappings/`. Generated where a package can describe its fields
+  (Miele, Midea, Dyson, the engine's anomalies), hand-written elsewhere.
+- **Descriptor** — a sidecar bridge's declaration of its KNX-relevant
+  fields: `knx.yaml` at the package root, per published field the datapoint
+  name, the DPT and the writer behaviour. Describes the product family,
+  never the house; read at the deployed tag.
+- **Binding** — a device's group-address name prefix, `ga_name`, in the
+  sidecar's app config in lares (`appliances.yaml`, `devices.yaml`). With
+  the descriptor's datapoint it names the address: `<ga_name>.<datapoint>`.
 - **Writer target** — a group address the bridge writes onto the bus, as
   declared in the GA mappings (`ga-mappings/<source>.yaml`).
 - **writable** (catalog flag) — "writing this group address has an effect":
