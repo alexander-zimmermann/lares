@@ -1,14 +1,9 @@
 version: "3"
 
-# What changed decides the task. A lares config, a Studio or a Node-Red
-# export changed: create-ets-devices. "only links" — link the new addresses
-# in ETS per worksheet. "publish" — Kaenx-Creator: open the .ae-manu,
-# publish; ETS: import the .knxprod, add the new version as a second device,
-# drag the links over per worksheet (war N), delete the old device, give the
-# new one its address, link the new addresses. ETS changed: export the
-# project. Then always: create-ga-catalog → validate-ets-devices → commit
-# the catalog and versions.yaml. ETS and Kaenx-Creator: wiki ets-kaenx-creator.
-# Paths come from Taskfile.yaml vars, the local inputs from .env (.env.example).
+# What changed decides the task: lares config, Studio or Node-Red export →
+# create-ets-devices (the ETS steps of a publish: wiki ets-kaenx-creator);
+# ETS → export the project. Then always: create-ga-catalog →
+# validate-ets-devices → commit the catalog and versions.yaml.
 
 vars:
   CONSUMERS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers"

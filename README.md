@@ -255,8 +255,8 @@ lares/
 ├── cluster/          # Layer 2 — Omni cluster templates + machine classes
 ├── kubernetes/       # Layer 3 — Argo CD-reconciled manifests
 │
-├── scripts/          # Helper scripts (KNX catalog enrichment)
-├── tasks/            # Taskfile includes (cluster, infra, kubernetes, knx)
+├── scripts/          # Helpers the tasks call (footprints, GA mappings, Basalte export)
+├── tasks/            # Taskfile includes (basalte, cluster, infra, insights, k8s, knx)
 └── Taskfile.yaml     # Top-level entry point — `task --list`
 ```
 
