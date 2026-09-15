@@ -6,7 +6,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: nousresearch/hermes-agent
-    tag: v2026.9.11
+    tag: v2026.9.14
     pullPolicy: IfNotPresent
 
   # One gateway per data volume, never two; the PVC is ReadWriteOnce anyway.
