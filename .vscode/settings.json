@@ -23,7 +23,7 @@
   "material-icon-theme.files.associations": {
     "kubeconfig": "kubernetes",
     "talosconfig": "kubernetes",
-    "kubernetes.yaml": "taskfile",
+    "*.tasks.yaml": "taskfile",
     "omni-compose.yaml": "docker",
     "*.tf": "opentofu",
     "*.tfvars": "opentofu",

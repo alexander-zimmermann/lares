@@ -7,7 +7,7 @@ with a main-type fallback), per direction on the bridge — and whose address se
 (writer-rules ∪ `*_from_knx` consumers; Basalte Studio bindings; the
 Node-Red flow export), never from what ETS happens to link to a device.
 ETS is the checkable view; lares is the source. The terms are in
-`CONTEXT.md`, the workflow is the header comment of `tasks/knx.yaml`.
+`CONTEXT.md`, the workflow is the header comment of `tasks/knx.tasks.yaml`.
 
 ## Considered options
 

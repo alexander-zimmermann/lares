@@ -7,7 +7,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Software bus participant** — a bus participant that exists as software,
   not hardware: the KNX-NATS bridge, the Basalte visualisation, Node-Red.
   Each is modelled in ETS as a real device generated from a product database
-  (`knx:create-ets-devices` in `tasks/knx.yaml`), never hand-maintained.
+  (`knx:create-ets-devices` in `tasks/knx.tasks.yaml`), never hand-maintained.
 - **Placeholder** (historically: dummy) — a GIRA dummy device that carried
   group addresses only to get them into coupler filter tables. Replaced
   by the generated devices on 2026-09-13; a placeholder's link set
@@ -18,7 +18,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   happens to link to it). The bridge's footprint is writer targets plus
   consumed addresses; Basalte's is its Studio-export bindings; Node-Red's
   is the addresses its flow export touches. Computed by the internal
-  `extract-footprints` task in `tasks/knx.yaml`.
+  `extract-footprints` task in `tasks/knx.tasks.yaml`.
 - **Collector object** — one ETS communication object carrying every group
   address of one kind (main group × datapoint type, per direction on the
   bridge). The opposite of one-object-per-address.
