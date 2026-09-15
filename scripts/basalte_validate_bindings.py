@@ -1,6 +1,6 @@
 """Check whether Basalte still agrees with ETS about the group addresses.
 
-    uv run --no-project --with pyyaml python scripts/basalte_sync.py \
+    uv run --no-project --with pyyaml python scripts/basalte_validate_bindings.py \
         <export.bcfg> <ga-catalog.yaml>
 
 The ETS side is the catalog, which is a snapshot of the project: an
@@ -10,13 +10,11 @@ from happening by refusing to run while the .knxproj is newer — which is
 why this stays two plain files to read instead of an extraction with a
 project password.
 
-Basalte holds the bus in two layers. One is the imported ETS project,
-which a re-import refreshes wholesale. The other is every device and
-logic block, and each of those stores a *copy* of the address name it was
-wired with — so a rename or renumbering in ETS afterwards leaves the copy
-behind. The copy is only a label, but where the address moved rather than
-the name, the binding itself points at the wrong place and nothing on the
-bus says so.
+Basalte holds the bus in two layers (`basalte_export.layers`): the imported
+ETS project, and every device and logic block with a *copy* of the address
+name it was wired with. The copy is only a label, but where the address
+moved rather than the name, the binding itself points at the wrong place
+and nothing on the bus says so.
 
 Three findings, by how much they cost:
 
@@ -34,15 +32,10 @@ Three findings, by how much they cost:
   once rather than reading every run.
 
 Only a stale binding fails the run.
-
-The export is schema-less Protocol Buffers; `basalte_inventory.py`
-documents the wire format. An address binding is any message carrying the
-address as a varint in field 1 and its name in field 2.
 """
 
 from __future__ import annotations
 
-import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -50,51 +43,7 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from basalte_inventory import parse
-
-# The import layer: the whole ETS project as Basalte read it, one
-# top-level entry. Everything else that binds addresses is a device or a
-# logic block — the layers whose copies go stale.
-_IMPORT_FIELD = 19
-
-# A name Basalte would have taken from ETS: Funktion.Gerät.Datenpunkt, so a
-# capitalised prefix, at least one dot, no markup. Keeps the scan off the
-# many other strings in the export that happen to sit beside a number — the
-# media remotes' key names ("VOLUME UP", "DIGIT 0") share the low range
-# with main group 0 and only the dot tells them apart. ETS names also carry
-# "+" (Lademodus-PV+Min) and, for some umlauts, a combining diaeresis
-# instead of the precomposed letter — both are names, not markup.
-_NAME = re.compile(r"^[A-ZÄÖÜ][\w\-/+äöüßÄÖÜ\u0308 ]*\.[\w.\-/+äöüßÄÖÜ\u0308 ]+$")
-
-
-def group_address(value: int) -> str:
-    return f"{value >> 11}/{(value >> 8) & 7}/{value & 255}"
-
-
-def bindings(node: list, found: list[tuple[str, str]]) -> None:
-    """Every (address, name) pair under `node`, depth first."""
-    address = name = None
-    for field, kind, value in node:
-        if field == 1 and kind == "v":
-            address = value
-        elif field == 2 and kind == "str":
-            name = value
-        elif kind == "msg":
-            bindings(value, found)
-    # 0/0/0 is the broadcast address; above 65535 is not a group address.
-    if address and name and address < 65536 and _NAME.match(name):
-        found.append((group_address(address), name))
-
-
-def layers(export: Path) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
-    """The import layer's bindings and the device/logic layers' bindings."""
-    imported: list[tuple[str, str]] = []
-    wired: list[tuple[str, str]] = []
-    for field, kind, value in parse(export.read_bytes()):
-        if kind != "msg":
-            continue
-        bindings(value, imported if field == _IMPORT_FIELD else wired)
-    return imported, wired
+from basalte_export import layers
 
 
 def catalog_of(path: Path) -> dict[str, str]:

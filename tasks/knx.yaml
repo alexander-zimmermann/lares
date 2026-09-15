@@ -65,17 +65,17 @@ tasks:
     cmds:
       - mkdir -p "{{.FOOTPRINTS_DIR}}"
       - >
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
-        "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/consumed"
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
+        consumed "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/consumed"
       - >
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
-        "{{.KNX_GA_MAPPINGS_DIR}}" "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/bridge"
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
+        bridge "{{.KNX_GA_MAPPINGS_DIR}}" "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/bridge"
       - >
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
-        "{{.BASALTE_EXPORT_PATH}}" > "{{.FOOTPRINTS_DIR}}/basalte"
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
+        basalte "{{.BASALTE_EXPORT_PATH}}" > "{{.FOOTPRINTS_DIR}}/basalte"
       - >
-        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
-        "{{.NODE_RED_FLOWS_PATH}}" > "{{.FOOTPRINTS_DIR}}/nodered"
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
+        nodered "{{.NODE_RED_FLOWS_PATH}}" > "{{.FOOTPRINTS_DIR}}/nodered"
 
   create-ets-devices:
     desc: "write the Kaenx-Creator projects for the software bus participants [output-dir]"
@@ -163,23 +163,23 @@ tasks:
       - >
         uv run --no-project --python 3.14
         --with "miele-nats-bridge @ git+https://github.com/alexander-zimmermann/miele-nats-bridge@v{{.MIELE_TAG}}"
-        python "{{.SCRIPTS_DIR}}/ga_mappings.py" miele
+        python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" miele
         "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIELE_CONFIG_PATH}}"
       - >
         uv run --no-project --python 3.14
         --with "midea-nats-bridge @ git+https://github.com/alexander-zimmermann/midea-nats-bridge@v{{.MIDEA_TAG}}"
-        python "{{.SCRIPTS_DIR}}/ga_mappings.py" midea
+        python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" midea
         "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIDEA_CONFIG_PATH}}"
       - >
         uv run --no-project --python 3.14
         --with "dyson-nats-bridge @ git+https://github.com/alexander-zimmermann/dyson-nats-bridge@v{{.DYSON_TAG}}"
-        python "{{.SCRIPTS_DIR}}/ga_mappings.py" dyson
+        python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" dyson
         "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DYSON_CONFIG_PATH}}"
       - for: [insights, channels]
         cmd: >
           uv run --no-project --python 3.14
           --with "iot-insights-engine @ git+https://github.com/alexander-zimmermann/iot-insights-engine@v{{.INSIGHTS_ENGINE_TAG}}"
-          python "{{.SCRIPTS_DIR}}/ga_mappings.py" {{.ITEM}}
+          python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" {{.ITEM}}
           "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.INSIGHTS_FAULTS_PATH}}"
 
   validate-ga-mappings:

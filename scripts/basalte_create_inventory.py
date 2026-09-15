@@ -1,17 +1,10 @@
 """Generate the Basalte logic inventory from a Studio export.
 
-    uv run --no-project python scripts/basalte_inventory.py <export.bcfg> > inventory.md
+    uv run --no-project python scripts/basalte_create_inventory.py <export.bcfg> > inventory.md
 
-The export is Protocol Buffers with no schema shipped, so the wire format is
-read generically. Decoded so far:
-
-* field 100 is one logic block: field 1 its UUID, field 2 its name, field 3 the
-  generated Lua, field 5 the node graph as JSON
-* nodes are named ``be::basalte::nodemodel::<type>`` — ``setnumber`` carries
-  ``triggerValue``, ``compare`` a ``compareMode``, ``chrono`` a ``period``,
-  ``notification`` the ``body``; device nodes reference an ``itemUuid``
-* device UUIDs resolve against the named objects elsewhere in the export
-
+Every logic block with its devices, thresholds and notifications — the set a
+newly planned fault is checked against. The export's wire format is read by
+`basalte_export.py`.
 """
 
 from __future__ import annotations
@@ -22,72 +15,10 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from basalte_export import parse
+
 UUID = re.compile(r"^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$")
-
-
-# --- Schema-less protobuf ----------------------------------------------------
-
-def read_varint(buf: bytes, i: int) -> tuple[int, int]:
-    result = shift = 0
-    while i < len(buf):
-        byte = buf[i]
-        i += 1
-        result |= (byte & 0x7F) << shift
-        if not byte & 0x80:
-            return result, i
-        shift += 7
-        if shift > 70:
-            raise ValueError("varint too long")
-    raise ValueError("truncated varint")
-
-
-def as_text(raw: bytes) -> str | None:
-    try:
-        text = raw.decode("utf-8")
-    except UnicodeDecodeError:
-        return None
-    return text if all(c in "\n\t" or 0x20 <= ord(c) < 0x10000 for c in text) else None
-
-
-def parse(buf: bytes, depth: int = 0) -> list[tuple[int, str, object]]:
-    """[(field_number, kind, value)] with kind in v/f32/f64/msg/str/bytes."""
-    out: list[tuple[int, str, object]] = []
-    i = 0
-    while i < len(buf):
-        tag, i = read_varint(buf, i)
-        field, wire = tag >> 3, tag & 7
-        if field == 0:
-            raise ValueError("field number 0")
-        if wire == 0:
-            value, i = read_varint(buf, i)
-            out.append((field, "v", value))
-        elif wire in (1, 5):
-            width = 8 if wire == 1 else 4
-            if i + width > len(buf):
-                raise ValueError("truncated fixed field")
-            out.append((field, "f64" if wire == 1 else "f32", buf[i : i + width]))
-            i += width
-        elif wire == 2:
-            length, i = read_varint(buf, i)
-            if i + length > len(buf):
-                raise ValueError("truncated bytes")
-            payload, i = buf[i : i + length], i + length
-            nested = None
-            if payload and depth < 40:
-                try:
-                    nested = parse(payload, depth + 1)
-                except (ValueError, IndexError):
-                    nested = None
-            text = as_text(payload)
-            if nested is not None and (text is None or len(nested) > 1):
-                out.append((field, "msg", nested))
-            elif text is not None:
-                out.append((field, "str", text))
-            else:
-                out.append((field, "bytes", payload))
-        else:
-            raise ValueError(f"unsupported wire type {wire}")
-    return out
 
 
 # --- Basalte extraction ------------------------------------------------------
