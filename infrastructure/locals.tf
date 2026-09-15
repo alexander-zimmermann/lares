@@ -95,28 +95,30 @@ locals {
   fleet_vm = merge(
     ## Single objects: count == 0
     { for k, spec in local.manifest.fleet_vm : k => {
-      template_id    = spec.template_id
-      target_node    = try(spec.target_node, local.defaults.target_node)
-      vm_id          = spec.vm_id
-      wait_for_agent = try(spec.wait_for_agent, true)
-      vm_name        = k ## No vm_name field in spec -> use key as name
-      disks          = try(spec.disks, [])
-      usb_devices    = try(spec.usb_devices, [])
-      protection     = try(spec.protection, true)
+      template_id      = spec.template_id
+      target_node      = try(spec.target_node, local.defaults.target_node)
+      vm_id            = spec.vm_id
+      qemu_guest_agent = try(spec.qemu_guest_agent, true)
+      wait_for_agent   = try(spec.wait_for_agent, true)
+      vm_name          = k ## No vm_name field in spec -> use key as name
+      disks            = try(spec.disks, [])
+      usb_devices      = try(spec.usb_devices, [])
+      protection       = try(spec.protection, true)
     } if try(spec.count, 0) == 0 },
 
     ## Batch objects: count > 0
     merge([
       for group_key, spec in local.manifest.fleet_vm : {
         for i in range(1, spec.count + 1) : format("%s_%d", group_key, i) => {
-          template_id    = spec.template_id
-          target_node    = try(spec.target_node, local.defaults.target_node)
-          vm_id          = spec.vm_id_start + i - 1
-          wait_for_agent = try(spec.wait_for_agent, true)
-          vm_name        = format("%s_%d", group_key, i)
-          disks          = try(spec.disks, [])
-          usb_devices    = try(spec.usb_devices, [])
-          protection     = try(spec.protection, true)
+          template_id      = spec.template_id
+          target_node      = try(spec.target_node, local.defaults.target_node)
+          vm_id            = spec.vm_id_start + i - 1
+          qemu_guest_agent = try(spec.qemu_guest_agent, true)
+          wait_for_agent   = try(spec.wait_for_agent, true)
+          vm_name          = format("%s_%d", group_key, i)
+          disks            = try(spec.disks, [])
+          usb_devices      = try(spec.usb_devices, [])
+          protection       = try(spec.protection, true)
         }
       } if try(spec.count, 0) > 0
     ]...)

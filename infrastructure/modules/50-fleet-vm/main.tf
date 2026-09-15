@@ -57,11 +57,17 @@ resource "proxmox_virtual_environment_vm" "vm" {
     retries   = var.clone_retries
   }
 
-  dynamic "agent" {
-    for_each = var.agent_override ? [1] : []
-    content {
-      enabled = var.qemu_guest_agent
-      timeout = var.wait_for_agent ? "5m" : "5s"
+  ## Never power-cycle a running clone for a config change; PVE keeps it pending until a manual reboot
+  reboot_after_update = false
+
+  agent {
+    enabled = var.qemu_guest_agent
+    ## Read polls the agent for an IP until this expires, so a dead agent costs at most this long
+    timeout = "5m"
+
+    ## VMs without a (working) agent skip the IP lookup entirely instead of waiting
+    wait_for_ip {
+      disabled = !var.wait_for_agent
     }
   }
 
