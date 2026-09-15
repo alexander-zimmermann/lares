@@ -1,7 +1,7 @@
 version: "3"
 
-# Local inputs — the foreign-system exports and the ETS project password —
-# come from the git-ignored .env (keys and producers in .env.example).
+# Local inputs — the foreign-system exports and the path to the ETS project
+# password file — come from the git-ignored .env (keys in .env.example).
 dotenv: [".env"]
 
 vars:
