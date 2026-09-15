@@ -93,6 +93,7 @@ alertmanager:
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            priority: "0"
       - name: "gatus-critical"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/gatus-token
@@ -103,6 +104,7 @@ alertmanager:
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/gatus-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            priority: "0"
       - name: "argocd-critical"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/argocd-token
@@ -113,6 +115,7 @@ alertmanager:
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/argocd-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            priority: "0"
       - name: "devices-critical"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/devices-token
@@ -123,6 +126,7 @@ alertmanager:
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/devices-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            priority: "0"
       - name: "watchdog"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
