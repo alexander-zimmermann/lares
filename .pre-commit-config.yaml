@@ -62,7 +62,11 @@ repos:
         entry: task knx:validate-ga-mappings
         language: system
         pass_filenames: false
-        files: ^(kubernetes/applications/knx-nats-bridge/base/(ga-mappings/.*\.yaml|config/ga-catalog\.yaml|values\.yaml)|kubernetes/applications/iot-insights-engine/base/config/faults\.yaml|scripts/fault_writer_rules\.py)$
+        # Everything the generated files derive from: the mappings and the
+        # catalog, the sidecar bridges' device lists with their bindings and
+        # the tags their descriptors are read at, the fault list and the tag
+        # its loader is read at, and the generator itself.
+        files: ^(kubernetes/applications/knx-nats-bridge/base/(ga-mappings/.*\.yaml|config/ga-catalog\.yaml|values\.yaml)|kubernetes/applications/(miele|midea|dyson)-nats-bridge/base/(config/.*\.yaml|values\.yaml)|kubernetes/applications/iot-insights-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)|scripts/ga_mappings\.py)$
       - id: insights-validate-faults
         name: insights:validate-faults
         entry: task insights:validate-faults

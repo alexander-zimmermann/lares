@@ -60,6 +60,9 @@ jobs:
         with:
           cache-dependency-glob: |
             kubernetes/applications/knx-nats-bridge/base/values.yaml
+            kubernetes/applications/miele-nats-bridge/base/values.yaml
+            kubernetes/applications/midea-nats-bridge/base/values.yaml
+            kubernetes/applications/dyson-nats-bridge/base/values.yaml
             kubernetes/applications/iot-insights-engine/base/detect-faults-cronjob.yaml
 
       - name: Setup go-task
