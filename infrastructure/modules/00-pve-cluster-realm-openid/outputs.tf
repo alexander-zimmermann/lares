@@ -4,6 +4,6 @@ output "realm" {
 }
 
 output "group_ids" {
-  description = "Map of claim group name => PVE group ID (`<name>-<realm>`)."
+  description = "Map of claim group name => PVE group ID."
   value       = { for k, v in proxmox_virtual_environment_group.this : k => v.group_id }
 }

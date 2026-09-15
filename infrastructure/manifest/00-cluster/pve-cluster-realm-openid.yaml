@@ -1,12 +1,8 @@
 ## Datacenter-level OpenID Connect realms (Datacenter -> Realms in the PVE UI).
-## Replaces PVE's own login form behind the Authentik forward-auth edge: one
-## sign-in at Authentik, PVE trusts the resulting ID token. The `pve` realm and
-## its API-token users stay untouched as break-glass and automation paths.
-##
-## Client secret: `pve_cluster_realm_openid_client_keys.<realm>` in terraform.tfvars.
-## The same value is sealed for Authentik in kubernetes/applications/authentik
-## (`proxmox-oidc-secret`). Rotation: new value in both places, then bump
-## `client_key_version` so the write-only key is re-sent to PVE.
+## Replaces PVE's own login form behind the Authentik forward-auth edge; the
+## `pve` realm and its API-token users stay as break-glass and automation paths.
+## Client secret: tfvars `pve_cluster_realm_openid_client_keys.<realm>`, mirrored
+## in the Authentik SealedSecret; rotate both, then bump `client_key_version`.
 pve_cluster_realm_openid:
   authentik:
     ## Issuer = Authentik application slug; PVE discovers the endpoints from it
@@ -20,8 +16,7 @@ pve_cluster_realm_openid:
     username_claim: "username"
     autocreate: true
 
-    ## PVE names claim groups "<name>-authentik" and, with autocreate off, only
-    ## assigns the ones declared below - the group set stays declarative.
+    ## Groups below become "<name>-authentik" in PVE, see module variables
     scopes: "email profile groups"
     groups_claim: "groups"
     groups_autocreate: false

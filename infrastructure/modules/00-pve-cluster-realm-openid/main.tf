@@ -20,8 +20,7 @@ resource "proxmox_realm_openid" "this" {
   comment    = var.comment
   default    = var.default
 
-  ## Write-only: the secret is sent to PVE but never lands in state or plan.
-  ## PVE does not return it either, so the version counter is the only rotation signal.
+  ## Write-only: never in state or plan, so the version counter is the only rotation signal
   client_id             = var.client_id
   client_key_wo         = var.client_key
   client_key_wo_version = var.client_key_version
@@ -39,8 +38,7 @@ resource "proxmox_realm_openid" "this" {
 ###############################################################################
 ## Group mapping
 ###############################################################################
-## PVE names claim groups "<claim value>-<realm>" and rejects ACLs on groups that
-## do not exist yet, so the groups are created here rather than on first login.
+## Created up front: PVE rejects an ACL on a group that does not exist yet
 resource "proxmox_virtual_environment_group" "this" {
   for_each = var.groups
 

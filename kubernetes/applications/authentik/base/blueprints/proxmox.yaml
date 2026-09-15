@@ -4,9 +4,8 @@ metadata:
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # OAuth2/OIDC Provider for the Proxmox VE `authentik` realm (infrastructure/
-  # manifest/00-cluster/pve-cluster-realm-openid.yaml). PVE sends its web UI
-  # origin as redirect_uri - no path, no trailing slash.
+  # OAuth2/OIDC Provider for the PVE `authentik` realm (infrastructure/manifest/00-cluster).
+  # PVE sends its web UI origin as redirect_uri - no path, no trailing slash.
   - model: authentik_providers_oauth2.oauth2provider
     state: present
     identifiers:
