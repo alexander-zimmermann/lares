@@ -148,6 +148,37 @@ module "pve_cluster_metrics_server" {
 
 
 ###############################################################################
+## PVE cluster - OpenID Connect realms
+###############################################################################
+module "pve_cluster_realm_openid" {
+  source   = "./modules/00-pve-cluster-realm-openid"
+  for_each = local.manifest.pve_cluster_realm_openid
+
+  ## Realm identity
+  realm      = each.key
+  issuer_url = each.value.issuer_url
+  comment    = try(each.value.comment, "Managed by OpenTofu")
+  default    = try(each.value.default, false)
+
+  ## OIDC client
+  client_id          = each.value.client_id
+  client_key         = var.pve_cluster_realm_openid_client_keys[each.key]
+  client_key_version = try(each.value.client_key_version, 1)
+  scopes             = try(each.value.scopes, null)
+
+  ## User mapping
+  username_claim = try(each.value.username_claim, null)
+  autocreate     = try(each.value.autocreate, null)
+
+  ## Group mapping
+  groups_claim      = try(each.value.groups_claim, null)
+  groups_autocreate = try(each.value.groups_autocreate, null)
+  groups_overwrite  = try(each.value.groups_overwrite, null)
+  groups            = try(each.value.groups, {})
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {

@@ -1,0 +1,54 @@
+version: 1
+metadata:
+  name: proxmox-oidc
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+entries:
+  # OAuth2/OIDC Provider for the PVE `authentik` realm (infrastructure/manifest/00-cluster).
+  # PVE sends its web UI origin as redirect_uri - no path, no trailing slash.
+  - model: authentik_providers_oauth2.oauth2provider
+    state: present
+    identifiers:
+      name: Proxmox VE
+    attrs:
+      name: Proxmox VE
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+      client_type: confidential
+      # Providers created after authentik migration 0032 default to an empty list,
+      # which rejects every authorize request as invalid_request.
+      grant_types:
+        - authorization_code
+        - refresh_token
+      client_id: proxmox
+      client_secret: !Env PROXMOX_OIDC_CLIENT_SECRET
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+      redirect_uris:
+        - matching_mode: strict
+          url: !Env AUTHENTIK_PROXMOX_REDIRECT_URI
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, custom.homelab/scope-groups]]
+
+  # Application entry in Authentik's app library; the slug is the issuer path
+  - model: authentik_core.application
+    state: present
+    identifiers:
+      slug: proxmox
+    attrs:
+      name: Proxmox VE
+      slug: proxmox
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, Proxmox VE]]
+      policy_engine_mode: any
+
+  # Restrict Proxmox VE access to platform-admins group
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, proxmox]]
+      group: !Find [authentik_core.group, [name, platform-admins]]
+      order: 0
+    attrs:
+      enabled: true

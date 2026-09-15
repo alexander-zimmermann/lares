@@ -53,6 +53,9 @@ configMapGenerator:
   - name: authentik-blueprint-hermes
     files:
       - blueprints/hermes.yaml
+  - name: authentik-blueprint-proxmox
+    files:
+      - blueprints/proxmox.yaml
 
 labels:
   - includeSelectors: false

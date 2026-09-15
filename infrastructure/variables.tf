@@ -103,6 +103,20 @@ variable "pve_cluster_pbs_fingerprints" {
 
 
 ###############################################################################
+## PVE cluster - OpenID Connect realms
+###############################################################################
+variable "pve_cluster_realm_openid_client_keys" {
+  description = <<EOT
+    Map of realm => OIDC client secret for the realms defined in
+    manifest/00-cluster/pve-cluster-realm-openid.yaml. Sent to PVE write-only,
+    never stored in state. Sensitive value.
+  EOT
+  type        = map(string)
+  sensitive   = true
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 variable "pve_node_core_subscription_keys" {

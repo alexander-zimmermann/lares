@@ -1,0 +1,27 @@
+## Datacenter-level OpenID Connect realms (Datacenter -> Realms in the PVE UI).
+## Replaces PVE's own login form behind the Authentik forward-auth edge; the
+## `pve` realm and its API-token users stay as break-glass and automation paths.
+## Client secret: tfvars `pve_cluster_realm_openid_client_keys.<realm>`, mirrored
+## in the Authentik SealedSecret; rotate both, then bump `client_key_version`.
+pve_cluster_realm_openid:
+  authentik:
+    ## Issuer = Authentik application slug; PVE discovers the endpoints from it
+    issuer_url: "https://auth.zimmermann.sh/application/o/proxmox/"
+    client_id: "proxmox"
+    client_key_version: 1
+    comment: "Authentik SSO"
+    default: true
+
+    ## `username` maps to preferred_username -> <authentik username>@authentik
+    username_claim: "username"
+    autocreate: true
+
+    ## Groups below become "<name>-authentik" in PVE, see module variables
+    scopes: "email profile groups"
+    groups_claim: "groups"
+    groups_autocreate: false
+    groups_overwrite: true
+    groups:
+      platform-admins:
+        role_id: "Administrator"
+        path: "/"
