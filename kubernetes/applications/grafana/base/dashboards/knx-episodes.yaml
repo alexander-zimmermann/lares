@@ -1423,7 +1423,7 @@ spec:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "description": "Wie lange ein Vorfall dieses Fehlers typischerweise steht; offene Vorfälle zählen bis jetzt. Lange Median­dauern heißen: der Zustand wird nicht behoben, nicht dass der Detektor flattert."
+          "description": "Wie lange ein Vorfall dieses Fehlers typischerweise steht; offene Vorfälle zählen bis jetzt. Lange Mediandauern heißen: der Zustand wird nicht behoben, nicht dass der Detektor flattert."
         },
         {
           "id": 16,
