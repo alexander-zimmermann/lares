@@ -13,7 +13,7 @@ vars:
   INSIGHTS_CRONJOB_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/detect-faults-cronjob.yaml"
   INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"
   # The sidecar bridges whose GA mappings are generated: the values file
-  # carries the deployed tag, the config file the devices and their bindings.
+  # carries the deployed tag, the config file the devices and their address blocks.
   MIELE_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/miele-nats-bridge/base/values.yaml"
   MIELE_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/miele-nats-bridge/base/config/appliances.yaml"
   MIDEA_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/midea-nats-bridge/base/values.yaml"
