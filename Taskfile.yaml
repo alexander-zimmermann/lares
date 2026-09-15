@@ -23,18 +23,18 @@ vars:
 
 includes:
   infra:
-    taskfile: ./tasks/infrastructure.yaml
+    taskfile: ./tasks/infrastructure.tasks.yaml
     dir: ./infrastructure
   k8s:
-    taskfile: ./tasks/kubernetes.yaml
+    taskfile: ./tasks/kubernetes.tasks.yaml
   cluster:
-    taskfile: ./tasks/cluster.yaml
+    taskfile: ./tasks/cluster.tasks.yaml
   knx:
-    taskfile: ./tasks/knx.yaml
+    taskfile: ./tasks/knx.tasks.yaml
   insights:
-    taskfile: ./tasks/insights.yaml
+    taskfile: ./tasks/insights.tasks.yaml
   basalte:
-    taskfile: ./tasks/basalte.yaml
+    taskfile: ./tasks/basalte.tasks.yaml
 
 tasks:
   default:
