@@ -71,6 +71,12 @@ global:
         secretKeyRef:
           name: rustfs-oidc-secret
           key: RUSTFS_OIDC_CLIENT_SECRET
+    # Proxmox VE OIDC client secret for the proxmox-oidc blueprint
+    - name: PROXMOX_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: proxmox-oidc-secret
+          key: PROXMOX_OIDC_CLIENT_SECRET
 
     # Blueprint variables — injected per environment via overlay replacements
     - name: AUTHENTIK_ARGOCD_REDIRECT_URI
@@ -91,6 +97,8 @@ global:
       value: https://claude.ai/api/mcp/auth_callback
     - name: AUTHENTIK_HERMES_REDIRECT_URI
       value: https://PLACEHOLDER_HERMES_HOST/auth/callback
+    - name: AUTHENTIK_PROXMOX_REDIRECT_URI
+      value: https://PLACEHOLDER_PROXMOX_HOST
 
     # Optimization: Fewer workers and no preloading saves RAM in small setups
     - name: AUTHENTIK_WEB__WORKERS
@@ -131,6 +139,7 @@ blueprints:
     - authentik-blueprint-iot-mcp-bridge
     - authentik-blueprint-rustfs
     - authentik-blueprint-hermes
+    - authentik-blueprint-proxmox
 
 server:
   # Expose Authentik service via Cilium/BGP-announced LoadBalancer

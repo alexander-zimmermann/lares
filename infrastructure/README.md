@@ -10,7 +10,7 @@
 
 I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them together, and [OpenTofu](https://opentofu.org/) plus the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider make it happen. That covers:
 
-- **Cluster-wide config** — ACME for PVE UI certs, backup jobs to PBS, hardware mappings (USB), users.
+- **Cluster-wide config** — ACME for PVE UI certs, backup jobs to PBS, hardware mappings (USB), users, OIDC realms.
 - **Per-node config** — repositories, network, optional subscription keys.
 - **OS images** — declarative download + SHA-512 verification (Debian Trixie, Ubuntu Noble/Plucky, Windows 11 25H2 + virtio).
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
@@ -35,7 +35,7 @@ infrastructure/
 ├── versions.tf             # OpenTofu + provider versions
 ├── terraform.tfvars.example
 ├── manifest/               # YAML — the source of truth
-│   ├── 00-cluster/         #   PVE connection, ACME, backup jobs, PBS storage, users
+│   ├── 00-cluster/         #   PVE connection, ACME, backup jobs, PBS storage, users, OIDC realms
 │   ├── 10-pve-node/        #   Node core settings, repos, network
 │   ├── 20-image/           #   OS images with checksums
 │   ├── 30-cloud-init/      #   Reusable cloud-init modules

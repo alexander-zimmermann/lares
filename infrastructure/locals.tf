@@ -23,6 +23,7 @@ locals {
     pve_cluster_backup_jobs    = merge([for m in local.decoded_manifests : try(m.pve_cluster_backup_jobs, {})]...)
     pve_cluster_hw_mapping_usb = merge([for m in local.decoded_manifests : try(m.pve_cluster_hw_mapping_usb, {})]...)
     pve_cluster_metrics_server = merge([for m in local.decoded_manifests : try(m.pve_cluster_metrics_server, {})]...)
+    pve_cluster_realm_openid   = merge([for m in local.decoded_manifests : try(m.pve_cluster_realm_openid, {})]...)
     pve_node_core              = merge([for m in local.decoded_manifests : try(m.pve_node_core, {})]...)
     pve_node_network           = merge([for m in local.decoded_manifests : try(m.pve_node_network, {})]...)
     image                      = merge([for m in local.decoded_manifests : try(m.image, {})]...)

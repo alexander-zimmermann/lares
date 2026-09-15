@@ -119,6 +119,19 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=AUTHENTIK_RUSTFS_REDIRECT_URI].value
 
+  - sourceValue: https://proxmox.zimmermann.phd
+    targets:
+      - select:
+          kind: Deployment
+          name: authentik-worker
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_PROXMOX_REDIRECT_URI].value
+      - select:
+          kind: Deployment
+          name: authentik-server
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_PROXMOX_REDIRECT_URI].value
+
   - sourceValue: https://auth.zimmermann.phd
     targets:
       - select:
