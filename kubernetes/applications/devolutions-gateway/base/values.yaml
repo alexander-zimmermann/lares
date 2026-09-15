@@ -10,7 +10,7 @@ deployment:
 
   image:
     repository: docker.io/devolutions/devolutions-gateway
-    tag: 2026.2.4
+    tag: 2026.3.0
     pullPolicy: IfNotPresent
 
   # No API access required.
