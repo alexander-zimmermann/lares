@@ -8,11 +8,6 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   not hardware: the KNX-NATS bridge, the Basalte visualisation, Node-Red.
   Each is modelled in ETS as a real device generated from a product database
   (`knx:create-ets-devices` in `tasks/knx.tasks.yaml`), never hand-maintained.
-- **Placeholder** (historically: dummy) — a GIRA dummy device that carried
-  group addresses only to get them into coupler filter tables. Replaced
-  by the generated devices on 2026-09-13; a placeholder's link set
-  reflected what accumulated, not what a system does. The Telenot alarm
-  panel is still a GIRA dummy, but it stands for hardware, not software.
 - **Footprint** — the set of group addresses a software bus participant
   actually touches, as defined by its configuration (not by what ETS
   happens to link to it). The bridge's footprint is writer targets plus
