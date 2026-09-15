@@ -538,6 +538,12 @@
   name: Allgemein.A.Dach.Szenen
   room: Dach
   writable: true
+0/6/0:
+  dpt: '17.001'
+  function: Allgemein
+  name: Allgemein.G.Vorgarten.Szenen
+  room: Vorgarten
+  writable: false
 0/6/20:
   dpt: '17.001'
   function: Allgemein
