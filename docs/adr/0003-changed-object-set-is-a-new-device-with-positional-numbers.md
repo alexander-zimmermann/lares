@@ -53,4 +53,6 @@ So the generated devices work like this:
   a hundred objects — plus linking the new addresses.
 - The ETS behaviour behind this (update drops links, versions are
   remembered forever, exports are read-only) is product knowledge and
-  belongs in the wiki, not in this repository; the ADR only relies on it.
+  lives in the wiki page
+  [ets-kaenx-creator](https://wiki.zimmermann.sh/en/ets-kaenx-creator),
+  not in this repository; the ADR only relies on it.

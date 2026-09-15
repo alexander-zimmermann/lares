@@ -6,8 +6,8 @@ communication object per main group × datapoint type (exact subtype,
 with a main-type fallback), per direction on the bridge — and whose address sets come from **lares configuration**
 (writer-rules ∪ `*_from_knx` consumers; Basalte Studio bindings; the
 Node-Red flow export), never from what ETS happens to link to a device.
-ETS is the checkable view; lares is the source. Full concept:
-`docs/knx/README.md`.
+ETS is the checkable view; lares is the source. The terms are in
+`CONTEXT.md`, the workflow is the header comment of `tasks/knx.yaml`.
 
 ## Considered options
 
@@ -34,4 +34,4 @@ ETS is the checkable view; lares is the source. Full concept:
   consumed-address collectors; Basalte and Node-Red are excluded from the
   write vote (`--ignore-write-from`).
 - Per-address direction is no longer visible in ETS — it lives in the
-  catalog and is enforced by `task knx:check-wiring`.
+  catalog and is enforced by `task knx:validate-ets-devices`.
