@@ -4,10 +4,15 @@
 #
 # The slug matches the hostname without the domain, so a device is called the
 # same thing in DNS, in NATS subjects and in the credentials Secret.
+# `ga_name` binds the device to its group-address block: the name prefix
+# every datapoint of the bridge's descriptor is resolved under when
+# ga-mappings/midea.yaml is generated (task knx:create-ga-mappings).
 devices:
   # Registered as "Technikraum" in the Comfee cloud but stands in the
   # Hauswirtschaftsraum; the slug follows the room.
   - name: entfeuchter-kg5
     host: entfeuchter-kg5.zimmermann.eu.com
+    ga_name: Raumklima.KG.Hauswirtschaftsraum.Entfeuchter
   - name: entfeuchter-kg4
     host: entfeuchter-kg4.zimmermann.eu.com
+    ga_name: Raumklima.KG.Vorratsraum.Entfeuchter
