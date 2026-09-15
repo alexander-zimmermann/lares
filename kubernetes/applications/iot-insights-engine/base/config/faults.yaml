@@ -98,41 +98,46 @@ faults:
         - "%.Kühlschrank.%"
         - "%.Gefrierschrank.%"
         - "%.Lüftung.%"
+    # Every device is keyed by the floor, room, channel and device segments
+    # of its Stromwert channel — the same fragment the target template below
+    # renders into the anomaly address.
     devices:
-      Garage.K1-L3.Entfeuchter:
+      KG.Garage.K1-L3.Entfeuchter:
         max_run_hours: 24
-      Technikraum.K3-L3.Entfeuchter:
+      KG.Technikraum.K3-L3.Entfeuchter:
         max_run_hours: 24
-      Vorratsraum.K1-L3.Entfeuchter:
+      KG.Vorratsraum.K1-L3.Entfeuchter:
         max_run_hours: 24
-      Hauswirtschaftsraum.K1-L3.Entfeuchter:
+      KG.Hauswirtschaftsraum.K1-L3.Entfeuchter:
         max_run_hours: 24
-      Hauswirtschaftsraum.K3-L1.Trockner:
+      KG.Hauswirtschaftsraum.K3-L1.Trockner:
         max_run_hours: 4
       # Laundry days chain loads back to back for 10-13 h; only a run past
       # two of those in a row is a fault.
-      Hauswirtschaftsraum.K4-L1.Waschmaschine:
+      KG.Hauswirtschaftsraum.K4-L1.Waschmaschine:
         max_run_hours: 16
-      Wohnzimmer.K4-L1.Ofen:
+      EG.Wohnzimmer.K4-L1.Ofen:
         max_run_hours: 8
-      Küche.K4-L1.Geschirrspüler:
+      EG.Küche.K4-L1.Geschirrspüler:
         max_run_hours: 4
-      Küche.K5-L1.Haubenlüfter:
+      EG.Küche.K5-L1.Haubenlüfter:
         max_run_hours: 3
-      Küche.K9-L1.Backofen:
+      EG.Küche.K9-L1.Backofen:
         max_run_hours: 4
-      Küche.K10-L1.Tellerwärmer:
+      EG.Küche.K10-L1.Tellerwärmer:
         max_run_hours: 3
-      Küche.K12-L1.Mikrowelle:
+      EG.Küche.K12-L1.Mikrowelle:
         max_run_hours: 2
-      Küche.K13-L1.Kaffeemaschine:
+      EG.Küche.K13-L1.Kaffeemaschine:
         max_run_hours: 3
-      Küche.K14-L1.Dampfgarer:
+      EG.Küche.K14-L1.Dampfgarer:
         max_run_hours: 3
     target:
       # One severity address per device: the writer rules carry
-      # anomaly.appliance_runtime.<ga-slug> to the Dauerbetrieb address.
+      # anomaly.appliance_runtime.<ga-slug> to the device's Dauerbetrieb
+      # address, generated from this template (task knx:create-ga-mappings).
       per_device: true
+      name: "Schalten.{entity}.Stromwert-Dauerbetrieb-Anomalie"
 
   - name: appliance_standby
     sentence: "Die Standby-Aufnahme eines Geräts liegt dauerhaft mehr als 40 mA
@@ -161,54 +166,56 @@ faults:
       # Each device's healthy standby, read once off 30 days of daily floors
       # and written here: a reference the detector derives for itself would
       # adopt a fault that has stood for months as the new normal.
-      Garage.K1-L3.Entfeuchter:
+      KG.Garage.K1-L3.Entfeuchter:
         healthy_ma: 0
-      Technikraum.K1-L1.Heizung:
+      KG.Technikraum.K1-L1.Heizung:
         healthy_ma: 0
-      Technikraum.K1-L2.Heizung:
+      KG.Technikraum.K1-L2.Heizung:
         healthy_ma: 96
       # The cabinet's own load swings ±35 mA around this, the narrowest
       # headroom of the 21 — the first device to revisit if it cries wolf.
-      Technikraum.K2-L1.Netzwerkschrank:
+      KG.Technikraum.K2-L1.Netzwerkschrank:
         healthy_ma: 1960
-      Technikraum.K2-L2.Netzwerkschrank:
+      KG.Technikraum.K2-L2.Netzwerkschrank:
         healthy_ma: 150
-      Technikraum.K3-L3.Entfeuchter:
+      KG.Technikraum.K3-L3.Entfeuchter:
         healthy_ma: 0
-      Vorratsraum.K1-L3.Entfeuchter:
+      KG.Vorratsraum.K1-L3.Entfeuchter:
         healthy_ma: 10
-      Vorratsraum.K3-L1.Lüftung:
+      KG.Vorratsraum.K3-L1.Lüftung:
         healthy_ma: 238
-      Hauswirtschaftsraum.K1-L3.Entfeuchter:
+      KG.Hauswirtschaftsraum.K1-L3.Entfeuchter:
         healthy_ma: 0
-      Hauswirtschaftsraum.K3-L1.Trockner:
+      KG.Hauswirtschaftsraum.K3-L1.Trockner:
         healthy_ma: 0
-      Hauswirtschaftsraum.K4-L1.Waschmaschine:
+      KG.Hauswirtschaftsraum.K4-L1.Waschmaschine:
         healthy_ma: 0
-      Wohnzimmer.K4-L1.Ofen:
+      EG.Wohnzimmer.K4-L1.Ofen:
         healthy_ma: 14
-      Küche.K4-L1.Geschirrspüler:
+      EG.Küche.K4-L1.Geschirrspüler:
         healthy_ma: 21
-      Küche.K5-L1.Haubenlüfter:
+      EG.Küche.K5-L1.Haubenlüfter:
         healthy_ma: 13
-      Küche.K7-L1.Kühlschrank:
+      EG.Küche.K7-L1.Kühlschrank:
         healthy_ma: 50
-      Küche.K9-L1.Backofen:
+      EG.Küche.K9-L1.Backofen:
         healthy_ma: 42
-      Küche.K10-L1.Tellerwärmer:
+      EG.Küche.K10-L1.Tellerwärmer:
         healthy_ma: 16
-      Küche.K12-L1.Mikrowelle:
+      EG.Küche.K12-L1.Mikrowelle:
         healthy_ma: 41
-      Küche.K13-L1.Kaffeemaschine:
+      EG.Küche.K13-L1.Kaffeemaschine:
         healthy_ma: 54
-      Küche.K14-L1.Dampfgarer:
+      EG.Küche.K14-L1.Dampfgarer:
         healthy_ma: 52
-      Küche.K15-L1.Gefrierschrank:
+      EG.Küche.K15-L1.Gefrierschrank:
         healthy_ma: 48
     target:
       # One severity address per device: the writer rules carry
-      # anomaly.appliance_standby.<ga-slug> to the Standby address.
+      # anomaly.appliance_standby.<ga-slug> to the device's Standby address,
+      # generated from this template (task knx:create-ga-mappings).
       per_device: true
+      name: "Schalten.{entity}.Stromwert-Standby-Anomalie"
 
   - name: freezer_icing
     sentence: "Der Gefrierschrank lässt seinen Verdichter über den Tag mehr als
@@ -242,12 +249,17 @@ faults:
     references:
       # Read off the summers before the icing, never derived from history:
       # the iced state has stood for months and would become the new normal.
-      Küche.K15-L1.Gefrierschrank:
+      # Keyed by the one fragment the Stromwert channel and the appliance's
+      # Vereisung address share, so the target template renders to the
+      # latter.
+      Gefrierschrank:
         healthy_duty_pct: 50
     target:
       # The writer rule carries anomaly.freezer_icing.<ga-slug> to the
-      # freezer's own Vereisung address in the appliance group.
+      # freezer's own Vereisung address in the appliance group, generated
+      # from this template (task knx:create-ga-mappings).
       per_device: true
+      name: "Haushaltstechnik.{entity}.Vereisung-Anomalie"
 
   - name: fbh_cold
     sentence: "Ein Raum liegt bei mehr als 50 % Stellwert seit mindestens 2 h
@@ -329,8 +341,9 @@ faults:
     target:
       # One severity address per room: the writer rules carry
       # anomaly.fbh_cold.<room-slug> to the room's FBH Aktiv-Anomalie
-      # address.
+      # address, generated from this template (task knx:create-ga-mappings).
       per_room: true
+      name: "Raumklima.{entity}.FBH.Aktiv-Anomalie"
 
   - name: heat_recovery_decay
     sentence: "Der Wärmetauscher der KWL holt dauerhaft mehr als 10
