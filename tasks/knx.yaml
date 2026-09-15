@@ -29,19 +29,20 @@ tasks:
       from the ETS export and write the catalog the bridge deploys; the
       pre-commit hook validates it (validate-ga-catalog). Only real actuators
       and the bridge's consumed-address collectors vote on writable (CONTEXT.md).
-      Reads: the ETS export, KNXPROJ_PASSWORD from .env. Writes: ga-catalog.yaml.
+      Reads: the ETS export, KNXPROJ_PASSWORD_FILE from .env. Writes: ga-catalog.yaml.
       Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
     vars:
       KNXPROJ: '{{.CLI_ARGS | default .KNX_PROJECT_PATH}}'
     preconditions:
       - sh: test -f "{{.KNXPROJ}}"
         msg: "ETS project export not found at '{{.KNXPROJ}}' — set KNX_PROJECT_PATH in .env (see .env.example) or pass a path"
-      - sh: test -n "$KNXPROJ_PASSWORD"
-        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
+      - sh: test -s "$KNXPROJ_PASSWORD_FILE"
+        msg: "KNXPROJ_PASSWORD_FILE is not set or the file is empty — add it to .env (see .env.example)"
     cmds:
       # --ignore-write-from: visualisations and the Telenot dummy do not vote on writable (CONTEXT.md)
       # --project keeps the cwd here, so a relative path in .env resolves from the repo root.
-      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
+      - KNXPROJ_PASSWORD="$(cat "$KNXPROJ_PASSWORD_FILE")"
+        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
@@ -83,19 +84,20 @@ tasks:
       Basalte, Node-Red — with collector objects (ADR-0001, ADR-0003) and a wiring
       worksheet each, NEU or war N per object; says per device "only links" or
       "publish". Reads: the footprints, the ETS export, scripts/kaenx/, and
-      KNXPROJ_PASSWORD from .env. Writes: <device>.ae-manu, <device>-wiring.md, versions.yaml.
+      KNXPROJ_PASSWORD_FILE from .env. Writes: <device>.ae-manu, <device>-wiring.md, versions.yaml.
       Arguments: [output-dir, default ~/Downloads]
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
         msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
-      - sh: test -n "$KNXPROJ_PASSWORD"
-        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
+      - sh: test -s "$KNXPROJ_PASSWORD_FILE"
+        msg: "KNXPROJ_PASSWORD_FILE is not set or the file is empty — add it to .env (see .env.example)"
     cmds:
       - task: extract-footprints
       # --project keeps the cwd here, so relative paths resolve from the repo root.
-      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
+      - KNXPROJ_PASSWORD="$(cat "$KNXPROJ_PASSWORD_FILE")"
+        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
         --template "{{.SCRIPTS_DIR}}/kaenx/template.ae-manu"
         {{.DEVICE_ARGS}}
@@ -109,7 +111,7 @@ tasks:
       Hold the ETS export against the three footprints: footprint addresses
       without a link, links no configuration claims, consumed addresses on
       objects without Write. Any finding fails; a missing device is reported.
-      Reads: the footprints, the ETS export, KNXPROJ_PASSWORD from .env. Writes:
+      Reads: the footprints, the ETS export, KNXPROJ_PASSWORD_FILE from .env. Writes:
       <device>-wiring-todo.md per device with findings — only the links still to
       make — into TODO_DIR (default ~/Downloads). Not a hook: the export may lag lares.
     vars:
@@ -117,12 +119,13 @@ tasks:
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
         msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
-      - sh: test -n "$KNXPROJ_PASSWORD"
-        msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
+      - sh: test -s "$KNXPROJ_PASSWORD_FILE"
+        msg: "KNXPROJ_PASSWORD_FILE is not set or the file is empty — add it to .env (see .env.example)"
     cmds:
       - task: extract-footprints
       # --project keeps the cwd here, so relative paths resolve from the repo root.
-      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
+      - KNXPROJ_PASSWORD="$(cat "$KNXPROJ_PASSWORD_FILE")"
+        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
         --input "{{.KNX_PROJECT_PATH}}"
         {{.DEVICE_ARGS}}
         --todo-dir "{{.TODO_DIR}}"
