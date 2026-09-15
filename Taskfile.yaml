@@ -7,9 +7,10 @@ dotenv: [".env"]
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
+  KNX_BRIDGE_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/values.yaml"
   KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml"
-  KNX_WRITER_RULES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/writer-rules.yaml"
-  INSIGHTS_ENGINE_DIR: "{{.ROOT_DIR}}/../iot-insights-engine"
+  KNX_GA_MAPPINGS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/ga-mappings"
+  INSIGHTS_CRONJOB_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/detect-faults-cronjob.yaml"
   INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"
 
 includes:
@@ -40,6 +41,9 @@ tasks:
       - Installs Homebrew packages (k8s-cli, tofu, omnictl, uv, etc)
       - Installs pre-commit as an isolated uv tool (no in-repo venv)
       - Configures pre-commit hooks
+      The validate hooks install the sidecar loaders from GitHub at the
+      deployed tags; uv must be recent enough to know the Python version the
+      bridge requires — `brew upgrade uv` when the resolve says otherwise.
     vars:
       FORMULAS: >-
         kubernetes-cli

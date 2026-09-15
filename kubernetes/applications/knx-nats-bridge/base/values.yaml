@@ -39,8 +39,9 @@ deployment:
       value: skip
     BRIDGE_WRITER_ENABLED:
       value: "true"
+    # A directory: every *.yaml in it is loaded; a GA in two files is a load error.
     BRIDGE_WRITER_RULES_PATH:
-      value: /etc/knx-nats-bridge/writer-rules.yaml
+      value: /etc/knx-nats-bridge/ga-mappings
     # Answer GroupValueRead for the written GAs with the last value on the bus,
     # so a Basalte panel polling on startup gets a value for slow-changing
     # datapoints (DHW setpoint, system pressure) instead of a default 0.
@@ -60,9 +61,9 @@ deployment:
     ga-catalog:
       configMap:
         name: knx-nats-bridge-ga-catalog
-    writer-rules:
+    ga-mappings:
       configMap:
-        name: knx-nats-bridge-writer-rules
+        name: knx-nats-bridge-ga-mappings
     nats-credentials:
       secret:
         secretName: knx-nats-bridge-credentials
@@ -71,9 +72,8 @@ deployment:
     ga-catalog:
       mountPath: /etc/knx-nats-bridge/ga-catalog.yaml
       subPath: ga-catalog.yaml
-    writer-rules:
-      mountPath: /etc/knx-nats-bridge/writer-rules.yaml
-      subPath: writer-rules.yaml
+    ga-mappings:
+      mountPath: /etc/knx-nats-bridge/ga-mappings
     nats-credentials:
       mountPath: /etc/knx-nats-bridge/nkey-seed
       subPath: nkey-seed

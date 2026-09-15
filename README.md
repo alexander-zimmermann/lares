@@ -260,7 +260,7 @@ lares/
 └── Taskfile.yaml     # Top-level entry point — `task --list`
 ```
 
-First-time setup: `task initialize` installs the whole toolchain via Homebrew (kubectl, kustomize, helm, opentofu, omnictl, kubeseal, GNU sed/coreutils, …) and registers the pre-commit hooks.
+First-time setup: `task initialize` installs the whole toolchain via Homebrew (kubectl, kustomize, helm, opentofu, omnictl, kubeseal, GNU sed/coreutils, …) and registers the pre-commit hooks. The validate hooks install the sidecar loaders from GitHub at the deployed tags, so they need network and a uv recent enough for the Python version the bridge requires (`brew upgrade uv`).
 
 Each of the three layer directories has its own detailed README:
 

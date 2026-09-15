@@ -1,0 +1,144 @@
+# SolarEdge PV → KNX: inverter and battery (solaredge2mqtt), PV forecast and
+# energy balance (iot-insights-engine cronjobs).
+
+mappings:
+  # SolarEdge PV (15/4: A=0..10 site-level, B=20..24 Wechselrichter 1, C=50..56
+  # Batterie, D=40..44 Wechselrichter 2; E=60..65 Bilanz via iot-insights-engine
+  # energy.pv.* below, F=70..73 Prognose, 10 via Basalte).
+  #
+  # The site-level grid/consumer powers (15/4/0 Netz-Leistung, 2 Netzbezug,
+  # 4 Netzeinspeisung, 6 Direktverbrauch, 8 Verbrauch-Gesamt) have NO writer-rule:
+  # they come from the SolarEdge meter, which is offline until the battery + 400 V
+  # conversion. The real grid values live on the KNX energy meter 15/1 meanwhile;
+  # re-add these rules when the SolarEdge meter feeds the powerflow. Only the
+  # inverter-sourced values (pv_production, temperature) are valid today.
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/20"
+    dpt: "14.056"
+    payload_path: "$.pv_production"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Leistung"
+    min_delta: 25 # W
+    min_delta_pct: 2
+  - subject: "solaredge-1.modbus.inverter"
+    ga: "15/4/22"
+    dpt: "9.001"
+    payload_path: "$.temperature"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-1.Temperatur"
+    min_delta: 0.5 # °C
+  - subject: "solaredge-2.powerflow"
+    ga: "15/4/40"
+    dpt: "14.056"
+    payload_path: "$.pv_production"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Leistung"
+    min_delta: 25 # W
+    min_delta_pct: 2
+  - subject: "solaredge-2.modbus.inverter"
+    ga: "15/4/42"
+    dpt: "9.001"
+    payload_path: "$.temperature"
+    description: "Versorgungstechnik.Photovoltaik.Wechselrichter-2.Temperatur"
+    min_delta: 0.5 # °C
+  # Batterie (15/4/51..55) — dormant until the battery is online; until then the
+  # solaredge-1.powerflow battery.* / consumer.used_battery_production fields are
+  # absent and these rules emit nothing. SOC comes from a separate modbus.battery
+  # subject (see solaredge_battery redpanda stream); verify field name at connect.
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/50"
+    dpt: "14.056"
+    payload_path: "$.battery.charge"
+    description: "Versorgungstechnik.Photovoltaik.Batterie.Ladeleistung"
+    min_delta: 25 # W
+    min_delta_pct: 2
+  - subject: "solaredge-1.powerflow"
+    ga: "15/4/52"
+    dpt: "14.056"
+    payload_path: "$.consumer.used_battery_production"
+    description: "Versorgungstechnik.Photovoltaik.Batterie.Entladeleistung"
+    min_delta: 25 # W
+    min_delta_pct: 2
+  - subject: "solaredge-1.modbus.battery"
+    ga: "15/4/54"
+    dpt: "5.001"
+    payload_path: "$.state_of_charge"
+    description: "Versorgungstechnik.Photovoltaik.Batterie.Ladestand"
+    min_delta: 1 # %
+
+  # PV-Prognose (forecast.solar) — the forecast-solar batch job derives these four
+  # scalars from the hourly forecast curve and publishes them as {"value": …}.
+  # Low-frequency (one CronJob run), so seed_on_start keeps the read responder warm
+  # across redeploys until the next run.
+  - subject: "forecast.pv.today_kwh"
+    ga: "15/4/70"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Heute"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "forecast.pv.remaining_kwh"
+    ga: "15/4/71"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Rest-Heute"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "forecast.pv.tomorrow_kwh"
+    ga: "15/4/72"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Prognose.Erzeugung-Morgen"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "forecast.pv.now_watts"
+    ga: "15/4/73"
+    dpt: "14.056"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Prognose.Leistung-Aktuell"
+    min_delta: 0
+    seed_on_start: true
+
+  # Energiebilanz (15/4/60..65) — the iot-insights-engine energy-balance job
+  # publishes today's kWh + ratios on energy.pv.* (computed from inverter
+  # energytotal + KNX energy meter 15/1 counters). Low-frequency (CronJob),
+  # so seed_on_start keeps the GAs warm across bridge redeploys.
+  - subject: "energy.pv.generation_kwh"
+    ga: "15/4/60"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Erzeugung"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.consumption_kwh"
+    ga: "15/4/61"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Verbrauch"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_consumption_kwh"
+    ga: "15/4/62"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenverbrauch"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_sufficiency_kwh"
+    ga: "15/4/63"
+    dpt: "13.013"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenversorgung"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_consumption_rate"
+    ga: "15/4/64"
+    dpt: "5.001"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenverbrauchsquote"
+    min_delta: 0
+    seed_on_start: true
+  - subject: "energy.pv.self_sufficiency_rate"
+    ga: "15/4/65"
+    dpt: "5.001"
+    payload_path: "$.value"
+    description: "Versorgungstechnik.Photovoltaik.Eigenversorgungsquote"
+    min_delta: 0
+    seed_on_start: true

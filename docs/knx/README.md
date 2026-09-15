@@ -45,7 +45,7 @@ stop with one sentence saying so.
 
 ```
 1  SOURCES — each system states its own footprint, where it is configured
-     bridge:   writer-rules.yaml + *_from_knx consumers  (kubernetes/, deployed)
+     bridge:   ga-mappings/*.yaml + *_from_knx consumers (kubernetes/, deployed)
      Basalte:  exports/basalte/Steinroth.bcfg            (Studio export)
      Node-Red: exports/node-red/flows.json               (flow export)
 
@@ -109,7 +109,7 @@ just above what the export shows installed.
 
 | Device          | Address source (the footprint)                                                                                    | Objects   | Flags          |
 | --------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | -------------- |
-| KNX-NATS-Bridge | `writer-rules.yaml` targets (Transmit+Read) ∪ consumed addresses from the `*_from_knx` consumer manifests (Write) | ~55       | per direction  |
+| KNX-NATS-Bridge | `ga-mappings/*.yaml` targets (Transmit+Read) ∪ consumed addresses from the `*_from_knx` consumer manifests (Write) | ~55       | per direction  |
 | Basalte Core S4 | Studio-export bindings (`scripts/basalte_gas.py` on `exports/basalte/*.bcfg`)                                     | ~95       | Write+Transmit |
 | Node-Red        | flow-export addresses (`scripts/node_red_gas.py` on `exports/node-red/flows.json`)                                | a handful | Write+Transmit |
 

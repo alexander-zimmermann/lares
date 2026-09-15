@@ -3,7 +3,7 @@
 # under the 150/day quota. Upserts into `mcp_forecasts` so the
 # Phase-4 get_pv_forecast MCP tool reads from TSDB, and publishes four
 # derived scalars to forecast.pv.* (needs the NATS nkey below) for the
-# knx-nats-bridge writer-rules → KNX 15/4/70..73.
+# knx-nats-bridge GA mappings → KNX 15/4/70..73.
 # Schedule :15 of every hour — past the CAGG refresh storms at :00.
 apiVersion: batch/v1
 kind: CronJob

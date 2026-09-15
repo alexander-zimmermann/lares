@@ -24,9 +24,20 @@ configMapGenerator:
   - name: knx-nats-bridge-ga-catalog
     files:
       - ga-catalog.yaml=config/ga-catalog.yaml
-  - name: knx-nats-bridge-writer-rules
+  # One file per source; the bridge loads the mounted directory.
+  - name: knx-nats-bridge-ga-mappings
     files:
-      - writer-rules.yaml=config/writer-rules.yaml
+      - ga-mappings/bordbar.yaml
+      - ga-mappings/channels.yaml
+      - ga-mappings/dyson.yaml
+      - ga-mappings/ems-esp.yaml
+      - ga-mappings/infra.yaml
+      - ga-mappings/insights.yaml
+      - ga-mappings/midea.yaml
+      - ga-mappings/miele.yaml
+      - ga-mappings/solaredge.yaml
+      - ga-mappings/unifi.yaml
+      - ga-mappings/warp.yaml
 
 labels:
   - includeSelectors: false
