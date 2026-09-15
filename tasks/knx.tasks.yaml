@@ -34,7 +34,7 @@ tasks:
       - sh: test -s "$KNXPROJ_PASSWORD_FILE"
         msg: "KNXPROJ_PASSWORD_FILE is not set or the file is empty — add it to .env (see .env.example)"
     cmds:
-      # --ignore-write-from: visualisations and the Telenot dummy do not vote on writable (CONTEXT.md)
+      # --ignore-write-from: visualisations (CONTEXT.md: writable) and the Telenot dummy, whose flags were never curated
       # --project keeps the cwd here, so a relative path in .env resolves from the repo root.
       - KNXPROJ_PASSWORD="$(cat "$KNXPROJ_PASSWORD_FILE")"
         uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
