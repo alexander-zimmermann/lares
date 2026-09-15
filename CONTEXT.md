@@ -25,7 +25,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   acts on (the `*_from_knx` manifests). These make `writable` true via the
   bridge's Write-flagged collectors.
 - **Writer target** — a group address the bridge writes onto the bus, as
-  declared in `writer-rules.yaml`.
+  declared in the GA mappings (`ga-mappings/<source>.yaml`).
 - **writable** (catalog flag) — "writing this group address has an effect":
   some device acts on writes to it. Only real actuators and the bridge's
   consumed-address collectors may vote; visualisation-style devices are

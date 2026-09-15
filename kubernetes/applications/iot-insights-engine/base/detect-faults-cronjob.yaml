@@ -2,7 +2,7 @@
 # fault's scope against ga_catalog, measures over the hourly aggregates,
 # folds observations into episodes (episodes tables, rw role) and publishes
 # a severity 0-3 per main group on anomaly.<fault>.<main_group> for the
-# knx-nats-bridge writer-rules. Runs at :20, after the CAGG refreshes.
+# knx-nats-bridge GA mappings. Runs at :20, after the CAGG refreshes.
 apiVersion: batch/v1
 kind: CronJob
 

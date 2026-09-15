@@ -1,21 +1,30 @@
 version: "3"
 
 # Tasks for the insights-engine fault list. Paths come from Taskfile.yaml vars:
-#   INSIGHTS_ENGINE_DIR  — sibling repo holding the loader and the schema
-#   INSIGHTS_FAULTS_PATH — the fault-list source file in lares
+#   INSIGHTS_CRONJOB_PATH — the detect-faults CronJob manifest; its image tag
+#                           is the version the validate task installs
+#   INSIGHTS_FAULTS_PATH  — the fault-list source file in lares
 
 tasks:
   validate-faults:
-    desc: "validate faults.yaml against the engine's schema and loader"
+    desc: "validate faults.yaml with the engine's loader at the deployed tag"
     summary: |
-      Load the fault list with the engine's own loader — schema validation
+      Load the fault list with the engine's own loader, installed from GitHub
+      at the image tag the detect-faults cronjob deploys — schema validation
       plus the loader's checks (duplicate names, per-kind parameters) — so a
       bad edit fails here instead of at startup in the cluster.
+      Called by the pre-commit hook. Needs network (the git tag is fetched on
+      every run).
+    vars:
+      INSIGHTS_ENGINE_TAG:
+        sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.INSIGHTS_CRONJOB_PATH}}"
     cmds:
       - >
-        uv run --directory "{{.INSIGHTS_ENGINE_DIR}}" python -c
+        uv run --no-project --python 3.14
+        --with "iot-insights-engine @ git+https://github.com/alexander-zimmermann/iot-insights-engine@v{{.INSIGHTS_ENGINE_TAG}}"
+        python -c
         "import sys; from pathlib import Path;
         from iot_insights_engine.faults import FaultList;
         faults = FaultList.load(Path(sys.argv[1]));
-        print(f'OK: {len(faults)} faults, {len(faults.schedulable())} schedulable')"
+        print(f'OK: {len(faults)} faults, {len(faults.schedulable())} schedulable (engine v{{.INSIGHTS_ENGINE_TAG}})')"
         "{{.INSIGHTS_FAULTS_PATH}}"
