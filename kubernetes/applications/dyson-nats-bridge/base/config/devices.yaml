@@ -1,8 +1,12 @@
 # Dyson devices served by the bridge. `name` is the NATS subject slug
 # (dyson.<name>.state) and the key of the matching credential in the
-# dyson-nats-bridge-device-credentials Secret.
+# dyson-nats-bridge-device-credentials Secret. `ga_name` binds the device to
+# its group-address block: the name prefix every datapoint of the bridge's
+# descriptor is resolved under when ga-mappings/dyson.yaml is generated
+# (task knx:create-ga-mappings).
 devices:
   - name: ventilator-og7
     host: ventilator-og7.zimmermann.eu.com
     serial: 9HC-EU-VEA7652A
     product_type: "438M" # Purifier Cool PC1
+    ga_name: Raumklima.OG.Schlafzimmer-Eltern.Luftreiniger
