@@ -8,10 +8,11 @@ marks it as generated. The sources, each in the environment of the package
 that describes it, installed at the tag the app manifest deploys:
 
 * `miele`, `midea`, `dyson` — input: the sidecar bridge's app config. Every
-  device there carries a binding, `ga_name`, the group-address name prefix
-  of its block; the bridge package ships a descriptor, `knx.yaml`, that
-  says per published field the datapoint name, the DPT and the writer
-  behaviour. device × field → the address named `<ga_name>.<datapoint>`.
+  device there names its address block, `ga_name`, the group-address name
+  prefix its datapoints resolve under; the bridge package ships a
+  descriptor, `knx.yaml`, that says per published field the datapoint name,
+  the DPT and the writer behaviour. device × field → the address named
+  `<ga_name>.<datapoint>`.
 * `insights` — input: the fault list. The per-device and per-room faults
   declare a name template, `target.name`, with `{entity}` standing for the
   entity as the fault's device or room map names it; entity × fault → the
@@ -239,8 +240,8 @@ def bridge_rules(
     for device in devices:
         if not device.ga_name:
             raise SystemExit(
-                f"{source}.{device.name}: no ga_name binding in {config_path.name} — "
-                "add the device's group-address name prefix"
+                f"{source}.{device.name}: no ga_name in {config_path.name} — "
+                "add the device's address block, its group-address name prefix"
             )
         missing: list[str] = []
         count = 0

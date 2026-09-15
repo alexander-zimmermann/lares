@@ -126,11 +126,11 @@ tasks:
         --todo-dir "{{.TODO_DIR}}"
 
   create-ga-mappings:
-    desc: "write the generated files in ga-mappings/ from descriptors, bindings and faults.yaml"
+    desc: "write the generated files in ga-mappings/ from descriptors, address blocks and faults.yaml"
     summary: |
       Write every generated GA-mapping file whole, each with its package
       installed at the deployed tag: miele/midea/dyson.yaml from descriptor ×
-      bindings, insights.yaml and channels.yaml from the fault list's name
+      address block, insights.yaml and channels.yaml from the fault list's name
       templates. Every rule resolves against the catalog by name, so run it after
       every catalog change; a DPT mismatch fails, an unnamed field is listed.
       Reads: the catalog, the sidecar configs, faults.yaml. Writes: ga-mappings/ (hook validates).

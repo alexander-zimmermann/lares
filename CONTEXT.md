@@ -34,9 +34,14 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   fields: `knx.yaml` at the package root, per published field the datapoint
   name, the DPT and the writer behaviour. Describes the product family,
   never the house; read at the deployed tag.
-- **Binding** — a device's group-address name prefix, `ga_name`, in the
-  sidecar's app config in lares (`appliances.yaml`, `devices.yaml`). With
-  the descriptor's datapoint it names the address: `<ga_name>.<datapoint>`.
+- **Address block** (avoid: binding) — the group-address name prefix under
+  which a configured device's datapoints resolve: `ga_name` in the sidecar's
+  app config in lares (`appliances.yaml`, `devices.yaml`). With the
+  descriptor's datapoint it names one address: `<ga_name>.<datapoint>`.
+- **Binding** (avoid: assignment, link) — a Studio object's — a device's or
+  a logic block's — attachment to one group address, stored with a copy of
+  the ETS name at the time it was made. Basalte's bindings are its footprint;
+  a binding whose address moved in ETS is stale.
 - **Writer target** — a group address the bridge writes onto the bus, as
   declared in the GA mappings (`ga-mappings/<source>.yaml`).
 - **writable** (catalog flag) — "writing this group address has an effect":
