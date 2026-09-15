@@ -1,34 +1,36 @@
 version: "3"
 
-# Tasks for the KNX catalog pipeline. Paths come from Taskfile.yaml vars:
-#   KNX_BRIDGE_DIR         — sibling repo holding the knxproj tools
-#   KNX_BRIDGE_VALUES_PATH — the bridge app's values.yaml; its image tag is
-#                            the version the validate tasks install
-#   KNX_CATALOG_PATH       — destination ConfigMap source file in lares
-#   KNX_GA_MAPPINGS_DIR    — the GA mappings directory, one file per source
-#   INSIGHTS_CRONJOB_PATH  — the detect-faults CronJob; its image tag is the
-#                            engine version the generator installs
-#   INSIGHTS_FAULTS_PATH   — the fault-list source file in lares
-#   <MIELE|MIDEA|DYSON>_VALUES_PATH / _CONFIG_PATH — the sidecar bridges whose
-#                            mappings are generated: deployed tag, device list
-# The local inputs come from .env (see .env.example):
-#   KNX_PROJECT_PATH      — the ETS project export
-#   KNXPROJ_PASSWORD      — its password, read by the knxproj tools
-#   BASALTE_EXPORT_PATH   — the Basalte Studio project export
-#   NODE_RED_FLOWS_PATH   — the Node-Red flow export
+# What changed decides the task. A lares config, a Studio or a Node-Red
+# export changed: create-ets-devices. "only links" — link the new addresses
+# in ETS per worksheet. "publish" — Kaenx-Creator: open the .ae-manu,
+# publish; ETS: import the .knxprod, add the new version as a second device,
+# drag the links over per worksheet (war N), delete the old device, give the
+# new one its address, link the new addresses. ETS changed: export the
+# project. Then always: create-ga-catalog → validate-ets-devices → commit
+# the catalog and versions.yaml. ETS and Kaenx-Creator: wiki ets-kaenx-creator.
+# Paths come from Taskfile.yaml vars, the local inputs from .env (.env.example).
+
+vars:
+  CONSUMERS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers"
+  # Scratch for the footprints; .task/ is git-ignored.
+  FOOTPRINTS_DIR: "{{.ROOT_DIR}}/.task/footprints"
+  # One device list (footprint, product name, flag mode) for both knxproj tools.
+  DEVICE_ARGS: >-
+    --write-gas "{{.FOOTPRINTS_DIR}}/consumed"
+    --device "@{{.FOOTPRINTS_DIR}}/bridge=KNX-NATS-Bridge:split"
+    --device "@{{.FOOTPRINTS_DIR}}/basalte=Basalte Core S4:both"
+    --device "@{{.FOOTPRINTS_DIR}}/nodered=Node-Red:both"
 
 tasks:
-  catalog:
-    desc: "rebuild ga-catalog.yaml from the ETS export [path/to/project.knxproj]"
+  create-ga-catalog:
+    desc: "write ga-catalog.yaml from the ETS export [path/to/project.knxproj]"
     summary: |
-      Run knxproj-to-yaml against the ETS export — by default the one at
-      KNX_PROJECT_PATH, or a path given as argument — and write the
-      catalog into the ConfigMap source file. The extractor strips what
-      ETS adds by itself — the Building numbering around a space name and
-      the description it pre-fills from space plus function — so there is
-      nothing left to post-process here.
+      Extract every typed group address with its DPT, name, function and room
+      from the ETS export and write the catalog the bridge deploys; the
+      pre-commit hook validates it (validate-ga-catalog). Only real actuators
+      and the bridge's consumed-address collectors vote on writable (CONTEXT.md).
+      Reads: the ETS export, KNXPROJ_PASSWORD from .env. Writes: ga-catalog.yaml.
       Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
-      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
     vars:
       KNXPROJ: '{{.CLI_ARGS | default .KNX_PROJECT_PATH}}'
     preconditions:
@@ -37,178 +39,106 @@ tasks:
       - sh: test -n "$KNXPROJ_PASSWORD"
         msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
-      # --ignore-write-from Dummy: the GIRA dummy products. The software
-      # placeholders are gone; what is left is the Telenot alarm panel, whose
-      # flags were never curated, so it does not vote. The named devices are
-      # the generated visualisation devices: a visualisation receives status
-      # addresses in order to display them, which is indistinguishable from
-      # acting on them, so their Write flags must not vote either — only the
-      # bridge's may, and those are exact (Write on consumed addresses only).
-      # --project keeps the cwd here, so a relative path in .env resolves
-      # from the repository root.
+      # --ignore-write-from: visualisations and the Telenot dummy do not vote on writable (CONTEXT.md)
+      # --project keeps the cwd here, so a relative path in .env resolves from the repo root.
       - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
         --ignore-write-from Dummy
         --ignore-write-from "Basalte Core S4"
         --ignore-write-from "Node-Red"
-      # The extractor strips ETS' Building numbering; nothing here does it
-      # any more. An extractor from before that fails silently, and the
-      # numbering reaches ga_catalog.room, which iot-mcp-bridge lists rooms
-      # by. Assert the behaviour rather than a version — it cannot drift.
+      # An older extractor leaves ETS' Building numbering in room; assert the behaviour, not a version.
       - >
         ! grep -qE '^  room: [0-9]+ - ' "{{.KNX_CATALOG_PATH}}" ||
         { echo "rooms still carry ETS' Building numbering: update {{.KNX_BRIDGE_DIR}}
         (needs the extractor that strips it, knx-nats-bridge >= v0.19.0)"; exit 1; }
-      - task: check-wiring
 
-  ets-devices:
-    desc: "generate Kaenx-Creator projects for the software bus devices [output-dir]"
+  extract-footprints:
+    internal: true
+    desc: "write the three footprints and the consumed-address list into FOOTPRINTS_DIR"
+    preconditions:
+      - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
+        msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
+      - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
+        msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
+    cmds:
+      - mkdir -p "{{.FOOTPRINTS_DIR}}"
+      - >
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
+        "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/consumed"
+      - >
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
+        "{{.KNX_GA_MAPPINGS_DIR}}" "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/bridge"
+      - >
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
+        "{{.BASALTE_EXPORT_PATH}}" > "{{.FOOTPRINTS_DIR}}/basalte"
+      - >
+        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
+        "{{.NODE_RED_FLOWS_PATH}}" > "{{.FOOTPRINTS_DIR}}/nodered"
+
+  create-ets-devices:
+    desc: "write the Kaenx-Creator projects for the software bus participants [output-dir]"
     summary: |
-      Build one Kaenx-Creator project per software bus participant —
-      KNX-NATS-Bridge, Basalte, Node-Red — with collector objects: one
-      communication object per main group and DPT main type, so every
-      address of a kind is linked with one multi-select in ETS. A
-      wiring worksheet lands beside each project and lists, per object,
-      exactly the addresses to link.
-      The address sets are defined by lares, not by ETS: the bridge
-      carries the GA-mapping targets (Transmit+Read) plus the addresses
-      NATS consumers act on (Write, the *_from_knx manifests); Basalte
-      carries the bindings from the Studio export at BASALTE_EXPORT_PATH
-      (Write+Transmit, excluded from the catalog's write vote). The ETS
-      export at KNX_PROJECT_PATH only supplies names, DPTs and
-      group-range names. Node-Red carries the addresses its flow export
-      at NODE_RED_FLOWS_PATH touches. All three come from .env.
-      Filter-table coverage is not modelled here at all — the couplers
-      are set to forward group telegrams towards the bridge's line.
-      Object numbers are positional (main group, DPT, direction). ETS
-      keeps no link across an application update of these products, so
-      a changed object set is always a new version built as a second
-      device with the links dragged over; the worksheet says per object
-      "NEU" or "war N" (its number on the old device). The run says per
-      device whether anything changed — "no publish needed, only links"
-      or "N new, M renumbered: publish" — and refuses to write when an
-      installed object with links is dropped. scripts/kaenx/versions.yaml
-      holds the version last handed out per device (commit it after
-      every run): ETS remembers every version it ever imported, so the
-      next one must go above what was published, not just above what
-      is installed.
-      Open each .ae-manu in Kaenx-Creator on the ETS VM, publish the
-      .knxprod, import it into ETS, rebuild the device per worksheet.
+      Build one Kaenx-Creator project per software bus participant — bridge,
+      Basalte, Node-Red — with collector objects (ADR-0001, ADR-0003) and a wiring
+      worksheet each, NEU or war N per object; says per device "only links" or
+      "publish". Reads: the footprints, the ETS export, scripts/kaenx/, and
+      KNXPROJ_PASSWORD from .env. Writes: <device>.ae-manu, <device>-wiring.md, versions.yaml.
       Arguments: [output-dir, default ~/Downloads]
-      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
     vars:
       OUTDIR: '{{.CLI_ARGS | default "$HOME/Downloads"}}'
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
         msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
-      - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
-        msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
-      - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
-        msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
       - sh: test -n "$KNXPROJ_PASSWORD"
         msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
-      # --project keeps the cwd here, so relative paths (.env, output dirs)
-      # resolve from the repository root.
-      - >
-        set -e;
-        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
-        trap 'rm -f "$consumed" "$bridge" "$basalte" "$nodered"' EXIT;
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
-        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
-        "{{.KNX_GA_MAPPINGS_DIR}}"
-        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
-        "{{.BASALTE_EXPORT_PATH}}" > "$basalte";
-        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
-        "{{.NODE_RED_FLOWS_PATH}}" > "$nodered";
-        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
+      - task: extract-footprints
+      # --project keeps the cwd here, so relative paths resolve from the repo root.
+      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-kaenx
         --input "{{.KNX_PROJECT_PATH}}"
         --template "{{.SCRIPTS_DIR}}/kaenx/template.ae-manu"
-        --write-gas "$consumed"
-        --device "@$bridge=KNX-NATS-Bridge:split"
-        --device "@$basalte=Basalte Core S4:both"
-        --device "@$nodered=Node-Red:both"
+        {{.DEVICE_ARGS}}
         --catalog-section "Lares"
         --versions "{{.SCRIPTS_DIR}}/kaenx/versions.yaml"
         --output-dir "{{.OUTDIR}}"
 
-  check-wiring:
-    desc: "hold the ETS export against the software-device footprints"
+  validate-ets-devices:
+    desc: "check the software bus participants' devices in ETS against their footprints"
     summary: |
-      Compare the ETS export at KNX_PROJECT_PATH against what lares says
-      each software device touches: GA mappings and *_from_knx
-      consumers for the bridge, the Studio export at BASALTE_EXPORT_PATH
-      for Basalte, the flow export at NODE_RED_FLOWS_PATH for Node-Red.
-      All three come from .env. Reports footprint
-      addresses without an ETS link, ETS links no configuration claims,
-      and consumed addresses on objects without the Write flag; any
-      finding fails the run, a device not yet imported is reported as
-      such. Per device with findings a rest worksheet
-      (<gerät>-wiring-todo.md) lands in TODO_DIR: only the links still
-      to make, grouped under the object numbers of the device in the
-      project (matched by object name, so an older installed version
-      is checked correctly and objects it lacks are flagged). Runs
-      automatically after knx:catalog.
-      Needs KNXPROJ_PASSWORD from .env (the tools read it from the environment).
+      Hold the ETS export against the three footprints: footprint addresses
+      without a link, links no configuration claims, consumed addresses on
+      objects without Write. Any finding fails; a missing device is reported.
+      Reads: the footprints, the ETS export, KNXPROJ_PASSWORD from .env. Writes:
+      <device>-wiring-todo.md per device with findings — only the links still to
+      make — into TODO_DIR (default ~/Downloads). Not a hook: the export may lag lares.
     vars:
       TODO_DIR: '{{.TODO_DIR | default "$HOME/Downloads"}}'
     preconditions:
       - sh: test -f "{{.KNX_PROJECT_PATH}}"
         msg: "ETS project export not found at '{{.KNX_PROJECT_PATH}}' — set KNX_PROJECT_PATH in .env (see .env.example)"
-      - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
-        msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
-      - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
-        msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
       - sh: test -n "$KNXPROJ_PASSWORD"
         msg: "KNXPROJ_PASSWORD is not set — add it to .env (see .env.example)"
     cmds:
-      # --project keeps the cwd here, so relative paths (.env, output dirs)
-      # resolve from the repository root.
-      - >
-        set -e;
-        consumed="$(mktemp)"; bridge="$(mktemp)"; basalte="$(mktemp)"; nodered="$(mktemp)";
-        trap 'rm -f "$consumed" "$bridge" "$basalte" "$nodered"' EXIT;
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_consumed_gas.py"
-        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$consumed";
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_bridge_gas.py"
-        "{{.KNX_GA_MAPPINGS_DIR}}"
-        "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers" > "$bridge";
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/basalte_gas.py"
-        "{{.BASALTE_EXPORT_PATH}}" > "$basalte";
-        uv run --no-project python "{{.SCRIPTS_DIR}}/node_red_gas.py"
-        "{{.NODE_RED_FLOWS_PATH}}" > "$nodered";
-        uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
+      - task: extract-footprints
+      # --project keeps the cwd here, so relative paths resolve from the repo root.
+      - uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-check-wiring
         --input "{{.KNX_PROJECT_PATH}}"
-        --write-gas "$consumed"
-        --device "@$bridge=KNX-NATS-Bridge:split"
-        --device "@$basalte=Basalte Core S4:both"
-        --device "@$nodered=Node-Red:both"
+        {{.DEVICE_ARGS}}
         --todo-dir "{{.TODO_DIR}}"
 
   create-ga-mappings:
-    desc: "regenerate the generated files in ga-mappings/ from descriptors, bindings, faults.yaml and the catalog"
+    desc: "write the generated files in ga-mappings/ from descriptors, bindings and faults.yaml"
     summary: |
-      Write every generated GA-mapping file whole, each in the environment
-      of the package that describes it, installed from GitHub at the tag
-      the app manifest deploys:
-      - miele.yaml, midea.yaml, dyson.yaml — from the bridge's descriptor
-        (knx.yaml in its package) and the ga_name bindings in its app
-        config: device × field → the address named <ga_name>.<datapoint>
-      - insights.yaml — from the per-device and per-room faults' name
-        templates: entity × fault → the address the template renders to
-      - channels.yaml — from the per-main-group faults and the house-wide
-        ones
-      Every rule is resolved against the catalog by name, so run this after
-      every catalog change; a DPT disagreement between descriptor and
-      catalog fails the run, a field the catalog has no name for is left
-      out and listed per device. Validates the result on the way out.
+      Write every generated GA-mapping file whole, each with its package
+      installed at the deployed tag: miele/midea/dyson.yaml from descriptor ×
+      bindings, insights.yaml and channels.yaml from the fault list's name
+      templates. Every rule resolves against the catalog by name, so run it after
+      every catalog change; a DPT mismatch fails, an unnamed field is listed.
+      Reads: the catalog, the sidecar configs, faults.yaml. Writes: ga-mappings/ (hook validates).
     cmds:
       - task: generate-ga-mappings
         vars: { OUT_DIR: "{{.KNX_GA_MAPPINGS_DIR}}" }
-      - task: validate-ga-mappings
 
   generate-ga-mappings:
     internal: true
@@ -252,15 +182,12 @@ tasks:
   validate-ga-mappings:
     desc: "validate ga-mappings/ with the bridge's loader at the deployed tag"
     summary: |
-      Load every file in ga-mappings/ with the bridge's own loader, installed
-      from GitHub at the image tag the bridge app deploys: schema, DPT
-      existence, the reader-loop guard (prefix "knx", as in production) and
-      one writer per group address across all files. Then cross-check every
-      target GA against ga-catalog.yaml, and regenerate every generated file
-      into a temporary directory and diff — a stale one fails with the diff
-      shown. What passes here is what the cluster accepts.
-      Called by the pre-commit hook. Needs network (the git tags are fetched
-      on every run) and a uv that knows the packages' Python floors.
+      Load every file in ga-mappings/ with the bridge's loader at the deployed
+      tag — schema, DPTs, the reader-loop guard, one writer per address across
+      files — check every target against the catalog, and diff each generated
+      file against a fresh run of its generator; a stale one fails with the diff.
+      Reads: ga-mappings/, the catalog, everything create-ga-mappings reads.
+      Pre-commit hook; needs network (git tags) and a uv that knows Python 3.14.
     vars:
       KNX_BRIDGE_TAG:
         sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"
@@ -294,12 +221,11 @@ tasks:
   validate-ga-catalog:
     desc: "validate ga-catalog.yaml with the bridge's loader at the deployed tag"
     summary: |
-      Load the catalog with the bridge's own loader, installed from GitHub at
-      the image tag the bridge app deploys — the JSON-Schema ships inside the
-      package — so a skew between the extractor that wrote the file and the
-      loader that reads it in the cluster fails here.
-      Called by the pre-commit hook. Needs network (the git tag is fetched on
-      every run) and a uv that knows the bridge's Python floor.
+      Load the catalog with the bridge's loader at the image tag the app
+      deploys — the JSON-Schema ships in the package — so a skew between the
+      extractor that wrote the file and the loader in the cluster fails here.
+      Reads: ga-catalog.yaml, the bridge's values.yaml (tag). Writes nothing.
+      Pre-commit hook; needs network (the git tag is fetched every run).
     vars:
       KNX_BRIDGE_TAG:
         sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"

@@ -4,10 +4,11 @@
         <export.bcfg> <ga-catalog.yaml>
 
 The ETS side is the catalog, which is a snapshot of the project: an
-address created in ETS since the last `task knx:catalog` would look like
-one Basalte invented. `task basalte:sync` keeps that from happening by
-refusing to run while the .knxproj is newer — which is why this stays two
-plain files to read instead of an extraction with a project password.
+address created in ETS since the last `task knx:create-ga-catalog` would
+look like one Basalte invented. `task basalte:validate-bindings` keeps that
+from happening by refusing to run while the .knxproj is newer — which is
+why this stays two plain files to read instead of an extraction with a
+project password.
 
 Basalte holds the bus in two layers. One is the imported ETS project,
 which a re-import refreshes wholesale. The other is every device and

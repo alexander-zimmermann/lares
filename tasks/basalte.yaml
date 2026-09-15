@@ -1,29 +1,34 @@
----
 version: "3"
 
 tasks:
-  inventory:
-    desc: "print the Basalte logic inventory from a Studio export [path/to/export.bcfg]"
+  create-inventory:
+    desc: "write the Basalte logic inventory from a Studio export [path/to/export.bcfg]"
+    summary: |
+      List every logic block in the Studio export with its devices, thresholds
+      and notifications — the set a newly planned fault is checked against.
+      What the block types do is product knowledge: wiki basalte-logic-blocks.
+      Reads: the Studio export. Writes: ~/Downloads/basalte-inventory.md.
+      Arguments: [path/to/export.bcfg, default BASALTE_EXPORT_PATH]
     vars:
       EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
+      OUTPUT: "$HOME/Downloads/basalte-inventory.md"
     preconditions:
       - sh: test -f "{{.EXPORT}}"
         msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
     cmds:
-      - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}"
+      - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" > "{{.OUTPUT}}"
+      - cmd: echo "wrote {{.OUTPUT}}"
+        silent: true
 
-  sync:
-    desc: "check the Studio export against the GA catalog [path/to/export.bcfg]"
+  validate-bindings:
+    desc: "check the Studio export's bindings against the GA catalog [path/to/export.bcfg]"
     summary: |
-      Report where Basalte and ETS disagree about a group address: bindings
-      whose address moved (the ones that matter), labels left over from an
-      older name, and addresses ETS does not define. Exits non-zero on a
-      moved address.
-
-      Compares against ga-catalog.yaml, which is a snapshot of the project.
-      The task refuses to run while the .knxproj is newer than it — an
-      address created in ETS since would otherwise be reported as one
-      Basalte invented. Rebuild with `task knx:catalog` first.
+      Studio holds the bus twice: the imported ETS project, and a copy of the
+      address name in every device and logic block wired with it — a move or
+      rename in ETS leaves the copies behind. Reports moved bindings (fails the
+      run), stale labels and addresses the catalog lacks. Reads: the Studio
+      export, ga-catalog.yaml; refuses while the .knxproj is newer than the catalog.
+      Arguments: [path/to/export.bcfg, default BASALTE_EXPORT_PATH]
     vars:
       EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
     preconditions:
@@ -31,7 +36,7 @@ tasks:
         msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
       # Absent .knxproj: nothing to be stale against, so the check runs.
       - sh: '! test "{{.KNX_PROJECT_PATH}}" -nt "{{.KNX_CATALOG_PATH}}"'
-        msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:catalog` first"
+        msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:create-ga-catalog` first"
     cmds:
       - >
         uv run --no-project --with pyyaml python scripts/basalte_sync.py "{{.EXPORT}}"

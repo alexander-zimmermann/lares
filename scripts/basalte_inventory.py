@@ -157,7 +157,7 @@ def render(blocks: list[dict], named: int) -> str:
     )
     out = ["# Basalte logic: inventory", ""]
     out += [
-        "Generated from the Studio export with `task basalte:inventory`.",
+        "Generated from the Studio export with `task basalte:create-inventory`.",
         "",
         summary,
         "",
