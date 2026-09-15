@@ -304,6 +304,16 @@ variable "display_memory" {
 ###############################################################################
 ## Image variables
 ###############################################################################
+variable "agent_override" {
+  description = <<EOT
+    Whether to override the QEMU Guest Agent setting inherited from the template.
+    If `true`, the `qemu_guest_agent` value will be applied to the clone.
+    If `false`, the clone will retain the QEMU Guest Agent setting from the template.
+  EOT
+  type        = bool
+  default     = false
+}
+
 variable "qemu_guest_agent" {
   description = <<EOT
     Enable the QEMU Guest Agent for better integration with the Proxmox host.
@@ -593,12 +603,12 @@ variable "ci_meta_data" {
 ###############################################################################
 variable "wait_for_agent" {
   description = <<EOT
-    Whether to ask the QEMU guest agent for the VM's IP addresses. Set to `false`
-    for VMs where the agent is absent or unreliable (e.g., during OS installation,
-    Windows without the agent service). Defaults to `true`.
+    Whether to wait for the QEMU guest agent to become available before
+    considering the VM creation complete. Set to `false` for VMs where the
+    agent is not yet installed (e.g., during OS installation). Defaults to `true`.
 
-    When `true`, every create and refresh polls the agent for up to 5 minutes.
-    When `false`, the lookup is skipped entirely and the IP outputs stay empty.
+    When `true`, Terraform waits up to 15 minutes for the agent to respond.
+    When `false`, Terraform only waits 5 seconds before continuing.
   EOT
   type        = bool
   default     = true
