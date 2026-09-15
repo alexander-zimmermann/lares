@@ -1,7 +1,7 @@
 """Generate the GA mappings whose rules follow a pattern lares already knows.
 
     uv run --no-project --python 3.14 --with "<package> @ git+<repo>@v<tag>" \
-        python scripts/ga_mappings.py <source> <ga-catalog.yaml> <out-dir> <input>
+        python scripts/knx_generate_ga_mappings.py <source> <ga-catalog.yaml> <out-dir> <input>
 
 One run writes one file, <out-dir>/<source>.yaml, whole — its first line
 marks it as generated. The sources, each in the environment of the package

@@ -16,7 +16,7 @@ tasks:
       - sh: test -f "{{.EXPORT}}"
         msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
     cmds:
-      - uv run --no-project python scripts/basalte_inventory.py "{{.EXPORT}}" > "{{.OUTPUT}}"
+      - uv run --no-project python scripts/basalte_create_inventory.py "{{.EXPORT}}" > "{{.OUTPUT}}"
       - cmd: echo "wrote {{.OUTPUT}}"
         silent: true
 
@@ -39,5 +39,5 @@ tasks:
         msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:create-ga-catalog` first"
     cmds:
       - >
-        uv run --no-project --with pyyaml python scripts/basalte_sync.py "{{.EXPORT}}"
+        uv run --no-project --with pyyaml python scripts/basalte_validate_bindings.py "{{.EXPORT}}"
         "{{.KNX_CATALOG_PATH}}"
