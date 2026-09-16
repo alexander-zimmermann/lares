@@ -32,10 +32,9 @@
   },
   "packageRules": [
     {
-      // rustfs ships only pre-releases since 1.0.0; each rc must prove itself first, so gate bumps behind the dashboard
+      // rustfs has regressed on several releases in a row, so gate bumps behind the dashboard
       "matchDatasources": ["helm"],
       "matchPackageNames": ["rustfs"],
-      "ignoreUnstable": false,
       "dependencyDashboardApproval": true
     },
     {
