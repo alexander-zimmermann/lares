@@ -7,7 +7,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/unpoller/unpoller
-    tag: v5.2.5
+    tag: v5.2.6
     pullPolicy: IfNotPresent
 
   # unpoller is a static distroless binary that writes nothing to disk; run it
