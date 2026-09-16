@@ -29,7 +29,7 @@
     {
       "customType": "regex",
       "description": "Process shell config file versions",
-      "managerFilePatterns": ["\\.conf\\.tftpl$"],
+      "managerFilePatterns": ["/\\.conf\\.tftpl$/"],
       "matchStrings": [
         "[^=]+=\"(?<currentValue>[^\"]+)\"\\s*#\\s*datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)"
       ],

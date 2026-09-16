@@ -107,7 +107,7 @@ services:
 
   ## Omni Proxmox Infrastructure Provider
   omni-infra-provider-proxmox:
-    image: ghcr.io/siderolabs/omni-infra-provider-proxmox
+    image: ghcr.io/siderolabs/omni-infra-provider-proxmox:${OMNI_INFRA_PROVIDER_VERSION:-latest}
     container_name: omni-infra-proxmox
     network_mode: host
     restart: unless-stopped

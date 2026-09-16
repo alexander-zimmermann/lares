@@ -66,7 +66,7 @@ image:
     image_checksum_algorithm: sha512
 ```
 
-`locals.tf` pulls every `manifest/20-image/*.yaml` in, merges them, and passes the map to the `20-image` module which handles the actual download + verification. Renovate keeps the `image_url` and `image_checksum` fresh via PRs — see [`image.yaml`](manifest/20-image/image.yaml) for the live catalog.
+`locals.tf` pulls every `manifest/20-image/*.yaml` in, merges them, and passes the map to the `20-image` module which handles the actual download + verification. Images only matter for a rebuild (running VMs update through apt), so `image_url` and `image_checksum` are bumped by hand before one — see [`image.yaml`](manifest/20-image/image.yaml) for the live catalog.
 
 ## Usage
 
