@@ -4,7 +4,9 @@
 ###############################################################################
 ## Automates Proxmox Backup Server initial setup: user initialization,
 ## maintenance jobs, and ACME certs. Repositories, the subscription nag and the
-## datastores are managed by OpenTofu (60-pbs-core, 60-pbs-datastore).
+## datastores are managed by OpenTofu (60-pbs-core, 60-pbs-datastore). ACLs and
+## jobs below name datastores that exist only after the first `tofu apply`;
+## PBS accepts both ahead of the store, and the jobs run once it is there.
 ##
 ## Prerequisites:
 ## - proxmox-backup-server installed.

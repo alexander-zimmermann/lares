@@ -26,12 +26,11 @@ resource "proxmox_backup_server_datastore" "this" {
   ## Create-only: adopt a chunk store the path already carries (NFS across rebuilds)
   reuse_datastore = var.reuse_datastore
 
-  gc_schedule       = var.gc_schedule
-  verify_new        = var.verify_new
-  notification_mode = var.notification_mode
-  tuning            = var.tuning
+  gc_schedule = var.gc_schedule
 
-  ## A datastore holds the backups: never let a plan remove or replace it
+  ## A datastore holds the backups: never let a plan remove or replace it.
+  ## The resource is authoritative otherwise: an attribute set in the UI and
+  ## not declared here is removed on the next apply.
   lifecycle {
     prevent_destroy = true
   }

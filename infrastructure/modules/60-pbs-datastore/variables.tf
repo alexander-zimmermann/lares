@@ -22,7 +22,7 @@ variable "path" {
 }
 
 variable "comment" {
-  description = "Free-form comment attached to the datastore."
+  description = "Free-form comment attached to the datastore. Unset by default: the imported datastores carry none."
   type        = string
   default     = null
 }
@@ -31,7 +31,8 @@ variable "reuse_datastore" {
   description = <<EOT
     Adopt an existing chunk store at `path` instead of creating one. PBS then
     checks that the directory tree is owned by `backup:backup` with its own
-    modes. Create-only; meant for a datastore whose data outlives the VM.
+    modes and refuses an empty directory. Create-only; meant for a datastore
+    whose data outlives the VM.
   EOT
   type        = bool
   default     = null
@@ -43,29 +44,6 @@ variable "reuse_datastore" {
 ###############################################################################
 variable "gc_schedule" {
   description = "Calendar event for garbage collection (e.g. `daily`). Unset leaves GC manual."
-  type        = string
-  default     = null
-}
-
-variable "verify_new" {
-  description = "Verify new backups right after completion. PBS default is false."
-  type        = bool
-  default     = null
-}
-
-variable "notification_mode" {
-  description = "`notification-system` or `legacy-sendmail`. Unset keeps the PBS default."
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.notification_mode == null || contains(["notification-system", "legacy-sendmail"], var.notification_mode)
-    error_message = "notification_mode must be `notification-system` or `legacy-sendmail`."
-  }
-}
-
-variable "tuning" {
-  description = "Datastore tuning options in PBS property-string format (e.g. `chunk-order=none`)."
   type        = string
   default     = null
 }

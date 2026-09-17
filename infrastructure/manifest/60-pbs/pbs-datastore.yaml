@@ -8,7 +8,8 @@ pbs_datastore:
     path: "/mnt/datastore-primary"
     gc_schedule: "daily"
 
-  ## NFS (30-cloud-init mounts it); the chunk store outlives the VM
+  ## NFS (30-cloud-init mounts it); the chunk store outlives the VM. Only a
+  ## fresh, empty share needs `reuse_datastore` off for its first apply.
   datastore-secondary:
     path: "/mnt/datastore-secondary"
     gc_schedule: "daily"

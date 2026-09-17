@@ -67,7 +67,8 @@ module "pve_cluster_pbs_storage" {
   source   = "./modules/00-pve-cluster-pbs-storage"
   for_each = local.pve_cluster.pbs_storage
 
-  depends_on = [module.fleet_vm["backup_server_01"]]
+  ## The readiness poll still covers the `backup` user (created at first boot)
+  depends_on = [module.fleet_vm["backup_server_01"], module.pbs_datastore]
 
   ## Storage identity
   storage_id = each.key
@@ -241,10 +242,7 @@ module "pbs_datastore" {
   reuse_datastore = try(each.value.reuse_datastore, null)
 
   ## Maintenance
-  gc_schedule       = try(each.value.gc_schedule, null)
-  verify_new        = try(each.value.verify_new, null)
-  notification_mode = try(each.value.notification_mode, null)
-  tuning            = try(each.value.tuning, null)
+  gc_schedule = try(each.value.gc_schedule, null)
 }
 
 
