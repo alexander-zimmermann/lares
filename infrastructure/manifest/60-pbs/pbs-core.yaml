@@ -5,4 +5,4 @@ pbs_core:
     ## No subscription: enterprise off, `pbs-no-subscription` comes from cloud-init
     enterprise: false
   ## Patch the "No valid subscription" dialog out of the web UI
-  subscription_nag: false
+  disable_subscription_nag: true

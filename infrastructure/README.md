@@ -50,7 +50,7 @@ infrastructure/
 │   ├── 30-cloud-init
 │   ├── 40-template-{vm,lxc}
 │   ├── 50-fleet-{vm,lxc}
-│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox)
+│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox, SSH)
 └── templates/              # .tftpl files rendered into cloud-init (env files, scripts)
 ```
 

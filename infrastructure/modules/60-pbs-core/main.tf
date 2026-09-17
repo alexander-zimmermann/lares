@@ -45,12 +45,12 @@ locals {
     fi
 
     # Subscription nag
-    %{if var.subscription_nag}
-    sudo rm -f ${local.nag_hook}
-    %{else}
+    %{if var.disable_subscription_nag}
     sudo tee ${local.nag_hook} > /dev/null <<'HOOK'
     DPkg::Post-Invoke { "if [ -s ${local.toolkit_js} ] && ! grep -q -F 'NoMoreNagging' ${local.toolkit_js}; then sed -i '/data\.status/{s/\!//;s/active/NoMoreNagging/}' ${local.toolkit_js}; fi" };
     HOOK
+    %{else}
+    sudo rm -f ${local.nag_hook}
     %{endif}
 
     # Reinstall the toolkit: runs the hook right away, or restores the original
@@ -62,7 +62,7 @@ resource "terraform_data" "pbs_core" {
   ## Re-execute if any attribute changes
   triggers_replace = [
     var.enable_enterprise_repository,
-    var.subscription_nag
+    var.disable_subscription_nag
   ]
 
   connection {

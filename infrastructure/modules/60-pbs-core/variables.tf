@@ -7,14 +7,14 @@ variable "enable_enterprise_repository" {
   default     = false
 }
 
-variable "subscription_nag" {
+variable "disable_subscription_nag" {
   description = <<EOT
-    Keep the "No valid subscription" dialog in the web UI. When false, an APT
-    hook patches it out of proxmoxlib.js after every proxmox-widget-toolkit
-    install or upgrade.
+    Patch the "No valid subscription" dialog out of the web UI: an APT hook
+    edits proxmoxlib.js after every proxmox-widget-toolkit install or upgrade.
+    When false, the hook is removed and the toolkit reinstalled as shipped.
   EOT
   type        = bool
-  default     = false
+  default     = true
 }
 
 

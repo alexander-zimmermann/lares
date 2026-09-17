@@ -221,7 +221,7 @@ module "pbs_core" {
 
   ## APT repositories & subscription nag
   enable_enterprise_repository = try(local.manifest.pbs_core.repositories.enterprise, false)
-  subscription_nag             = try(local.manifest.pbs_core.subscription_nag, false)
+  disable_subscription_nag     = try(local.manifest.pbs_core.disable_subscription_nag, true)
 }
 
 

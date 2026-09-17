@@ -1,6 +1,7 @@
 ## Proxmox Backup Server (the `backup_server_01` VM from 50-fleet). The 60-pbs
-## layer configures the running PBS through its API; installation, disks,
-## mounts and the root password stay in cloud-init (30-cloud-init).
+## layer configures the running PBS through its API, and over SSH where the
+## API has no coverage; installation, disks, mounts and the root password stay
+## in cloud-init (30-cloud-init).
 pbs:
   api_connection:
     api_url: "https://backup-01.zimmermann.eu.com:8007"
