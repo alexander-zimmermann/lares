@@ -24,7 +24,9 @@ tasks:
       Extract every typed group address with its DPT, name, function and room
       from the ETS export and write the catalog the bridge deploys; the
       pre-commit hook validates it (validate-ga-catalog). Only real actuators
-      and the bridge's consumed-address collectors vote on writable (CONTEXT.md).
+      and the write-direction collectors of generated devices that act — the
+      bridge's consumed addresses, the Telenot's switch addresses — vote on
+      writable (CONTEXT.md).
       Reads: the ETS export, KNXPROJ_PASSWORD_FILE from .env. Writes: ga-catalog.yaml.
       Arguments: [path/to/project.knxproj, default KNX_PROJECT_PATH]
     vars:
@@ -35,13 +37,12 @@ tasks:
       - sh: test -s "$KNXPROJ_PASSWORD_FILE"
         msg: "KNXPROJ_PASSWORD_FILE is not set or the file is empty — add it to .env (see .env.example)"
     cmds:
-      # --ignore-write-from: visualisations (CONTEXT.md: writable) and the Telenot dummy, whose flags were never curated
+      # --ignore-write-from: visualisations (CONTEXT.md: writable)
       # --project keeps the cwd here, so a relative path in .env resolves from the repo root.
       - KNXPROJ_PASSWORD="$(cat "$KNXPROJ_PASSWORD_FILE")"
         uv run --project "{{.KNX_BRIDGE_DIR}}" --extra tools knxproj-to-yaml
         --input "{{.KNXPROJ}}"
         --output "{{.KNX_CATALOG_PATH}}"
-        --ignore-write-from Dummy
         --ignore-write-from "Basalte Core S4"
         --ignore-write-from "Node-Red"
       # An older extractor leaves ETS' Building numbering in room; assert the behaviour, not a version.
