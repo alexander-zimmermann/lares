@@ -20,6 +20,7 @@ ci_vendor_config:
       - docker-compose-v2
       - curl
       - snapd
+      - locales
 
     snap:
       commands:
@@ -66,6 +67,9 @@ ci_vendor_config:
       - ["mkdir", "-p", "/mnt/backup"]
 
     runcmd:
+      ## Set locale (after locales package is installed); omni-bootstrap.conf sets LC_ALL=de_DE.UTF-8
+      - ["locale-gen", "de_DE.UTF-8"]
+      - ["localectl", "set-locale", "LANG=de_DE.UTF-8"]
       ## Symlinks for snap packages
       - ["ln", "-s", "/snap/bin/lego", "/usr/local/bin/lego"]
       - ["ln", "-s", "/snap/bin/task", "/usr/local/bin/task"]
