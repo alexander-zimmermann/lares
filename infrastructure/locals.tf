@@ -31,6 +31,7 @@ locals {
     pbs_core                   = merge([for m in local.decoded_manifests : try(m.pbs_core, {})]...)
     pbs_datastore              = merge([for m in local.decoded_manifests : try(m.pbs_datastore, {})]...)
     pbs_user                   = merge([for m in local.decoded_manifests : try(m.pbs_user, {})]...)
+    pbs_jobs                   = merge([for m in local.decoded_manifests : try(m.pbs_jobs, {})]...)
     image                      = merge([for m in local.decoded_manifests : try(m.image, {})]...)
     ci_user_config             = merge([for m in local.decoded_manifests : try(m.ci_user_config, {})]...)
     ci_vendor_config           = merge([for m in local.decoded_manifests : try(m.ci_vendor_config, {})]...)

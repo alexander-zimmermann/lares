@@ -4,25 +4,6 @@
 ## Password for root (also authenticates the OpenTofu `pbs` provider)
 PBS_ROOT_PASSWORD="${pbs_root_password}"
 
-## Datastore names (created by OpenTofu, 60-pbs-datastore); the jobs refer to them
-DATASTORE_PRIMARY_NAME="datastore-primary"
-DATASTORE_SECONDARY_NAME="datastore-secondary"
-
-## Data retention policy for primary datastore
-PRIMARY_KEEP_LAST=5
-PRIMARY_KEEP_DAILY=0
-PRIMARY_KEEP_WEEKLY=0
-PRIMARY_KEEP_MONTHLY=0
-PRIMARY_KEEP_YEARLY=0
-
-## Data retention policy for secondary datastore
-SECONDARY_KEEP_LAST=0
-SECONDARY_KEEP_HOURLY=0
-SECONDARY_KEEP_DAILY=7
-SECONDARY_KEEP_WEEKLY=4
-SECONDARY_KEEP_MONTHLY=6
-SECONDARY_KEEP_YEARLY=1
-
 ## Cloudflare convenience variables
 ACME_CF_ACCOUNT_ID="${acme_cf_account_id}"
 ACME_CF_ZONE_ID="${acme_cf_zone_id}"
