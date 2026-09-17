@@ -274,7 +274,7 @@ ci_vendor_config:
       - ["ls", "/mnt/datastore-secondary"]
       ## Root password: the 60-pbs provider authenticates with it. The file
       ## lives on tmpfs and goes right after use; printf restores the newline
-      ## that write_files strips, chpasswd drops a last line without one
+      ## that write_files strips
       - ["sh", "-c", "printf '%s\\n' \"$(cat /run/pbs-root-password)\" | chpasswd && rm -f /run/pbs-root-password"]
       ## Systemd services. The agent comes last on purpose: OpenTofu waits for
       ## it, and the 60-pbs layer then expects PBS up with the root password set.

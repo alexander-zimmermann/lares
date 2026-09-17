@@ -6,4 +6,5 @@ pbs_acme:
   account_name: "letsencrypt-prod"
   contact_email: "alexander@zimmermann.eu.com"
   primary_domain: "backup-01.zimmermann.eu.com"
-  san_domains: ["backup.zimmermann.sh"]
+  ## Traefik dials this name for backup.zimmermann.sh and verifies the chain
+  san_domains: ["backup.zimmermann.eu.com"]

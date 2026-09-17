@@ -26,8 +26,8 @@ locals {
   domains = concat([var.primary_domain], var.san_domains)
 
   plugin_data = join("\n", compact([
-    var.cf_account_id != null ? "CF_Account_ID=${var.cf_account_id}" : "",
-    var.cf_zone_id != null ? "CF_Zone_ID=${var.cf_zone_id}" : "",
+    var.cf_account_id != null && length(coalesce(var.cf_account_id, "")) > 0 ? "CF_Account_ID=${var.cf_account_id}" : "",
+    var.cf_zone_id != null && length(coalesce(var.cf_zone_id, "")) > 0 ? "CF_Zone_ID=${var.cf_zone_id}" : "",
     "CF_Token=${var.cf_token}",
   ]))
 
@@ -54,8 +54,9 @@ locals {
       printf 'y\nn\n' | sudo proxmox-backup-manager acme account register '${var.account_name}' '${var.contact_email}' --directory '${var.acme_directory}' > /dev/null
     fi
 
-    # DNS plugin: re-added on every run, so a rotated token lands without ever
-    # touching the command line (`plugin set` would want it there)
+    # DNS plugin: re-added whenever this script runs (a trigger changed), so a
+    # rotated token lands without touching a command line — `plugin set` takes
+    # the data as an argument, `add` reads it from a file
     if sudo proxmox-backup-manager acme plugin list | grep -qw '${var.dns_plugin_id}'; then
       sudo proxmox-backup-manager acme plugin remove '${var.dns_plugin_id}'
     fi
@@ -72,7 +73,8 @@ locals {
     # Certificate: order unless the current one is from the CA, covers exactly
     # these names and has more than 30 days left
     wanted=$(printf '%s\n' "$${DOMAINS[@]}" | sort | paste -sd,)
-    current=$(sudo openssl x509 -noout -ext subjectAltName -in ${local.cert_path} 2>/dev/null | grep -o 'DNS:[^,[:space:]]*' | sed 's/^DNS://' | sort | paste -sd,)
+    # An unreadable certificate or one without names counts as "different"
+    current=$({ sudo openssl x509 -noout -ext subjectAltName -in ${local.cert_path} 2>/dev/null || :; } | { grep -o 'DNS:[^,[:space:]]*' || :; } | sed 's/^DNS://' | sort | paste -sd,)
     if sudo openssl x509 -noout -issuer -in ${local.cert_path} | grep -q 'O=Proxmox Backup Server' \
       || [[ "$current" != "$wanted" ]] \
       || ! sudo openssl x509 -checkend 2592000 -noout -in ${local.cert_path}; then
@@ -84,7 +86,9 @@ locals {
 }
 
 resource "terraform_data" "pbs_acme" {
-  ## Re-execute if any attribute changes; the token only as a digest
+  ## Re-execute if any attribute changes. The token enters as a digest only,
+  ## a deliberate step away from the layer's version counters: rotation then
+  ## re-applies by itself, and a SHA-256 of a random token reveals nothing
   triggers_replace = [
     var.account_name,
     var.contact_email,
