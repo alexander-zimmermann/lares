@@ -27,10 +27,14 @@ resource "proxmox_backup_server_user" "this" {
 ## Password over SSH until the provider carries it (jkossis/terraform-provider-proxmox#7).
 ## The version counter is the only trigger, so the password itself stays out of state.
 resource "terraform_data" "password" {
-  count      = var.password != null ? 1 : 0
-  depends_on = [proxmox_backup_server_user.this]
+  count = var.password != null ? 1 : 0
 
   triggers_replace = [var.password_version]
+
+  ## A recreated user starts without a password
+  lifecycle {
+    replace_triggered_by = [proxmox_backup_server_user.this]
+  }
 
   connection {
     type        = "ssh"
@@ -41,10 +45,11 @@ resource "terraform_data" "password" {
     timeout     = "60s"
   }
 
-  ## base64 keeps the value out of shell quoting; PBS hashes it on receipt
+  ## base64 keeps the value out of shell quoting, the pipe keeps it out of the
+  ## argv that sudo logs; PBS hashes it on receipt
   provisioner "remote-exec" {
     inline = [
-      "sudo proxmox-backup-manager user update '${var.username}@${var.realm}' --password \"$(printf '%s' '${base64encode(var.password)}' | base64 -d)\""
+      "printf '%s' '${base64encode(var.password)}' | base64 -d | sudo sh -c 'proxmox-backup-manager user update \"$1\" --password \"$(cat)\"' sh '${proxmox_backup_server_user.this.user_id}'"
     ]
   }
 }

@@ -1,3 +1,4 @@
+## Password: tfvars `pbs_user_passwords.<username>`, shared with the 60-pbs user
 pve_cluster_pbs_storage:
   pbs-primary:
     pbs:

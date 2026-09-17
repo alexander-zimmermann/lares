@@ -81,15 +81,6 @@ variable "pve_cluster_acme_cf_account_id" {
 ###############################################################################
 ## PVE cluster - PBS storage configuration
 ###############################################################################
-variable "pve_cluster_pbs_passwords" {
-  description = <<EOT
-    Map of PBS storage ID => password for the PBS backup user defined in
-    manifest/00-cluster/pve-cluster-pbs-storage.yaml. Sensitive value.
-  EOT
-  type        = map(string)
-  sensitive   = true
-}
-
 variable "pve_cluster_pbs_fingerprints" {
   description = <<EOT
     Map of PBS storage ID => TLS certificate fingerprint for certificate pinning. Optional
@@ -122,8 +113,10 @@ variable "pve_cluster_realm_openid_client_keys" {
 variable "pbs_user_passwords" {
   description = <<EOT
     Map of username => password for the PBS users defined in
-    manifest/60-pbs/pbs-users.yaml. Users absent from the map get no password
-    (token-only). Sent over SSH, never stored in state. Sensitive value.
+    manifest/60-pbs/pbs-user.yaml. Users absent from the map get no password
+    (token-only). Sent over SSH, never stored in state; the PVE storage in
+    manifest/00-cluster/pve-cluster-pbs-storage.yaml reads its user's entry
+    from here too. Sensitive value.
   EOT
   type        = map(string)
   sensitive   = true

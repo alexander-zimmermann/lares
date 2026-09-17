@@ -15,6 +15,11 @@ variable "realm" {
   description = "Authentication realm of the user. Defaults to `pbs`."
   type        = string
   default     = "pbs"
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9_][A-Za-z0-9._-]*$", var.realm))
+    error_message = "realm must start with a letter, digit or '_' and contain only letters, digits, '.', '-' and '_'."
+  }
 }
 
 variable "enabled" {
@@ -24,7 +29,7 @@ variable "enabled" {
 }
 
 variable "comment" {
-  description = "Free-form comment attached to the user and its token."
+  description = "Free-form comment attached to the user and its token. Unset by default: the imported users carry none."
   type        = string
   default     = null
 }

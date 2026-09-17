@@ -1,9 +1,9 @@
 ## Users, API tokens and ACLs on the PBS (`pbs` realm; the Authentik login is
-## in pbs-realm-openid.yaml). Passwords: tfvars `pbs_user_passwords.<name>`,
-## sent over SSH until the provider carries them; bump `password_version` to
-## re-send. Token secrets are only returned on creation: the existing tokens
+## in pbs-realm-openid.yaml). Passwords: tfvars `pbs_user_passwords.<name>`
+## (the PVE storage reads `backup` from the same map), sent over SSH until the
+## provider carries them; bump `password_version` to re-send. Token secrets are only returned on creation: the existing tokens
 ## are imported, their secrets stay in the SealedSecrets they were copied to.
-pbs_users:
+pbs_user:
   ## Break-glass admin next to alexander@authentik
   alexander:
     path: "/"

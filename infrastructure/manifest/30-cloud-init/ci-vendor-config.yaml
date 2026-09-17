@@ -274,7 +274,8 @@ ci_vendor_config:
       - ["ls", "/mnt/datastore-secondary"]
       ## Setup PBS
       - ["bash", "/usr/local/bin/pbs-bootstrap.sh"]
-      ## Systemd services
+      ## Systemd services. The agent comes last on purpose: OpenTofu waits for
+      ## it, and the 60-pbs layer then expects PBS up with the root password set
       - ["systemctl", "enable", "--now", "qemu-guest-agent"]
 
     write_files:

@@ -76,9 +76,9 @@ module "pve_cluster_pbs_storage" {
   datastore  = each.value.pbs.datastore
   nodes      = try(each.value.nodes, null)
 
-  ## PBS connection
+  ## PBS connection: the password is the one the 60-pbs user module sets
   username    = each.value.pbs.username
-  password    = var.pve_cluster_pbs_passwords[each.key]
+  password    = var.pbs_user_passwords[each.value.pbs.username]
   fingerprint = try(var.pve_cluster_pbs_fingerprints[each.key], null)
 }
 
@@ -251,7 +251,7 @@ module "pbs_datastore" {
 ###############################################################################
 module "pbs_user" {
   source   = "./modules/60-pbs-user"
-  for_each = local.manifest.pbs_users
+  for_each = local.manifest.pbs_user
 
   depends_on = [module.fleet_vm["backup_server_01"]]
 

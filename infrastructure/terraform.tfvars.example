@@ -27,9 +27,6 @@ pve_cluster_acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 ###############################################################################
 ## PVE cluster - PBS storage configuration
 ###############################################################################
-pve_cluster_pbs_passwords = {
-  pbs-primary = "YOUR_PBS_BACKUP_PASSWORD"
-}
 pve_cluster_pbs_fingerprints = {
   pbs-primary = "AA:BB:CC:..."  # only needed for self-signed certs
 }
@@ -47,8 +44,8 @@ pve_cluster_realm_openid_client_keys = {
 ## PBS - user configuration
 ###############################################################################
 pbs_user_passwords = {
-  alice  = "YOUR_PBS_ALICE_PASSWORD"
-  backup = "YOUR_PBS_BACKUP_PASSWORD"
+  alexander = "YOUR_PBS_ADMIN_PASSWORD"
+  backup    = "YOUR_PBS_BACKUP_PASSWORD" # also used by the PVE storage pbs-primary
 }
 
 
