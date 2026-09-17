@@ -2,9 +2,9 @@
 ###############################################################################
 ## PBS bootstrap script
 ###############################################################################
-## Automates Proxmox Backup Server initial setup, including datastore
-## configuration, user initialization, maintenance jobs, and ACME certs.
-## Repositories and the subscription nag are managed by OpenTofu (60-pbs-core).
+## Automates Proxmox Backup Server initial setup: user initialization,
+## maintenance jobs, and ACME certs. Repositories, the subscription nag and the
+## datastores are managed by OpenTofu (60-pbs-core, 60-pbs-datastore).
 ##
 ## Prerequisites:
 ## - proxmox-backup-server installed.
@@ -119,81 +119,7 @@ setup_acl() {
 }
 
 ###############################################################################
-## Helper: Datastore setup
-###############################################################################
-setup_datastore() {
-  local datastore_name="${1}"
-  local datastore_path="${2}"
-
-  ## Check if datastore is already configured in PBS
-  if proxmox-backup-manager datastore list | grep -qw "${datastore_name}"; then
-    info "Datastore ${datastore_name} already exists in PBS configuration."
-    return 0
-  fi
-
-  ## Create datastore
-  info "Initializing datastore ${datastore_name} at ${datastore_path}..."
-  proxmox-backup-manager datastore create \
-    "${datastore_name}" "${datastore_path}" \
-    > /dev/null || die "Failed to create datastore ${datastore_name}."
-
-  success "Datastore ${datastore_name} created successfully."
-}
-
-###############################################################################
-## Helper: NFS-backed datastore setup (with all_squash remapping - Unifi UNAS)
-###############################################################################
-## NFS with all_squash remaps UID/GID and the server may alter permissions,
-## so PBS cannot create .chunks directly on NFS. This function handles:
-##   1. Datastore already registered in PBS — skip.
-##   2. Unmount NFS, let PBS create the datastore locally (correct perms).
-##   3. If the NFS has no existing data, seed it with the local .chunks/.lock.
-##   4. Remove local metadata and remount NFS.
-setup_nfs_datastore() {
-  local datastore_name="${1}"
-  local datastore_path="${2}"
-  local temp_dir
-  temp_dir=$(mktemp -d)
-
-  ## Already registered in PBS — nothing to do
-  if proxmox-backup-manager datastore list | grep -qw "${datastore_name}"; then
-    info "Datastore ${datastore_name} already exists in PBS configuration."
-    return 0
-  fi
-
-  ## Unmount NFS so PBS can create the datastore on the local filesystem
-  info "Unmounting NFS at ${datastore_path} for local datastore creation..."
-  umount "${datastore_path}" || die "Failed to unmount ${datastore_path}."
-
-  ## Create datastore locally (PBS sets correct permissions and ownership)
-  info "Creating datastore ${datastore_name} locally..."
-  proxmox-backup-manager datastore create \
-    "${datastore_name}" "${datastore_path}" \
-    > /dev/null || die "Failed to create datastore ${datastore_name}."
-
-  ## Preserve local metadata before remounting
-  mv "${datastore_path}/.chunks" "${temp_dir}/"
-  mv "${datastore_path}/.lock" "${temp_dir}/"
-
-  mount "${datastore_path}" || die "Failed to remount NFS at ${datastore_path}."
-
-  ## Seed NFS with local metadata if no existing data
-  if [[ ! -d "${datastore_path}/.chunks" ]]; then
-    info "Fresh NFS detected. Seeding with datastore metadata..."
-    cp -a --no-preserve=ownership "${temp_dir}/.chunks" "${datastore_path}/"
-    cp -a --no-preserve=ownership "${temp_dir}/.lock" "${datastore_path}/"
-  else
-    info "Existing datastore data found on NFS."
-  fi
-
-  ## Clean up local temp
-  rm -rf "${temp_dir}"
-
-  success "Datastore ${datastore_name} set up on NFS successfully."
-}
-
-###############################################################################
-## Helper: Data retention setup (GC & Pruning)
+## Helper: Data retention setup (Pruning)
 ###############################################################################
 setup_data_retention() {
   local datastore_name="${1}"
@@ -221,11 +147,6 @@ setup_data_retention() {
     --store "${datastore_name}" \
     --schedule "daily" \
     "${args[@]}" > /dev/null || die "Could not create prune job for ${datastore_name}."
-
-  ## Garbage collection job (still part of datastore configuration)
-  info "Update garbage collection job for ${datastore_name}..."
-  proxmox-backup-manager datastore update "${datastore_name}" \
-    --gc-schedule "daily" || die "Could not update garbage collection schedule for ${datastore_name}."
 
   success "Data retention policy for ${datastore_name} set up successfully."
 }
@@ -370,11 +291,6 @@ source "${PBS_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at
 
 ## Root password (the 60-pbs provider authenticates with it)
 set_root_password
-
-## Initialize datastores
-info "Setting up datastores..."
-setup_datastore "${DATASTORE_PRIMARY_NAME}" "${DATASTORE_PRIMARY_PATH}"
-setup_nfs_datastore "${DATASTORE_SECONDARY_NAME}" "${DATASTORE_SECONDARY_PATH}"
 
 ## Create initial user
 info "Setting up initial user..."

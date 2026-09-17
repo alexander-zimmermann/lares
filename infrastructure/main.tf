@@ -226,6 +226,29 @@ module "pbs_core" {
 
 
 ###############################################################################
+## PBS - datastores
+###############################################################################
+module "pbs_datastore" {
+  source   = "./modules/60-pbs-datastore"
+  for_each = local.manifest.pbs_datastore
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## Datastore identity
+  name            = each.key
+  path            = each.value.path
+  comment         = try(each.value.comment, null)
+  reuse_datastore = try(each.value.reuse_datastore, null)
+
+  ## Maintenance
+  gc_schedule       = try(each.value.gc_schedule, null)
+  verify_new        = try(each.value.verify_new, null)
+  notification_mode = try(each.value.notification_mode, null)
+  tuning            = try(each.value.tuning, null)
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {

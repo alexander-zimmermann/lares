@@ -1,0 +1,15 @@
+## Datastores on the PBS (Datastore in the PBS UI). Both were created by the
+## first-boot script and are imported; prune, verify and sync jobs follow in
+## their own manifest. The secondary lives on the UNAS share `proxmox`, exported
+## in Isolated Mode (no root squash), so PBS creates and adopts it directly.
+pbs_datastore:
+  ## Local NVMe (scsi1 of the VM); wiped with the VM on a rebuild
+  datastore-primary:
+    path: "/mnt/datastore-primary"
+    gc_schedule: "daily"
+
+  ## NFS (30-cloud-init mounts it); the chunk store outlives the VM
+  datastore-secondary:
+    path: "/mnt/datastore-secondary"
+    gc_schedule: "daily"
+    reuse_datastore: true

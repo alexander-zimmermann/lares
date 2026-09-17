@@ -1,0 +1,38 @@
+###############################################################################
+## Provider packages
+###############################################################################
+## `pbs` is the jkossis/proxmox provider (Proxmox Backup Server); the resource
+## types keep their `proxmox_backup_server_` prefix, so each one names it
+terraform {
+  required_providers {
+    pbs = {
+      source  = "jkossis/proxmox"
+      version = "~> 1.1.0"
+    }
+  }
+}
+
+
+###############################################################################
+## Datastore
+###############################################################################
+resource "proxmox_backup_server_datastore" "this" {
+  provider = pbs
+
+  name    = var.name
+  path    = var.path
+  comment = var.comment
+
+  ## Create-only: adopt a chunk store the path already carries (NFS across rebuilds)
+  reuse_datastore = var.reuse_datastore
+
+  gc_schedule       = var.gc_schedule
+  verify_new        = var.verify_new
+  notification_mode = var.notification_mode
+  tuning            = var.tuning
+
+  ## A datastore holds the backups: never let a plan remove or replace it
+  lifecycle {
+    prevent_destroy = true
+  }
+}
