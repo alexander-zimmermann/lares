@@ -44,6 +44,15 @@ pve_cluster_realm_openid_client_keys = {
 
 
 ###############################################################################
+## PBS - user configuration
+###############################################################################
+pbs_user_passwords = {
+  alice  = "YOUR_PBS_ALICE_PASSWORD"
+  backup = "YOUR_PBS_BACKUP_PASSWORD"
+}
+
+
+###############################################################################
 ## PBS - OpenID Connect realms
 ###############################################################################
 pbs_realm_openid_client_keys = {
@@ -79,19 +88,8 @@ ci_secrets = {
 
   ## PBS bootstrap configuration
   pbs_bootstrap_conf = {
-    ## PBS root password
+    ## PBS root password (also authenticates the `pbs` provider)
     pbs_root_password = "YOUR_PBS_ROOT_PASSWORD"
-    ## PBS initial & backup user
-    pbs_initial_username = "YOUR_PBS_INITIAL_USERNAME"
-    pbs_initial_password = "YOUR_PBS_INITIAL_PASSWORD"
-    pbs_backup_username  = "YOUR_PBS_BACKUP_USERNAME"
-    pbs_backup_password  = "YOUR_PBS_BACKUP_PASSWORD"
-    ## Homepage read-only monitoring user
-    pbs_homepage_username = "YOUR_PBS_HOMEPAGE_USERNAME"
-    pbs_homepage_password = "YOUR_PBS_HOMEPAGE_PASSWORD"
-    ## Metrics user
-    pbs_metrics_username = "YOUR_PBS_METRICS_USERNAME"
-    pbs_metrics_password = "YOUR_PBS_METRICS_PASSWORD"
     ## ACME Cloudflare DNS plugin
     acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
     acme_cf_zone_id    = "YOUR_CLOUDFLARE_ZONE_ID"

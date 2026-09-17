@@ -117,6 +117,21 @@ variable "pve_cluster_realm_openid_client_keys" {
 
 
 ###############################################################################
+## PBS - user configuration
+###############################################################################
+variable "pbs_user_passwords" {
+  description = <<EOT
+    Map of username => password for the PBS users defined in
+    manifest/60-pbs/pbs-users.yaml. Users absent from the map get no password
+    (token-only). Sent over SSH, never stored in state. Sensitive value.
+  EOT
+  type        = map(string)
+  sensitive   = true
+  default     = {}
+}
+
+
+###############################################################################
 ## PBS - OpenID Connect realms
 ###############################################################################
 variable "pbs_realm_openid_client_keys" {

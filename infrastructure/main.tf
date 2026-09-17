@@ -67,8 +67,8 @@ module "pve_cluster_pbs_storage" {
   source   = "./modules/00-pve-cluster-pbs-storage"
   for_each = local.pve_cluster.pbs_storage
 
-  ## The readiness poll still covers the `backup` user (created at first boot)
-  depends_on = [module.fleet_vm["backup_server_01"], module.pbs_datastore]
+  ## Both the datastore and the `backup` user come from the 60-pbs layer
+  depends_on = [module.pbs_datastore, module.pbs_user]
 
   ## Storage identity
   storage_id = each.key
@@ -243,6 +243,40 @@ module "pbs_datastore" {
 
   ## Maintenance
   gc_schedule = try(each.value.gc_schedule, null)
+}
+
+
+###############################################################################
+## PBS - user configuration
+###############################################################################
+module "pbs_user" {
+  source   = "./modules/60-pbs-user"
+  for_each = local.manifest.pbs_users
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## SSH connection (required for the password until the provider carries it)
+  ssh_hostname    = local.pbs.ssh.address
+  ssh_port        = local.pbs.ssh.port
+  ssh_username    = local.pbs.ssh.username
+  ssh_private_key = local.pbs.ssh.private_key_path
+
+  ## User identity and authentication
+  username         = each.key
+  realm            = try(each.value.realm, "pbs")
+  enabled          = try(each.value.enabled, true)
+  comment          = try(each.value.comment, null)
+  password         = try(var.pbs_user_passwords[each.key], null)
+  password_version = try(each.value.password_version, 1)
+
+  ## Role and permissions
+  role_id   = each.value.role_id
+  path      = each.value.path
+  propagate = try(each.value.propagate, true)
+
+  ## Token configuration
+  create_token = try(each.value.create_token, false)
+  token_name   = try(each.value.token_name, null)
 }
 
 
