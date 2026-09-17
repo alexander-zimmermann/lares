@@ -69,5 +69,5 @@ tasks:
       - sh: command -v omnictl
         msg: "omnictl is not installed"
     cmds:
-      - omnictl kubeconfig --cluster "homelab-{{.ENVIRONMENT}}" --grant-type authcode
+      - omnictl kubeconfig --cluster "homelab-{{.ENVIRONMENT}}"
       - omnictl talosconfig --cluster "homelab-{{.ENVIRONMENT}}"
