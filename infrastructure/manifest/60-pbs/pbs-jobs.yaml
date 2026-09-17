@@ -13,9 +13,8 @@ pbs_jobs:
       schedule: "daily"
 
   prune:
-    ## The primary keeps the last few. The secondary's windows only bind while
-    ## the sync below keeps `remove_vanished` off; with it on, the secondary
-    ## mirrors the primary's five (#1988)
+    ## The primary keeps the last few; the secondary keeps the history, which
+    ## needs the sync below to leave vanished snapshots alone
     prune-datastore-primary:
       store: "datastore-primary"
       schedule: "daily"
@@ -31,9 +30,11 @@ pbs_jobs:
         yearly: 1
 
   sync:
-    ## Local pull from NVMe to NFS, the morning after the nightly PVE backup (23:00)
+    ## Local pull from NVMe to NFS, the morning after the nightly PVE backup
+    ## (23:00). Snapshots the primary prunes stay on the secondary until its
+    ## own prune job lets them go; groups of deleted VMs need a hand
     pull-from-primary:
       store: "datastore-secondary"
       remote_store: "datastore-primary"
       schedule: "*-*-* 05:00"
-      remove_vanished: true
+      remove_vanished: false
