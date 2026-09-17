@@ -1,0 +1,10 @@
+## ACME on the PBS (Certificates in the PBS UI): account, Cloudflare DNS
+## plugin and the names on the certificate. Applied over SSH; the Cloudflare
+## token is the cluster-wide one from tfvars (`pve_cluster_acme_cf_token`).
+## PBS renews the certificate itself through its daily update timer.
+pbs_acme:
+  account_name: "letsencrypt-prod"
+  contact_email: "alexander@zimmermann.eu.com"
+  primary_domain: "backup-01.zimmermann.eu.com"
+  ## Traefik dials this name for backup.zimmermann.sh and verifies the chain
+  san_domains: ["backup.zimmermann.eu.com"]

@@ -16,7 +16,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
-- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs and verify jobs through its API; repositories, the subscription nag, user passwords, prune and sync jobs over SSH. ACME follows as it moves out of the first-boot script.
+- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs and verify jobs through its API; repositories, the subscription nag, user passwords, prune and sync jobs and ACME over SSH. Cloud-init only installs the package, sets up disks and mounts, and sets the root password.
 
 Specials worth calling out:
 
@@ -42,7 +42,7 @@ infrastructure/
 │   ├── 30-cloud-init/      #   Reusable cloud-init modules
 │   ├── 40-template/        #   VM / LXC templates
 │   ├── 50-fleet/           #   Actual VM / container instances
-│   └── 60-pbs/             #   PBS connection, OIDC realms, host settings, datastores, users, jobs
+│   └── 60-pbs/             #   PBS connection, OIDC realms, host settings, datastores, users, jobs, ACME
 ├── modules/                # Reusable OpenTofu modules
 │   ├── 00-pve-cluster-*    #   cluster-scope
 │   ├── 10-pve-node-*       #   node-scope

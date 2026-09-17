@@ -272,30 +272,21 @@ ci_vendor_config:
       ## Trigger NFS automount (will reconnect after reboots via systemd)
       - ["systemctl", "daemon-reload"]
       - ["ls", "/mnt/datastore-secondary"]
-      ## Setup PBS
-      - ["bash", "/usr/local/bin/pbs-bootstrap.sh"]
+      ## Root password: the 60-pbs provider authenticates with it. The file
+      ## lives on tmpfs and goes right after use; printf restores the newline
+      ## that write_files strips
+      - ["sh", "-c", "printf '%s\\n' \"$(cat /run/pbs-root-password)\" | chpasswd && rm -f /run/pbs-root-password"]
       ## Systemd services. The agent comes last on purpose: OpenTofu waits for
-      ## it, and the 60-pbs layer then expects PBS up with the root password set
+      ## it, and the 60-pbs layer then expects PBS up with the root password set.
+      ## Everything else on the PBS is configured by that layer.
       - ["systemctl", "enable", "--now", "qemu-guest-agent"]
 
     write_files:
-      ## PBS bootstrap configuration
-      - path: /etc/pbs/pbs-bootstrap.conf
-        template_file: templates/30-cloud-init/proxmox-backup-server/pbs-bootstrap.conf.tftpl
+      ## Root password for chpasswd (see runcmd)
+      - path: /run/pbs-root-password
+        template_file: templates/30-cloud-init/proxmox-backup-server/root-password.tftpl
         secret_ref: pbs_bootstrap_conf
-        permissions: "0640"
-        owner: "backup:backup"
-        defer: true
-        vars:
-          ## OpenTelemetry endpoint (alloy-receiver)
-          metrics_otlp_host: "telemetry.zimmermann.eu.com"
-          metrics_otlp_port: "4318"
-
-      ## PBS bootstrap script
-      - path: /usr/local/bin/pbs-bootstrap.sh
-        content_file: templates/30-cloud-init/proxmox-backup-server/pbs-bootstrap.sh
-        permissions: "0755"
-        owner: "backup:backup"
+        permissions: "0600"
         defer: true
 
   ## UPS Monitor VM (apcupsd)
