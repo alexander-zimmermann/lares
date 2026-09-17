@@ -65,9 +65,13 @@ OMNI_KEY_DIR="$${OMNI_PERSISTENCE_DATA_DIR}/keys"
 OMNI_ACCOUNT_UUID="${omni_account_uuid}"
 OMNI_INITIAL_USERS="${omni_initial_users}"
 
-## Omni endpoint
+## Omni endpoint (machine-facing, LAN only: SideroLink, infra provider, on-VM omnictl)
 OMNI_DOMAIN_NAME="omni.zimmermann.eu.com"
 OMNI_API_ENDPOINT="https://$${OMNI_DOMAIN_NAME}"
+
+## Omni public endpoint (human-facing: UI, OIDC issuer, kubeconfig)
+OMNI_PUBLIC_API_ENDPOINT="https://omni.zimmermann.sh"
+OMNI_PUBLIC_K8S_PROXY_URL="https://k8s.zimmermann.sh/"
 
 ## Omni etcd encryption key
 OMNI_PRIVATE_KEY="omni.asc"

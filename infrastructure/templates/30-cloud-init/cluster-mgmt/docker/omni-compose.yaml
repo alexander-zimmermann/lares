@@ -76,9 +76,9 @@ services:
       - --event-sink-port=8091
       - --machine-api-bind-addr=0.0.0.0:8090
       - --k8s-proxy-bind-addr=0.0.0.0:8100
-      ## Advertised URLs
-      - --advertised-api-url=${OMNI_API_ENDPOINT}
-      - --advertised-kubernetes-proxy-url=${OMNI_API_ENDPOINT}:8100/
+      ## Advertised URLs (public for humans, LAN for SideroLink)
+      - --advertised-api-url=${OMNI_PUBLIC_API_ENDPOINT}
+      - --advertised-kubernetes-proxy-url=${OMNI_PUBLIC_K8S_PROXY_URL}
       - --siderolink-api-advertised-url=${OMNI_API_ENDPOINT}:8090/
       - --siderolink-wireguard-advertised-addr=${OMNI_DOMAIN_NAME}:50180
       ## TLS & security
