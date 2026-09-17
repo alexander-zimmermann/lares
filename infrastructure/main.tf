@@ -67,7 +67,8 @@ module "pve_cluster_pbs_storage" {
   source   = "./modules/00-pve-cluster-pbs-storage"
   for_each = local.pve_cluster.pbs_storage
 
-  depends_on = [module.fleet_vm["backup_server_01"]]
+  ## The readiness poll still covers the `backup` user (created at first boot)
+  depends_on = [module.fleet_vm["backup_server_01"], module.pbs_datastore]
 
   ## Storage identity
   storage_id = each.key
@@ -222,6 +223,26 @@ module "pbs_core" {
   ## APT repositories & subscription nag
   enable_enterprise_repository = try(local.manifest.pbs_core.repositories.enterprise, false)
   disable_subscription_nag     = try(local.manifest.pbs_core.disable_subscription_nag, true)
+}
+
+
+###############################################################################
+## PBS - datastores
+###############################################################################
+module "pbs_datastore" {
+  source   = "./modules/60-pbs-datastore"
+  for_each = local.manifest.pbs_datastore
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## Datastore identity
+  name            = each.key
+  path            = each.value.path
+  comment         = try(each.value.comment, null)
+  reuse_datastore = try(each.value.reuse_datastore, null)
+
+  ## Maintenance
+  gc_schedule = try(each.value.gc_schedule, null)
 }
 
 
