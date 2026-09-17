@@ -281,6 +281,27 @@ module "pbs_user" {
 
 
 ###############################################################################
+## PBS - jobs
+###############################################################################
+module "pbs_jobs" {
+  source = "./modules/60-pbs-jobs"
+
+  depends_on = [module.pbs_datastore]
+
+  ## SSH connection (required for prune and sync jobs)
+  ssh_hostname    = local.pbs.ssh.address
+  ssh_port        = local.pbs.ssh.port
+  ssh_username    = local.pbs.ssh.username
+  ssh_private_key = local.pbs.ssh.private_key_path
+
+  ## Jobs by type
+  verify = try(local.manifest.pbs_jobs.verify, {})
+  prune  = try(local.manifest.pbs_jobs.prune, {})
+  sync   = try(local.manifest.pbs_jobs.sync, {})
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {
