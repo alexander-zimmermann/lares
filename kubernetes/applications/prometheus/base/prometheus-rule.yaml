@@ -155,6 +155,40 @@ spec:
             summary: "RustFS drive op {{ $labels.op }} timing out"
             description: "Drive operation {{ $labels.op }} hit the per-op timeout — consider raising the matching RUSTFS_DRIVE_*_TIMEOUT_SECS env var."
 
+        # Scanner data-usage metrics (rustfs#7896, since 1.0.0). Each ~40 min
+        # cycle publishes a usage snapshot and ACKs the dirty buckets once the
+        # root save is durable; a stuck ACK re-scans until OOM (rustfs#7702).
+        - alert: RustfsScannerUsageDeferred
+          expr: rustfs_scanner_usage_deferred_pending > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "RustFS scanner usage ACK deferred for over an hour"
+            description: "A scanner cycle published its usage snapshot but the dirty-usage ACK stays pending — the rc.6 rescan-until-OOM pattern (rustfs#7702). Check rustfs_memory_cgroup_anon_bytes for a monotonic climb."
+
+        - alert: RustfsScannerUsagePublicationFailed
+          # 0 unknown, 1 success, 2 deferred, 3 failed, 4 no_update
+          expr: rustfs_scanner_usage_last_publication_result == 3
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RustFS scanner usage publication failing"
+            description: "The last scanner data-usage publication failed (result=3) and has not recovered within 30 minutes."
+
+        - alert: RustfsScannerUsageStale
+          # A fresh pod reports 0 until its first durable save.
+          expr: |
+            time() - rustfs_scanner_usage_last_durable_success_unix_seconds > 7200
+            and rustfs_scanner_usage_last_durable_success_unix_seconds > 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RustFS scanner has not saved a durable usage snapshot for over 2 hours"
+            description: "rustfs_scanner_usage_last_durable_success_unix_seconds stopped advancing — two full scanner cycles (~40 min each on this workload) without a durable root save."
+
     - name: unifi-arm-sync-alerts
       rules:
         - alert: UnifiArmStateDrift
