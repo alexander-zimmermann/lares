@@ -1,7 +1,7 @@
 version: "3"
 
-# What changed decides the task: lares config, Studio or Node-Red export →
-# create-ets-devices (the ETS steps of a publish: wiki ets-kaenx-creator);
+# What changed decides the task: lares config, Studio, Node-Red or compasX
+# export → create-ets-devices (the ETS steps of a publish: wiki ets-kaenx-creator);
 # ETS → export the project. Then always: create-ga-catalog →
 # validate-ets-devices → commit the catalog and versions.yaml.
 
@@ -9,12 +9,13 @@ vars:
   CONSUMERS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers"
   # Scratch for the footprints; .task/ is git-ignored.
   FOOTPRINTS_DIR: "{{.ROOT_DIR}}/.task/footprints"
-  # One device list (footprint, product name, flag mode) for both knxproj tools.
+  # One device list (footprint, product name) for both knxproj tools; the
+  # footprint carries each address's direction. Order fixed: it numbers the applications.
   DEVICE_ARGS: >-
-    --write-gas "{{.FOOTPRINTS_DIR}}/consumed"
-    --device "@{{.FOOTPRINTS_DIR}}/bridge=KNX-NATS-Bridge:split"
-    --device "@{{.FOOTPRINTS_DIR}}/basalte=Basalte Core S4:both"
-    --device "@{{.FOOTPRINTS_DIR}}/nodered=Node-Red:both"
+    --device "@{{.FOOTPRINTS_DIR}}/bridge=KNX-NATS-Bridge"
+    --device "@{{.FOOTPRINTS_DIR}}/basalte=Basalte Core S4"
+    --device "@{{.FOOTPRINTS_DIR}}/nodered=Node-Red"
+    --device "@{{.FOOTPRINTS_DIR}}/telenot=Telenot Interface KNX 400 IP"
 
 tasks:
   create-ga-catalog:
@@ -51,17 +52,16 @@ tasks:
 
   extract-footprints:
     internal: true
-    desc: "write the three footprints and the consumed-address list into FOOTPRINTS_DIR"
+    desc: "write the four footprints (address and direction per line) into FOOTPRINTS_DIR"
     preconditions:
       - sh: test -f "{{.BASALTE_EXPORT_PATH}}"
         msg: "Basalte Studio export not found at '{{.BASALTE_EXPORT_PATH}}' — set BASALTE_EXPORT_PATH in .env (see .env.example)"
       - sh: test -f "{{.NODE_RED_FLOWS_PATH}}"
         msg: "Node-Red flow export not found at '{{.NODE_RED_FLOWS_PATH}}' — set NODE_RED_FLOWS_PATH in .env (see .env.example)"
+      - sh: test -f "{{.TELENOT_EXPORT_PATH}}"
+        msg: "Telenot compasX export not found at '{{.TELENOT_EXPORT_PATH}}' — set TELENOT_EXPORT_PATH in .env (see .env.example)"
     cmds:
       - mkdir -p "{{.FOOTPRINTS_DIR}}"
-      - >
-        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
-        consumed "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/consumed"
       - >
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
         bridge "{{.KNX_GA_MAPPINGS_DIR}}" "{{.CONSUMERS_DIR}}" > "{{.FOOTPRINTS_DIR}}/bridge"
@@ -71,12 +71,15 @@ tasks:
       - >
         uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
         nodered "{{.NODE_RED_FLOWS_PATH}}" > "{{.FOOTPRINTS_DIR}}/nodered"
+      - >
+        uv run --no-project --with pyyaml python "{{.SCRIPTS_DIR}}/knx_extract_footprints.py"
+        telenot "{{.TELENOT_EXPORT_PATH}}" > "{{.FOOTPRINTS_DIR}}/telenot"
 
   create-ets-devices:
-    desc: "write the Kaenx-Creator projects for the software bus participants [output-dir]"
+    desc: "write the Kaenx-Creator projects for the generated devices [output-dir]"
     summary: |
-      Build one Kaenx-Creator project per software bus participant — bridge,
-      Basalte, Node-Red — with collector objects (ADR-0001, ADR-0003) and a wiring
+      Build one Kaenx-Creator project per generated device — bridge, Basalte,
+      Node-Red, Telenot — with collector objects (ADR-0001, ADR-0003) and a wiring
       worksheet each, NEU or war N per object; says per device "only links" or
       "publish". Reads: the footprints, the ETS export, scripts/kaenx/, and
       KNXPROJ_PASSWORD_FILE from .env. Writes: <device>.ae-manu, <device>-wiring.md, versions.yaml.
@@ -101,11 +104,12 @@ tasks:
         --output-dir "{{.OUTDIR}}"
 
   validate-ets-devices:
-    desc: "check the software bus participants' devices in ETS against their footprints"
+    desc: "check the generated devices in ETS against their footprints"
     summary: |
-      Hold the ETS export against the three footprints: footprint addresses
-      without a link, links no configuration claims, consumed addresses on
-      objects without Write. Any finding fails; a missing device is reported.
+      Hold the ETS export against the four footprints: footprint addresses
+      without a link, links no configuration claims, addresses on an object
+      without the flag their direction needs (write-direction addresses without
+      Write). Any finding fails; a missing device is reported.
       Reads: the footprints, the ETS export, KNXPROJ_PASSWORD_FILE from .env. Writes:
       <device>-wiring-todo.md per device with findings — only the links still to
       make — into TODO_DIR (default ~/Downloads). Not a hook: the export may lag lares.
