@@ -67,8 +67,8 @@ module "pve_cluster_pbs_storage" {
   source   = "./modules/00-pve-cluster-pbs-storage"
   for_each = local.pve_cluster.pbs_storage
 
-  ## Both the datastore and the `backup` user come from the 60-pbs layer
-  depends_on = [module.pbs_datastore, module.pbs_user]
+  ## Datastore, `backup` user and the certificate PVE verifies come from the 60-pbs layer
+  depends_on = [module.pbs_datastore, module.pbs_user, module.pbs_acme]
 
   ## Storage identity
   storage_id = each.key
@@ -298,6 +298,33 @@ module "pbs_jobs" {
   verify = try(local.manifest.pbs_jobs.verify, {})
   prune  = try(local.manifest.pbs_jobs.prune, {})
   sync   = try(local.manifest.pbs_jobs.sync, {})
+}
+
+
+###############################################################################
+## PBS - ACME configuration
+###############################################################################
+module "pbs_acme" {
+  source = "./modules/60-pbs-acme"
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## SSH connection (required for acme changes)
+  ssh_hostname    = local.pbs.ssh.address
+  ssh_port        = local.pbs.ssh.port
+  ssh_username    = local.pbs.ssh.username
+  ssh_private_key = local.pbs.ssh.private_key_path
+
+  ## ACME account
+  account_name  = local.manifest.pbs_acme.account_name
+  contact_email = local.manifest.pbs_acme.contact_email
+
+  ## Certificate configuration; the Cloudflare token is the cluster-wide one
+  primary_domain = local.manifest.pbs_acme.primary_domain
+  san_domains    = try(local.manifest.pbs_acme.san_domains, [])
+  cf_token       = var.pve_cluster_acme_cf_token
+  cf_zone_id     = var.pve_cluster_acme_cf_zone_id
+  cf_account_id  = var.pve_cluster_acme_cf_account_id
 }
 
 

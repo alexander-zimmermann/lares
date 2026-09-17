@@ -83,13 +83,8 @@ ci_secrets = {
     pushover_user  = "YOUR_PUSHOVER_USER"
   }
 
-  ## PBS bootstrap configuration
+  ## PBS first boot: the root password also authenticates the `pbs` provider
   pbs_bootstrap_conf = {
-    ## PBS root password (also authenticates the `pbs` provider)
     pbs_root_password = "YOUR_PBS_ROOT_PASSWORD"
-    ## ACME Cloudflare DNS plugin
-    acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
-    acme_cf_zone_id    = "YOUR_CLOUDFLARE_ZONE_ID"
-    acme_cf_token      = "YOUR_CLOUDFLARE_API_TOKEN"
   }
 }
