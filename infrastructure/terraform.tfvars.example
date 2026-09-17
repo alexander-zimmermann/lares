@@ -27,9 +27,6 @@ pve_cluster_acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 ###############################################################################
 ## PVE cluster - PBS storage configuration
 ###############################################################################
-pve_cluster_pbs_passwords = {
-  pbs-primary = "YOUR_PBS_BACKUP_PASSWORD"
-}
 pve_cluster_pbs_fingerprints = {
   pbs-primary = "AA:BB:CC:..."  # only needed for self-signed certs
 }
@@ -40,6 +37,15 @@ pve_cluster_pbs_fingerprints = {
 ###############################################################################
 pve_cluster_realm_openid_client_keys = {
   authentik = "YOUR_AUTHENTIK_PROXMOX_CLIENT_SECRET"
+}
+
+
+###############################################################################
+## PBS - user configuration
+###############################################################################
+pbs_user_passwords = {
+  alexander = "YOUR_PBS_ADMIN_PASSWORD"
+  backup    = "YOUR_PBS_BACKUP_PASSWORD" # also used by the PVE storage pbs-primary
 }
 
 
@@ -79,19 +85,8 @@ ci_secrets = {
 
   ## PBS bootstrap configuration
   pbs_bootstrap_conf = {
-    ## PBS root password
+    ## PBS root password (also authenticates the `pbs` provider)
     pbs_root_password = "YOUR_PBS_ROOT_PASSWORD"
-    ## PBS initial & backup user
-    pbs_initial_username = "YOUR_PBS_INITIAL_USERNAME"
-    pbs_initial_password = "YOUR_PBS_INITIAL_PASSWORD"
-    pbs_backup_username  = "YOUR_PBS_BACKUP_USERNAME"
-    pbs_backup_password  = "YOUR_PBS_BACKUP_PASSWORD"
-    ## Homepage read-only monitoring user
-    pbs_homepage_username = "YOUR_PBS_HOMEPAGE_USERNAME"
-    pbs_homepage_password = "YOUR_PBS_HOMEPAGE_PASSWORD"
-    ## Metrics user
-    pbs_metrics_username = "YOUR_PBS_METRICS_USERNAME"
-    pbs_metrics_password = "YOUR_PBS_METRICS_PASSWORD"
     ## ACME Cloudflare DNS plugin
     acme_cf_account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
     acme_cf_zone_id    = "YOUR_CLOUDFLARE_ZONE_ID"

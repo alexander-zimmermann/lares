@@ -2,11 +2,11 @@
 ###############################################################################
 ## PBS bootstrap script
 ###############################################################################
-## Automates Proxmox Backup Server initial setup: user initialization,
-## maintenance jobs, and ACME certs. Repositories, the subscription nag and the
-## datastores are managed by OpenTofu (60-pbs-core, 60-pbs-datastore). ACLs and
-## jobs below name datastores that exist only after the first `tofu apply`;
-## PBS accepts both ahead of the store, and the jobs run once it is there.
+## Automates Proxmox Backup Server initial setup: maintenance jobs and ACME
+## certs. Repositories, the subscription nag, datastores, users, tokens and
+## ACLs are managed by OpenTofu (60-pbs-*). The jobs below name datastores
+## that exist only after the first `tofu apply`; PBS accepts them ahead of
+## the store, and they run once it is there.
 ##
 ## Prerequisites:
 ## - proxmox-backup-server installed.
@@ -41,83 +41,6 @@ set_root_password() {
   echo "root:${PBS_ROOT_PASSWORD}" | chpasswd || die "Failed to set root password."
 
   success "Root password set."
-}
-
-###############################################################################
-## Helper: User setup
-###############################################################################
-create_user() {
-  local user="${1}@pbs"
-  local password="${2}"
-
-  ### Check if user already exists
-  if proxmox-backup-manager user list | grep -qw "${user}"; then
-    info "User ${user} already exists."
-    return 0
-  fi
-
-  ## Creating user
-  info "Creating user ${user}..."
-  proxmox-backup-manager user create "${user}" \
-    --password "${password}" || die "Failed to create user ${user}."
-
-  success "User ${user} created."
-}
-
-###############################################################################
-## Helper: API token setup
-###############################################################################
-create_api_token() {
-  local user="${1}@pbs"
-  local token_name="${2}"
-
-  ## Check if token already exists
-  if proxmox-backup-manager user list-tokens "${user}" | grep -qw "${token_name}"; then
-    info "API token ${user}!${token_name} already exists."
-    return 0
-  fi
-
-  ## Create API token and capture secret
-  info "Creating API token ${user}!${token_name}..."
-  local token_output
-  token_output=$(proxmox-backup-manager user generate-token "${user}" "${token_name}") \
-    || die "Failed to create API token for ${user}."
-
-  ## Extract and store token secret for external consumption
-  local token_secret
-  token_secret=$(echo "${token_output}" | grep -oP '"value":\s*"\K[^"]*')
-  echo "${token_secret}" > "/etc/pbs/api-token-${1}-${token_name}.secret"
-  chmod 600 "/etc/pbs/api-token-${1}-${token_name}.secret"
-
-  success "API token ${user}!${token_name} created. Secret stored in /etc/pbs/api-token-${1}-${token_name}.secret"
-}
-
-###############################################################################
-## Helper: ACL setup
-###############################################################################
-setup_acl() {
-  local user="${1}@pbs"
-  local role="${2}"
-  local path="${3}"
-  local token_name="${4:-}"
-
-  ## Build auth-id: user@pbs or user@pbs!token
-  local auth_id="${user}"
-  if [[ -n "${token_name}" ]]; then
-    auth_id="${user}!${token_name}"
-  fi
-
-  ## Check if ACL is already set
-  if proxmox-backup-manager acl list | grep -w "${auth_id}" | grep -qw "${role}"; then
-    info "ACL ${role} for ${auth_id} on ${path} already set."
-    return 0
-  fi
-
-  info "Assigning ${role} role to ${auth_id} on ${path}..."
-  proxmox-backup-manager acl update "${path}" "${role}" \
-    --auth-id "${auth_id}" || die "Failed to assign role to ${auth_id}."
-
-  success "Assigned ${role} role to ${auth_id} on ${path}."
 }
 
 ###############################################################################
@@ -293,30 +216,6 @@ source "${PBS_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at
 
 ## Root password (the 60-pbs provider authenticates with it)
 set_root_password
-
-## Create initial user
-info "Setting up initial user..."
-create_user "${PBS_INITIAL_USERNAME}" "${PBS_INITIAL_PASSWORD}"
-setup_acl "${PBS_INITIAL_USERNAME}" "Admin" "/"
-
-## Create backup user
-info "Setting up backup user..."
-create_user "${PBS_BACKUP_USERNAME}" "${PBS_BACKUP_PASSWORD}"
-setup_acl "${PBS_BACKUP_USERNAME}" "DatastoreAdmin" "/datastore/${DATASTORE_PRIMARY_NAME}"
-
-## Create homepage user (read-only monitoring via API token)
-info "Setting up homepage user..."
-create_user "${PBS_HOMEPAGE_USERNAME}" "${PBS_HOMEPAGE_PASSWORD}"
-setup_acl "${PBS_HOMEPAGE_USERNAME}" "Audit" "/"
-create_api_token "${PBS_HOMEPAGE_USERNAME}" "homepage"
-setup_acl "${PBS_HOMEPAGE_USERNAME}" "Audit" "/" "homepage"
-
-## Create metrics user (read-only Prometheus scraping via API token)
-info "Setting up metrics user..."
-create_user "${PBS_METRICS_USERNAME}" "${PBS_METRICS_PASSWORD}"
-setup_acl "${PBS_METRICS_USERNAME}" "Audit" "/"
-create_api_token "${PBS_METRICS_USERNAME}" "metrics"
-setup_acl "${PBS_METRICS_USERNAME}" "Audit" "/" "metrics"
 
 ## Setup data retention
 info "Setting up data retention for datastores..."

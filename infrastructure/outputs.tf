@@ -28,16 +28,15 @@ output "acme_order_output" {
 
 
 ###############################################################################
-## PVE cluster - PBS storage configuration
+## PBS - user configuration
 ###############################################################################
-output "pbs_ready_output" {
+output "pbs_token_value" {
   description = <<EOT
-    Log output from the PBS readiness polling script for each configured PBS
-    storage backend, which waits until the PBS API is reachable and the
-    configured datastore is available. Marked as sensitive to avoid exposing
-    credentials or internal system details.
+    API token secret for each managed PBS user with a token, keyed by token
+    auth ID. PBS returns the secret only when a token is created or
+    regenerated; imported tokens carry none. Marked as sensitive.
   EOT
-  value       = { for k, v in module.pve_cluster_pbs_storage : k => v.pbs_ready_output }
+  value       = { for k, v in module.pbs_user : v.token_id => v.token_value if v.token_id != null }
   sensitive   = true
 }
 
