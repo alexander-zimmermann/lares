@@ -83,6 +83,32 @@ replacements:
           delimiter: "/"
           index: 2
 
+  # Inject domain name into Certificate, IngressRoute, and Gatus annotation
+  - sourceValue: k8s.zimmermann.phd
+    targets:
+      - select:
+          kind: Certificate
+          name: k8s-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: k8s
+        fieldPaths:
+          - spec.routes.0.match
+          - spec.routes.1.match
+        options:
+          delimiter: "`"
+          index: 1
+      - select:
+          kind: IngressRoute
+          name: k8s
+        fieldPaths:
+          - metadata.annotations.[gatus.home-operations.com/endpoint]
+        options:
+          delimiter: "/"
+          index: 2
+
   # Inject domain name into Certificate and IngressRoute
   - sourceValue: ai-pro-1.zimmermann.phd
     targets:

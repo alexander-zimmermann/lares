@@ -157,6 +157,60 @@ spec:
     secretName: omni-tls-cert
 
 ---
+# Omni Kubernetes proxy: auth is Omni's OIDC bearer token, forwardAuth would break CLI clients
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+
+metadata:
+  name: k8s
+  annotations:
+    # ExternalDNS configuration for Cloudflare
+    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
+    gatus.home-operations.com/enabled: "true"
+    gatus.home-operations.com/endpoint: |
+      name: Kubernetes API
+      group: Infrastructure
+      url: https://PLACEHOLDER/_gatus
+      interval: 60s
+      client:
+        headers:
+          CF-Access-Client-Id: "${CF_ACCESS_CLIENT_ID}"
+          CF-Access-Client-Secret: "${CF_ACCESS_CLIENT_SECRET}"
+      conditions:
+        - "[STATUS] < 500"
+        - "[RESPONSE_TIME] < 1500"
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`PLACEHOLDER`)
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
+      services:
+        - name: omni
+          port: 8100
+          scheme: https
+          serversTransport: insecure-transport
+    # Gatus bypass route — matches only requests that went through Cloudflare Access (JWT header set by CF)
+    - kind: Rule
+      match: Host(`PLACEHOLDER`) && PathPrefix(`/_gatus`) && HeaderRegexp(`Cf-Access-Jwt-Assertion`, `.+`)
+      priority: 20
+      middlewares:
+        - name: chain-standard
+          namespace: ingress-controller
+      services:
+        - name: omni
+          port: 8100
+          scheme: https
+          serversTransport: insecure-transport
+  tls:
+    secretName: k8s-tls-cert
+
+---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 
