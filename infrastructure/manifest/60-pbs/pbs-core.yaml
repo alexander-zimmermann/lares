@@ -1,0 +1,8 @@
+## Host-level settings of the PBS VM that its API does not cover; applied over
+## SSH as the `opentofu` user from pbs.yaml.
+pbs_core:
+  repositories:
+    ## No subscription: enterprise off, `pbs-no-subscription` comes from cloud-init
+    enterprise: false
+  ## Patch the "No valid subscription" dialog out of the web UI
+  subscription_nag: false

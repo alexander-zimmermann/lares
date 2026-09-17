@@ -28,6 +28,7 @@ locals {
     pve_node_network           = merge([for m in local.decoded_manifests : try(m.pve_node_network, {})]...)
     pbs                        = merge([for m in local.decoded_manifests : try(m.pbs, {})]...)
     pbs_realm_openid           = merge([for m in local.decoded_manifests : try(m.pbs_realm_openid, {})]...)
+    pbs_core                   = merge([for m in local.decoded_manifests : try(m.pbs_core, {})]...)
     image                      = merge([for m in local.decoded_manifests : try(m.image, {})]...)
     ci_user_config             = merge([for m in local.decoded_manifests : try(m.ci_user_config, {})]...)
     ci_vendor_config           = merge([for m in local.decoded_manifests : try(m.ci_vendor_config, {})]...)
@@ -56,6 +57,7 @@ locals {
   }
   pbs = {
     api = try(local.manifest.pbs.api_connection, {})
+    ssh = try(local.manifest.pbs.ssh_connection, {})
   }
   pve_node = {
     core = try(local.manifest.pve_node_core, {})

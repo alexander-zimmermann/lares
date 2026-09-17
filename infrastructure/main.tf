@@ -206,6 +206,26 @@ module "pbs_realm_openid" {
 
 
 ###############################################################################
+## PBS - core configuration
+###############################################################################
+module "pbs_core" {
+  source = "./modules/60-pbs-core"
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## SSH connection (required for repository and nag changes)
+  ssh_hostname    = local.pbs.ssh.address
+  ssh_port        = local.pbs.ssh.port
+  ssh_username    = local.pbs.ssh.username
+  ssh_private_key = local.pbs.ssh.private_key_path
+
+  ## APT repositories & subscription nag
+  enable_enterprise_repository = try(local.manifest.pbs_core.repositories.enterprise, false)
+  subscription_nag             = try(local.manifest.pbs_core.subscription_nag, false)
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {

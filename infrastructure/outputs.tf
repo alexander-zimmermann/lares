@@ -43,6 +43,20 @@ output "pbs_ready_output" {
 
 
 ###############################################################################
+## PBS - core configuration
+###############################################################################
+output "pbs_core_output" {
+  description = <<EOT
+    Log output from the `pbs_core.sh` script, which sets the enterprise
+    repository state and the subscription-nag hook on the PBS VM. Marked as
+    sensitive to avoid exposing internal system details.
+  EOT
+  value       = module.pbs_core.pbs_core_output
+  sensitive   = true
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 output "local_content_type_output" {

@@ -4,6 +4,7 @@
 ###############################################################################
 ## Automates Proxmox Backup Server initial setup, including datastore
 ## configuration, user initialization, maintenance jobs, and ACME certs.
+## Repositories and the subscription nag are managed by OpenTofu (60-pbs-core).
 ##
 ## Prerequisites:
 ## - proxmox-backup-server installed.
@@ -31,50 +32,13 @@ die() {
 }
 
 ###############################################################################
-## Helper: System configuration
+## Helper: Root password
 ###############################################################################
-setup_system_config() {
-  local enterprise_source="/etc/apt/sources.list.d/pbs-enterprise.sources"
-
-  ## Set root password
+set_root_password() {
   info "Setting root password..."
   echo "root:${PBS_ROOT_PASSWORD}" | chpasswd || die "Failed to set root password."
 
-  ## Disable enterprise repo
-  info "Disabling enterprise repository..."
-  sed -i 's/^Enabled:.*/Enabled: false/' "${enterprise_source}"
-
-  success "System configuration set up successfully."
-}
-
-###############################################################################
-## Helper: Disable subscription nag
-###############################################################################
-disable_subscription_nag() {
-  local nag_script="/etc/apt/apt.conf.d/no-nag-script"
-
-  if [[ -f "${nag_script}" ]]; then
-    info "Subscription nag already disabled."
-    return 0
-  fi
-
-  info "Disabling subscription nag..."
-  ## APT hook: patches proxmoxlib.js after every package install/upgrade
-  local hook
-  hook='DPkg::Post-Invoke {'
-  hook+=' "if [ -s /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js ]'
-  hook+=' && ! grep -q -F '"'"'NoMoreNagging'"'"''
-  hook+='     /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js;'
-  hook+=' then sed -i '"'"'/data\.status/{s/\!//;s/active/NoMoreNagging/}'"'"''
-  hook+='     /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js;'
-  hook+=' fi" };'
-  echo "${hook}" > "${nag_script}"
-
-  ## Reinstall to immediately trigger the hook
-  apt-get --reinstall install proxmox-widget-toolkit -y > /dev/null \
-    || die "Failed to reinstall proxmox-widget-toolkit."
-
-  success "Subscription nag disabled."
+  success "Root password set."
 }
 
 ###############################################################################
@@ -404,13 +368,8 @@ info "===================================="
 # shellcheck source=/dev/null
 source "${PBS_BOOTSTRAP_CONF}" || die "Bootstrap configuration file not found at ${PBS_BOOTSTRAP_CONF}."
 
-## System configuration
-info "Configuring system settings..."
-setup_system_config
-
-## Disable subscription nag
-info "Disabling subscription nag..."
-disable_subscription_nag
+## Root password (the 60-pbs provider authenticates with it)
+set_root_password
 
 ## Initialize datastores
 info "Setting up datastores..."

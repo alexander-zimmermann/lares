@@ -9,3 +9,11 @@ pbs:
     username: "root@pam"
     ## A fresh VM serves a self-signed certificate until its ACME order has run
     insecure: true
+
+  ## Remote-exec for what the API does not cover; the user comes from the
+  ## cloud-init user config (30-cloud-init) and mirrors the one on the PVE nodes
+  ssh_connection:
+    address: "backup-01.zimmermann.eu.com"
+    port: 22
+    username: "opentofu"
+    private_key_path: "~/.ssh/proxmox_opentofu"
