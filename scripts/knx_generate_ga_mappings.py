@@ -402,10 +402,10 @@ def device_channel(fault: Any, key: str, catalog: Catalog) -> str:
         if key in catalog.name(ga)
         and (not scope.dpt or catalog.dpt(ga) in scope.dpt)
         and (
-            not scope.name_like
-            or any(like(p, catalog.name(ga)) for p in scope.name_like)
+            not scope.include
+            or any(like(p, catalog.name(ga)) for p in scope.include)
         )
-        and not any(like(p, catalog.name(ga)) for p in scope.exclude_name_like)
+        and not any(like(p, catalog.name(ga)) for p in scope.exclude)
     ]
     if len(hits) != 1:
         raise SystemExit(
