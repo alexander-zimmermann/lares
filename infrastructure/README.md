@@ -16,7 +16,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
-- **Backup Server** — configuration of the running PBS (one of the fleet VMs) through its API: OIDC realm today, datastores, users and jobs as they move out of the first-boot script.
+- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm through its API, repositories and the subscription nag over SSH; datastores, users and jobs follow as they move out of the first-boot script.
 
 Specials worth calling out:
 
@@ -42,7 +42,7 @@ infrastructure/
 │   ├── 30-cloud-init/      #   Reusable cloud-init modules
 │   ├── 40-template/        #   VM / LXC templates
 │   ├── 50-fleet/           #   Actual VM / container instances
-│   └── 60-pbs/             #   PBS connection, OIDC realms
+│   └── 60-pbs/             #   PBS connection, OIDC realms, host settings
 ├── modules/                # Reusable OpenTofu modules
 │   ├── 00-pve-cluster-*    #   cluster-scope
 │   ├── 10-pve-node-*       #   node-scope
@@ -50,7 +50,7 @@ infrastructure/
 │   ├── 30-cloud-init
 │   ├── 40-template-{vm,lxc}
 │   ├── 50-fleet-{vm,lxc}
-│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox)
+│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox, SSH)
 └── templates/              # .tftpl files rendered into cloud-init (env files, scripts)
 ```
 

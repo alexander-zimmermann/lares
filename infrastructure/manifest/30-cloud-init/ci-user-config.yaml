@@ -28,6 +28,13 @@ ci_user_config:
       set_password: false
       password: ""
 
+    ## Remote-exec user of the 60-pbs layer, same key as on the PVE nodes
+    - username: opentofu
+      groups: [sudo]
+      ssh_public_key: ~/.ssh/proxmox_opentofu.pub
+      set_password: false
+      password: ""
+
   ## UPS Monitor VM
   ups_monitor:
     - username: alexander

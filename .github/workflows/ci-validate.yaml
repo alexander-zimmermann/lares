@@ -46,6 +46,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           touch ~/.ssh/proxmox_opentofu
+          touch ~/.ssh/proxmox_opentofu.pub
           touch ~/.ssh/id_rsa.pub
 
       - name: Setup Python
@@ -100,6 +101,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           touch ~/.ssh/proxmox_opentofu
+          touch ~/.ssh/proxmox_opentofu.pub
           touch ~/.ssh/id_rsa.pub
 
       - name: OpenTofu Format Check
