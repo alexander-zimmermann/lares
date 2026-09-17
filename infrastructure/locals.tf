@@ -26,6 +26,8 @@ locals {
     pve_cluster_realm_openid   = merge([for m in local.decoded_manifests : try(m.pve_cluster_realm_openid, {})]...)
     pve_node_core              = merge([for m in local.decoded_manifests : try(m.pve_node_core, {})]...)
     pve_node_network           = merge([for m in local.decoded_manifests : try(m.pve_node_network, {})]...)
+    pbs                        = merge([for m in local.decoded_manifests : try(m.pbs, {})]...)
+    pbs_realm_openid           = merge([for m in local.decoded_manifests : try(m.pbs_realm_openid, {})]...)
     image                      = merge([for m in local.decoded_manifests : try(m.image, {})]...)
     ci_user_config             = merge([for m in local.decoded_manifests : try(m.ci_user_config, {})]...)
     ci_vendor_config           = merge([for m in local.decoded_manifests : try(m.ci_vendor_config, {})]...)
@@ -51,6 +53,9 @@ locals {
     acme        = try(local.manifest.pve_cluster_acme, {})
     pbs_storage = try(local.manifest.pve_cluster_pbs_storage, {})
     backup_jobs = try(local.manifest.pve_cluster_backup_jobs, {})
+  }
+  pbs = {
+    api = try(local.manifest.pbs.api_connection, {})
   }
   pve_node = {
     core = try(local.manifest.pve_node_core, {})

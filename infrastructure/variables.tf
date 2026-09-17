@@ -117,6 +117,20 @@ variable "pve_cluster_realm_openid_client_keys" {
 
 
 ###############################################################################
+## PBS - OpenID Connect realms
+###############################################################################
+variable "pbs_realm_openid_client_keys" {
+  description = <<EOT
+    Map of realm => OIDC client secret for the realms defined in
+    manifest/60-pbs/pbs-realm-openid.yaml. Unlike the PVE realm the PBS
+    provider keeps the secret in state. Sensitive value.
+  EOT
+  type        = map(string)
+  sensitive   = true
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 variable "pve_node_core_subscription_keys" {
@@ -134,7 +148,11 @@ variable "pve_node_core_subscription_keys" {
 ## Cloud-Init configurations
 ###############################################################################
 variable "ci_secrets" {
-  description = "A map of secrets used for cloud-init injection (e.g., Lego tokens). Sensitive value."
+  description = <<EOT
+    A map of secrets used for cloud-init injection (e.g., Lego tokens).
+    `pbs_bootstrap_conf.pbs_root_password` also authenticates the `pbs`
+    provider (providers.tf). Sensitive value.
+  EOT
   type        = map(any)
   sensitive   = true
   default     = {}

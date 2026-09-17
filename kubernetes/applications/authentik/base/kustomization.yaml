@@ -56,6 +56,9 @@ configMapGenerator:
   - name: authentik-blueprint-proxmox
     files:
       - blueprints/proxmox.yaml
+  - name: authentik-blueprint-proxmox-backup
+    files:
+      - blueprints/proxmox-backup.yaml
 
 labels:
   - includeSelectors: false

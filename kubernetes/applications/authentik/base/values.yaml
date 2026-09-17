@@ -77,6 +77,12 @@ global:
         secretKeyRef:
           name: proxmox-oidc-secret
           key: PROXMOX_OIDC_CLIENT_SECRET
+    # Proxmox Backup Server OIDC client secret for the proxmox-backup-oidc blueprint
+    - name: PROXMOX_BACKUP_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: proxmox-backup-oidc-secret
+          key: PROXMOX_BACKUP_OIDC_CLIENT_SECRET
 
     # Blueprint variables — injected per environment via overlay replacements
     - name: AUTHENTIK_ARGOCD_REDIRECT_URI
@@ -99,6 +105,8 @@ global:
       value: https://PLACEHOLDER_HERMES_HOST/auth/callback
     - name: AUTHENTIK_PROXMOX_REDIRECT_URI
       value: https://PLACEHOLDER_PROXMOX_HOST
+    - name: AUTHENTIK_PROXMOX_BACKUP_REDIRECT_URI
+      value: https://PLACEHOLDER_PROXMOX_BACKUP_HOST
 
     # Optimization: Fewer workers and no preloading saves RAM in small setups
     - name: AUTHENTIK_WEB__WORKERS
@@ -140,6 +148,7 @@ blueprints:
     - authentik-blueprint-rustfs
     - authentik-blueprint-hermes
     - authentik-blueprint-proxmox
+    - authentik-blueprint-proxmox-backup
 
 server:
   # Expose Authentik service via Cilium/BGP-announced LoadBalancer

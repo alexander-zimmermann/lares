@@ -7,6 +7,11 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.113.1"
     }
+    pbs = {
+      ## https://search.opentofu.org/provider/jkossis/proxmox/latest
+      source  = "jkossis/proxmox"
+      version = "1.1.1"
+    }
     external = {
       ## https://search.opentofu.org/provider/hashicorp/external/latest
       source  = "hashicorp/external"
