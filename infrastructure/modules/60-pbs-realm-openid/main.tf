@@ -30,7 +30,7 @@ resource "proxmox_backup_server_realm_openid" "this" {
   scopes     = var.scopes
 
   username_claim = var.username_claim
-  auto_create    = var.auto_create
+  auto_create    = var.autocreate
 }
 
 

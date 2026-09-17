@@ -103,7 +103,7 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 
 ## Swapping the hypervisor
 
-The Proxmox-specific bits are confined to the `bpg/proxmox` provider and the `pve_*` module namespaces (plus `jkossis/proxmox` and `pbs_*` for the Backup Server). Everything else (cloud-init generation, image catalog, manifest merging) is generic Terraform/OpenTofu. Swapping to another hypervisor means:
+The Proxmox-specific bits are confined to the `bpg/proxmox` provider and the `pve_*` module namespaces. Everything else (cloud-init generation, image catalog, manifest merging, the `60-pbs` layer — PBS is a guest, not the hypervisor) is generic Terraform/OpenTofu. Swapping to another hypervisor means:
 
 1. Replace `bpg/proxmox` in [`versions.tf`](versions.tf) with your provider of choice (libvirt, vsphere, …).
 2. Rewrite the `10-pve-node-*`, `40-template-{vm,lxc}`, `50-fleet-{vm,lxc}` modules against the new provider's resources.

@@ -15,7 +15,7 @@ pbs_realm_openid:
     ## `username` maps to preferred_username -> <authentik username>@authentik
     username_claim: "username"
     ## Only the users below can log in; an unlisted Authentik account is rejected
-    auto_create: false
+    autocreate: false
     users:
       alexander:
         role_id: "Admin"

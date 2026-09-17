@@ -9,8 +9,8 @@ variable "realm" {
   type        = string
 
   validation {
-    condition     = can(regex("^[A-Za-z][A-Za-z0-9._-]+$", var.realm))
-    error_message = "realm must start with a letter and contain only letters, digits, '.', '-' and '_'."
+    condition     = can(regex("^[A-Za-z0-9_][A-Za-z0-9._-]*$", var.realm))
+    error_message = "realm must start with a letter, digit or '_' and contain only letters, digits, '.', '-' and '_'."
   }
 }
 
@@ -72,7 +72,7 @@ variable "username_claim" {
   default     = null
 }
 
-variable "auto_create" {
+variable "autocreate" {
   description = <<EOT
     Create the PBS user on first login. PBS default is false, which limits
     logins to the users declared in `users`.

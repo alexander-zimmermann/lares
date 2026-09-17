@@ -200,7 +200,7 @@ module "pbs_realm_openid" {
 
   ## User mapping
   username_claim = try(each.value.username_claim, null)
-  auto_create    = try(each.value.auto_create, null)
+  autocreate     = try(each.value.autocreate, null)
   users          = try(each.value.users, {})
 }
 
