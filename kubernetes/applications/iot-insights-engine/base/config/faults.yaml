@@ -27,7 +27,7 @@ faults:
       # a last telegram minutes old. The list is the inventory, nothing is
       # taken back out of it — a family's threshold bits, commands and
       # never-sent registers are simply not on it.
-      name_like:
+      include:
         # The MDT sensors' and the weather station's readings, and the
         # Basalte push-buttons' temperature; the threshold bits beside each
         # reading only ever answer a read.
@@ -135,7 +135,7 @@ faults:
         - "14.019"  # Stromstärke, A
         - "14.027"  # Spannung, V
         - "14.058"  # Luftdruck, Pa
-      exclude_name_like:
+      exclude:
         # A value a human sets and leaves.
         - "%Soll%"
         # An appliance that is off holds its last temperature for days.
@@ -167,10 +167,10 @@ faults:
       active_hour_fraction: 0.5
     scope:
       dpt: "7.012"
-      name_like: "%.Stromwert"
+      include: "%.Stromwert"
       # By-design continuous loads, and the cooling appliances whose
       # compressor cycles faster than the hourly grid can resolve.
-      exclude_name_like:
+      exclude:
         - "%.Netzwerkschrank.%"
         - "%.Heizung.%"
         - "%.Kühlschrank.%"
@@ -239,7 +239,7 @@ faults:
       # All 21 Stromwert channels: the continuous loads the runtime fault
       # excludes have a standby level too, and a relay sticks on any of them.
       dpt: "7.012"
-      name_like: "%.Stromwert"
+      include: "%.Stromwert"
     references:
       # Each device's healthy standby, read once off 30 days of daily floors
       # and written here: a reference the detector derives for itself would
@@ -323,7 +323,7 @@ faults:
       on_ma: 120
     scope:
       dpt: "7.012"
-      name_like: "%.Gefrierschrank.Stromwert"
+      include: "%.Gefrierschrank.Stromwert"
     references:
       # Read off the summers before the icing, never derived from history:
       # the iced state has stood for months and would become the new normal.
@@ -356,7 +356,7 @@ faults:
       reference: "%.FBH.Soll-Temperatur-Status"
       gate: "%.FBH.Stellwert-Status"
     scope:
-      name_like:
+      include:
         - "Raumklima.%.FBH.Stellwert-Status"
         - "Raumklima.%.FBH.Soll-Temperatur-Status"
         - "Sensorik.%.Sensor.Temperatur"
@@ -365,7 +365,7 @@ faults:
         - "Sensorik.OG.Begehbarer-Schrank.BWM.Temperatur"
       # Unheated rooms (basement, attic) carry room sensors but no FBH
       # circuit.
-      exclude_name_like:
+      exclude:
         - "Sensorik.KG.%"
         - "Sensorik.DG.%"
     rooms:
@@ -453,7 +453,7 @@ faults:
       extract: "%.KWL.Temperatur-Abluft"
       supply: "%.KWL.Temperatur-Zuluft"
     scope:
-      name_like:
+      include:
         - "%.KWL.Temperatur-Außenluft"
         - "%.KWL.Temperatur-Abluft"
         - "%.KWL.Temperatur-Zuluft"
@@ -505,7 +505,7 @@ faults:
     unit: "bar"
     kind: external
     scope:
-      name_like: "%.Gastherme.System-Druck-Anomalie"
+      include: "%.Gastherme.System-Druck-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
         Katalog, und niemand schreibt sie."
@@ -517,7 +517,7 @@ faults:
     unit: "%"
     kind: external
     scope:
-      name_like: "%.Gastherme.Brenner.Modulation-Anomalie"
+      include: "%.Gastherme.Brenner.Modulation-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
         noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
@@ -529,7 +529,7 @@ faults:
     unit: "°C"
     kind: external
     scope:
-      name_like: "%.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
+      include: "%.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
         noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
@@ -542,7 +542,7 @@ faults:
     unit: "K"
     kind: external
     scope:
-      name_like: "%.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
+      include: "%.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
         noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
@@ -555,7 +555,7 @@ faults:
     unit: "K"
     kind: external
     scope:
-      name_like: "%.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
+      include: "%.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
         noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
@@ -568,7 +568,7 @@ faults:
     unit: "m³/h"
     kind: external
     scope:
-      name_like: "%.KWL.Luftstrom-Anomalie"
+      include: "%.KWL.Luftstrom-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
         Katalog, und niemand schreibt sie."
@@ -579,7 +579,7 @@ faults:
     unit: "°C"
     kind: external
     scope:
-      name_like: "%.Photovoltaik.Wechselrichter-%.Temperatur-Anomalie"
+      include: "%.Photovoltaik.Wechselrichter-%.Temperatur-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; auf den Adressen liegen
         noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
@@ -592,7 +592,7 @@ faults:
     unit: "V"
     kind: external
     scope:
-      name_like: "%.Energiezähler.Strom.Spannung-Anomalie"
+      include: "%.Energiezähler.Strom.Spannung-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
         Katalog, und niemand schreibt sie."
@@ -604,7 +604,7 @@ faults:
     unit: "%"
     kind: external
     scope:
-      name_like: "Raumklima.%.Entfeuchter-Anomalie"
+      include: "Raumklima.%.Entfeuchter-Anomalie"
     dormant:
       reason: "Die Studio-Logik ist noch nicht gebaut; beide Adressen stehen im
         Katalog, und niemand schreibt sie."
