@@ -45,9 +45,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Writer target** — a group address the bridge writes onto the bus, as
   declared in the GA mappings (`ga-mappings/<source>.yaml`).
 - **writable** (catalog flag) — "writing this group address has an effect":
-  some device acts on writes to it. Only real actuators and the bridge's
-  consumed-address collectors may vote; visualisation-style devices are
-  excluded because displaying is indistinguishable from acting.
+  some device acts on writes to it. Only real actuators and the
+  write-direction collectors of generated devices that act — the bridge's
+  consumed addresses, the Telenot's switch addresses — may vote;
+  visualisation-style devices (Basalte, Node-Red) are excluded because
+  displaying is indistinguishable from acting.
 - **Wiring** — linking group addresses to a device's objects in ETS. Done
   per collector from a generated wiring worksheet, one multi-select each.
 
