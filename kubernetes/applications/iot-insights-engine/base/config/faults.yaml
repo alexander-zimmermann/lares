@@ -18,15 +18,89 @@ faults:
       # gaps as the quantile needs — twenty here.
       gap_quantile: 0.95
     scope:
-      name_like: "%"
-      exclude_name_like:
-        # A severity the engine or Basalte writes on change, never cyclic.
-        - "%-Anomalie"
-        # The diagnosis block: states the bridge writes only on change.
-        - "%.Zentral.Diagnose.%"
-        # A scene number is a command someone issues, not a state anything
-        # reports; months without one are normal.
-        - "%.Szenen"
+      # Only channels that send on their own: sensor readings, meter
+      # registers and device states their sender repeats cyclically. A
+      # command, a scene, a light's status or an appliance's phase sends
+      # when someone uses it, so its pauses are the household's habits, not
+      # the sender's health — a downlight nobody dimmed for three weeks is
+      # not a fault. Read off the bus 2026-09-17: every address here showed
+      # a last telegram minutes old. The list is the inventory, nothing is
+      # taken back out of it — a family's threshold bits, commands and
+      # never-sent registers are simply not on it.
+      name_like:
+        # The MDT sensors' and the weather station's readings, and the
+        # Basalte push-buttons' temperature; the threshold bits beside each
+        # reading only ever answer a read.
+        - "Sensorik.%.Temperatur"
+        - "Sensorik.%.Temperatur-Alle"
+        - "Sensorik.%.Luftfeuchtigkeit"
+        - "Sensorik.%.Luftfeuchtigkeit-Alle"
+        - "Sensorik.%.Taupunkt"
+        - "Sensorik.%.CO2"
+        - "Sensorik.%.VOC"
+        - "Sensorik.%.Luftdruck-Relativ"
+        - "Sensorik.%.Luftdruck-Absolut"
+        - "Sensorik.%.Helligkeit-%"
+        - "Sensorik.%.Windgeschwindigkeit"
+        - "Sensorik.%.Regen"
+        - "Sensorik.%.Azimut"
+        - "Sensorik.%.Elevation"
+        # The presence detectors' brightness and lock state; presence
+        # itself is on change.
+        - "Bewegungsmelder.%.Helligkeit"
+        - "Bewegungsmelder.%.Sperren-Status"
+        # Appliance current from the switching actuators.
+        - "Schalten.%.Stromwert"
+        # The floor heating's status objects, every few minutes.
+        - "Raumklima.%.FBH.%-Status"
+        - "Raumklima.%.FBH.Aktiv"
+        # Window and door contacts repeat their state every five minutes.
+        - "Sicherheit.%.Geöffnet-Status"
+        - "Sicherheit.%.Stellung-Geöffnet-Status"
+        - "Sicherheit.%.Stellung-Kipp-Status"
+        # The alarm panel's states, five-minute cycle; its arming and
+        # maintenance orders are commands.
+        - "Sicherheitstechnik.EMA.Status"
+        - "Sicherheitstechnik.EMA.%.Status"
+        - "Sicherheitstechnik.EMA.%-Status"
+        - "Sicherheitstechnik.EMA.%-Bereit"
+        - "Sicherheitstechnik.EMA.Störung.%"
+        - "Sicherheitstechnik.EMA.Sabotage.%"
+        - "Sicherheitstechnik.EMA.Sicherungsbereich.%.Alarm"
+        - "Sicherheitstechnik.EMA.Sicherungsbereich.%.Störung"
+        - "Sicherheitstechnik.EMA.Zustände-Aktualisieren"
+        # The meters: the electricity meter's registers, the water meter's
+        # readings.
+        - "Versorgungstechnik.Energiezähler.Strom.Netzbezug.%"
+        - "Versorgungstechnik.Energiezähler.Strom.Einspeisung.%"
+        - "Versorgungstechnik.Energiezähler.Strom.Stromstärke-%"
+        - "Versorgungstechnik.Energiezähler.Strom.Spannung-L%"
+        - "Versorgungstechnik.Energiezähler.Strom.Wirkleistung-Gesamt"
+        - "Versorgungstechnik.Energiezähler.Wasser.Zählerstand-%"
+        - "Versorgungstechnik.Energiezähler.Wasser.Verbrauchswert-%"
+        - "Versorgungstechnik.Energiezähler.Wasser.Durchfluss-Gesamt"
+        # The boiler's measured temperatures and pressure; its setpoints
+        # and pump flags change with the schedule.
+        - "Versorgungstechnik.Gastherme.%Ist-Temperatur"
+        - "Versorgungstechnik.Gastherme.System-Druck"
+        # The ventilation unit's air readings; its modes are commands.
+        - "Versorgungstechnik.KWL.Temperatur-%"
+        - "Versorgungstechnik.KWL.Luftfeuchtigkeit-%"
+        - "Versorgungstechnik.KWL.Luftstrom"
+        # The PV sidecar's readings and the hourly forecast job; the
+        # battery's power rests at zero for hours and sends on change.
+        - "Versorgungstechnik.Photovoltaik.Erzeugung"
+        - "Versorgungstechnik.Photovoltaik.Erzeugung-Leistung"
+        - "Versorgungstechnik.Photovoltaik.Verbrauch"
+        - "Versorgungstechnik.Photovoltaik.Eigen%"
+        - "Versorgungstechnik.Photovoltaik.Wechselrichter-%.Leistung"
+        - "Versorgungstechnik.Photovoltaik.Wechselrichter-%.Temperatur"
+        - "Versorgungstechnik.Photovoltaik.Prognose.%"
+        # The irrigation actuator repeats every circuit's state.
+        - "Versorgungstechnik.Bewässerung.%-Status"
+        # The wallbox's meter register; its charging values only move
+        # while a car is plugged in.
+        - "Versorgungstechnik.Wallbox.Energie.Zählerstand-Aktuell"
     target:
       # One severity address per matched main group, in its Zentral block.
       per_main_group: true
@@ -71,6 +145,10 @@ faults:
         # Push-button sensors repeat their last value until the room moves
         # ~0.5 K — days, in a quiet room. Constant by configuration, not dead.
         - "Sensorik.%.Schalter.%"
+        # The meter's L2 voltage register reads 0.0 V permanently while the
+        # L2 current keeps moving — known, judged nonsense on 2026-09-17
+        # (episode 15531); left in, constancy would re-open it every 48 h.
+        - "Versorgungstechnik.Energiezähler.Strom.Spannung-L2"
     target:
       # The main group's own Konstanz-Anomalie address, beside the
       # Telegrammstille one silence writes: two writers on one address
