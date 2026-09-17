@@ -34,3 +34,17 @@ provider "proxmox" {
   username = local.pve_cluster.api.username
   password = var.pve_cluster_password
 }
+
+
+###############################################################################
+## Proxmox Backup Server provider
+###############################################################################
+
+## Root-only: the provider authenticates with a password ticket, and the
+## password is the one cloud-init sets on the VM at first boot
+provider "pbs" {
+  endpoint     = local.pbs.api.api_url
+  username     = local.pbs.api.username
+  password     = var.ci_secrets.pbs_bootstrap_conf.pbs_root_password
+  insecure_tls = local.pbs.api.insecure
+}

@@ -1,0 +1,22 @@
+## OpenID Connect realms on the PBS (Configuration -> Access Control -> Realms
+## in the PBS UI). Replaces PBS's own login form behind the Authentik
+## forward-auth edge; the `pbs` realm users stay as break-glass and automation
+## paths. Client secret: tfvars `pbs_realm_openid_client_keys.<realm>`, mirrored
+## in the Authentik SealedSecret `proxmox-backup-oidc-secret`; rotate both.
+## PBS has no groups: every identity that may log in is listed under `users`.
+pbs_realm_openid:
+  authentik:
+    ## Issuer = Authentik application slug; PBS discovers the endpoints from it
+    issuer_url: "https://auth.zimmermann.sh/application/o/proxmox-backup/"
+    client_id: "proxmox-backup"
+    comment: "Authentik SSO"
+    default: true
+
+    ## `username` maps to preferred_username -> <authentik username>@authentik
+    username_claim: "username"
+    ## Only the users below can log in; an unlisted Authentik account is rejected
+    auto_create: false
+    users:
+      alexander:
+        role_id: "Admin"
+        path: "/"

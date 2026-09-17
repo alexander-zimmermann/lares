@@ -44,6 +44,14 @@ pve_cluster_realm_openid_client_keys = {
 
 
 ###############################################################################
+## PBS - OpenID Connect realms
+###############################################################################
+pbs_realm_openid_client_keys = {
+  authentik = "YOUR_AUTHENTIK_PROXMOX_BACKUP_CLIENT_SECRET"
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 pve_node_core_subscription_keys = {

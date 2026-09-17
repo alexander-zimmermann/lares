@@ -8,7 +8,7 @@
 
 ## What this does
 
-I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them together, and [OpenTofu](https://opentofu.org/) plus the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider make it happen. That covers:
+I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them together, and [OpenTofu](https://opentofu.org/) plus the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider make it happen (the Backup Server side uses [`jkossis/proxmox`](https://github.com/jkossis/terraform-provider-proxmox), the one provider with PBS resources). That covers:
 
 - **Cluster-wide config** — ACME for PVE UI certs, backup jobs to PBS, hardware mappings (USB), users, OIDC realms (the default login goes through Layer-3 Authentik; the `pve` realm stays as break-glass).
 - **Per-node config** — repositories, network, optional subscription keys.
@@ -16,6 +16,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
+- **Backup Server** — configuration of the running PBS (one of the fleet VMs) through its API: OIDC realm today, datastores, users and jobs as they move out of the first-boot script.
 
 Specials worth calling out:
 
@@ -40,18 +41,20 @@ infrastructure/
 │   ├── 20-image/           #   OS images with checksums
 │   ├── 30-cloud-init/      #   Reusable cloud-init modules
 │   ├── 40-template/        #   VM / LXC templates
-│   └── 50-fleet/           #   Actual VM / container instances
+│   ├── 50-fleet/           #   Actual VM / container instances
+│   └── 60-pbs/             #   PBS connection, OIDC realms
 ├── modules/                # Reusable OpenTofu modules
 │   ├── 00-pve-cluster-*    #   cluster-scope
 │   ├── 10-pve-node-*       #   node-scope
 │   ├── 20-image
 │   ├── 30-cloud-init
 │   ├── 40-template-{vm,lxc}
-│   └── 50-fleet-{vm,lxc}
+│   ├── 50-fleet-{vm,lxc}
+│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox)
 └── templates/              # .tftpl files rendered into cloud-init (env files, scripts)
 ```
 
-The numeric prefixes (`00-` through `50-`) match between `manifest/` and `modules/` so the data flow is obvious — a `50-fleet` YAML references a `40-template` which references a `20-image`, etc.
+The numeric prefixes (`00-` through `60-`) match between `manifest/` and `modules/` so the data flow is obvious — a `50-fleet` YAML references a `40-template` which references a `20-image`, etc. `60-pbs` sits above the fleet because it configures software *inside* one of the VMs.
 
 ## Example: declaring an OS image
 
@@ -100,7 +103,7 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 
 ## Swapping the hypervisor
 
-The Proxmox-specific bits are confined to the `bpg/proxmox` provider and the `pve_*` module namespaces. Everything else (cloud-init generation, image catalog, manifest merging) is generic Terraform/OpenTofu. Swapping to another hypervisor means:
+The Proxmox-specific bits are confined to the `bpg/proxmox` provider and the `pve_*` module namespaces (plus `jkossis/proxmox` and `pbs_*` for the Backup Server). Everything else (cloud-init generation, image catalog, manifest merging) is generic Terraform/OpenTofu. Swapping to another hypervisor means:
 
 1. Replace `bpg/proxmox` in [`versions.tf`](versions.tf) with your provider of choice (libvirt, vsphere, …).
 2. Rewrite the `10-pve-node-*`, `40-template-{vm,lxc}`, `50-fleet-{vm,lxc}` modules against the new provider's resources.

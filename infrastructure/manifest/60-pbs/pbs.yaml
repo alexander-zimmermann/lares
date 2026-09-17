@@ -1,0 +1,11 @@
+## Proxmox Backup Server (the `backup_server_01` VM from 50-fleet). The 60-pbs
+## layer configures the running PBS through its API; installation, disks,
+## mounts and the root password stay in cloud-init (30-cloud-init).
+pbs:
+  api_connection:
+    api_url: "https://backup-01.zimmermann.eu.com:8007"
+    ## Password ticket: the provider has no API-token path. The password is
+    ## `ci_secrets.pbs_bootstrap_conf.pbs_root_password`, set at first boot.
+    username: "root@pam"
+    ## A fresh VM serves a self-signed certificate until its ACME order has run
+    insecure: true

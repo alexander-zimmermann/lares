@@ -179,6 +179,33 @@ module "pve_cluster_realm_openid" {
 
 
 ###############################################################################
+## PBS - OpenID Connect realms
+###############################################################################
+module "pbs_realm_openid" {
+  source   = "./modules/60-pbs-realm-openid"
+  for_each = local.manifest.pbs_realm_openid
+
+  depends_on = [module.fleet_vm["backup_server_01"]]
+
+  ## Realm identity
+  realm      = each.key
+  issuer_url = each.value.issuer_url
+  comment    = try(each.value.comment, "Managed by OpenTofu")
+  default    = try(each.value.default, false)
+
+  ## OIDC client
+  client_id  = each.value.client_id
+  client_key = var.pbs_realm_openid_client_keys[each.key]
+  scopes     = try(each.value.scopes, null)
+
+  ## User mapping
+  username_claim = try(each.value.username_claim, null)
+  auto_create    = try(each.value.auto_create, null)
+  users          = try(each.value.users, {})
+}
+
+
+###############################################################################
 ## PVE node - core configuration
 ###############################################################################
 module "pve_node_core" {
