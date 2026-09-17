@@ -35,7 +35,9 @@ resource "proxmox_backup_server_verify_job" "this" {
 ###############################################################################
 ## The provider has no resource for either yet, so both are applied over SSH:
 ## create the job when `show` does not know it, update it otherwise. The
-## inputs are the only triggers; the command output lands in the apply log.
+## inputs are the only triggers, the command output lands in the apply log,
+## and a job dropped from the manifest stays on PBS. The scripts keep their
+## `#!` line on purpose: without it remote-exec runs them under /bin/sh.
 locals {
   keep_names = ["last", "hourly", "daily", "weekly", "monthly", "yearly"]
 
@@ -44,7 +46,7 @@ locals {
       #!/usr/bin/env bash
       set -euo pipefail
 
-      ARGS=(--store '${job.store}' --schedule '${job.schedule}'%{for k, v in job.keep} --keep-${k} ${v}%{endfor}%{if job.comment != null} --comment '${job.comment}'%{endif})
+      ARGS=(--store '${job.store}' --schedule '${job.schedule}'%{for k, v in job.keep} --keep-${k} ${v}%{endfor})
       if sudo proxmox-backup-manager prune-job show '${id}' > /dev/null 2>&1; then
         # Retention lines dropped from the manifest are removed from the job
         sudo proxmox-backup-manager prune-job update '${id}' "$${ARGS[@]}"%{for k in local.keep_names}%{if !contains(keys(job.keep), k)} --delete keep-${k}%{endif}%{endfor}
@@ -59,7 +61,7 @@ locals {
       #!/usr/bin/env bash
       set -euo pipefail
 
-      ARGS=(--store '${job.store}' --remote-store '${job.remote_store}' --schedule '${job.schedule}' --remove-vanished ${job.remove_vanished}%{if job.comment != null} --comment '${job.comment}'%{endif})
+      ARGS=(--store '${job.store}' --remote-store '${job.remote_store}' --schedule '${job.schedule}' --remove-vanished ${job.remove_vanished})
       if sudo proxmox-backup-manager sync-job show '${id}' > /dev/null 2>&1; then
         sudo proxmox-backup-manager sync-job update '${id}' "$${ARGS[@]}"
       else

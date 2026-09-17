@@ -18,19 +18,33 @@ variable "verify" {
   default = {}
 }
 
+## IDs and stores follow the PBS ID rule; schedules go into a quoted shell
+## line, so they may not carry a quote themselves
 variable "prune" {
   description = <<EOT
     Map of job ID => prune job. `keep` maps a retention window (`last`,
     `hourly`, `daily`, `weekly`, `monthly`, `yearly`) to the number of
-    snapshots to keep; a window absent from the map is removed from the job.
+    snapshots to keep (at least 1); a window absent from the map is removed
+    from the job.
   EOT
   type = map(object({
     store    = string
     schedule = string
     keep     = map(number)
-    comment  = optional(string)
   }))
   default = {}
+
+  validation {
+    condition = alltrue([
+      for id, job in var.prune : can(regex("^[A-Za-z0-9_][A-Za-z0-9._-]*$", id)) && can(regex("^[A-Za-z0-9_][A-Za-z0-9._-]*$", job.store))
+    ])
+    error_message = "prune job IDs and stores must start with a letter, digit or '_' and contain only letters, digits, '.', '-' and '_'."
+  }
+
+  validation {
+    condition     = alltrue([for job in values(var.prune) : !strcontains(job.schedule, "'")])
+    error_message = "prune schedules must not contain a single quote."
+  }
 
   validation {
     condition = alltrue([
@@ -40,8 +54,8 @@ variable "prune" {
   }
 
   validation {
-    condition     = alltrue([for job in values(var.prune) : length(job.keep) > 0])
-    error_message = "every prune job needs at least one keep window."
+    condition     = alltrue([for job in values(var.prune) : length(job.keep) > 0 && alltrue([for n in values(job.keep) : n >= 1])])
+    error_message = "every prune job needs at least one keep window, each keeping at least 1 snapshot."
   }
 }
 
@@ -56,9 +70,20 @@ variable "sync" {
     remote_store    = string
     schedule        = string
     remove_vanished = optional(bool, false)
-    comment         = optional(string)
   }))
   default = {}
+
+  validation {
+    condition = alltrue([
+      for id, job in var.sync : alltrue([for s in [id, job.store, job.remote_store] : can(regex("^[A-Za-z0-9_][A-Za-z0-9._-]*$", s))])
+    ])
+    error_message = "sync job IDs and stores must start with a letter, digit or '_' and contain only letters, digits, '.', '-' and '_'."
+  }
+
+  validation {
+    condition     = alltrue([for job in values(var.sync) : !strcontains(job.schedule, "'")])
+    error_message = "sync schedules must not contain a single quote."
+  }
 }
 
 
