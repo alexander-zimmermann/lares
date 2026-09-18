@@ -10,6 +10,10 @@ deployment:
     tag: 1.15.0
     pullPolicy: IfNotPresent
 
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  podLabels:
+    role: agent
+
   replicas: 1
   strategy:
     type: RollingUpdate

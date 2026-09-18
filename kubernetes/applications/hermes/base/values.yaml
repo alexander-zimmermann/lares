@@ -9,6 +9,10 @@ deployment:
     tag: v2026.9.14
     pullPolicy: IfNotPresent
 
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  podLabels:
+    role: agent
+
   # One gateway per data volume, never two; the PVC is ReadWriteOnce anyway.
   replicas: 1
   strategy:
