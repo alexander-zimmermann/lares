@@ -56,6 +56,10 @@ deployment:
   # hangs on a stuck TR-064 call) gets restarted. Generous timeout + failureThreshold
   # avoid false positives on a normal ~15s scrape. Readiness stays TCP-only so a slow
   # scrape never drops the pod from Service endpoints (spurious TargetDown).
+  # While the box is unreachable, /metrics answers 500 instead of
+  # fritz_device_reachable=0 (pdreker/fritz_exporter#688); a box reboot takes
+  # ~5 min, so 3 x 120s killed a healthy exporter (2026-09-12). Five failures
+  # (10 min) outlast the reboot and still catch a real hang.
   livenessProbe:
     enabled: true
     httpGet:
@@ -64,7 +68,7 @@ deployment:
     initialDelaySeconds: 60
     periodSeconds: 120
     timeoutSeconds: 30
-    failureThreshold: 3
+    failureThreshold: 5
 
   # pdreker/fritz_exporter image runs as root by default — pin UID/GID explicitly so
   # the chart's runAsNonRoot default is satisfied. Listening on 9787 is non-privileged.

@@ -212,6 +212,21 @@ spec:
             summary: "UniFi arm-sync metric stale/absent"
             description: "unifi_arm_sync_ok has not been reported for >15m (expected every ~5min via the KNX status heartbeat). The redpanda-connect stream, its JetStream consumer binding, or the scrape is stuck — drift detection is blind."
 
+    - name: fritz-alerts
+      rules:
+        # fritz_uptime_seconds_total is the box's own uptime, so a low value in
+        # the last hour is a box reboot, not an exporter restart (that only
+        # leaves a gap). A reboot takes the UDM uplink and LAN DNS down for
+        # ~4 min; this names the cause behind the scrape and Pushover failures
+        # that fire in the same window.
+        - alert: FritzBoxRebooted
+          expr: min_over_time(fritz_uptime_seconds_total[1h]) < 900
+          labels:
+            severity: info
+          annotations:
+            summary: "FRITZ!Box {{ $labels.modelname }} rebooted"
+            description: "The box reported an uptime of {{ $value | humanizeDuration }} within the last hour — it restarted. Check its event log for the reason; the surrounding InstanceDown/DNS/Pushover alerts are symptoms of this."
+
     - name: solaredge-alerts
       rules:
         - alert: SolarEdgeInverterDataStale
