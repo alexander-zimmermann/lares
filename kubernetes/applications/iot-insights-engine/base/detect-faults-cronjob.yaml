@@ -59,6 +59,8 @@ spec:
                       key: password
                 - name: MCP_FAULTS_FILE
                   value: /etc/iot-insights-engine/faults.yaml
+                - name: MCP_SITE_FILE
+                  value: /etc/iot-insights-engine/site.yaml
                 # NATS — publish anomaly.* severities for the KNX writer rules.
                 - name: MCP_NATS_SERVERS
                   value: nats://nats.nats.svc.cluster.local:4222
@@ -77,6 +79,10 @@ spec:
                 - name: faults
                   mountPath: /etc/iot-insights-engine/faults.yaml
                   subPath: faults.yaml
+                  readOnly: true
+                - name: faults
+                  mountPath: /etc/iot-insights-engine/site.yaml
+                  subPath: site.yaml
                   readOnly: true
                 - name: nats-credentials
                   mountPath: /etc/iot-insights-engine/nats/nkey-seed
