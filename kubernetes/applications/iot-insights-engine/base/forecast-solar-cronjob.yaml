@@ -60,16 +60,6 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # Forecast.Solar location (the house).
-                - name: MCP_FORECAST_SOLAR_LAT
-                  value: "50.62598"
-                - name: MCP_FORECAST_SOLAR_LON
-                  value: "6.02435"
-                # East (-51° from south, 6.175 kWp) + West (+129°, 6.435 kWp),
-                # both at 17° tilt. Saddle roof with ridge along NE-SW axis.
-                - name: MCP_FORECAST_SOLAR_PLANES
-                  value: |
-                    [{"dec":17,"az":-51,"kwp":6.175},{"dec":17,"az":129,"kwp":6.435}]
                 - name: MCP_FORECAST_SOLAR_API_KEY_FILE
                   value: /etc/forecast-solar/api-key
                 # The site file — what the house is; read by every job.
@@ -123,5 +113,5 @@ spec:
                 secretName: iot-mcp-bridge-credentials
             - name: site
               configMap:
-                name: iot-insights-engine-faults
+                name: iot-insights-engine-config
                 defaultMode: 0444

@@ -73,3 +73,9 @@ repos:
         language: system
         pass_filenames: false
         files: ^kubernetes/applications/iot-insights-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)$
+      - id: insights-validate-site
+        name: insights:validate-site
+        entry: task insights:validate-site
+        language: system
+        pass_filenames: false
+        files: ^kubernetes/applications/iot-insights-engine/base/(config/site\.yaml|detect-faults-cronjob\.yaml)$

@@ -59,12 +59,8 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-iot-mcp-bridge-rw-secret
                       key: password
-                # Open-Meteo location (the house). Keyless — the job
-                # requests timezone=UTC, so no API key or local-tz handling.
-                - name: MCP_FORECAST_WEATHER_LAT
-                  value: "50.62598"
-                - name: MCP_FORECAST_WEATHER_LON
-                  value: "6.02435"
+                # Open-Meteo, keyless — the job requests timezone=UTC for the
+                # site's location, so no API key or local-tz handling.
                 - name: MCP_FORECAST_WEATHER_MODEL
                   value: icon_seamless
                 - name: MCP_FORECAST_WEATHER_FORECAST_HOURS
@@ -99,5 +95,5 @@ spec:
           volumes:
             - name: site
               configMap:
-                name: iot-insights-engine-faults
+                name: iot-insights-engine-config
                 defaultMode: 0444

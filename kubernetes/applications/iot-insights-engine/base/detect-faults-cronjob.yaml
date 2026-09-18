@@ -76,11 +76,11 @@ spec:
                   cpu: 200m
                   memory: 256Mi
               volumeMounts:
-                - name: faults
+                - name: config
                   mountPath: /etc/iot-insights-engine/faults.yaml
                   subPath: faults.yaml
                   readOnly: true
-                - name: faults
+                - name: config
                   mountPath: /etc/iot-insights-engine/site.yaml
                   subPath: site.yaml
                   readOnly: true
@@ -99,9 +99,9 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
           volumes:
-            - name: faults
+            - name: config
               configMap:
-                name: iot-insights-engine-faults
+                name: iot-insights-engine-config
                 defaultMode: 0444
             - name: nats-credentials
               secret:

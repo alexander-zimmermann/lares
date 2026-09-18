@@ -89,5 +89,5 @@ spec:
                 secretName: iot-mcp-bridge-credentials
             - name: site
               configMap:
-                name: iot-insights-engine-faults
+                name: iot-insights-engine-config
                 defaultMode: 0444
