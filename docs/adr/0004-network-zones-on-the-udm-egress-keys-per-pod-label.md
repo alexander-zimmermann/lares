@@ -1,7 +1,7 @@
 # Network zones live on the UDM; the cluster hands out egress keys per pod label
 
 The house is segmented by device class into VLANs on the UDM, and the
-UDM firewalls between them: Internal (clients and media), Infrastruktur
+UDM firewalls between them: Internal (clients and media), Infrastructure
 (UniFi gear, Proxmox, PBS, Omni, UNAS), IoT LAN (devices that control the
 house and cannot defend themselves), IoT Cloud (appliances that talk to a
 vendor cloud), Security (cameras and door station on unpluggable outdoor
