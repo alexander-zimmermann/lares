@@ -22,6 +22,15 @@ bpf:
 egressGateway:
   enabled: true
 
+# Network policy dry run: a verdict that would drop is logged as AUDIT in Hubble and the
+# packet forwarded, nothing is enforced. Set for the agent-cage observation week and
+# removed when the cage is enforced.
+policyAuditMode: true
+
+# The agent reads its ConfigMap only at start: roll the DaemonSet on every config
+# change, so a value like the one above takes effect with the sync, not with the next chart bump.
+rollOutCiliumPods: true
+
 # Enable BGP control plane for network peering; utilize the central 'cilium'
 # namespace for peering secrets to avoid namespace sprawl
 bgpControlPlane:
@@ -87,6 +96,14 @@ hubble:
     - port-distribution
     - icmp
     - http
+    # Policy verdicts per workload and target (DNS name where the proxy learned one): the
+    # agent-cage observation week reads its AUDIT list from Prometheus, not from the ring buffer
+    - policy:sourceContext=workload|pod;destinationContext=workload|dns|ip
+    # Prometheus Operator label (Opt-In); without a ServiceMonitor no Hubble metric is scraped
+    serviceMonitor:
+      enabled: true
+      labels:
+        release: prometheus
 
   # Enable Hubble Relay to aggregate data from all nodes
   relay:
