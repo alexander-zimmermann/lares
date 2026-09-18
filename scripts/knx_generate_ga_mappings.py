@@ -318,7 +318,7 @@ def severity_rule(fault: Any, catalog: Catalog, ga: str, entity: str | None) -> 
             f"fault {fault.name}: {catalog.name(ga)} ({ga}) is DPT {catalog.dpt(ga)}, "
             f"a severity address is DPT {SEVERITY_DPT}"
         )
-    subject = f"anomaly.{fault.name}" + (f".{entity_slug(entity)}" if entity else "")
+    subject = f"fault.{fault.name}" + (f".{entity_slug(entity)}" if entity else "")
     return catalog.rule(subject, ga, SEVERITY_PATH, seed_on_start=True, min_delta=0)
 
 

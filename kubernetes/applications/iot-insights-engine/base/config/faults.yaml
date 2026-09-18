@@ -212,7 +212,7 @@ faults:
         max_run_hours: 3
     target:
       # One severity address per device: the writer rules carry
-      # anomaly.appliance_runtime.<ga-slug> to the device's Dauerbetrieb
+      # fault.appliance_runtime.<ga-slug> to the device's Dauerbetrieb
       # address, generated from this template (task knx:create-ga-mappings).
       per_device: true
       name: "Schalten.{entity}.Stromwert-Dauerbetrieb-Anomalie"
@@ -290,7 +290,7 @@ faults:
         healthy_ma: 48
     target:
       # One severity address per device: the writer rules carry
-      # anomaly.appliance_standby.<ga-slug> to the device's Standby address,
+      # fault.appliance_standby.<ga-slug> to the device's Standby address,
       # generated from this template (task knx:create-ga-mappings).
       per_device: true
       name: "Schalten.{entity}.Stromwert-Standby-Anomalie"
@@ -333,7 +333,7 @@ faults:
       Gefrierschrank:
         healthy_duty_pct: 50
     target:
-      # The writer rule carries anomaly.freezer_icing.<ga-slug> to the
+      # The writer rule carries fault.freezer_icing.<ga-slug> to the
       # freezer's own Vereisung address in the appliance group, generated
       # from this template (task knx:create-ga-mappings).
       per_device: true
@@ -418,7 +418,7 @@ faults:
         value: "Sensorik.OG.Badezimmer-Eltern.Sensor.Temperatur"
     target:
       # One severity address per room: the writer rules carry
-      # anomaly.fbh_cold.<room-slug> to the room's FBH Aktiv-Anomalie
+      # fault.fbh_cold.<room-slug> to the room's FBH Aktiv-Anomalie
       # address, generated from this template (task knx:create-ga-mappings).
       per_room: true
       name: "Raumklima.{entity}.FBH.Aktiv-Anomalie"
@@ -464,7 +464,7 @@ faults:
       KWL:
         healthy_pct: 94
     target:
-      # The writer rule carries anomaly.heat_recovery_decay.kwl to the
+      # The writer rule carries fault.heat_recovery_decay.kwl to the
       # KWL's Wärmerückgewinnung address.
       ga: "15/3/34"
 
@@ -491,7 +491,7 @@ faults:
       # arrived. Such a day counts as unmeasured, not as quiet.
       min_expected_kwh: 3
     target:
-      # The writer rule carries anomaly.pv_underperformance to the PV
+      # The writer rule carries fault.pv_underperformance to the PV
       # Erzeugung-Leistung-Anomalie address.
       ga: "15/4/11"
 
