@@ -1,0 +1,28 @@
+# What the house is: where it stands, the timezone its days are counted
+# in, and the PV planes with the inverter each of them feeds. The fault
+# list beside this file says what counts as wrong; a fact about the plant
+# lives here and is never a fault parameter.
+
+location:
+  latitude: 50.62598
+  longitude: 6.02435
+timezone: Europe/Berlin
+
+pv:
+  # Keyed by the plane's name as the anomaly addresses carry it. Azimuth in
+  # the Open-Meteo convention, the one forecast.solar uses too: 0 south,
+  # negative east, positive west. Which inverter feeds which plane was read
+  # off the hourly curves of 2026-09-15 (inverter 2 peaks 09–11 UTC,
+  # inverter 1 around 15 UTC) and confirmed by the owner. The daily-yield
+  # fault bounds a counter's rise per hour by the plane's kWp.
+  planes:
+    West:
+      inverter_id: 1
+      tilt: 17
+      azimuth: 129
+      kwp: 6.435
+    Ost:
+      inverter_id: 2
+      tilt: 17
+      azimuth: -51
+      kwp: 6.175
