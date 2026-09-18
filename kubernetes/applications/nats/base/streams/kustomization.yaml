@@ -15,7 +15,6 @@ resources:
   # knx-nats-bridge read responder can be seeded after a restart.
   - wallbox-knx.yaml
   - unifi-arm.yaml
-  - anomaly.yaml
   - fault.yaml
   - forecast.yaml
   - energy.yaml
