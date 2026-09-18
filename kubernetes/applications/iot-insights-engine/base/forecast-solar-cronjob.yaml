@@ -72,6 +72,9 @@ spec:
                     [{"dec":17,"az":-51,"kwp":6.175},{"dec":17,"az":129,"kwp":6.435}]
                 - name: MCP_FORECAST_SOLAR_API_KEY_FILE
                   value: /etc/forecast-solar/api-key
+                # The site file — what the house is; read by every job.
+                - name: MCP_SITE_FILE
+                  value: /etc/iot-insights-engine/site.yaml
                 # NATS — publish forecast.pv.* scalars for the KNX prognosis GAs.
                 - name: MCP_NATS_SERVERS
                   value: nats://nats.nats.svc.cluster.local:4222
@@ -92,6 +95,10 @@ spec:
                 - name: forecast-solar-credentials
                   mountPath: /etc/forecast-solar/api-key
                   subPath: api-key
+                  readOnly: true
+                - name: site
+                  mountPath: /etc/iot-insights-engine/site.yaml
+                  subPath: site.yaml
                   readOnly: true
                 - name: nats-credentials
                   mountPath: /etc/iot-insights-engine/nats/nkey-seed
@@ -114,3 +121,7 @@ spec:
             - name: nats-credentials
               secret:
                 secretName: iot-mcp-bridge-credentials
+            - name: site
+              configMap:
+                name: iot-insights-engine-faults
+                defaultMode: 0444

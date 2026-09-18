@@ -52,6 +52,9 @@ spec:
                   value: /etc/iot-insights-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
+                # The site file — what the house is; read by every job.
+                - name: MCP_SITE_FILE
+                  value: /etc/iot-insights-engine/site.yaml
                 - name: TZ
                   value: Europe/Berlin
               resources:
@@ -65,6 +68,10 @@ spec:
                 - name: nats-credentials
                   mountPath: /etc/iot-insights-engine/nats/nkey-seed
                   subPath: nkey-seed
+                  readOnly: true
+                - name: site
+                  mountPath: /etc/iot-insights-engine/site.yaml
+                  subPath: site.yaml
                   readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
@@ -80,3 +87,7 @@ spec:
             - name: nats-credentials
               secret:
                 secretName: iot-mcp-bridge-credentials
+            - name: site
+              configMap:
+                name: iot-insights-engine-faults
+                defaultMode: 0444
