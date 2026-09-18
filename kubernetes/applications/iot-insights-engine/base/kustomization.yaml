@@ -10,10 +10,11 @@ resources:
   - ./energy-balance-cronjob.yaml
   - ./detect-faults-cronjob.yaml
 
-# Hash suffix on: a faults.yaml or site.yaml edit re-renders the CronJob
-# reference, so the next run picks it up without a manual restart.
+# The engine's two declared files: what counts as wrong, and what the
+# house is. Hash suffix on: an edit re-renders the CronJob reference, so
+# the next run picks it up without a manual restart.
 configMapGenerator:
-  - name: iot-insights-engine-faults
+  - name: iot-insights-engine-config
     files:
       - ./config/faults.yaml
       - ./config/site.yaml

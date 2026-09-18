@@ -12,6 +12,7 @@ vars:
   KNX_GA_MAPPINGS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/ga-mappings"
   INSIGHTS_CRONJOB_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/detect-faults-cronjob.yaml"
   INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"
+  INSIGHTS_SITE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/site.yaml"
   # The sidecar bridges whose GA mappings are generated: the values file
   # carries the deployed tag, the config file the devices and their address blocks.
   MIELE_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/miele-nats-bridge/base/values.yaml"
