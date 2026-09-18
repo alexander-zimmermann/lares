@@ -69,6 +69,9 @@ spec:
                   value: icon_seamless
                 - name: MCP_FORECAST_WEATHER_FORECAST_HOURS
                   value: "48"
+                # The site file — what the house is; read by every job.
+                - name: MCP_SITE_FILE
+                  value: /etc/iot-insights-engine/site.yaml
                 - name: MCP_AUTH_ENABLED
                   value: "false"
               resources:
@@ -78,6 +81,11 @@ spec:
                 limits:
                   cpu: 100m
                   memory: 128Mi
+              volumeMounts:
+                - name: site
+                  mountPath: /etc/iot-insights-engine/site.yaml
+                  subPath: site.yaml
+                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
@@ -88,3 +96,8 @@ spec:
                   drop: ["ALL"]
                 seccompProfile:
                   type: RuntimeDefault
+          volumes:
+            - name: site
+              configMap:
+                name: iot-insights-engine-faults
+                defaultMode: 0444
