@@ -171,7 +171,7 @@ flowchart TB
         ingest[redpanda-connect<br/>ingest streams]
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
-        engine[iot-insights-engine<br/>anomaly + forecast jobs]
+        engine[iot-insights-engine<br/>fault + forecast jobs]
         mcp[iot-mcp-bridge<br/>MCP read tools]
         claude((Claude.ai))
         ingest --> tsdb
@@ -185,7 +185,7 @@ flowchart TB
     nats -- sub --> ingest
     %% Undirected on purpose: an engine->nats arrow makes dagre rank the whole
     %% archive block above nats. The label carries the direction instead.
-    nats -. "engine pub anomaly.>" .- engine
+    nats -. "engine pub fault.>" .- engine
     nats -- last-msg --> mcp
 
     %% Invisible edge: pins the archive band below the KNX block.

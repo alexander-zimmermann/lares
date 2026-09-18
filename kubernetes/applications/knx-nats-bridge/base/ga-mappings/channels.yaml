@@ -5,252 +5,252 @@
 # one declared house-wide address.
 
 mappings:
-  - subject: "anomaly.channel_constancy.0"
+  - subject: "fault.channel_constancy.0"
     ga: "0/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Allgemein.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.2"
+  - subject: "fault.channel_constancy.2"
     ga: "2/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.3"
+  - subject: "fault.channel_constancy.3"
     ga: "3/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beleuchtung.Gebäude.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.4"
+  - subject: "fault.channel_constancy.4"
     ga: "4/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beleuchtung.Einrichtung.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.5"
+  - subject: "fault.channel_constancy.5"
     ga: "5/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beschattung.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.6"
+  - subject: "fault.channel_constancy.6"
     ga: "6/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.7"
+  - subject: "fault.channel_constancy.7"
     ga: "7/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Bedienelement.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.8"
+  - subject: "fault.channel_constancy.8"
     ga: "8/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sensorik.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.9"
+  - subject: "fault.channel_constancy.9"
     ga: "9/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Bewegungsmelder.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.10"
+  - subject: "fault.channel_constancy.10"
     ga: "10/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sicherheit.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.11"
+  - subject: "fault.channel_constancy.11"
     ga: "11/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Zutritt.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.12"
+  - subject: "fault.channel_constancy.12"
     ga: "12/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Entertainment.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.14"
+  - subject: "fault.channel_constancy.14"
     ga: "14/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sicherheitstechnik.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.15"
+  - subject: "fault.channel_constancy.15"
     ga: "15/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.16"
+  - subject: "fault.channel_constancy.16"
     ga: "16/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Informationstechnik.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.17"
+  - subject: "fault.channel_constancy.17"
     ga: "17/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Haushaltstechnik.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_constancy.18"
+  - subject: "fault.channel_constancy.18"
     ga: "18/0/252"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Person.Zentral.Diagnose.Konstanz-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.0"
+  - subject: "fault.channel_silence.0"
     ga: "0/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Allgemein.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.2"
+  - subject: "fault.channel_silence.2"
     ga: "2/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Schalten.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.3"
+  - subject: "fault.channel_silence.3"
     ga: "3/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beleuchtung.Gebäude.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.4"
+  - subject: "fault.channel_silence.4"
     ga: "4/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beleuchtung.Einrichtung.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.5"
+  - subject: "fault.channel_silence.5"
     ga: "5/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Beschattung.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.6"
+  - subject: "fault.channel_silence.6"
     ga: "6/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Raumklima.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.7"
+  - subject: "fault.channel_silence.7"
     ga: "7/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Bedienelement.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.8"
+  - subject: "fault.channel_silence.8"
     ga: "8/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sensorik.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.9"
+  - subject: "fault.channel_silence.9"
     ga: "9/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Bewegungsmelder.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.10"
+  - subject: "fault.channel_silence.10"
     ga: "10/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sicherheit.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.11"
+  - subject: "fault.channel_silence.11"
     ga: "11/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Zutritt.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.12"
+  - subject: "fault.channel_silence.12"
     ga: "12/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Entertainment.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.14"
+  - subject: "fault.channel_silence.14"
     ga: "14/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Sicherheitstechnik.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.15"
+  - subject: "fault.channel_silence.15"
     ga: "15/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Versorgungstechnik.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.16"
+  - subject: "fault.channel_silence.16"
     ga: "16/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Informationstechnik.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.17"
+  - subject: "fault.channel_silence.17"
     ga: "17/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Haushaltstechnik.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.channel_silence.18"
+  - subject: "fault.channel_silence.18"
     ga: "18/0/250"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Person.Zentral.Diagnose.Telegrammstille-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.notification_volume"
+  - subject: "fault.notification_volume"
     ga: "0/0/251"
     dpt: "5.010"
     payload_path: "$.severity_level"
     description: "Allgemein.Zentral.Diagnose.Meldungsvolumen-Anomalie"
     min_delta: 0
     seed_on_start: true
-  - subject: "anomaly.pv_underperformance"
+  - subject: "fault.pv_underperformance"
     ga: "15/4/11"
     dpt: "5.010"
     payload_path: "$.severity_level"
