@@ -1,0 +1,117 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+
+metadata:
+  name: agent-cage
+
+spec:
+  # The pods that run agents or act on their behalf (the hermes harness, the MCP
+  # bridge, Node-RED) are the one place the UDM cannot see: pods leave with the node
+  # IP, so their egress is fenced here, inside the cluster and towards the internet
+  # by name. Ingress is untouched. One policy for all of them, so the allow list is
+  # the union of what each needs. Verdicts stay AUDIT while policyAuditMode is set.
+  endpointSelector:
+    matchLabels:
+      role: agent
+
+  egress:
+    # DNS through the Cilium DNS proxy; the toFQDNs rules below are learned from these answers
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+
+    # In-cluster services, container ports: the policy sees the pod behind the Service
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: iot-mcp-bridge
+            app.kubernetes.io/name: iot-mcp-bridge
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
+    # NATS client and MQTT; node-red reaches it as mqtt.zimmermann.eu.com, the LB IP lands on the same pod
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: nats
+            app.kubernetes.io/name: nats
+            app.kubernetes.io/component: nats
+      toPorts:
+        - ports:
+            - port: "4222"
+              protocol: TCP
+            - port: "1883"
+              protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: timescaledb
+            cnpg.io/cluster: timescaledb-db
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: wiki-js
+            app.kubernetes.io/name: wiki
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+
+    # hermes: OTLP traces and gateway-health metrics
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: alloy
+            app.kubernetes.io/name: alloy-receiver
+      toPorts:
+        - ports:
+            - port: "4318"
+              protocol: TCP
+
+    # Internet by name. Authentik sits behind Cloudflare like every *.zimmermann.sh host,
+    # so the OIDC and JWKS calls of all three agents leave the cluster too.
+    - toFQDNs:
+        - matchName: chatgpt.com # hermes: Codex, the primary model (ChatGPT login)
+        - matchName: auth.openai.com # hermes: Codex token refresh
+        - matchName: api.x.ai # hermes: Grok fallback
+        - matchName: api.anthropic.com # hermes: benchmark provider via API key
+        - matchName: discord.com # hermes: Discord REST
+        - matchName: gateway.discord.gg # hermes: Discord gateway websocket
+        - matchPattern: "*.discordapp.com" # hermes: Discord CDN (attachments)
+        - matchPattern: "*.discordapp.net" # hermes: Discord media proxy
+        - matchName: PLACEHOLDER_AUTH_HOST
+        - matchName: registry.npmjs.org # node-red: OIDC dependency at start, palette installs
+        - matchName: api.mcs3.miele.com # node-red: Miele flows
+        - matchPattern: "*.hydrawise.com" # node-red: irrigation controller
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+
+    # node-red: UniFi mails via iCloud IMAP
+    - toFQDNs:
+        - matchName: imap.mail.me.com
+      toPorts:
+        - ports:
+            - port: "993"
+              protocol: TCP
+
+    # node-red: KNX IP interface, UDP tunnelling. By name, so the VLAN-6 move needs no policy
+    # change; a flow that holds the address as an IP never matches this rule and shows up as AUDIT
+    - toFQDNs:
+        - matchName: knx-ip.zimmermann.eu.com
+      toPorts:
+        - ports:
+            - port: "3671"
+              protocol: UDP

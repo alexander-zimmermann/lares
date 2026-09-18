@@ -62,6 +62,15 @@ replacements:
         fieldPaths:
           - spec.blocks.0.stop
 
+  # Authentik host the caged agents may call for OIDC and JWKS
+  - sourceValue: auth.zimmermann.sh
+    targets:
+      - select:
+          kind: CiliumClusterwideNetworkPolicy
+          name: agent-cage
+        fieldPaths:
+          - spec.egress.*.toFQDNs.[matchName=PLACEHOLDER_AUTH_HOST].matchName
+
   # Rewrite external-dns target annotation to prod UDM Pro
   - sourceValue: udm-pro.zimmermann.sh
     targets:
