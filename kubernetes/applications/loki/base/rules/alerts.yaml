@@ -21,11 +21,14 @@ groups:
 
       - alert: LogFatalError
         # Go runtime aborts and fatal-level lines from structured loggers
-        # (logfmt and JSON); Python's CRITICAL is the same tier.
+        # (logfmt and JSON); Python's CRITICAL is the same tier. The logfmt
+        # level is the line's own, i.e. first or right after the timestamp
+        # (logrus quotes it, slog does not): longhorn-manager quotes a child
+        # process's stderr, level=fatal included, inside its own error lines.
         expr: |
           sum by (namespace, pod, container) (
             count_over_time({namespace=~".+", container=~".+", container!="loki"}
-              |~ `^fatal error: |level=fatal|"level":"(fatal|FATAL|CRITICAL)"` [10m])
+              |~ `^fatal error: |^(\w+=(\S+|"[^"]*") )?level=fatal |"level":"(fatal|FATAL|CRITICAL)"` [10m])
           ) > 0
         labels:
           severity: warning
