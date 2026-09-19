@@ -6,10 +6,12 @@ UDM firewalls between them: Internal (clients and media), Infrastructure
 house and cannot defend themselves), IoT Cloud (appliances that talk to a
 vendor cloud), Security (cameras and door station on unpluggable outdoor
 ports), Kubernetes (Talos nodes, egress IPs, LoadBalancer pool). VLAN id
-equals the third octet of the subnet.
+equals the third octet of the subnet, and every VLAN follows one address
+convention: `.1` gateway, `.2`–`.49` fixed addresses, `.50`–`.199` DHCP,
+`.200`–`.254` special purpose (in VLAN 10 the LoadBalancer pool).
 
 The UDM sees the cluster only as node IPs and cannot tell pods apart, so
-it is given exactly two exceptions: the egress IPs `.64` and `.65`, one
+it is given exactly two exceptions: the egress IPs `.2` and `.3`, one
 secondary address per gateway worker. Cilium's egress gateway decides,
 from pod label and destination CIDR, which traffic leaves with one of
 them: `egress-infra`, `egress-iot`, `egress-security`. A pod without the
