@@ -160,12 +160,13 @@ collectors:
               }
           }
 
+          // UDM traffic logging (CyberSecure) and UniFi devices send BSD syslog.
           listener {
-              address             = "0.0.0.0:514"
-              protocol            = "udp"
-              idle_timeout        = "0s"
-              use_rfc5424_message = true
-              labels              = {
+              address       = "0.0.0.0:514"
+              protocol      = "udp"
+              idle_timeout  = "0s"
+              syslog_format = "rfc3164"
+              labels        = {
                   job       = "syslog",
                   component = "loki.source.syslog",
                   protocol  = "udp",
