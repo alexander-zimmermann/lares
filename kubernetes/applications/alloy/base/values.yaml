@@ -147,7 +147,8 @@ collectors:
           }
       }
 
-      loki.source.syslog "syslog" {
+      // RFC5424 senders (none today) keep the parsed header labels.
+      loki.source.syslog "syslog_tcp" {
           listener {
               address             = "0.0.0.0:601"
               protocol            = "tcp"
@@ -160,20 +161,56 @@ collectors:
               }
           }
 
+          forward_to    = [loki.write.loki.receiver]
+          relabel_rules = discovery.relabel.syslog.rules
+      }
+
+      // UDM SIEM export: BSD timestamp, ISO timestamp, hostname, CEF; no <PRI>,
+      // so neither syslog parser accepts it. Raw in, header split in loki.process.
+      loki.source.syslog "syslog_udp" {
           listener {
-              address             = "0.0.0.0:514"
-              protocol            = "udp"
-              idle_timeout        = "0s"
-              use_rfc5424_message = true
-              labels              = {
+              address       = "0.0.0.0:514"
+              protocol      = "udp"
+              idle_timeout  = "0s"
+              syslog_format = "raw"
+              labels        = {
                   job       = "syslog",
                   component = "loki.source.syslog",
                   protocol  = "udp",
               }
           }
 
-          forward_to    = [loki.write.loki.receiver]
-          relabel_rules = discovery.relabel.syslog.rules
+          forward_to = [loki.process.unifi_cef.receiver]
+      }
+
+      loki.process "unifi_cef" {
+          stage.regex {
+              expression = "^\\w{3} +\\d{1,2} \\d{2}:\\d{2}:\\d{2} (?P<ts>\\S+) (?P<host>\\S+) CEF:\\d+\\|(?P<cef_vendor>[^|]*)\\|(?P<cef_product>[^|]*)\\|[^|]*\\|(?P<cef_event_id>[^|]*)\\|(?P<cef_name>[^|]*)\\|(?P<cef_severity>[^|]*)\\|"
+          }
+
+          stage.timestamp {
+              source = "ts"
+              format = "RFC3339"
+          }
+
+          stage.labels {
+              values = { host = "" }
+          }
+
+          stage.static_labels {
+              values = { application = "unifi" }
+          }
+
+          stage.structured_metadata {
+              values = {
+                  cef_product  = "",
+                  cef_event_id = "",
+                  cef_name     = "",
+                  cef_severity = "",
+              }
+          }
+
+          forward_to = [loki.write.loki.receiver]
       }
 
       // OTLP/HTTP receiver for external push sources (rustfs and PVE/PBS
