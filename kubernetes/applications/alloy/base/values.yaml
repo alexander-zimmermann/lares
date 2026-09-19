@@ -173,8 +173,17 @@ collectors:
               }
           }
 
-          forward_to    = [loki.write.loki.receiver]
+          forward_to    = [loki.process.syslog_noise.receiver]
           relabel_rules = discovery.relabel.syslog.rules
+      }
+
+      // CobraNet devices ask via BOOTP every few seconds and never get an address.
+      loki.process "syslog_noise" {
+          stage.drop {
+              expression = "dnsmasq-dhcp\\[\\d+\\]: (BOOTP\\(br2\\) .* no address configured|no address range available for DHCP request via br2)"
+          }
+
+          forward_to = [loki.write.loki.receiver]
       }
 
       // OTLP/HTTP receiver for external push sources (rustfs and PVE/PBS
