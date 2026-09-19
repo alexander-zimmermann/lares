@@ -94,6 +94,13 @@ monitoring:
       enabled: true
       endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318/v1/traces
 
+# No remote model catalogs: the gateway would refetch the Nous manifest, the OpenRouter
+# list and the portal recommendations every 20 minutes, four hosts the agent cage does
+# not open. The /model picker keeps the snapshot shipped with the image; the provider
+# above is not on either list anyway.
+model_catalog:
+  enabled: false
+
 # Behind Traefik: its forwarded headers are trusted from the pod network only,
 # and the public URL comes from the environment per cluster.
 dashboard:

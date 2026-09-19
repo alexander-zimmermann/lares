@@ -88,7 +88,7 @@ spec:
         - matchName: api.anthropic.com # hermes: benchmark provider via API key
         - matchName: models.dev # hermes: model registry, refreshed every 4 h; blocked, it retries every 5 min
         - matchName: discord.com # hermes: Discord REST
-        - matchName: gateway.discord.gg # hermes: Discord gateway websocket
+        - matchPattern: "*.discord.gg" # hermes: Discord gateway websocket and the per-region resume URL it hands out
         - matchPattern: "*.discordapp.com" # hermes: Discord CDN (attachments)
         - matchPattern: "*.discordapp.net" # hermes: Discord media proxy
         - matchName: PLACEHOLDER_AUTH_HOST
