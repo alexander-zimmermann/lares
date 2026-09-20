@@ -513,6 +513,7 @@ spec:
       middlewares:
         - name: chain-mfa-auth
           namespace: ingress-controller
+        - name: strip-cookies-all
       services:
         - name: knx-ip
           port: 8080
