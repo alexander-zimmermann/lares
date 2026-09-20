@@ -724,6 +724,11 @@ module "fleet_vm" {
 
   ## USB device passthrough
   usb_devices = try(each.value.usb_devices, [])
+
+  ## Network configuration
+  network_interfaces = [{
+    vlan_tag = each.value.vlan_tag
+  }]
 }
 
 module "fleet_lxc" {

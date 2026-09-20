@@ -114,6 +114,7 @@ locals {
       disks          = try(spec.disks, [])
       usb_devices    = try(spec.usb_devices, [])
       protection     = try(spec.protection, true)
+      vlan_tag       = try(spec.vlan_tag, null)
     } if try(spec.count, 0) == 0 },
 
     ## Batch objects: count > 0
@@ -128,6 +129,7 @@ locals {
           disks          = try(spec.disks, [])
           usb_devices    = try(spec.usb_devices, [])
           protection     = try(spec.protection, true)
+          vlan_tag       = try(spec.vlan_tag, null)
         }
       } if try(spec.count, 0) > 0
     ]...)
