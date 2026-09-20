@@ -136,6 +136,11 @@ spec:
       Cf-Ipcountry: ""
       Cf-Connecting-Ip: ""
       Cdn-Loop: ""
+      # Cloudflare Access: only the router reads the JWT (Gatus bypass), no upstream does
+      Cf-Access-Jwt-Assertion: ""
+      Cf-Access-Authenticated-User-Email: ""
+      Cf-Access-Client-Id: ""
+      Cf-Access-Client-Secret: ""
 
 ---
 # Cookie Stripping: Removes Authentik session cookies before forwarding to

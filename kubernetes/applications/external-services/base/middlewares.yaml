@@ -8,3 +8,16 @@ spec:
   retry:
     attempts: 3
     initialInterval: 100ms
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: strip-cookies-all
+
+spec:
+  # The MDT SCN-IP drops requests with more than ~1 KB of headers; its UI needs no cookies
+  headers:
+    customRequestHeaders:
+      Cookie: ""
