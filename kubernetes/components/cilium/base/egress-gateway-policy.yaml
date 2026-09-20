@@ -14,9 +14,9 @@ spec:
         matchLabels:
           io.kubernetes.pod.namespace: ingress-controller
           app.kubernetes.io/name: traefik
+  # The gateways take DHCP-assigned fixed addresses in the IoT LAN, so match the zone
   destinationCIDRs:
-    - 192.168.1.191/32 # dali-1
-    - 192.168.1.179/32 # dali-2
+    - 192.168.6.0/24
   egressGateway:
     nodeSelector:
       matchLabels:
