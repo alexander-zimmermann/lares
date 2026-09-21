@@ -222,7 +222,6 @@ prometheus:
   service:
     type: LoadBalancer
     labels:
-      bgp.cilium.io/ip-pool: default
       bgp.cilium.io/advertise-service: default
 
   prometheusSpec:
