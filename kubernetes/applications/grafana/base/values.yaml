@@ -17,7 +17,6 @@ service:
   # Expose Grafana service via Cilium/BGP-announced LoadBalancer
   type: LoadBalancer
   labels:
-    bgp.cilium.io/ip-pool: default
     bgp.cilium.io/advertise-service: default
 
 podLabels:

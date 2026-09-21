@@ -222,7 +222,6 @@ service:
   spec:
     externalTrafficPolicy: Local
   labels:
-    bgp.cilium.io/ip-pool: default
     bgp.cilium.io/advertise-service: default
   # Internal ClusterIP service for homepage widget (dashboard/API port only)
   additionalServices:

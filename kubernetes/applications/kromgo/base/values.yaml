@@ -72,7 +72,6 @@ service:
   enabled: true
   type: LoadBalancer
   additionalLabels:
-    bgp.cilium.io/ip-pool: default
     bgp.cilium.io/advertise-service: default
   ports:
     - port: 80
