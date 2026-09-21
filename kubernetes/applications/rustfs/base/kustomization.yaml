@@ -36,9 +36,6 @@ patches:
         path: /spec/type
         value: LoadBalancer
       - op: add
-        path: /metadata/labels/bgp.cilium.io~1ip-pool
-        value: default
-      - op: add
         path: /metadata/labels/bgp.cilium.io~1advertise-service
         value: default
 

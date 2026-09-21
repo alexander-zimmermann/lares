@@ -13,6 +13,6 @@ spec:
       peers:
         - name: "udm-pro-65100"
           peerASN: 65100
-          peerAddress: 192.168.1.1
+          peerAddress: 192.168.10.1
           peerConfigRef:
             name: peer-config

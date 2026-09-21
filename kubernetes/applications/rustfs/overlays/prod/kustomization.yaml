@@ -118,4 +118,4 @@ patches:
         value: LoadBalancer
       - op: add
         path: /metadata/annotations/io.cilium~1lb-ipam-ips
-        value: "192.168.10.32"
+        value: "192.168.10.232"
