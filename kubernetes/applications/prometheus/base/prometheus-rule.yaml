@@ -225,7 +225,21 @@ spec:
             severity: info
           annotations:
             summary: "FRITZ!Box {{ $labels.modelname }} rebooted"
-            description: "The box reported an uptime of {{ $value | humanizeDuration }} within the last hour — it restarted. Check its event log for the reason; the surrounding InstanceDown/DNS/Pushover alerts are symptoms of this."
+            description: "The box reported an uptime of {{ $value | humanizeDuration }} within the last hour — it restarted. Check its event log for the reason; the surrounding DNS and Pushover alerts are symptoms of this."
+
+        # Set by the exporter itself: a TR-064 transport error marks the device
+        # unreachable for that cycle while the scrape still returns 200, so `up`
+        # no longer reports on the box. Gatus checks the box's HTTPS front end,
+        # not TR-064 on :49000. 10m outlasts a reboot (~5 min), which
+        # FritzBoxRebooted names on its own.
+        - alert: FritzDeviceUnreachable
+          expr: fritz_device_reachable == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "FRITZ!Box {{ $labels.serial }} not answering TR-064"
+            description: "fritz-exporter has not reached the box over TR-064 for 10 minutes — longer than a reboot takes. Every fritz_* metric is stale since then, while the exporter itself is healthy and still scraping."
 
     - name: solaredge-alerts
       rules:
