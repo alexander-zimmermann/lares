@@ -2,6 +2,9 @@
 # Bind to all interfaces so kubelet probes and Prometheus can reach the pod port.
 listen_address: 0.0.0.0
 devices:
-- hostname: http://fritzbox.zimmermann.eu.com
+# name lands in the friendly_name label on every fritz_* metric; without it the
+# label is empty and alerts have nothing readable to name the box with.
+- name: "FRITZ!Box 7530"
+  hostname: http://fritzbox.zimmermann.eu.com
   username: fritz-exporter
   password_file: /etc/fritz-exporter/secrets/password

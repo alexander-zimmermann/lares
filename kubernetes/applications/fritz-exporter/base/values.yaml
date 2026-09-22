@@ -56,10 +56,9 @@ deployment:
   # hangs on a stuck TR-064 call) gets restarted. Generous timeout + failureThreshold
   # avoid false positives on a normal ~15s scrape. Readiness stays TCP-only so a slow
   # scrape never drops the pod from Service endpoints (spurious TargetDown).
-  # While the box is unreachable, /metrics answers 500 instead of
-  # fritz_device_reachable=0 (pdreker/fritz_exporter#688); a box reboot takes
-  # ~5 min, so 3 x 120s killed a healthy exporter (2026-09-12). Five failures
-  # (10 min) outlast the reboot and still catch a real hang.
+  # An unreachable box answers 200 with fritz_device_reachable=0, so the probe
+  # only sees a genuinely wedged exporter; five failures (10 min) are headroom
+  # for a slow scrape.
   livenessProbe:
     enabled: true
     httpGet:
