@@ -4,8 +4,9 @@ The house is segmented by device class into VLANs on the UDM, and the
 UDM firewalls between them: Internal (clients and media), Infrastructure
 (UniFi gear, Proxmox, PBS, Omni, UNAS), IoT LAN (devices that control the
 house and cannot defend themselves), IoT Cloud (appliances that talk to a
-vendor cloud), Security (cameras and door station on unpluggable outdoor
-ports), Kubernetes (Talos nodes, egress IPs, LoadBalancer pool). VLAN id
+vendor cloud), Outdoor (cameras and door station on ports anyone can
+unplug from the house wall), Kubernetes (Talos nodes, egress IPs,
+LoadBalancer pool). VLAN id
 equals the third octet of the subnet, and every VLAN follows one address
 convention: `.1` gateway, `.2`–`.49` fixed addresses, `.50`–`.199` DHCP,
 `.200`–`.254` special purpose (in VLAN 10 the LoadBalancer pool).
@@ -14,7 +15,7 @@ The UDM sees the cluster only as node IPs and cannot tell pods apart, so
 it is given exactly two exceptions: the egress IPs `.2` and `.3`, one
 secondary address per gateway worker. Cilium's egress gateway decides,
 from pod label and destination CIDR, which traffic leaves with one of
-them: `egress-infra`, `egress-iot`, `egress-security`. A pod without the
+them: `egress-infra`, `egress-iot`, `egress-outdoor`. A pod without the
 label leaves with the node IP and is dropped at the zone border; a pod
 with one label still reaches the other zones with the node IP and is
 dropped there. The UDM therefore holds one rule with ports per zone for
