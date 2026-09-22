@@ -2,11 +2,11 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 
 metadata:
-  name: iot-mcp-bridge-tls-cert
-  namespace: iot-mcp-bridge
+  name: lares-mcp-bridge-tls-cert
+  namespace: lares-mcp-bridge
 
 spec:
-  secretName: iot-mcp-bridge-tls-cert
+  secretName: lares-mcp-bridge-tls-cert
   issuerRef:
     name: letsencrypt-dns01-issuer
     kind: ClusterIssuer

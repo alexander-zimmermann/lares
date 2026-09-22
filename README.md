@@ -172,7 +172,7 @@ flowchart TB
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
         engine[iot-insights-engine<br/>fault + forecast jobs]
-        mcp[iot-mcp-bridge<br/>MCP read tools]
+        mcp[lares-mcp-bridge<br/>MCP read tools]
         claude((Claude.ai))
         ingest --> tsdb
         ingest --> rustfs
@@ -244,7 +244,7 @@ A quick taste of what's running — full catalog in [`kubernetes/README.md`](kub
 - **Immutable OS** — [Talos Linux](https://www.talos.dev/) with disk encryption, managed by [Omni](https://omni.siderolabs.com/).
 - **Identity & edge** — [Authentik](https://goauthentik.io/) SSO/forward-auth, [Traefik](https://traefik.io/) with pre/post-auth middleware chains, [CrowdSec](https://www.crowdsec.net/) behavior-based IPS, [Cloudflare](https://www.cloudflare.com/) WAF.
 - **Data plane** — [CloudNativePG](https://cloudnative-pg.io/) with Barman S3 PITR backups, [TimescaleDB](https://www.timescale.com/) for sensor time-series, [Redis](https://redis.io/), [RustFS](https://github.com/rustfs/rustfs) for S3-compatible object storage.
-- **Streaming & agents** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus protocol bridges (KNX, solar) and an MCP bridge that exposes the data to AI agents.
+- **Streaming & agents** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus protocol bridges (KNX, solar) and `lares-mcp-bridge` (formerly `iot-mcp-bridge`), an MCP bridge that exposes the data to AI agents.
 - **Observability** — [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), [Loki](https://grafana.com/oss/loki/), [Tempo](https://grafana.com/oss/tempo/), [Alloy](https://grafana.com/docs/alloy/), [Gatus](https://gatus.io/), plus [kromgo](https://github.com/kashalls/kromgo) powering the badges above.
 
 ## Repository structure

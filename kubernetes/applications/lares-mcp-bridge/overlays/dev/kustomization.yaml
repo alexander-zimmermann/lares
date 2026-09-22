@@ -10,12 +10,12 @@ replacements:
     targets:
       - select:
           kind: Certificate
-          name: iot-mcp-bridge-tls-cert
+          name: lares-mcp-bridge-tls-cert
         fieldPaths:
           - spec.dnsNames.0
       - select:
           kind: IngressRoute
-          name: iot-mcp-bridge
+          name: lares-mcp-bridge
         fieldPaths:
           - spec.routes.0.match
         options:
@@ -23,19 +23,19 @@ replacements:
           index: 1
 
   # OIDC env vars — Authentik issuer/JWKS at auth.zimmermann.phd, MCP at mcp.zimmermann.phd
-  - sourceValue: https://auth.zimmermann.phd/application/o/iot-mcp-bridge/jwks/
+  - sourceValue: https://auth.zimmermann.phd/application/o/lares-mcp-bridge/jwks/
     targets:
       - select:
           kind: Deployment
-          name: iot-mcp-bridge
+          name: lares-mcp-bridge
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=MCP_AUTH_JWKS_URL].value
 
-  - sourceValue: https://auth.zimmermann.phd/application/o/iot-mcp-bridge/
+  - sourceValue: https://auth.zimmermann.phd/application/o/lares-mcp-bridge/
     targets:
       - select:
           kind: Deployment
-          name: iot-mcp-bridge
+          name: lares-mcp-bridge
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=MCP_AUTH_ISSUER].value
 
@@ -43,7 +43,7 @@ replacements:
     targets:
       - select:
           kind: Deployment
-          name: iot-mcp-bridge
+          name: lares-mcp-bridge
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=MCP_AUTH_RESOURCE_URL].value
 
@@ -58,11 +58,11 @@ replacements:
 patches:
   - target:
       kind: Deployment
-      name: iot-mcp-bridge
+      name: lares-mcp-bridge
     patch: |-
       - op: test
         path: /spec/template/spec/containers/0/name
-        value: iot-mcp-bridge
+        value: lares-mcp-bridge
       - op: add
         path: /spec/template/spec/containers/0/resources
         value:

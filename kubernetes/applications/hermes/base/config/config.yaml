@@ -109,7 +109,7 @@ dashboard:
 
 mcp_servers:
   lares:
-    url: http://iot-mcp-bridge.iot-mcp-bridge.svc.cluster.local:8080/mcp
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     headers:
       Authorization: "Bearer ${env:LARES_MCP_KEY}"
     timeout: 60

@@ -42,24 +42,24 @@ spec:
         comment: "Redpanda Connect ingest user — INSERT/SELECT only"
         passwordSecret:
           name: timescaledb-db-connect-secret
-      - name: iot_mcp_bridge_ro
+      - name: lares_mcp_bridge_ro
         ensure: present
         login: true
-        comment: "iot-mcp-bridge — SELECT only on hypertables and CAGGs"
+        comment: "lares-mcp-bridge — SELECT only on hypertables and CAGGs"
         passwordSecret:
-          name: timescaledb-db-iot-mcp-bridge-ro-secret
-      - name: iot_mcp_bridge_rw
+          name: timescaledb-db-lares-mcp-bridge-ro-secret
+      - name: lares_diagnostics_engine_rw
         ensure: present
         login: true
-        comment: "iot-mcp-bridge-jobs — INSERT/UPDATE on mcp_forecasts + the episode tables"
+        comment: "lares-diagnostics-engine — INSERT/UPDATE on mcp_forecasts + the episode tables"
         passwordSecret:
-          name: timescaledb-db-iot-mcp-bridge-rw-secret
-      - name: iot_mcp_bridge_verdict
+          name: timescaledb-db-lares-diagnostics-engine-rw-secret
+      - name: lares_mcp_bridge_verdict
         ensure: present
         login: true
-        comment: "iot-mcp-bridge — the one write an LLM-facing server holds: episode_verdicts only"
+        comment: "lares-mcp-bridge — the one write an LLM-facing server holds: episode_verdicts only"
         passwordSecret:
-          name: timescaledb-db-iot-mcp-bridge-verdict-secret
+          name: timescaledb-db-lares-mcp-bridge-verdict-secret
       - name: grafana_ro
         ensure: present
         login: true

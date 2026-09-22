@@ -687,8 +687,8 @@ SELECT add_retention_policy('miele_eco',           INTERVAL '365 days');
 
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,
--- populated by the iot-mcp-bridge import-ga-catalog Job from
--- the knx-nats-bridge ConfigMap. The `ga_catalog_view` view
+-- populated by the knx-nats-bridge import-ga-catalog Job from
+-- its ConfigMap. The `ga_catalog_view` view
 -- joins `knx` against the catalog so MCP tools can filter / group by
 -- room or function in plain SQL.
 -- =========================================================
@@ -745,7 +745,7 @@ SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 -- `fingerprint` is the rule that last made the row — the fault's kind and
 -- parameters — so a later rule can tell its own rows from an earlier
 -- rule's leftovers; NULL on rows older than the stamp.
--- Written by iot_mcp_bridge_rw, read by iot_mcp_bridge_ro / grafana_ro.
+-- Written by lares_diagnostics_engine_rw, read by lares_mcp_bridge_ro / grafana_ro.
 -- Plain tables, no hypertable — episode volume is a handful a week.
 -- =========================================================
 CREATE TABLE IF NOT EXISTS episodes (
@@ -793,9 +793,9 @@ CREATE TABLE IF NOT EXISTS episode_events (
 -- a fault is wrong — only at night, only in summer, only while the laundry
 -- runs. Nothing in the detection pipeline reads this table; the counts are
 -- shown per fault on the dashboard and thresholds stay a human decision.
--- Written by iot_mcp_bridge_verdict — a role that may touch this table and
+-- Written by lares_mcp_bridge_verdict — a role that may touch this table and
 -- nothing else, because the MCP bridge is where verdicts are given.
--- Read by iot_mcp_bridge_ro / grafana_ro.
+-- Read by lares_mcp_bridge_ro / grafana_ro.
 -- =========================================================
 CREATE TABLE IF NOT EXISTS episode_verdicts (
     episode_id BIGINT      PRIMARY KEY REFERENCES episodes (id),

@@ -39,23 +39,23 @@ spec:
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: username
                 - name: MCP_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: password
                 # Episode writes go through the rw role (episodes tables only).
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      name: timescaledb-db-lares-diagnostics-engine-rw-secret
                       key: username
                 - name: MCP_DB_WRITE_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      name: timescaledb-db-lares-diagnostics-engine-rw-secret
                       key: password
                 - name: MCP_FAULTS_FILE
                   value: /etc/iot-insights-engine/faults.yaml
@@ -105,4 +105,4 @@ spec:
                 defaultMode: 0444
             - name: nats-credentials
               secret:
-                secretName: iot-mcp-bridge-credentials
+                secretName: lares-diagnostics-engine-credentials

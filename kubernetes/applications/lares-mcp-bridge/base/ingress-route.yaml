@@ -2,8 +2,8 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 
 metadata:
-  name: iot-mcp-bridge
-  namespace: iot-mcp-bridge
+  name: lares-mcp-bridge
+  namespace: lares-mcp-bridge
   annotations:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
@@ -23,7 +23,7 @@ spec:
           namespace: ingress-controller
       services:
         - kind: Service
-          name: iot-mcp-bridge
+          name: lares-mcp-bridge
           port: 8080
   tls:
-    secretName: iot-mcp-bridge-tls-cert
+    secretName: lares-mcp-bridge-tls-cert

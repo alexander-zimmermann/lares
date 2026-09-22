@@ -31,8 +31,8 @@ spec:
     # In-cluster services, container ports: the policy sees the pod behind the Service
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: iot-mcp-bridge
-            app.kubernetes.io/name: iot-mcp-bridge
+            io.kubernetes.pod.namespace: lares-mcp-bridge
+            app.kubernetes.io/name: lares-mcp-bridge
       toPorts:
         - ports:
             - port: "8080"

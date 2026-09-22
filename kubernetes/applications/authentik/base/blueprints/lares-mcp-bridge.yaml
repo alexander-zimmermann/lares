@@ -1,22 +1,22 @@
 version: 1
 metadata:
-  name: iot-mcp-bridge-oidc
+  name: lares-mcp-bridge-oidc
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # OAuth2/OIDC Provider for the iot-mcp-bridge MCP server.
+  # OAuth2/OIDC Provider for the lares-mcp-bridge MCP server.
   # Used by claude.ai's custom-connector OAuth flow (oauth_anthropic_creds).
   - model: authentik_providers_oauth2.oauth2provider
     state: present
     identifiers:
-      name: iot-mcp-bridge
+      name: lares-mcp-bridge
     attrs:
-      name: iot-mcp-bridge
+      name: lares-mcp-bridge
       authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
       invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
       client_type: confidential
-      client_id: iot-mcp-bridge
-      client_secret: !Env IOT_MCP_BRIDGE_OIDC_CLIENT_SECRET
+      client_id: lares-mcp-bridge
+      client_secret: !Env LARES_MCP_BRIDGE_OIDC_CLIENT_SECRET
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
       access_token_validity: hours=1
       refresh_token_validity: days=30
@@ -34,19 +34,33 @@ entries:
   - model: authentik_core.application
     state: present
     identifiers:
-      slug: iot-mcp-bridge
+      slug: lares-mcp-bridge
     attrs:
-      name: iot-mcp-bridge
-      slug: iot-mcp-bridge
-      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, iot-mcp-bridge]]
+      name: lares-mcp-bridge
+      slug: lares-mcp-bridge
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, lares-mcp-bridge]]
       policy_engine_mode: any
 
   # Restrict token issuance for this audience to platform-admins
   - model: authentik_policies.policybinding
     state: present
     identifiers:
-      target: !Find [authentik_core.application, [slug, iot-mcp-bridge]]
+      target: !Find [authentik_core.application, [slug, lares-mcp-bridge]]
       group: !Find [authentik_core.group, [name, platform-admins]]
       order: 0
     attrs:
       enabled: true
+
+  # The pre-rename objects. A changed identifier makes a blueprint create a
+  # second provider rather than rename the first, so the old pair is dropped
+  # here; the application takes its policy binding with it. Plain identifiers,
+  # no !Find, so this stays a no-op once they are gone.
+  - model: authentik_core.application
+    state: absent
+    identifiers:
+      slug: iot-mcp-bridge
+
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers:
+      name: iot-mcp-bridge
