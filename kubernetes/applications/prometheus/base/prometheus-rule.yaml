@@ -238,7 +238,7 @@ spec:
           labels:
             severity: warning
           annotations:
-            summary: "FRITZ!Box {{ $labels.serial }} not answering TR-064"
+            summary: "{{ $labels.friendly_name }} not answering TR-064"
             description: "fritz-exporter has not reached the box over TR-064 for 10 minutes — longer than a reboot takes. Every fritz_* metric is stale since then, while the exporter itself is healthy and still scraping."
 
     - name: solaredge-alerts
