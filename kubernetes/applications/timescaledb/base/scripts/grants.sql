@@ -75,4 +75,29 @@ BEGIN
         GRANT SELECT ON episodes TO lares_mcp_bridge_verdict;
         GRANT SELECT, INSERT, UPDATE ON episode_verdicts TO lares_mcp_bridge_verdict;
     END IF;
+
+    -- Ledger writer — the trigger service is the only writer of the ledger
+    -- and the memory: it inserts the row before the run starts and updates
+    -- it as the run ends. SELECT comes with them, not on top of them:
+    -- UPDATE ... WHERE reads the key columns, and the dedupe INSERT reads
+    -- back the id it conflicted on. Sequence usage covers the identity
+    -- column on INSERT.
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_agent_trigger')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'agent_runs') THEN
+        GRANT CONNECT ON DATABASE homelab TO lares_agent_trigger;
+        GRANT USAGE ON SCHEMA public TO lares_agent_trigger;
+        GRANT SELECT, INSERT, UPDATE ON agent_runs, agent_memory TO lares_agent_trigger;
+        EXECUTE format('GRANT USAGE, SELECT ON SEQUENCE %s TO lares_agent_trigger',
+                       pg_get_serial_sequence('public.agent_runs', 'id'));
+    END IF;
+
+    -- Verdict on a run — the same role that judges episodes, and the same
+    -- shape: SELECT to name the run it is judging, column-level UPDATE so
+    -- the judgement can never rewrite the output it judges. CONNECT and
+    -- schema usage come from the block above.
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_mcp_bridge_verdict')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'agent_runs') THEN
+        GRANT SELECT ON agent_runs TO lares_mcp_bridge_verdict;
+        GRANT UPDATE (verdict, verdict_at) ON agent_runs TO lares_mcp_bridge_verdict;
+    END IF;
 END$$;

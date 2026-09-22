@@ -111,7 +111,16 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   assignment, an allowed tool list, an output kind and a budget. Declared
   in a file in this repo; adding one is a pull request, never a rebuild.
 - **Run** — one execution of a use case, from trigger to output, recorded
-  as one row with its subject, model, cost, tool trace and verdict.
+  as one row in the ledger with its subject, model, cost, tool trace and
+  verdict.
+- **Ledger** — the `agent_runs` table: one row per run of every kind,
+  whatever started it. The one place verdicts, counts and costs are read
+  from; its unique key on use case and subject is also what keeps one
+  event from starting two runs.
+- **Memory** (avoid: notes, scratchpad) — the working notes of one use
+  case in `agent_memory`: bounded to about 8 KB, visible on the dashboard
+  and editable by the owner. Never a second truth for what the tables
+  already hold.
 - **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
