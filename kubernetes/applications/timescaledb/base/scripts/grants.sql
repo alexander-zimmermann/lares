@@ -19,10 +19,10 @@ BEGIN
     -- the materialisation table of every CAGG. A blanket grant on
     -- _timescaledb_internal would hit TS bookkeeping tables owned by the
     -- postgres superuser, so we enumerate CAGGs explicitly.
-    -- iot_mcp_bridge_rw also gets the same SELECT surface; write privileges
+    -- lares_diagnostics_engine_rw also gets the same SELECT surface; write privileges
     -- are added below for mcp_forecasts and the episode tables only.
-    -- iot_mcp_bridge_verdict is deliberately absent — see the verdict block.
-    FOREACH ro_role IN ARRAY ARRAY['iot_mcp_bridge_ro', 'grafana_ro', 'iot_mcp_bridge_rw']
+    -- lares_mcp_bridge_verdict is deliberately absent — see the verdict block.
+    FOREACH ro_role IN ARRAY ARRAY['lares_mcp_bridge_ro', 'grafana_ro', 'lares_diagnostics_engine_rw']
     LOOP
         IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = ro_role) THEN
             CONTINUE;
@@ -47,18 +47,18 @@ BEGIN
     -- Forecast writer — INSERT + UPDATE on mcp_forecasts.
     -- UPDATE is needed for `INSERT … ON CONFLICT DO UPDATE` idempotency.
     -- Production hypertables (knx, ems_esp, warp_*, solaredge_*) stay read-only.
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_rw')
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_diagnostics_engine_rw')
        AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'mcp_forecasts') THEN
-        GRANT INSERT, UPDATE ON mcp_forecasts TO iot_mcp_bridge_rw;
+        GRANT INSERT, UPDATE ON mcp_forecasts TO lares_diagnostics_engine_rw;
     END IF;
 
-    -- Episode writer — iot_mcp_bridge_rw keeps open episodes current
+    -- Episode writer — lares_diagnostics_engine_rw keeps open episodes current
     -- (last_seen_at, severity, ended_at) and appends evidence and events.
     -- Sequence usage covers the identity column on INSERT.
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_rw')
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_diagnostics_engine_rw')
        AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'episodes') THEN
-        GRANT INSERT, UPDATE ON episodes, episode_observations, episode_events TO iot_mcp_bridge_rw;
-        EXECUTE format('GRANT USAGE, SELECT ON SEQUENCE %s TO iot_mcp_bridge_rw',
+        GRANT INSERT, UPDATE ON episodes, episode_observations, episode_events TO lares_diagnostics_engine_rw;
+        EXECUTE format('GRANT USAGE, SELECT ON SEQUENCE %s TO lares_diagnostics_engine_rw',
                        pg_get_serial_sequence('public.episodes', 'id'));
     END IF;
 
@@ -68,11 +68,11 @@ BEGIN
     -- the read-only loop above, so it never gains the blanket SELECT surface.
     -- UPDATE is what the upsert needs so a second verdict overwrites the first;
     -- SELECT on the table covers the RETURNING clause.
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'iot_mcp_bridge_verdict')
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_mcp_bridge_verdict')
        AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'episode_verdicts') THEN
-        GRANT CONNECT ON DATABASE homelab TO iot_mcp_bridge_verdict;
-        GRANT USAGE ON SCHEMA public TO iot_mcp_bridge_verdict;
-        GRANT SELECT ON episodes TO iot_mcp_bridge_verdict;
-        GRANT SELECT, INSERT, UPDATE ON episode_verdicts TO iot_mcp_bridge_verdict;
+        GRANT CONNECT ON DATABASE homelab TO lares_mcp_bridge_verdict;
+        GRANT USAGE ON SCHEMA public TO lares_mcp_bridge_verdict;
+        GRANT SELECT ON episodes TO lares_mcp_bridge_verdict;
+        GRANT SELECT, INSERT, UPDATE ON episode_verdicts TO lares_mcp_bridge_verdict;
     END IF;
 END$$;

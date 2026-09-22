@@ -1,4 +1,4 @@
-applicationName: iot-mcp-bridge
+applicationName: lares-mcp-bridge
 
 deployment:
   enabled: true
@@ -6,8 +6,8 @@ deployment:
   # cluster — disable the chart's dead reloader.stakater.com/auto annotation.
   reloadOnChange: false
   image:
-    repository: ghcr.io/alexander-zimmermann/iot-mcp-bridge
-    tag: 1.15.0
+    repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
+    tag: 1.16.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -27,15 +27,15 @@ deployment:
       value: homelab
     # DB credentials mounted as files from the synced Secret (Kyverno clones from `timescaledb` namespace)
     MCP_DB_USERNAME_FILE:
-      value: /etc/iot-mcp-bridge/db_username
+      value: /etc/lares-mcp-bridge/db_username
     MCP_DB_PASSWORD_FILE:
-      value: /etc/iot-mcp-bridge/db_password
+      value: /etc/lares-mcp-bridge/db_password
     # Verdict-writer credentials — the server's only write, and a role that
     # may touch no other table.
     MCP_DB_WRITE_USERNAME_FILE:
-      value: /etc/iot-mcp-bridge/db_write_username
+      value: /etc/lares-mcp-bridge/db_write_username
     MCP_DB_WRITE_PASSWORD_FILE:
-      value: /etc/iot-mcp-bridge/db_write_password
+      value: /etc/lares-mcp-bridge/db_write_password
     MCP_AUTH_ENABLED:
       value: "true"
     MCP_AUTH_JWKS_URL:
@@ -43,12 +43,12 @@ deployment:
     MCP_AUTH_ISSUER:
       value: PLACEHOLDER_AUTH_ISSUER
     MCP_AUTH_AUDIENCE:
-      value: iot-mcp-bridge
+      value: lares-mcp-bridge
     MCP_AUTH_RESOURCE_URL:
       value: PLACEHOLDER_AUTH_RESOURCE_URL
     # Machine clients (agents) authenticate with a key from this file instead of a JWT
     MCP_AUTH_CLIENTS_FILE:
-      value: /etc/iot-mcp-bridge/auth-clients.json
+      value: /etc/lares-mcp-bridge/auth-clients.json
     # What each machine client may see and call; the verdict, cache and NATS-subscribe tools stay out
     MCP_AUTH_CLIENT_TOOLS:
       value: '{"lares-agent": ["list_*", "get_*", "query_*", "correlate_events", "search_wiki"]}'
@@ -56,13 +56,13 @@ deployment:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
     MCP_NATS_NKEY_SEED_FILE:
-      value: /etc/iot-mcp-bridge/nats-nkey-seed
+      value: /etc/lares-mcp-bridge/nats-nkey-seed
     # Wiki.js over the cluster-internal Service (port 80); the read-only API key
     # is mounted as a file from the SealedSecret in this directory.
     MCP_WIKIJS_URL:
       value: http://wiki-js.wiki-js.svc
     MCP_WIKIJS_TOKEN_FILE:
-      value: /etc/iot-mcp-bridge/wikijs-token
+      value: /etc/lares-mcp-bridge/wikijs-token
     MCP_LOG_FORMAT:
       value: json
     TZ:
@@ -71,74 +71,74 @@ deployment:
   volumes:
     db-username:
       secret:
-        secretName: timescaledb-db-iot-mcp-bridge-ro-secret
+        secretName: timescaledb-db-lares-mcp-bridge-ro-secret
         items:
           - key: username
             path: username
     db-password:
       secret:
-        secretName: timescaledb-db-iot-mcp-bridge-ro-secret
+        secretName: timescaledb-db-lares-mcp-bridge-ro-secret
         items:
           - key: password
             path: password
     db-write-username:
       secret:
-        secretName: timescaledb-db-iot-mcp-bridge-verdict-secret
+        secretName: timescaledb-db-lares-mcp-bridge-verdict-secret
         items:
           - key: username
             path: username
     db-write-password:
       secret:
-        secretName: timescaledb-db-iot-mcp-bridge-verdict-secret
+        secretName: timescaledb-db-lares-mcp-bridge-verdict-secret
         items:
           - key: password
             path: password
     nats-nkey-seed:
       secret:
-        secretName: iot-mcp-bridge-nats-credentials
+        secretName: lares-mcp-bridge-nats-credentials
         items:
           - key: nkey-seed
             path: nkey-seed
     wikijs-token:
       secret:
-        secretName: iot-mcp-bridge-wikijs-token
+        secretName: lares-mcp-bridge-wikijs-token
         items:
           - key: token
             path: token
     auth-clients:
       secret:
-        secretName: iot-mcp-bridge-auth-clients
+        secretName: lares-mcp-bridge-auth-clients
         items:
           - key: clients.json
             path: clients.json
 
   volumeMounts:
     db-username:
-      mountPath: /etc/iot-mcp-bridge/db_username
+      mountPath: /etc/lares-mcp-bridge/db_username
       subPath: username
       readOnly: true
     db-password:
-      mountPath: /etc/iot-mcp-bridge/db_password
+      mountPath: /etc/lares-mcp-bridge/db_password
       subPath: password
       readOnly: true
     db-write-username:
-      mountPath: /etc/iot-mcp-bridge/db_write_username
+      mountPath: /etc/lares-mcp-bridge/db_write_username
       subPath: username
       readOnly: true
     db-write-password:
-      mountPath: /etc/iot-mcp-bridge/db_write_password
+      mountPath: /etc/lares-mcp-bridge/db_write_password
       subPath: password
       readOnly: true
     nats-nkey-seed:
-      mountPath: /etc/iot-mcp-bridge/nats-nkey-seed
+      mountPath: /etc/lares-mcp-bridge/nats-nkey-seed
       subPath: nkey-seed
       readOnly: true
     wikijs-token:
-      mountPath: /etc/iot-mcp-bridge/wikijs-token
+      mountPath: /etc/lares-mcp-bridge/wikijs-token
       subPath: token
       readOnly: true
     auth-clients:
-      mountPath: /etc/iot-mcp-bridge/auth-clients.json
+      mountPath: /etc/lares-mcp-bridge/auth-clients.json
       subPath: clients.json
       readOnly: true
 

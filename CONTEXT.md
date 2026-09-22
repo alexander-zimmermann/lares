@@ -56,15 +56,15 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 ## Data pipeline
 
 - **Sidecar** — a satellite repository of lares that builds one image or
-  library lares deploys: the `*-nats-bridge` repos, `iot-mcp-bridge`,
-  `iot-insights-engine`, `nats-archive-compactor`,
+  library lares deploys: the `*-nats-bridge` repos, `lares-mcp-bridge`
+  (formerly `iot-mcp-bridge`), `iot-insights-engine`, `nats-archive-compactor`,
   `cnpg-postgres-timescaledb` and `nats-bridge-core`. Not a Kubernetes
   sidecar container. Avoid: side-car, split repo.
 - **Sidecar bridge** (avoid: device bridge) — a sidecar that translates one
   device family's native protocol into NATS subjects and back: the KNX,
   Dyson, Miele, Midea and Bordbar bridges. Unqualified, "the bridge" always
   means the KNX-NATS bridge, which is also a generated device.
-  `iot-mcp-bridge` is not one: it fronts the archive for MCP, no device.
+  `lares-mcp-bridge` is not one: it fronts the archive for MCP, no device.
 - **Stream** — a JetStream stream: the retained subject space of one source
   (`KNX`, `DYSON`, `WARP`, …), declared as a `Stream` CRD. Never a
   redpanda-connect stream; that is a pipeline.

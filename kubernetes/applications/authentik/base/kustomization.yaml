@@ -44,9 +44,9 @@ configMapGenerator:
   - name: authentik-blueprint-wikijs
     files:
       - blueprints/wikijs.yaml
-  - name: authentik-blueprint-iot-mcp-bridge
+  - name: authentik-blueprint-lares-mcp-bridge
     files:
-      - blueprints/iot-mcp-bridge.yaml
+      - blueprints/lares-mcp-bridge.yaml
   - name: authentik-blueprint-rustfs
     files:
       - blueprints/rustfs.yaml

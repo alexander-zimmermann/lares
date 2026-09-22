@@ -36,6 +36,6 @@ labels:
     pairs:
       homelab.app: hermes
 
-# Wave 12 = after iot-mcp-bridge (11), the only in-cluster dependency.
+# Wave 12 = after lares-mcp-bridge (11), the only in-cluster dependency.
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "12"

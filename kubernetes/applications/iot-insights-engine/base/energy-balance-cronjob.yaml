@@ -38,12 +38,12 @@ spec:
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: username
                 - name: MCP_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: password
                 # NATS — publish energy.pv.* scalars for the KNX bilanz GAs.
                 - name: MCP_NATS_SERVERS
@@ -86,7 +86,7 @@ spec:
           volumes:
             - name: nats-credentials
               secret:
-                secretName: iot-mcp-bridge-credentials
+                secretName: lares-diagnostics-engine-credentials
             - name: site
               configMap:
                 name: iot-insights-engine-config

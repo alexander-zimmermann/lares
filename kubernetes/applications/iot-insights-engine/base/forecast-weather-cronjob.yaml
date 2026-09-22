@@ -42,22 +42,22 @@ spec:
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: username
                 - name: MCP_DB_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-ro-secret
+                      name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: password
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      name: timescaledb-db-lares-diagnostics-engine-rw-secret
                       key: username
                 - name: MCP_DB_WRITE_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: timescaledb-db-iot-mcp-bridge-rw-secret
+                      name: timescaledb-db-lares-diagnostics-engine-rw-secret
                       key: password
                 # Open-Meteo, keyless — the job requests timezone=UTC for the
                 # site's location, so no API key or local-tz handling.
