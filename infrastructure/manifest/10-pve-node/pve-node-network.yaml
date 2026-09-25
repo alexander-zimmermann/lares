@@ -1,5 +1,29 @@
+## Host network of pve-1. The bridge is the VLAN trunk for host and guests and
+## carries no address of its own; the management address sits on VLAN 5. Both
+## interfaces stage their changes (`reload: false`), so tofu never pulls the
+## host's own management path out from under itself: the node applies them
+## together from the Proxmox UI or with `ifreload -a`.
 pve_node_network:
   pve-1:
-    bridges: {}
+    bridges:
+      ## Trunk. Guests pick their VLAN by vNIC tag, untagged ones stay in VLAN 1.
+      vmbr0:
+        ports: ["enp128s31f6"]
+        vlan_aware: true
+        vids: "2-4094"
+        autostart: true
+        reload: false
+        comment: "VLAN trunk, host and guests"
+
     bonds: {}
-    vlans: {}
+
+    vlans:
+      ## Management address of the host
+      vmbr0.5:
+        interface: vmbr0
+        vlan: 5
+        address: "192.168.5.10/24"
+        gateway: "192.168.5.1"
+        autostart: true
+        reload: false
+        comment: "Infrastructure, host management"
