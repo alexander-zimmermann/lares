@@ -1,5 +1,5 @@
 # DERIVED stream — NOT a primary data source. The `energy.*` subjects carry the
-# daily PV energy-balance scalars published by the iot-insights-engine
+# daily PV energy-balance scalars published by the lares-diagnostics-engine
 # energy-balance batch job (one publish per CronJob run). Like fault.>/forecast.>
 # they are low-frequency event-driven, so this stream exists only so the
 # knx-nats-bridge read responder can be seeded on startup for the bilanz GAs

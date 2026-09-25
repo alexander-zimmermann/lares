@@ -29,10 +29,10 @@ configMapGenerator:
     files:
       - ga-mappings/bordbar.yaml
       - ga-mappings/channels.yaml
+      - ga-mappings/diagnostics.yaml
       - ga-mappings/dyson.yaml
       - ga-mappings/ems-esp.yaml
       - ga-mappings/infra.yaml
-      - ga-mappings/insights.yaml
       - ga-mappings/midea.yaml
       - ga-mappings/miele.yaml
       - ga-mappings/solaredge.yaml

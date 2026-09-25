@@ -1,14 +1,15 @@
-# CronJob: run the declared fault list hourly. The engine resolves each
-# fault's scope against ga_catalog, measures over the hourly aggregates,
-# folds observations into episodes (episodes tables, rw role) and publishes
-# a severity 0-3 per main group on fault.<fault>.<main_group> for the
-# knx-nats-bridge GA mappings. Runs at :20, after the CAGG refreshes.
+# CronJob: hourly Open-Meteo weather pull. Keyless public API, DWD ICON
+# model (icon_seamless, ~2 km, covers Eupen). Upserts five hourly metrics
+# into `mcp_forecasts` (model=open_meteo) so the Phase-4 get_weather_forecast
+# MCP tool reads from TSDB. Backs heating recommendations + (later) the
+# seasonal model's weather exogenous variable.
+# Schedule :20 of every hour — staggered past forecast-solar (:15).
 apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-insights-engine-detect-faults
-  namespace: iot-insights-engine
+  name: lares-diagnostics-engine-forecast-weather
+  namespace: lares-diagnostics-engine
 
 spec:
   schedule: "20 * * * *"
@@ -26,9 +27,9 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-            - name: detect-faults
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.35.0
-              command: ["iot-insights-engine", "detect-faults"]
+            - name: fetcher
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.36.0
+              command: ["lares-diagnostics-engine", "forecast-weather"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -36,6 +37,8 @@ spec:
                   value: "5432"
                 - name: MCP_DB_NAME
                   value: homelab
+                # Settings() requires read creds even though this job only
+                # writes via db_write_dsn.
                 - name: MCP_DB_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -46,7 +49,6 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-lares-mcp-bridge-ro-secret
                       key: password
-                # Episode writes go through the rw role (episodes tables only).
                 - name: MCP_DB_WRITE_USERNAME
                   valueFrom:
                     secretKeyRef:
@@ -57,36 +59,28 @@ spec:
                     secretKeyRef:
                       name: timescaledb-db-lares-diagnostics-engine-rw-secret
                       key: password
-                - name: MCP_FAULTS_FILE
-                  value: /etc/iot-insights-engine/faults.yaml
+                # Open-Meteo, keyless — the job requests timezone=UTC for the
+                # site's location, so no API key or local-tz handling.
+                - name: MCP_FORECAST_WEATHER_MODEL
+                  value: icon_seamless
+                - name: MCP_FORECAST_WEATHER_FORECAST_HOURS
+                  value: "48"
+                # The site file — what the house is; read by every job.
                 - name: MCP_SITE_FILE
-                  value: /etc/iot-insights-engine/site.yaml
-                # NATS — publish fault.* severities for the KNX writer rules.
-                - name: MCP_NATS_SERVERS
-                  value: nats://nats.nats.svc.cluster.local:4222
-                - name: MCP_NATS_NKEY_SEED_FILE
-                  value: /etc/iot-insights-engine/nats/nkey-seed
-                - name: TZ
-                  value: Europe/Berlin
+                  value: /etc/lares-diagnostics-engine/site.yaml
+                - name: MCP_AUTH_ENABLED
+                  value: "false"
               resources:
                 requests:
                   cpu: 20m
                   memory: 64Mi
                 limits:
-                  cpu: 200m
-                  memory: 256Mi
+                  cpu: 100m
+                  memory: 128Mi
               volumeMounts:
-                - name: config
-                  mountPath: /etc/iot-insights-engine/faults.yaml
-                  subPath: faults.yaml
-                  readOnly: true
-                - name: config
-                  mountPath: /etc/iot-insights-engine/site.yaml
+                - name: site
+                  mountPath: /etc/lares-diagnostics-engine/site.yaml
                   subPath: site.yaml
-                  readOnly: true
-                - name: nats-credentials
-                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
-                  subPath: nkey-seed
                   readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
@@ -99,10 +93,7 @@ spec:
                 seccompProfile:
                   type: RuntimeDefault
           volumes:
-            - name: config
+            - name: site
               configMap:
-                name: iot-insights-engine-config
+                name: lares-diagnostics-engine-config
                 defaultMode: 0444
-            - name: nats-credentials
-              secret:
-                secretName: lares-diagnostics-engine-credentials

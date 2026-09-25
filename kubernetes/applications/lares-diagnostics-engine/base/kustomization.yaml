@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: iot-insights-engine
+namespace: lares-diagnostics-engine
 resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
@@ -14,7 +14,7 @@ resources:
 # house is. Hash suffix on: an edit re-renders the CronJob reference, so
 # the next run picks it up without a manual restart.
 configMapGenerator:
-  - name: iot-insights-engine-config
+  - name: lares-diagnostics-engine-config
     files:
       - ./config/faults.yaml
       - ./config/site.yaml
@@ -22,7 +22,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: iot-insights-engine
+      homelab.app: lares-diagnostics-engine
 
 # Wave 11 = after Kyverno (-4), timescaledb (3), nats-operator (9) and
 # knx-nats-bridge (10) — aligns with lares-mcp-bridge so the secret

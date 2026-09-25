@@ -10,9 +10,9 @@ vars:
   KNX_BRIDGE_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/values.yaml"
   KNX_CATALOG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/config/ga-catalog.yaml"
   KNX_GA_MAPPINGS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/knx-nats-bridge/base/ga-mappings"
-  INSIGHTS_CRONJOB_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/detect-faults-cronjob.yaml"
-  INSIGHTS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/faults.yaml"
-  INSIGHTS_SITE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/iot-insights-engine/base/config/site.yaml"
+  DIAGNOSTICS_CRONJOB_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-diagnostics-engine/base/detect-faults-cronjob.yaml"
+  DIAGNOSTICS_FAULTS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-diagnostics-engine/base/config/faults.yaml"
+  DIAGNOSTICS_SITE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-diagnostics-engine/base/config/site.yaml"
   # The sidecar bridges whose GA mappings are generated: the values file
   # carries the deployed tag, the config file the devices and their address blocks.
   MIELE_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/miele-nats-bridge/base/values.yaml"
@@ -32,8 +32,8 @@ includes:
     taskfile: ./tasks/cluster.tasks.yaml
   knx:
     taskfile: ./tasks/knx.tasks.yaml
-  insights:
-    taskfile: ./tasks/insights.tasks.yaml
+  diagnostics:
+    taskfile: ./tasks/diagnostics.tasks.yaml
   basalte:
     taskfile: ./tasks/basalte.tasks.yaml
 
