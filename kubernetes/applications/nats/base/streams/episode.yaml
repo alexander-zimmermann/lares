@@ -1,0 +1,19 @@
+# Episode events published by lares-diagnostics-engine right after the episode
+# rows are written (episode.appeared|escalated|ended), one pointer message per
+# event: episode id, fault, subject, severity, kind, time. Unlike fault.>, this
+# stream is not a seeding aid — lares-agent-trigger consumes it with a durable
+# pull consumer to start an Explain run, so the seven days of retention are
+# what carries an event across a restart of that consumer.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: episode
+  namespace: nats
+spec:
+  name: EPISODE
+  subjects:
+    - episode.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
