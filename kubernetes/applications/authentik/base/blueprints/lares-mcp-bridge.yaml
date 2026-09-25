@@ -55,17 +55,3 @@ entries:
       order: 0
     attrs:
       enabled: true
-
-  # The pre-rename objects. A changed identifier makes a blueprint create a
-  # second provider rather than rename the first, so the old pair is dropped
-  # here; the application takes its policy binding with it. Plain identifiers,
-  # no !Find, so this stays a no-op once they are gone.
-  - model: authentik_core.application
-    state: absent
-    identifiers:
-      slug: iot-mcp-bridge
-
-  - model: authentik_providers_oauth2.oauth2provider
-    state: absent
-    identifiers:
-      name: iot-mcp-bridge
