@@ -9,18 +9,16 @@ DECLARE
     cagg         RECORD;
 BEGIN
     -- Ingest user — INSERT + SELECT on the tables Redpanda Connect writes,
-    -- and on nothing else. SELECT is not optional: every stream inserts with
-    -- a named conflict target (`ON CONFLICT (time, ga) DO NOTHING`), and
-    -- inferring that target reads the table, so INSERT alone fails with
-    -- "permission denied". The revokes run first and in the same transaction
-    -- as the grants, so this list is the whole truth: a table taken out
-    -- loses the privilege on the next sync, and a table added to the schema
-    -- later gets nothing until it is named here.
+    -- and on nothing else. Deliberately without default privileges, unlike
+    -- the read-only roles below: a table added to the schema grants it
+    -- nothing until it is named here, and the revoke above the list takes
+    -- back whatever a table taken out of it still holds.
+    -- SELECT is not optional — every stream inserts with a named conflict
+    -- target (`ON CONFLICT (time, ga) DO NOTHING`), and inferring that
+    -- target reads the table, so INSERT alone fails with "permission denied".
     IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'connect') THEN
         GRANT CONNECT ON DATABASE homelab TO connect;
         GRANT USAGE ON SCHEMA public TO connect;
-        ALTER DEFAULT PRIVILEGES IN SCHEMA public
-            REVOKE INSERT, SELECT ON TABLES FROM connect;
         REVOKE ALL ON ALL TABLES IN SCHEMA public FROM connect;
 
         FOREACH ingest_table IN ARRAY ARRAY[
