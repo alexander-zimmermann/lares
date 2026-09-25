@@ -17,6 +17,11 @@ entries:
       client_type: confidential
       client_id: lares-mcp-bridge
       client_secret: !Env LARES_MCP_BRIDGE_OIDC_CLIENT_SECRET
+      # Explicit, because a provider created from a blueprint starts with an
+      # empty grant list and then rejects the authorization code flow.
+      grant_types:
+        - authorization_code
+        - refresh_token
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
       access_token_validity: hours=1
       refresh_token_validity: days=30
