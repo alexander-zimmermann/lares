@@ -26,7 +26,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: energy-balance
-              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.36.0
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.37.0
               command: ["lares-diagnostics-engine", "energy-balance"]
               env:
                 - name: MCP_DB_HOST
