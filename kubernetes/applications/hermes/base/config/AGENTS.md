@@ -37,7 +37,7 @@ the `lares-explain` skill.
   100 % and a status of off is off.
 - Measurements (temperature, humidity, current, power) are state by
   nature; a value is as old as its timestamp.
-- `-Anomalie` datapoints are diagnostics written by the insights engine:
+- `-Anomalie` datapoints are diagnostics written by the diagnostics engine:
   0 ok, 1 info, 2 warning, 3 critical.
 - `get_current_knx` marks every value with its `role`: `status`, `command`
   or `reading`, and `only_active` drops commands. Answer state questions

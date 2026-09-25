@@ -171,7 +171,7 @@ flowchart TB
         ingest[redpanda-connect<br/>ingest streams]
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
-        engine[iot-insights-engine<br/>fault + forecast jobs]
+        engine[lares-diagnostics-engine<br/>fault + forecast jobs]
         mcp[lares-mcp-bridge<br/>MCP read tools]
         claude((Claude.ai))
         ingest --> tsdb
@@ -256,7 +256,7 @@ lares/
 ├── kubernetes/       # Layer 3 — Argo CD-reconciled manifests
 │
 ├── scripts/          # Helpers the tasks call (footprints, GA mappings, Basalte export)
-├── tasks/            # Taskfile includes (basalte, cluster, infra, insights, k8s, knx)
+├── tasks/            # Taskfile includes (basalte, cluster, diagnostics, infra, k8s, knx)
 └── Taskfile.yaml     # Top-level entry point — `task --list`
 ```
 

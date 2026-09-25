@@ -13,7 +13,7 @@ that describes it, installed at the tag the app manifest deploys:
   descriptor, `knx.yaml`, that says per published field the datapoint name,
   the DPT and the writer behaviour. device × field → the address named
   `<ga_name>.<datapoint>`.
-* `insights` — input: the fault list. The per-device and per-room faults
+* `diagnostics` — input: the fault list. The per-device and per-room faults
   declare a name template, `target.name`, with `{entity}` standing for the
   entity as the fault's device or room map names it; entity × fault → the
   address the template renders to. The subject entity is what the engine
@@ -76,13 +76,13 @@ HEADERS = {
     "miele": "Miele appliances → KNX (miele-nats-bridge), read-only status from the cloud bridge.",
     "midea": "Midea Entfeuchter → KNX (midea-nats-bridge), status feedback per dehumidifier.",
     "dyson": "Dyson Luftreiniger → KNX (dyson-nats-bridge), status feedback per purifier.",
-    "insights": (
-        "Fault severities → KNX (iot-insights-engine) for the faults whose subject "
+    "diagnostics": (
+        "Fault severities → KNX (lares-diagnostics-engine) for the faults whose subject "
         "carries an entity: one rule per device or room, on the address the fault's "
         "name template renders to, plus the faults publishing on their reference's label."
     ),
     "channels": (
-        "Fault severities → KNX (iot-insights-engine) for the two channel-scoped "
+        "Fault severities → KNX (lares-diagnostics-engine) for the two channel-scoped "
         "faults, one severity per main group on its own Zentral Diagnose address — "
         "silence on x/0/250, constancy on x/0/252 — and for the faults delivering "
         "to one declared house-wide address."
@@ -290,7 +290,7 @@ def targeted_faults(faults_path: Path) -> list[Any]:
     the engine's own loader at its deployed tag. A dormant fault is skipped:
     it publishes nothing, and its addresses are typically the very thing it
     is waiting for."""
-    from iot_insights_engine.faults import FaultList
+    from lares_diagnostics_engine.faults import FaultList
 
     faults = FaultList.load(faults_path)
     return [fault for fault in faults.schedulable() if fault.target is not None]
@@ -299,7 +299,7 @@ def targeted_faults(faults_path: Path) -> list[Any]:
 def carries_entity(fault: Any) -> bool:
     """Whether the engine publishes this fault on a subject carrying an
     entity — the one decision that splits the engine's rules between
-    insights.yaml (it does) and channels.yaml (it does not)."""
+    diagnostics.yaml (it does) and channels.yaml (it does not)."""
     return (
         fault.target.per_device
         or fault.target.per_room
@@ -311,7 +311,7 @@ def severity_rule(fault: Any, catalog: Catalog, ga: str, entity: str | None) -> 
     """The rule carrying one severity of a fault: the subject the engine
     publishes on — bare, or with the entity slugged by the engine's own
     function — and the address, which has to be a severity address."""
-    from iot_insights_engine import entity_slug
+    from lares_diagnostics_engine import entity_slug
 
     if catalog.dpt(ga) != SEVERITY_DPT:
         raise SystemExit(
@@ -453,7 +453,7 @@ def per_entity_rules(fault: Any, catalog: Catalog) -> list[Rule]:
     return rules
 
 
-def insights_rules(faults_path: Path, catalog: Catalog) -> list[Rule]:
+def diagnostics_rules(faults_path: Path, catalog: Catalog) -> list[Rule]:
     """The faults whose subject carries an entity."""
     rules: list[Rule] = []
     for fault in targeted_faults(faults_path):
@@ -499,8 +499,8 @@ def main() -> int:
         rules = bridge_rules(source, BRIDGES[source], catalog, Path(input_path))
     elif source == "channels":
         rules = channel_rules(Path(input_path), catalog)
-    elif source == "insights":
-        rules = insights_rules(Path(input_path), catalog)
+    elif source == "diagnostics":
+        rules = diagnostics_rules(Path(input_path), catalog)
     else:
         raise SystemExit(f"unknown source {source!r}: one of {', '.join(HEADERS)}")
     write(source, rules, Path(out_dir))

@@ -133,11 +133,11 @@ tasks:
   create-ga-mappings:
     desc: "write the generated files in ga-mappings/ from descriptors, address blocks and faults.yaml"
     summary: |
-      Write every generated GA-mapping file whole, each with its package
-      installed at the deployed tag: miele/midea/dyson.yaml from descriptor ×
-      address block, insights.yaml and channels.yaml from the fault list's name
-      templates. Every rule resolves against the catalog by name, so run it after
-      every catalog change; a DPT mismatch fails, an unnamed field is listed.
+      Write every generated GA-mapping file whole, each with its package installed
+      at the deployed tag: miele/midea/dyson.yaml from descriptor × address block,
+      diagnostics.yaml and channels.yaml from the fault list's name templates.
+      Every rule resolves against the catalog by name, so run it after every
+      catalog change; a DPT mismatch fails, an unnamed field is listed.
       Reads: the catalog, the sidecar configs, faults.yaml. Writes: ga-mappings/ (hook validates).
     cmds:
       - task: generate-ga-mappings
@@ -155,8 +155,8 @@ tasks:
         sh: yq '.deployment.image.tag' "{{.MIDEA_VALUES_PATH}}"
       DYSON_TAG:
         sh: yq '.deployment.image.tag' "{{.DYSON_VALUES_PATH}}"
-      INSIGHTS_ENGINE_TAG:
-        sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.INSIGHTS_CRONJOB_PATH}}"
+      DIAGNOSTICS_ENGINE_TAG:
+        sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.DIAGNOSTICS_CRONJOB_PATH}}"
     cmds:
       # One environment per package: the bridges pin nats-bridge-core at
       # their own tags, which one shared resolve could not satisfy.
@@ -175,12 +175,12 @@ tasks:
         --with "dyson-nats-bridge @ git+https://github.com/alexander-zimmermann/dyson-nats-bridge@v{{.DYSON_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" dyson
         "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DYSON_CONFIG_PATH}}"
-      - for: [insights, channels]
+      - for: [diagnostics, channels]
         cmd: >
           uv run --no-project --python 3.14
-          --with "iot-insights-engine @ git+https://github.com/alexander-zimmermann/iot-insights-engine@v{{.INSIGHTS_ENGINE_TAG}}"
+          --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
           python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" {{.ITEM}}
-          "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.INSIGHTS_FAULTS_PATH}}"
+          "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
 
   validate-ga-mappings:
     desc: "validate ga-mappings/ with the bridge's loader at the deployed tag"

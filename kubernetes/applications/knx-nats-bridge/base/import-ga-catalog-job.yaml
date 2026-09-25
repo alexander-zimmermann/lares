@@ -4,7 +4,7 @@
 # with cannot write. Idempotent: re-runs only update changed rows and
 # purge stale ones.
 #
-# Lives here (knx-nats-bridge namespace) after the iot-insights-engine
+# Lives here (knx-nats-bridge namespace) after the lares-diagnostics-engine
 # split: the catalog YAML is generated + consumed by this repo, so the
 # TSDB-side importer is a 2nd entrypoint on the same image rather than
 # a dependency of the MCP server.

@@ -66,7 +66,7 @@ repos:
         # catalog, the sidecar bridges' device lists with their bindings and
         # the tags their descriptors are read at, the fault list and the tag
         # its loader is read at, and the generator itself.
-        files: ^(kubernetes/applications/knx-nats-bridge/base/(ga-mappings/.*\.yaml|config/ga-catalog\.yaml|values\.yaml)|kubernetes/applications/(miele|midea|dyson)-nats-bridge/base/(config/.*\.yaml|values\.yaml)|kubernetes/applications/iot-insights-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)|scripts/knx_generate_ga_mappings\.py)$
+        files: ^(kubernetes/applications/knx-nats-bridge/base/(ga-mappings/.*\.yaml|config/ga-catalog\.yaml|values\.yaml)|kubernetes/applications/(miele|midea|dyson)-nats-bridge/base/(config/.*\.yaml|values\.yaml)|kubernetes/applications/lares-diagnostics-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)|scripts/knx_generate_ga_mappings\.py)$
       - id: validate-ingest-grants
         name: k8s:validate-ingest-grants
         entry: task k8s:validate-ingest-grants
@@ -74,15 +74,15 @@ repos:
         pass_filenames: false
         # Both sides of the comparison, and the comparison itself.
         files: ^(kubernetes/applications/(redpanda-connect/base/streams/.*\.yaml|timescaledb/base/scripts/grants\.sql)|scripts/validate_ingest_grants\.py)$
-      - id: insights-validate-faults
-        name: insights:validate-faults
-        entry: task insights:validate-faults
+      - id: diagnostics-validate-faults
+        name: diagnostics:validate-faults
+        entry: task diagnostics:validate-faults
         language: system
         pass_filenames: false
-        files: ^kubernetes/applications/iot-insights-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)$
-      - id: insights-validate-site
-        name: insights:validate-site
-        entry: task insights:validate-site
+        files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)$
+      - id: diagnostics-validate-site
+        name: diagnostics:validate-site
+        entry: task diagnostics:validate-site
         language: system
         pass_filenames: false
-        files: ^kubernetes/applications/iot-insights-engine/base/(config/site\.yaml|detect-faults-cronjob\.yaml)$
+        files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/site\.yaml|detect-faults-cronjob\.yaml)$

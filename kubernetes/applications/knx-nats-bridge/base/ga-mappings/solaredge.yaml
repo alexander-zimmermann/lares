@@ -1,10 +1,10 @@
 # SolarEdge PV → KNX: inverter and battery (solaredge2mqtt), PV forecast and
-# energy balance (iot-insights-engine cronjobs).
+# energy balance (lares-diagnostics-engine cronjobs).
 
 mappings:
   # SolarEdge PV (15/4: A=0..10 site-level, B=20..24 Wechselrichter 1, C=50..56
-  # Batterie, D=40..44 Wechselrichter 2; E=60..65 Bilanz via iot-insights-engine
-  # energy.pv.* below, F=70..73 Prognose, 10 via Basalte).
+  # Batterie, D=40..44 Wechselrichter 2; E=60..65 Bilanz via
+  # lares-diagnostics-engine energy.pv.* below, F=70..73 Prognose, 10 via Basalte).
   #
   # The site-level grid/consumer powers (15/4/0 Netz-Leistung, 2 Netzbezug,
   # 4 Netzeinspeisung, 6 Direktverbrauch, 8 Verbrauch-Gesamt) have NO writer-rule:
@@ -96,10 +96,10 @@ mappings:
     min_delta: 0
     seed_on_start: true
 
-  # Energiebilanz (15/4/60..65) — the iot-insights-engine energy-balance job
+  # Energiebilanz (15/4/60..65) — the lares-diagnostics-engine energy-balance job
   # publishes today's kWh + ratios on energy.pv.* (computed from inverter
-  # energytotal + KNX energy meter 15/1 counters). Low-frequency (CronJob),
-  # so seed_on_start keeps the GAs warm across bridge redeploys.
+  # energytotal + KNX energy meter 15/1 counters). Low-frequency (CronJob), so
+  # seed_on_start keeps the GAs warm across bridge redeploys.
   - subject: "energy.pv.generation_kwh"
     ga: "15/4/60"
     dpt: "13.013"

@@ -1,7 +1,7 @@
 # Coupler forwarding carries the bridge's bus visibility, not device objects
 
 The bridge must hear the whole bus (it mirrors every telegram to NATS for
-TSDB, insights and fault detection), but its ETS device models only its
+TSDB, diagnostics and fault detection), but its ETS device models only its
 own footprint. The full visibility is provided by routing, not by
 objects: line coupler `1.2.0` forwards group telegrams upstream and
 `1.1.0` forwards downstream ("Gruppentelegramme: weiterleiten"); the

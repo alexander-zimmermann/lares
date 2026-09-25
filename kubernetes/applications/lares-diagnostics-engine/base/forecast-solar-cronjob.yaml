@@ -9,8 +9,8 @@ apiVersion: batch/v1
 kind: CronJob
 
 metadata:
-  name: iot-insights-engine-forecast-solar
-  namespace: iot-insights-engine
+  name: lares-diagnostics-engine-forecast-solar
+  namespace: lares-diagnostics-engine
 
 spec:
   schedule: "15 * * * *"
@@ -29,8 +29,8 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: fetcher
-              image: ghcr.io/alexander-zimmermann/iot-insights-engine:1.35.0
-              command: ["iot-insights-engine", "forecast-solar"]
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.36.0
+              command: ["lares-diagnostics-engine", "forecast-solar"]
               env:
                 - name: MCP_DB_HOST
                   value: timescaledb-db-rw.timescaledb.svc.cluster.local
@@ -64,12 +64,12 @@ spec:
                   value: /etc/forecast-solar/api-key
                 # The site file — what the house is; read by every job.
                 - name: MCP_SITE_FILE
-                  value: /etc/iot-insights-engine/site.yaml
+                  value: /etc/lares-diagnostics-engine/site.yaml
                 # NATS — publish forecast.pv.* scalars for the KNX prognosis GAs.
                 - name: MCP_NATS_SERVERS
                   value: nats://nats.nats.svc.cluster.local:4222
                 - name: MCP_NATS_NKEY_SEED_FILE
-                  value: /etc/iot-insights-engine/nats/nkey-seed
+                  value: /etc/lares-diagnostics-engine/nats/nkey-seed
                 - name: MCP_AUTH_ENABLED
                   value: "false"
                 - name: TZ
@@ -87,11 +87,11 @@ spec:
                   subPath: api-key
                   readOnly: true
                 - name: site
-                  mountPath: /etc/iot-insights-engine/site.yaml
+                  mountPath: /etc/lares-diagnostics-engine/site.yaml
                   subPath: site.yaml
                   readOnly: true
                 - name: nats-credentials
-                  mountPath: /etc/iot-insights-engine/nats/nkey-seed
+                  mountPath: /etc/lares-diagnostics-engine/nats/nkey-seed
                   subPath: nkey-seed
                   readOnly: true
               securityContext:
@@ -113,5 +113,5 @@ spec:
                 secretName: lares-diagnostics-engine-credentials
             - name: site
               configMap:
-                name: iot-insights-engine-config
+                name: lares-diagnostics-engine-config
                 defaultMode: 0444
