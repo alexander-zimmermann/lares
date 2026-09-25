@@ -4,15 +4,40 @@
 
 DO $$
 DECLARE
-    ro_role TEXT;
-    cagg    RECORD;
+    ro_role      TEXT;
+    ingest_table TEXT;
+    cagg         RECORD;
 BEGIN
-    -- Ingest user — INSERT + SELECT on public schema.
+    -- Ingest user — INSERT + SELECT on the tables Redpanda Connect writes,
+    -- and on nothing else. SELECT is not optional: every stream inserts with
+    -- a named conflict target (`ON CONFLICT (time, ga) DO NOTHING`), and
+    -- inferring that target reads the table, so INSERT alone fails with
+    -- "permission denied". The revokes run first and in the same transaction
+    -- as the grants, so this list is the whole truth: a table taken out
+    -- loses the privilege on the next sync, and a table added to the schema
+    -- later gets nothing until it is named here.
     IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'connect') THEN
+        GRANT CONNECT ON DATABASE homelab TO connect;
         GRANT USAGE ON SCHEMA public TO connect;
-        GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA public TO connect;
         ALTER DEFAULT PRIVILEGES IN SCHEMA public
-            GRANT INSERT, SELECT ON TABLES TO connect;
+            REVOKE INSERT, SELECT ON TABLES FROM connect;
+        REVOKE ALL ON ALL TABLES IN SCHEMA public FROM connect;
+
+        FOREACH ingest_table IN ARRAY ARRAY[
+            'knx', 'ems_esp',
+            'solaredge_inverter', 'solaredge_powerflow', 'solaredge_battery',
+            'warp_system', 'warp_evse', 'warp_charge_manager',
+            'warp_charge_tracker', 'warp_meter',
+            'dyson_environment', 'dyson_state',
+            'midea_environment', 'midea_state',
+            'miele_state', 'miele_eco',
+            'unifi_events']
+        LOOP
+            IF EXISTS (SELECT 1 FROM pg_tables
+                        WHERE schemaname = 'public' AND tablename = ingest_table) THEN
+                EXECUTE format('GRANT INSERT, SELECT ON public.%I TO connect', ingest_table);
+            END IF;
+        END LOOP;
     END IF;
 
     -- Read-only roles. Each gets SELECT on every public table plus SELECT on
