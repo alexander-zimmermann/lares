@@ -804,6 +804,73 @@ CREATE TABLE IF NOT EXISTS episode_verdicts (
 );
 
 -- =========================================================
+-- Ledger — one row per run of every use case, whatever started it: an
+-- episode event, a schedule, a chat message or a hand. The row is written
+-- before the run starts, so the unique key doubles as the trigger's dedupe
+-- key: a second event on the same subject conflicts instead of starting a
+-- second run. `subject_key` stays NULL for runs without a subject, which
+-- is why those never collide. `output_ref` and `output_state` share their
+-- positions — one entry per delivered output, the state filled only where
+-- the target has one (a pull request is open, merged or closed; a Discord
+-- message has no state). `tool_trace` records which tools a run called,
+-- never what they returned. `verdict` is the person's judgement on the
+-- output, written by the MCP bridge and nothing else.
+-- Written by lares_agent_trigger, read by the read-only roles.
+-- Plain table, no hypertable — run volume is a handful a day.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS agent_runs (
+    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    use_case       TEXT           NOT NULL,
+    trigger        TEXT           NOT NULL CHECK (trigger IN ('event', 'schedule', 'message', 'manual')),
+    subject_kind   TEXT           NOT NULL CHECK (subject_kind IN ('episode', 'alert_group', 'chat', 'none')),
+    subject_key    TEXT,
+    session_id     TEXT,
+    harness_run_id TEXT,
+    status         TEXT           NOT NULL CHECK (status IN ('queued', 'running', 'completed', 'failed', 'capped')),
+    attempt        SMALLINT       NOT NULL DEFAULT 1,
+    error          TEXT,
+    tldr           TEXT,
+    text           TEXT,
+    language       TEXT,
+    output_ref     TEXT[]         NOT NULL DEFAULT '{}',
+    output_state   TEXT[]         NOT NULL DEFAULT '{}',
+    model_source   TEXT,
+    model          TEXT,
+    tokens_in      INTEGER,
+    tokens_out     INTEGER,
+    cost           NUMERIC(10, 6),
+    duration       INTERVAL,
+    tool_trace     JSONB,
+    verdict        TEXT           CHECK (verdict IN ('helpful', 'useless')),
+    verdict_at     TIMESTAMPTZ,
+    created_at     TIMESTAMPTZ    NOT NULL DEFAULT now(),
+    finished_at    TIMESTAMPTZ,
+    -- One state per delivered output, positions matching.
+    CONSTRAINT agent_runs_output_positions
+        CHECK (cardinality(output_ref) = cardinality(output_state)),
+    -- array_remove first, because containment does not hold for the NULL
+    -- entries that stand for outputs without a state.
+    CONSTRAINT agent_runs_output_state_values
+        CHECK (array_remove(output_state, NULL) <@ ARRAY['open', 'merged', 'closed'])
+);
+-- The trigger's dedupe key: insert first, a conflict is a skip.
+CREATE UNIQUE INDEX IF NOT EXISTS agent_runs_subject_idx
+    ON agent_runs (use_case, subject_kind, subject_key);
+CREATE INDEX IF NOT EXISTS agent_runs_use_case_created_at_idx
+    ON agent_runs (use_case, created_at DESC);
+
+-- =========================================================
+-- Memory — the working notes of one use case, bounded to about 8 KB by
+-- the writer so the notes stay readable on the dashboard and never grow
+-- into a hidden second truth beside the ledger. Owner-editable.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS agent_memory (
+    use_case   TEXT        PRIMARY KEY,
+    text       TEXT        NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- =========================================================
 -- Transfer ownership from `postgres` (CNPG runs initdb as superuser)
 -- to the application user `homelab`, so it can issue table-level GRANTs.
 -- =========================================================
