@@ -169,3 +169,14 @@ tasks:
           echo '---' >> "$OUT"
           kubeseal --recovery-unseal --recovery-private-key "$KEY" -o yaml < "$f" >> "$OUT"
         done
+
+  validate-ingest-grants:
+    desc: "check grants.sql grants the ingest role exactly the tables the streams write"
+    summary: |
+      Compare the `INSERT INTO` target of every Redpanda Connect stream with
+      the table array `grants.sql` grants the `connect` role. A stream whose
+      target is missing from the array does not fail at deploy time — it fails
+      on the first message with "permission denied", with the pipeline already
+      live. Called by the pre-commit hook. No network, no dependencies.
+    cmds:
+      - python3 scripts/validate_ingest_grants.py
