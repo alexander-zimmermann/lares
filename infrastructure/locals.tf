@@ -68,7 +68,7 @@ locals {
     network = {
       ## Flat list of all network bridge configurations
       bridges = merge([
-        for node, config in try(local.manifest.pve_node_network.network_configuration, {}) : {
+        for node, config in try(local.manifest.pve_node_network, {}) : {
           for name, params in try(config.bridges, {}) : "${node}_${name}" => merge(params, {
             target_node = node
             name        = name
@@ -77,7 +77,7 @@ locals {
       ]...)
       ## Flat list of all network bond configurations
       bonds = merge([
-        for node, config in try(local.manifest.pve_node_network.network_configuration, {}) : {
+        for node, config in try(local.manifest.pve_node_network, {}) : {
           for name, params in try(config.bonds, {}) : "${node}_${name}" => merge(params, {
             target_node = node
             name        = name
@@ -86,7 +86,7 @@ locals {
       ]...)
       ## Flat list of all network vlan configurations
       vlans = merge([
-        for node, config in try(local.manifest.pve_node_network.network_configuration, {}) : {
+        for node, config in try(local.manifest.pve_node_network, {}) : {
           for name, params in try(config.vlans, {}) : "${node}_${name}" => merge(params, {
             target_node = node
             name        = name

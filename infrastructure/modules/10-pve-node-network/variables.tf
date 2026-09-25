@@ -113,6 +113,18 @@ variable "autostart" {
   default     = null
 }
 
+variable "reload" {
+  description = <<EOT
+    Whether the node reloads its network configuration after this interface is
+    created, updated or deleted. When `false`, the change is only staged on the
+    node (`/etc/network/interfaces.new`) and takes effect on the next reload,
+    from the Proxmox UI or `ifreload -a`. Set to `null` to use the provider
+    default (`true`).
+  EOT
+  type        = bool
+  default     = null
+}
+
 variable "comment" {
   description = <<EOT
     Optional comment or description for the network interface configuration.
@@ -376,6 +388,21 @@ variable "ports" {
       for port in var.ports : length(trimspace(port)) > 0
     ])
     error_message = "ports must contain only non-empty interface names (e.g., ['eno1', 'bond0', 'eno1.100']) or be null."
+  }
+}
+
+variable "vids" {
+  description = <<EOT
+    VLAN IDs the bridge admits (`bridge-vids`), as a space-separated list of
+    ids and hyphenated ranges, e.g. `2-4094`. Requires `vlan_aware = true`.
+    Set to `null` to leave the node's default in place.
+  EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.vids == null || can(regex("^[0-9]+(-[0-9]+)?( [0-9]+(-[0-9]+)?)*$", var.vids))
+    error_message = "vids must be null or a space-separated list of VLAN ids and ranges (e.g. '2-4094', '1 10-20 30')."
   }
 }
 
