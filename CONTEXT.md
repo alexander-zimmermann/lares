@@ -85,7 +85,13 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   stay underneath it as evidence.
 - **Episode event** — one of the three notification events an episode
   emits: appeared, escalated, ended. Published by the engine as
-  `episode.<kind>` and the house-side trigger for Explain.
+  `episode.<kind>` and the house-side trigger for Explain. The message is
+  a pointer, not a report: `episode_id`, `fault`, `subject` (the channel,
+  as below), `severity`, `kind` and `time`; everything else is fetched from
+  the episode the id names. Only for a fault declared `explain` — on by
+  default for the measured kinds, off for `external` — and `ended` is
+  published like the others, so the stream is complete and the consumer
+  filters.
 - **Verdict** (avoid: feedback, rating) — a person's binary judgement on
   one subject. On an episode it says whether the fault was real: `real`
   or `nonsense`. On a run it says whether the output helped: `helpful` or
