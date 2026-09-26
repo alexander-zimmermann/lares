@@ -73,7 +73,9 @@ metadata:
   namespace: authentik
 
 spec:
-  schedule: "0 0 2 * * *"
+  # 20:00 UTC keeps the backup clear of the 00:00-04:00 chain (wiki-js 00:00,
+  # archive compaction 01:00, timescaledb 03:00).
+  schedule: "0 0 20 * * *"
   immediate: false
   backupOwnerReference: cluster
   cluster:
