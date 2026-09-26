@@ -381,27 +381,31 @@ module "pve_node_network_bond" {
   ## Bonding configuration
   mode        = each.value.mode
   slaves      = each.value.slaves
-  miimon      = each.value.miimon
-  lacp_rate   = each.value.lacp_rate
-  hash_policy = each.value.hash_policy
-  primary     = each.value.primary
+  miimon      = try(each.value.miimon, null)
+  lacp_rate   = try(each.value.lacp_rate, null)
+  hash_policy = try(each.value.hash_policy, null)
+  primary     = try(each.value.primary, null)
 
   ## Network configuration
-  mtu      = each.value.mtu
-  address  = each.value.address
-  address6 = each.value.address6
-  gateway  = each.value.gateway
-  gateway6 = each.value.gateway6
+  mtu      = try(each.value.mtu, null)
+  address  = try(each.value.address, null)
+  address6 = try(each.value.address6, null)
+  gateway  = try(each.value.gateway, null)
+  gateway6 = try(each.value.gateway6, null)
 
   ## Interface options
-  autostart = each.value.autostart
-  comment   = each.value.comment
+  autostart = try(each.value.autostart, null)
+  comment   = try(each.value.comment, null)
 }
 
+## A VLAN interface sits on the trunk bridge (`vmbr0.5` on `vmbr0`), so the
+## bridges are configured first: Proxmox refuses a second default gateway, and
+## the trunk has to give its address up before the VLAN interface takes it.
 module "pve_node_network_vlan" {
   source      = "./modules/10-pve-node-network"
   for_each    = local.pve_node.network.vlans
   create_vlan = true
+  depends_on  = [module.pve_node_network_bond, module.pve_node_network_bridge]
 
   ## SSH connection (required for network changes)
   ssh_hostname    = local.pve_cluster.nodes[each.value.target_node].address
@@ -417,22 +421,23 @@ module "pve_node_network_vlan" {
   vlan      = each.value.vlan
 
   ## Network configuration
-  address  = each.value.address
-  address6 = each.value.address6
-  gateway  = each.value.gateway
-  gateway6 = each.value.gateway6
-  mtu      = each.value.mtu
+  address  = try(each.value.address, null)
+  address6 = try(each.value.address6, null)
+  gateway  = try(each.value.gateway, null)
+  gateway6 = try(each.value.gateway6, null)
+  mtu      = try(each.value.mtu, null)
 
   ## Interface options
-  autostart = each.value.autostart
-  comment   = each.value.comment
+  autostart = try(each.value.autostart, null)
+  comment   = try(each.value.comment, null)
+  reload    = try(each.value.reload, null)
 }
 
 module "pve_node_network_bridge" {
   source        = "./modules/10-pve-node-network"
   for_each      = local.pve_node.network.bridges
   create_bridge = true
-  depends_on    = [module.pve_node_network_bond, module.pve_node_network_vlan]
+  depends_on    = [module.pve_node_network_bond]
 
   ## SSH connection (required for network changes)
   ssh_hostname    = local.pve_cluster.nodes[each.value.target_node].address
@@ -446,17 +451,19 @@ module "pve_node_network_bridge" {
   ## Bridge configuration
   ports      = each.value.ports
   vlan_aware = each.value.vlan_aware
+  vids       = try(each.value.vids, null)
 
   ## Network configuration
-  address  = each.value.address
-  address6 = each.value.address6
-  gateway  = each.value.gateway
-  gateway6 = each.value.gateway6
-  mtu      = each.value.mtu
+  address  = try(each.value.address, null)
+  address6 = try(each.value.address6, null)
+  gateway  = try(each.value.gateway, null)
+  gateway6 = try(each.value.gateway6, null)
+  mtu      = try(each.value.mtu, null)
 
   ## Interface options
-  autostart = each.value.autostart
-  comment   = each.value.comment
+  autostart = try(each.value.autostart, null)
+  comment   = try(each.value.comment, null)
+  reload    = try(each.value.reload, null)
 }
 
 

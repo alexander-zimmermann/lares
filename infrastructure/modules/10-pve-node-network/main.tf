@@ -152,6 +152,7 @@ resource "proxmox_network_linux_vlan" "vlans" {
   gateway6  = var.gateway6
   interface = var.interface
   mtu       = var.mtu
+  reload    = var.reload
   vlan      = var.vlan
 }
 
@@ -162,11 +163,8 @@ resource "proxmox_network_linux_vlan" "vlans" {
 resource "proxmox_network_linux_bridge" "bridges" {
   count = var.create_bridge ? 1 : 0
 
-  ## Ensure VLANs (and optionally bonds) are ready before we attach ports
-  depends_on = [
-    proxmox_network_linux_vlan.vlans,
-    terraform_data.bonds_apply
-  ]
+  ## Ensure bonds are ready before we attach ports
+  depends_on = [terraform_data.bonds_apply]
 
   node_name  = var.node
   name       = var.name
@@ -177,6 +175,8 @@ resource "proxmox_network_linux_bridge" "bridges" {
   gateway    = var.gateway
   gateway6   = var.gateway6
   mtu        = var.mtu
+  reload     = var.reload
+  vids       = var.vids
   vlan_aware = var.vlan_aware
   ports      = var.ports != null ? sort(var.ports) : []
 }

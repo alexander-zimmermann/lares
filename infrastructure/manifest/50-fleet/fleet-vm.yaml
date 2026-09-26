@@ -3,6 +3,8 @@ fleet_vm:
   cluster_mgmt_01:
     template_id: vm_ubuntu_noble_cluster_mgmt
     vm_id: 1002
+    ## Infrastructure
+    vlan_tag: 5
     disks:
       - disk_interface: scsi1
         disk_size: 16
@@ -13,6 +15,8 @@ fleet_vm:
   backup_server_01:
     template_id: vm_debian_trixie_proxmox_backup
     vm_id: 1003
+    ## Infrastructure
+    vlan_tag: 5
     disks:
       - disk_interface: scsi1
         disk_size: 256
@@ -23,6 +27,8 @@ fleet_vm:
   ups_monitor_01:
     template_id: vm_ubuntu_noble_ups_monitor
     vm_id: 1004
+    ## Infrastructure
+    vlan_tag: 5
     usb_devices:
       - mapping: "ups-apc"
 
