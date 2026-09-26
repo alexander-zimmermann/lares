@@ -65,10 +65,6 @@ extraEnv:
   # Fewer objects held live per heal page (default 8).
   - name: RUSTFS_HEAL_PAGE_OBJECT_CONCURRENCY
     value: "2"
-  # Periodic deep bitrot scans off: on a single disk they run on every cycle
-  # instead of every 30 days and ratchet anon memory (rustfs#8015, rustfs#8121).
-  - name: RUSTFS_SCANNER_BITROT_CYCLE_SECS
-    value: "off"
   # Redundant since rc.4 defaults it to true; kept explicit to pin the contract.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
