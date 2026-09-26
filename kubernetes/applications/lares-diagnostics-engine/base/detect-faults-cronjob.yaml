@@ -27,7 +27,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: detect-faults
-              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.38.0
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.39.0
               command: ["lares-diagnostics-engine", "detect-faults"]
               env:
                 - name: MCP_DB_HOST
