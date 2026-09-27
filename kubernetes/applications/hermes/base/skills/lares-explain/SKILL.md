@@ -13,7 +13,7 @@ a severity curve and its observations as evidence. The fault sentence says
 
 Four steps, each with one tool call, each with one line in the answer. An
 answer missing a step is not an explanation but an episode listing. The cap
-of ten tool calls is a ceiling, not a target; three to five is the usual case.
+of ten tool calls is a ceiling, not a target; four to six is the usual case.
 
 1. **Subject.** `get_episode` with the given `episode_id`. One call, and it
    carries the ground the other three steps stand on: fault, channel, start,
