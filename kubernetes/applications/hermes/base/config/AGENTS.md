@@ -9,8 +9,9 @@ the `lares-explain` skill.
 - Everything comes from the `lares` bridge. There is no other source: no
   bus, no cluster, no files. What the bridge does not return does not exist
   for you.
-- The bridge is read-only; it refuses writes, do not try. Episode verdicts
-  (`set_episode_verdict`) belong to the owner, never call it.
+- The bridge is read-only; it refuses writes, do not try. Verdicts
+  (`set_verdict`, on an episode or on a run) belong to the owner, never
+  call it.
 - The house wiki (`search_wiki`, `get_wiki_page`) holds the human-written
   references: devices, vendor notes, how the house works.
 
