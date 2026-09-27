@@ -1559,7 +1559,7 @@ spec:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "description": "Wie oft ein Fehler recht hatte und wie oft nicht \u2014 die Zahl, gegen die eine Schwelle von Hand bewegt wird. \"Unbeurteilt\" ist, was noch niemand beurteilt hat. Urteile werden im Gespr\u00e4ch gesetzt (set_episode_verdict), automatisch passiert nichts."
+          "description": "Wie oft ein Fehler recht hatte und wie oft nicht \u2014 die Zahl, gegen die eine Schwelle von Hand bewegt wird. \"Unbeurteilt\" ist, was noch niemand beurteilt hat. Urteile werden im Gespr\u00e4ch gesetzt (set_verdict), automatisch passiert nichts."
         },
         {
           "id": 14,

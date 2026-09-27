@@ -15,11 +15,17 @@ Four steps, each with one tool call, each with one line in the answer. An
 answer missing a step is not an explanation but an episode listing. The cap
 of ten tool calls is a ceiling, not a target; four to six is the usual case.
 
-1. **Subject.** `list_episodes` with the given `episode_id`. Note fault,
-   channel, start, severity, observations.
-2. **Channel.** `get_current_knx` with `room` and `name` (part of the channel
-   name): current value, age, room, device, datapoint, unit, and the sibling
-   channels of the same device. No number in the answer without its unit.
+1. **Subject.** `get_episode` with the given `episode_id`. One call, and it
+   carries the ground the other three steps stand on: fault, channel, start,
+   severity, the score curve, the appeared/escalated/ended events, the
+   catalog entry of the channel and the channels beside it in the same room.
+   Read it once; none of that is worth a second call.
+   If it carries an `explanation`, this episode was explained before — say
+   what got worse since, do not repeat it.
+2. **Channel.** `get_current_knx` with the `room` and `name` the bundle
+   named: current value, age, unit — for the channel and for the siblings
+   that matter. The bundle says which channels exist, this says what they
+   read now. No number in the answer without its unit.
 3. **History.** `query_timeseries` on `knx_1h` for the channel, from the day
    before the start until now, one-hour buckets. When was the last value,
    where is the break?
