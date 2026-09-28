@@ -100,8 +100,26 @@ The "Open:" line is dropped when nothing was left open.
 - **appliance_runtime, appliance_standby, freezer_icing**: the appliance's
   current channel via `query_timeseries`, plus room temperature and presence
   (`query_unifi_events`).
-- **fbh_cold, heat_recovery_decay, gas boiler faults**: `query_heating_cycles`
-  and `query_room_climate` for the room, outdoor temperature via the weather.
+- **fbh_cold**: both queries, always — one alone cannot tell the two causes
+  apart. `query_room_climate` for the room says what the room asked for,
+  `query_heating_cycles` says what the burner delivered.
+  Resolve the room first: the subject is a slug (`eg-buero`), the catalog
+  spells it `Büro`, and passing the slug returns `unknown_room` with every
+  valid room named — pick yours from that list.
+  Narrow with `functions: ["Raumklima", "Sensorik", "Sicherheit"]`, which
+  drops sockets, blinds, scenes and presence, and set `bucket` as wide as
+  the episode window — unfiltered and hourly, four hours of one room are
+  well over a hundred rows. Alarm and dew-point channels are `Sensorik` and
+  come along; ignore them. Read four datapoints:
+  `FBH.Soll-Temperatur-Status` (what was asked),
+  `Sensor.Temperatur` (what the room had),
+  `FBH.Stellwert-Status` (whether the valve was open),
+  `Fenster.*.Geöffnet-Status` (whether the heat was being thrown away).
+  Valve open, setpoint above actual, windows shut → the room did its part
+  and the burner is the suspect. Valve closed, or a window open → the cause
+  is in the room, and the burner is not to blame.
+- **heat_recovery_decay, gas boiler faults**: `query_heating_cycles` and
+  `query_room_climate` for the room, outdoor temperature via the weather.
 - **pv_underperformance**: `query_energy_flow` and `get_pv_forecast` for the
   day; clouds are not a cause, deviation from the forecast is.
 
