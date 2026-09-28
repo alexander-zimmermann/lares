@@ -13,7 +13,9 @@ a severity curve and its observations as evidence. The fault sentence says
 
 Four steps, each with one tool call, each with one line in the answer. An
 answer missing a step is not an explanation but an episode listing. The cap
-of ten tool calls is a ceiling, not a target; four to six is the usual case.
+of ten tool calls is a ceiling, not a target: four to six calls when the
+fault was measured on a channel, three to four when it was measured on a
+room or a plant, where steps 2 and 3 fall away (see step 1).
 
 1. **Subject.** `get_episode` with the given `episode_id`. One call, and it
    carries the ground the other three steps stand on: fault, channel, start,
@@ -22,6 +24,16 @@ of ten tool calls is a ceiling, not a target; four to six is the usual case.
    Read it once; none of that is worth a second call.
    If it carries an `explanation`, this episode was explained before — say
    what got worse since, do not repeat it.
+   **Check what the subject is before step 2.** A `channel` in the bundle
+   means the fault was measured on one group address, and steps 2 and 3
+   apply. A `channel` of `null` means it was measured on a room or on a
+   plant — `fbh_cold` names a room (`eg-buero`), `pv_underperformance` and
+   `heat_recovery_decay` name a plant. Then skip steps 2 and 3 and take two
+   queries from the per-fault list below instead. Never pass that subject
+   to a tool as a `room`: it is the engine's own slug, the catalog spells
+   the room differently (`eg-buero` is `Büro`). `query_room_climate`
+   validates a room against the catalog and names the valid ones when it
+   misses, so one call finds the right spelling.
 2. **Channel.** `get_current_knx` with the `room` and `name` the bundle
    named: current value, age, unit — for the channel and for the siblings
    that matter. The bundle says which channels exist, this says what they
@@ -35,15 +47,23 @@ of ten tool calls is a ceiling, not a target; four to six is the usual case.
    `Sensorik`, `Raumklima`, `Heizung`, not datapoints such as `Temperatur`;
    when in doubt, query without the filter.
 
-Then the cause. If the four steps yield none, "no cause in the data" is the
-right first line, but only after the four steps.
+Then the cause. If the steps yield none, "no cause in the data" is the
+right first line, but only after them. For a room or plant subject, the
+proof lines for the skipped steps say what the subject is, not "no data":
+a room fault has no single channel to report, and pretending it does reads
+like a broken tool.
 
 ## Answer format
 
-The four proof lines start with `-# `; Discord renders them small and grey
-below the cause. Tool names do not appear in the answer; the channel and the
-time range are the source. Write the answer, including the labels, in the
+The proof lines start with `-# `; Discord renders them small and grey below
+the cause. Tool names do not appear in the answer; the channel and the time
+range are the source. Write the answer, including the labels, in the
 language of the question.
+
+A room or plant subject drops the `Channel:` and `History:` lines rather
+than filling them with "no data" — they ask about a channel the fault does
+not have. Its `Subject:` line names the room or the plant, and it carries
+two `Surroundings:` lines instead of one.
 
 ```
 <Cause in one sentence, or: No cause in the data.>
