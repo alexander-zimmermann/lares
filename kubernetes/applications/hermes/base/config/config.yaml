@@ -3,9 +3,14 @@
 
 # Codex via the ChatGPT login (flat, token on the data volume); Grok on prepaid
 # credits takes over when Codex fails: auth, rate window, outage.
+# The Codex backend serves the current line only: it answers a retired id with
+# HTTP 404 `model_not_found`, and because `model_catalog` below is off, Hermes
+# cannot notice and silently spends the day on the fallback. Pin an id the
+# picker (`hermes model --refresh`) lists, and re-check it when the fallback
+# banner shows up in an answer.
 model:
   provider: openai-codex
-  default: gpt-5.5
+  default: gpt-6-sol
 fallback_providers:
   - provider: xai
     model: grok-4.3
