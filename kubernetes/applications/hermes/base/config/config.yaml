@@ -112,6 +112,17 @@ dashboard:
   trusted_proxies:
     - 10.244.0.0/16
 
+# What each surface may hold, on top of the globally disabled toolsets above.
+# The Runs API takes no toolset list per request, so an API run sees exactly
+# what stands here: the read server and nothing else. The name is the key under
+# `mcp_servers` below — an entry that matches no server turns the list back into
+# "every globally enabled server", which is how `lares-control` would leak in.
+# A platform absent from this block keeps its own default, so Discord is
+# untouched. Hand-written until the generator of #2111 renders it.
+platform_toolsets:
+  api_server:
+    - lares
+
 mcp_servers:
   lares:
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp

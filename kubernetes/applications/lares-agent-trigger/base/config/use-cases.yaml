@@ -1,0 +1,40 @@
+# The declared use cases of the agent platform. One entry is one assignment:
+# what starts it, which skill it runs, which tool servers it may see, where its
+# output goes, what it may spend. Adding one is a pull request, never a rebuild.
+#
+# The schema and the loader live in lares-agent-trigger, which mounts this file
+# and reads it directly; the generator renders the harness configuration from
+# the same models, so what runs is what was reviewed here.
+#
+# A use case either runs (`enabled: true`) or says why it does not
+# (`dormant: <reason>`). There is no `enabled: false`.
+
+use_cases:
+  - name: explain-episode
+    sentence: >-
+      Erklärt eine neu aufgetretene oder eskalierte Episode von selbst, mit der
+      Ursache im ersten Satz und einer Beleg-Zeile je Befund.
+    trigger:
+      kind: event
+      source: episode
+      # Event kind to the lowest severity that deserves a run; a kind left out
+      # never runs, which is why `ended` is absent.
+      # `escalated` sits at 2 because an episode has exactly one escalation
+      # event — the first rise, unique on (episode_id, kind) — so a threshold
+      # of 3 leaves an episode that opens at 1 unexplained however bad it gets.
+      filter:
+        appeared: 2
+        escalated: 2
+    skill: lares-explain
+    # The read server only. An API run never sees `lares-control`: a device
+    # write is a request through the gate, never a tool an event run holds.
+    tools: [lares]
+    # `stored` is live with the event path; discord and mail follow in #2109.
+    output: [stored, discord, mail]
+    budget:
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 10
+    language: de
+    memory: false
+    enabled: true

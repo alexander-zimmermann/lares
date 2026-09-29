@@ -6,10 +6,10 @@ metadata:
 
 spec:
   # The pods that run agents or act on their behalf (the hermes harness, the MCP
-  # bridge, Node-RED) are the one place the UDM cannot see: pods leave with the node
-  # IP, so their egress is fenced here, inside the cluster and towards the internet
-  # by name. Ingress is untouched. One policy for all of them, so the allow list is
-  # the union of what each needs. Verdicts stay AUDIT while policyAuditMode is set.
+  # bridge, the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
+  # with the node IP, so their egress is fenced here, inside the cluster and towards
+  # the internet by name. Ingress is untouched. One policy for all of them, so the
+  # allow list is the union of what each needs. Verdicts stay AUDIT while policyAuditMode is set.
   endpointSelector:
     matchLabels:
       role: agent
@@ -36,6 +36,17 @@ spec:
       toPorts:
         - ports:
             - port: "8080"
+              protocol: TCP
+
+    # lares-agent-trigger reaching the harness's API server: the Runs API is
+    # how an episode event becomes a run, and the trigger is the only caller.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: hermes
+      toPorts:
+        - ports:
+            - port: "8642"
               protocol: TCP
 
     # NATS client and MQTT; node-red reaches it as mqtt.zimmermann.eu.com, the LB IP lands on the same pod
