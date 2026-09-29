@@ -5,10 +5,11 @@ kind: Middleware
 metadata:
   name: rate-limit
 
+# Sized for SPAs that load 100+ chunks per page (Omni), still caps abusive clients
 spec:
   rateLimit:
-    average: 100
-    burst: 50
+    average: 600
+    burst: 300
     period: 1m
 
 ---
