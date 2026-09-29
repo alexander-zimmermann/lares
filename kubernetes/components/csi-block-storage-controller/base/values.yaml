@@ -51,6 +51,9 @@ defaultSettings:
   # Reserve CPU for each instance manager pod (percent of allocatable CPU)
   guaranteedInstanceManagerCPU: 5
 
+  # Live-upgrade volume engines to the new default engine after a chart bump, one per node at a time
+  concurrentAutomaticEngineUpgradePerNodeLimit: 1
+
   # Use fast-check with nightly cron to balance integrity and performance
   snapshotDataIntegrity: fast-check
   snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: false
