@@ -18,14 +18,10 @@ use_cases:
       kind: event
       source: episode
       # Event kind to the lowest severity that deserves a run; a kind left out
-      # never runs. `ended` is absent on purpose — an episode that is over has
-      # nothing left to explain.
-      #
-      # `escalated` sits at 2, not at 3 as the trigger set of #1814 first read:
-      # an episode spends its escalation budget at the *first* rise, and
-      # `episode_events` is unique on (episode_id, kind), so a second
-      # `escalated` cannot exist. At 3 an episode that opens at 1, rises to 2
-      # and later reaches 3 would never be explained at all.
+      # never runs, which is why `ended` is absent.
+      # `escalated` sits at 2 because an episode has exactly one escalation
+      # event — the first rise, unique on (episode_id, kind) — so a threshold
+      # of 3 leaves an episode that opens at 1 unexplained however bad it gets.
       filter:
         appeared: 2
         escalated: 2

@@ -16,7 +16,11 @@ spec:
   streamName: EPISODE
   durableName: agent-trigger
   filterSubject: episode.>
-  deliverPolicy: all
+  # From the moment the consumer is created, never the stream's seven days of
+  # retained events: a first bind on `all` would spend the day's ten runs on
+  # episodes nobody asked about. Only read at creation — a restart resumes
+  # where the durable left off.
+  deliverPolicy: new
   ackPolicy: explicit
   ackWait: 20m
   maxDeliver: 3
