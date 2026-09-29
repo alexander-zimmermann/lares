@@ -1,0 +1,169 @@
+applicationName: lares-agent-trigger
+
+deployment:
+  enabled: true
+  # The use-case file comes in as a hashed ConfigMap (pod rolls on change), and
+  # there is no Stakater Reloader controller in the cluster.
+  reloadOnChange: false
+  image:
+    repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  podLabels:
+    role: agent
+
+  # A second replica would fetch the same event twice; the dedupe would catch
+  # it, but the durable consumer is meant to have one reader.
+  replicas: 1
+  strategy:
+    type: Recreate
+
+  env:
+    USE_CASES_FILE:
+      value: /etc/lares-agent-trigger/use-cases.yaml
+    NATS_SERVERS:
+      value: nats://nats.nats.svc.cluster.local:4222
+    # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
+    NATS_NKEY_SEED_FILE:
+      value: /etc/lares-agent-trigger/nkey-seed
+    NATS_STREAM_NAME:
+      value: EPISODE
+    CONSUMER_NAME:
+      value: agent-trigger
+    DB_HOST:
+      value: timescaledb-db-rw.timescaledb.svc.cluster.local
+    DB_PORT:
+      value: "5432"
+    DB_NAME:
+      value: homelab
+    # Ledger-writer credentials mounted as files from the synced Secret
+    # (Kyverno clones from `timescaledb` namespace); the role may insert and
+    # update agent_runs and agent_memory, nothing else.
+    DB_USERNAME_FILE:
+      value: /etc/lares-agent-trigger/db_username
+    DB_PASSWORD_FILE:
+      value: /etc/lares-agent-trigger/db_password
+    # Which midnight the daily cap counts from
+    TIMEZONE:
+      value: Europe/Berlin
+    # Harness: the API server of the gateway in this namespace, and the key it
+    # was given in the hermes SealedSecret
+    HERMES_URL:
+      value: http://hermes.agents.svc.cluster.local:8642
+    HERMES_API_KEY_FILE:
+      value: /etc/lares-agent-trigger/hermes-api-key
+    LOG_FORMAT:
+      value: json
+    METRICS_PORT:
+      value: "9090"
+    # OTLP/HTTP collector for traces; the sampling ratio defaults to 0.1 like connect
+    TRACING_ENDPOINT:
+      value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+    TZ:
+      value: Europe/Berlin
+
+  volumes:
+    use-cases:
+      configMap:
+        name: lares-agent-trigger-use-cases
+    nats-credentials:
+      secret:
+        secretName: lares-agent-trigger-nats-credentials
+        items:
+          - key: nkey-seed
+            path: nkey-seed
+    db-username:
+      secret:
+        secretName: timescaledb-db-lares-agent-trigger-secret
+        items:
+          - key: username
+            path: username
+    db-password:
+      secret:
+        secretName: timescaledb-db-lares-agent-trigger-secret
+        items:
+          - key: password
+            path: password
+    hermes-api-key:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: api-server-key
+            path: api-server-key
+
+  volumeMounts:
+    use-cases:
+      mountPath: /etc/lares-agent-trigger/use-cases.yaml
+      subPath: use-cases.yaml
+      readOnly: true
+    nats-credentials:
+      mountPath: /etc/lares-agent-trigger/nkey-seed
+      subPath: nkey-seed
+      readOnly: true
+    db-username:
+      mountPath: /etc/lares-agent-trigger/db_username
+      subPath: username
+      readOnly: true
+    db-password:
+      mountPath: /etc/lares-agent-trigger/db_password
+      subPath: password
+      readOnly: true
+    hermes-api-key:
+      mountPath: /etc/lares-agent-trigger/hermes-api-key
+      subPath: api-server-key
+      readOnly: true
+
+  ports:
+    - containerPort: 9090
+      name: metrics
+      protocol: TCP
+
+  # /healthz is NATS- and ledger-gated; a harness outage is a failed run with
+  # its own alert, never a restart loop here.
+  livenessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 30
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    httpGet:
+      path: /healthz
+      port: metrics
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: [ALL]
+
+  securityContext:
+    fsGroup: 1000
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - port: 9090
+      name: metrics
+      protocol: TCP
+      targetPort: metrics
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    # Prometheus Operator label (Opt-In)
+    release: prometheus
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics

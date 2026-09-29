@@ -11,3 +11,4 @@ resources:
   - dyson_from_knx.yaml
   - midea_from_knx.yaml
   - bordbar_from_knx.yaml
+  - agent_trigger_episode.yaml

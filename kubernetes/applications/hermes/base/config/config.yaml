@@ -112,6 +112,17 @@ dashboard:
   trusted_proxies:
     - 10.244.0.0/16
 
+# What each surface may hold, on top of the globally disabled toolsets above.
+# The Runs API takes no toolset list per request, so an API run sees exactly
+# what stands here: the read server and nothing else. `lares-control`, the
+# entry that places a gate-protected KNX write request, is never on this list —
+# an event run is read-only by construction, and every write the platform makes
+# is a deterministic step of the trigger. Hand-written until the generator of
+# #2111 renders it.
+platform_toolsets:
+  api_server:
+    - mcp-lares
+
 mcp_servers:
   lares:
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp

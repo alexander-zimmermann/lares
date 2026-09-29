@@ -125,6 +125,14 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Use case** — one declared entry of the agent platform: a trigger, an
   assignment, an allowed tool list, an output kind and a budget. Declared
   in a file in this repo; adding one is a pull request, never a rebuild.
+- **Trigger** — what turns an event, a schedule or a message into a run,
+  and the service that does it (`lares-agent-trigger`). Three kinds, one
+  per use case: an episode event off the bus, a cron expression the
+  harness runs, or a person writing in chat. The trigger decides alone
+  whether an event deserves a run — the filter, the dedupe against the
+  ledger's unique key and the daily cap all sit here — and it is the only
+  writer of the ledger. Not the thing that fires: an episode event is an
+  episode event, and the trigger is what listens for it.
 - **Run** — one execution of a use case, from trigger to output, recorded
   as one row in the ledger with its subject, model, cost, tool trace and
   verdict.

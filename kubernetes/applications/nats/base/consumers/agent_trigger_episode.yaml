@@ -1,0 +1,23 @@
+# Durable pull consumer for lares-agent-trigger: the one reader of the episode
+# events the engine publishes.
+#
+# `ackWait` has to outlast a whole run, because the message is acknowledged
+# only once the ledger row is closed: the declared budget of explain-episode is
+# ten minutes, and 20m leaves room for a slower one without redelivering it
+# under the running one. `maxDeliver` is the hard stop — an event that killed
+# the pod three times is not going to work the fourth time, and the ledger row
+# it left behind is the trace.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Consumer
+metadata:
+  name: agent-trigger
+  namespace: nats
+spec:
+  streamName: EPISODE
+  durableName: agent-trigger
+  filterSubject: episode.>
+  deliverPolicy: all
+  ackPolicy: explicit
+  ackWait: 20m
+  maxDeliver: 3
+  maxAckPending: 1

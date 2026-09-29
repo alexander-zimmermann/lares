@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  # One consumer, one psycopg pool and one HTTP client; the run itself happens
+  # in the harness, so the memory here is the Python runtime plus a poll loop.
+  - target:
+      kind: Deployment
+      name: lares-agent-trigger
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: lares-agent-trigger
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 96Mi
+          limits:
+            cpu: 200m
+            memory: 192Mi
