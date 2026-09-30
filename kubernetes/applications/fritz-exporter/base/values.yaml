@@ -10,7 +10,7 @@ deployment:
   replicas: 1
   image:
     repository: docker.io/pdreker/fritz_exporter
-    tag: 3.4.0
+    tag: 3.5.0
     pullPolicy: IfNotPresent
 
   args:
