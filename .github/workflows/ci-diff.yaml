@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    # Argo CD only reads kubernetes/; auto-merged workflow-only PRs lose their merge ref before the diff runs.
+    paths:
+      - kubernetes/**
+      - .github/workflows/ci-diff.yaml
 
 permissions:
   contents: read
