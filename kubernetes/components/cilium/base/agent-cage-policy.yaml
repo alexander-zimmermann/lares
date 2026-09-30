@@ -49,6 +49,17 @@ spec:
             - port: "8642"
               protocol: TCP
 
+    # lares-agent-trigger posting AgentRunFailed: a failed run is an event no
+    # scrape can see, so the trigger raises the alert itself.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: prometheus
+            app.kubernetes.io/name: alertmanager
+      toPorts:
+        - ports:
+            - port: "9093"
+              protocol: TCP
+
     # NATS client and MQTT; node-red reaches it as mqtt.zimmermann.eu.com, the LB IP lands on the same pod
     - toEndpoints:
         - matchLabels:
