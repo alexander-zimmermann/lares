@@ -136,6 +136,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Run** — one execution of a use case, from trigger to output, recorded
   as one row in the ledger with its subject, model, cost, tool trace and
   verdict.
+- **Delivery** — the deterministic step of the trigger that carries a
+  run's output to the targets its use case declares: the ledger row
+  itself, a message on the Discord home channel, a mail through the relay.
+  The model never delivers; the row records what each target created, and
+  a target that refuses fails the run while the stored text stays.
 - **Ledger** — the `agent_runs` table: one row per run of every kind,
   whatever started it. The one place verdicts, counts and costs are read
   from; its unique key on use case and subject is also what keeps one

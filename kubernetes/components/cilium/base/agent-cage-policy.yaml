@@ -60,6 +60,16 @@ spec:
             - port: "9093"
               protocol: TCP
 
+    # lares-agent-trigger mailing an explanation through the relay (Service port 25)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: smtprelay
+            app.kubernetes.io/name: smtprelay
+      toPorts:
+        - ports:
+            - port: "2525"
+              protocol: TCP
+
     # NATS client and MQTT; node-red reaches it as mqtt.zimmermann.eu.com, the LB IP lands on the same pod
     - toEndpoints:
         - matchLabels:
@@ -109,7 +119,7 @@ spec:
         - matchName: api.x.ai # hermes: Grok fallback
         - matchName: api.anthropic.com # hermes: benchmark provider via API key
         - matchName: models.dev # hermes: model registry, refreshed every 4 h; blocked, it retries every 5 min
-        - matchName: discord.com # hermes: Discord REST
+        - matchName: discord.com # hermes and lares-agent-trigger: Discord REST
         - matchPattern: "*.discord.gg" # hermes: Discord gateway websocket and the per-region resume URL it hands out
         - matchPattern: "*.discordapp.com" # hermes: Discord CDN (attachments)
         - matchPattern: "*.discordapp.net" # hermes: Discord media proxy

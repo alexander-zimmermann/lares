@@ -29,7 +29,8 @@ use_cases:
     # The read server only. An API run never sees `lares-control`: a device
     # write is a request through the gate, never a tool an event run holds.
     tools: [lares]
-    # `stored` is live with the event path; discord and mail follow in #2109.
+    # The trigger delivers, never the model: the ledger row, a message on the
+    # home channel, a mail through smtprelay.
     output: [stored, discord, mail]
     budget:
       tool_calls: 40

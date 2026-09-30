@@ -7,6 +7,11 @@ namespace: agents
 # application at wave 12, and two ArgoCD apps rendering one Namespace would
 # fight over its labels.
 
+# The engine's fault list, rendered into this namespace: a mail names the
+# fault's sentence in its subject.
+resources:
+  - ../../lares-diagnostics-engine/base/config
+
 helmCharts:
   - name: application
     repo: https://stakater.github.io/stakater-charts
@@ -33,3 +38,5 @@ labels:
 # needs the stream, the ledger and the Runs API before it has anything to do.
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "13"
+  # The fault list lives with the engine, so track it for change detection
+  argocd.argoproj.io/manifest-generate-paths: ../..;/kubernetes/applications/lares-diagnostics-engine/base/config
