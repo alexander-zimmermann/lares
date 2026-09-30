@@ -61,6 +61,8 @@ jobs:
           # renovate: datasource=docker depName=dagandersen/argocd-diff-preview
           DIFF_PREVIEW_VERSION: v0.2.15
         run: |
+          # Run the diff against the Argo CD chart the cluster runs, not the tool's default 'latest'.
+          ARGOCD_CHART_VERSION=$(yq '.helmCharts[] | select(.name == "argo-cd") | .version' main/kubernetes/bootstrap/gitops-controller/base/kustomization.yaml)
           generate_diff() {
             docker run \
               --network=host \
@@ -71,6 +73,7 @@ jobs:
               -v "$(pwd)/values.yaml:/argocd-config/values.yaml" \
               -e TARGET_BRANCH=refs/pull/${{ github.event.number }}/merge \
               -e REPO=${{ github.repository }} \
+              -e ARGOCD_CHART_VERSION="${ARGOCD_CHART_VERSION}" \
               -e TIMEOUT=300 \
               -e DEBUG=true \
               -e GIT_CONFIG_COUNT=1 \
