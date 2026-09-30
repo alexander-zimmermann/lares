@@ -112,6 +112,13 @@ dashboard:
   trusted_proxies:
     - 10.244.0.0/16
 
+# Every tool definition in the prompt, not behind a search. Hermes defers MCP
+# tools by default, which costs a round per lookup and lets a step call one
+# of them only; the bridge's tools are about 5k tokens, and cached.
+tools:
+  tool_search:
+    enabled: "off"
+
 # What each surface may hold, on top of the globally disabled toolsets above.
 # The Runs API takes no toolset list per request, so an API run sees exactly
 # what stands here: the read server and nothing else. The name is the key under
