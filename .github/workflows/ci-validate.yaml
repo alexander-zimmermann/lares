@@ -179,7 +179,7 @@ jobs:
         uses: alexellis/arkade-get@master
         with:
           # renovate: datasource=github-releases depName=kubernetes-sigs/kustomize extractVersion=^kustomize/(?<version>.+)$
-          kustomize: v5.8.1
+          kustomize: v5.8.2
           # renovate: datasource=github-releases depName=helm/helm
           helm: v4.3.0
           # renovate: datasource=github-releases depName=yannh/kubeconform
