@@ -49,6 +49,17 @@ spec:
             - port: "8642"
               protocol: TCP
 
+    # hermes posting every finished chat and cron turn to lares-agent-trigger,
+    # which writes its ledger row.
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: lares-agent-trigger
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
     # lares-agent-trigger posting AgentRunFailed: a failed run is an event no
     # scrape can see, so the trigger raises the alert itself.
     - toEndpoints:

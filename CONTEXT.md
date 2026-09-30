@@ -116,12 +116,13 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   Never a NATS subject; say "NATS subject".
 - **Subject key** — how a run names its subject in the ledger's
   `subject_key` column: the subject's own id, optionally followed by a
-  colon and the event kind that started the run — `42` or `42:escalated`
-  for an episode, the session and message id for a chat turn. The colon
-  is what lets one episode carry both an `appeared` and an `escalated`
-  run under a unique key on use case and subject. Everything reading the
-  ledger for a subject matches the whole key or the part before the first
-  colon, so both shapes are found by the subject alone.
+  colon and what tells two runs on it apart — `42` or `42:escalated` for
+  an episode and the event kind that started the run, the session id and
+  the turn for a chat turn, the job id and the execution for a cron run.
+  The colon is what lets one episode carry both an `appeared` and an
+  `escalated` run under a unique key on use case and subject. Everything
+  reading the ledger for a subject matches the whole key or the part
+  before the first colon, so both shapes are found by the subject alone.
 - **Use case** — one declared entry of the agent platform: a trigger, an
   assignment, an allowed tool list, an output kind and a budget. Declared
   in a file in this repo; adding one is a pull request, never a rebuild.

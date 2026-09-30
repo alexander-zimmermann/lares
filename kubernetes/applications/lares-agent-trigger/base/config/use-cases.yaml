@@ -39,3 +39,23 @@ use_cases:
     language: de
     memory: false
     enabled: true
+
+  - name: messenger
+    sentence: >-
+      Beantwortet eine Nachricht vom Handy in Discord, auf Deutsch, mit dem
+      Lesezugriff auf das Haus.
+    # Hermes runs the chat; the trigger writes its row from the outbound hook,
+    # one per answered message. No skill: the message is the assignment.
+    trigger:
+      kind: message
+    tools: [lares]
+    output: [discord]
+    # Nothing here is enforced for a chat: the 201st message is answered, and
+    # the day is counted on the ledger.
+    budget:
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 200
+    language: de
+    memory: true
+    enabled: true
