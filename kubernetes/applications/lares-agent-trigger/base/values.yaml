@@ -54,6 +54,9 @@ deployment:
       value: http://hermes.agents.svc.cluster.local:8642
     HERMES_API_KEY_FILE:
       value: /etc/lares-agent-trigger/hermes-api-key
+    # A run still failed after its one retry is posted here as AgentRunFailed
+    ALERTMANAGER_URL:
+      value: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
     LOG_FORMAT:
       value: json
     METRICS_PORT:

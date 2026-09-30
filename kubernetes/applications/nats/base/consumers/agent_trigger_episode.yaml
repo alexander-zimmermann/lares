@@ -1,9 +1,10 @@
 # Durable pull consumer for lares-agent-trigger: the one reader of the episode
 # events the engine publishes.
 #
-# `ackWait` has to outlast a whole run, because the message is acknowledged
-# only once the ledger row is closed: the declared budget of explain-episode is
-# ten minutes, and 20m leaves room for a slower one without redelivering it
+# `ackWait` has to outlast a whole event, because the message is acknowledged
+# only once the ledger row is closed: a transient failure is retried once after
+# five minutes, so two of explain-episode's ten-minute budgets plus the delay
+# are 25 minutes, and 40m leaves room for a slower one without redelivering it
 # under the running one. `maxDeliver` is the hard stop — an event that killed
 # the pod three times is not going to work the fourth time, and the ledger row
 # it left behind is the trace.
@@ -22,6 +23,6 @@ spec:
   # where the durable left off.
   deliverPolicy: new
   ackPolicy: explicit
-  ackWait: 20m
+  ackWait: 40m
   maxDeliver: 3
   maxAckPending: 1
