@@ -65,6 +65,12 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: api-server-key
+    # Signs the turn-end hook to lares-agent-trigger, which reads the same key
+    LARES_AGENT_TRIGGER_HOOK_SECRET:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: trigger-hook-secret
     # Web dashboard, supervised by s6 beside the gateway; the OIDC login against
     # Authentik is what a non-loopback bind requires, and the public URL fixes the callback
     HERMES_DASHBOARD:

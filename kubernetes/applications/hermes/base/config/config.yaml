@@ -123,6 +123,20 @@ platform_toolsets:
   api_server:
     - lares
 
+# Every turn — a Discord message answered, a cron job run — goes to
+# lares-agent-trigger, which writes its row into the ledger: each model call
+# with its tokens, model and reply, then the turn's end (`on_session_end`
+# fires once per turn despite its name).
+hooks:
+  outbound:
+    - name: lares-agent-trigger
+      url: http://lares-agent-trigger.agents.svc.cluster.local:8080/hooks/hermes
+      events:
+        - post_api_request
+        - on_session_end
+      secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
+      timeout: 10
+
 mcp_servers:
   lares:
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp

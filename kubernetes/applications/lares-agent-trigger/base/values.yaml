@@ -7,7 +7,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.3.0
+    tag: 0.4.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -79,6 +79,12 @@ deployment:
     # The episode on the knx-episodes dashboard; the host is set per overlay
     DASHBOARD_EPISODE_URL:
       value: PLACEHOLDER_DASHBOARD_EPISODE_URL
+    # Hook receiver: Hermes posts every finished chat and cron turn here, signed
+    # with the key both pods read from the hermes SealedSecret
+    HTTP_PORT:
+      value: "8080"
+    HOOK_SECRET_FILE:
+      value: /etc/lares-agent-trigger/hook-secret
     LOG_FORMAT:
       value: json
     METRICS_PORT:
@@ -126,6 +132,12 @@ deployment:
     faults:
       configMap:
         name: lares-diagnostics-engine-faults
+    hook-secret:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: trigger-hook-secret
+            path: trigger-hook-secret
 
   volumeMounts:
     use-cases:
@@ -156,8 +168,15 @@ deployment:
       mountPath: /etc/lares-agent-trigger/faults.yaml
       subPath: faults.yaml
       readOnly: true
+    hook-secret:
+      mountPath: /etc/lares-agent-trigger/hook-secret
+      subPath: trigger-hook-secret
+      readOnly: true
 
   ports:
+    - containerPort: 8080
+      name: http
+      protocol: TCP
     - containerPort: 9090
       name: metrics
       protocol: TCP
@@ -195,6 +214,10 @@ service:
   enabled: true
   type: ClusterIP
   ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+      targetPort: http
     - port: 9090
       name: metrics
       protocol: TCP
