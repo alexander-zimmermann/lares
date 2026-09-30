@@ -4,6 +4,16 @@ kind: Kustomization
 resources:
   - ../../base
 
+replacements:
+  # The episode on the dashboard, linked from every explanation mail
+  - sourceValue: https://grafana.zimmermann.sh/d/knx-episodes?var-fault={fault}
+    targets:
+      - select:
+          kind: Deployment
+          name: lares-agent-trigger
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=DASHBOARD_EPISODE_URL].value
+
 patches:
   # One consumer, one psycopg pool and one HTTP client; the run itself happens
   # in the harness, so the memory here is the Python runtime plus a poll loop.

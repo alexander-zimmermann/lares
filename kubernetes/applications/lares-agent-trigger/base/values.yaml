@@ -57,6 +57,28 @@ deployment:
     # A run still failed after its one retry is posted here as AgentRunFailed
     ALERTMANAGER_URL:
       value: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
+    # Delivery to Discord: the bot token of the hermes SealedSecret and the
+    # harness's own DISCORD_HOME_CHANNEL (#Allgemein)
+    DISCORD_BOT_TOKEN_FILE:
+      value: /etc/lares-agent-trigger/discord-bot-token
+    DISCORD_HOME_CHANNEL:
+      value: "1548229055348736034"
+    # Delivery by mail: the in-cluster relay speaks plaintext SMTP and passes
+    # mail from its one accepted sender only
+    SMTP_HOST:
+      value: smtprelay.smtprelay.svc.cluster.local
+    SMTP_PORT:
+      value: "25"
+    MAIL_FROM:
+      value: Lares <admin@zimmermann.sh>
+    MAIL_TO:
+      value: admin@zimmermann.sh
+    # The engine's fault list, for the sentence in the mail subject
+    FAULTS_FILE:
+      value: /etc/lares-agent-trigger/faults.yaml
+    # The episode on the knx-episodes dashboard; the host is set per overlay
+    DASHBOARD_EPISODE_URL:
+      value: PLACEHOLDER_DASHBOARD_EPISODE_URL
     LOG_FORMAT:
       value: json
     METRICS_PORT:
@@ -95,6 +117,15 @@ deployment:
         items:
           - key: api-server-key
             path: api-server-key
+    discord-bot-token:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: discord-bot-token
+            path: discord-bot-token
+    faults:
+      configMap:
+        name: lares-diagnostics-engine-faults
 
   volumeMounts:
     use-cases:
@@ -116,6 +147,14 @@ deployment:
     hermes-api-key:
       mountPath: /etc/lares-agent-trigger/hermes-api-key
       subPath: api-server-key
+      readOnly: true
+    discord-bot-token:
+      mountPath: /etc/lares-agent-trigger/discord-bot-token
+      subPath: discord-bot-token
+      readOnly: true
+    faults:
+      mountPath: /etc/lares-agent-trigger/faults.yaml
+      subPath: faults.yaml
       readOnly: true
 
   ports:

@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# The fault list as its own ConfigMap, for readers outside the engine: the
+# agent trigger includes this directory and names a fault's sentence in its
+# mails. The engine itself reads the file through its base's generator.
+configMapGenerator:
+  - name: lares-diagnostics-engine-faults
+    files:
+      - faults.yaml
