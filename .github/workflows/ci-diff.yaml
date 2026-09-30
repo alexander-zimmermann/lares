@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    # Argo CD only reads kubernetes/; auto-merged workflow-only PRs lose their merge ref before the diff runs.
+    paths:
+      - kubernetes/**
+      - .github/workflows/ci-diff.yaml
 
 permissions:
   contents: read
@@ -61,21 +65,31 @@ jobs:
           # renovate: datasource=docker depName=dagandersen/argocd-diff-preview
           DIFF_PREVIEW_VERSION: v0.2.15
         run: |
-          docker run \
-            --network=host \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -v "$(pwd)/main:/base-branch" \
-            -v "$(pwd)/pull-request:/target-branch" \
-            -v "$(pwd)/output:/output" \
-            -v "$(pwd)/values.yaml:/argocd-config/values.yaml" \
-            -e TARGET_BRANCH=refs/pull/${{ github.event.number }}/merge \
-            -e REPO=${{ github.repository }} \
-            -e TIMEOUT=300 \
-            -e DEBUG=true \
-            -e GIT_CONFIG_COUNT=1 \
-            -e GIT_CONFIG_KEY_0=safe.directory \
-            -e GIT_CONFIG_VALUE_0=* \
-            dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
+          # Run the diff against the Argo CD chart the cluster runs, not the tool's default 'latest'.
+          ARGOCD_CHART_VERSION=$(yq '.helmCharts[] | select(.name == "argo-cd") | .version' main/kubernetes/bootstrap/gitops-controller/base/kustomization.yaml)
+          generate_diff() {
+            docker run \
+              --network=host \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v "$(pwd)/main:/base-branch" \
+              -v "$(pwd)/pull-request:/target-branch" \
+              -v "$(pwd)/output:/output" \
+              -v "$(pwd)/values.yaml:/argocd-config/values.yaml" \
+              -e TARGET_BRANCH=refs/pull/${{ github.event.number }}/merge \
+              -e REPO=${{ github.repository }} \
+              -e ARGOCD_CHART_VERSION="${ARGOCD_CHART_VERSION}" \
+              -e TIMEOUT=300 \
+              -e DEBUG=true \
+              -e GIT_CONFIG_COUNT=1 \
+              -e GIT_CONFIG_KEY_0=safe.directory \
+              -e GIT_CONFIG_VALUE_0=* \
+              dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
+          }
+          # The tool queries Argo CD without waiting for Redis; a fresh kind cluster usually gets past a slow start.
+          generate_diff || {
+            echo "::warning::Diff generation failed, retrying once with a fresh kind cluster."
+            generate_diff
+          }
 
       - name: Post diff as comment
         run: |
