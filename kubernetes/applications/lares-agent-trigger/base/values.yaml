@@ -7,7 +7,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.2.0
+    tag: 0.3.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
