@@ -65,6 +65,7 @@ jobs:
             kubernetes/applications/midea-nats-bridge/base/values.yaml
             kubernetes/applications/dyson-nats-bridge/base/values.yaml
             kubernetes/applications/lares-diagnostics-engine/base/detect-faults-cronjob.yaml
+            kubernetes/applications/lares-agent-trigger/base/values.yaml
 
       - name: Setup go-task
         uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0

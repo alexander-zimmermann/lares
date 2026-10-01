@@ -86,3 +86,12 @@ repos:
         language: system
         pass_filenames: false
         files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/site\.yaml|detect-faults-cronjob\.yaml)$
+      - id: agents-validate-use-cases
+        name: agents:validate-use-cases
+        entry: task agents:validate-use-cases
+        language: system
+        pass_filenames: false
+        # The use-case file and the settings it renders from, the three
+        # rendered files a hand edit would make stale, and the tag the
+        # generator is installed at.
+        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|cron-jobs)\.yaml|values\.yaml)|hermes/base/config/(settings|config)\.yaml|lares-mcp-bridge/base/config/client-tools\.env)$

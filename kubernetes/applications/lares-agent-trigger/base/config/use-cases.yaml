@@ -3,11 +3,30 @@
 # output goes, what it may spend. Adding one is a pull request, never a rebuild.
 #
 # The schema and the loader live in lares-agent-trigger, which mounts this file
-# and reads it directly; the generator renders the harness configuration from
-# the same models, so what runs is what was reviewed here.
+# and reads it directly. `task agents:create-harness-config` renders from it,
+# with the trigger's generator at the deployed tag, the Hermes configuration,
+# the cron job set and the bridge's allowlists; pre-commit fails on a stale one.
 #
 # A use case either runs (`enabled: true`) or says why it does not
-# (`dormant: <reason>`). There is no `enabled: false`.
+# (`dormant: <reason>`). There is no `enabled: false`. A dormant use case
+# renders nothing, so it may name tool servers and event sources still to be built.
+
+# Where Hermes reports every finished turn, so each one gets its ledger row.
+ledger_hook:
+  trigger_url: http://lares-agent-trigger.agents.svc.cluster.local:8080
+  secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
+
+# What `tools` may name: the bridge under one client key each, `tools` its allowlist.
+tool_servers:
+  # Reads the house: series, episodes, runs, catalog, wiki.
+  - name: lares
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    client: lares-agent
+    key_env: LARES_MCP_KEY
+    timeout_seconds: 60
+    access: read
+    # The verdict, cache and NATS-subscribe tools stay out.
+    tools: [list_*, get_*, query_*, correlate_events, search_wiki]
 
 use_cases:
   - name: explain-episode
@@ -59,3 +78,262 @@ use_cases:
     language: de
     memory: true
     enabled: true
+
+  - name: propose-faults
+    sentence: >-
+      Schlägt jede Woche Änderungen an der Fehlerliste als Pull Request vor,
+      mit Belegen und einem Back-Test über die letzten acht Wochen.
+    trigger:
+      kind: schedule
+      cron: "0 3 * * 0"
+    skill: lares-propose
+    tools: [lares, lares-memory]
+    output: [github_pr]
+    budget:
+      tool_calls: 80
+      minutes: 20
+      runs_per_day: 1
+    language: en
+    # The rejected proposals it must not bring back for twelve weeks.
+    memory: true
+    dormant: >-
+      Waits for its skill, the back-test and memory tools, and the pull-request
+      delivery.
+
+  # The rest of the rated catalogue, each waiting for its own spec: trigger, tools
+  # and output as rated there, schedules and budgets as placeholders.
+
+  - name: explain-window
+    sentence: >-
+      Erzählt als Zeitleiste, was in einem Zeitfenster los war, Haus und
+      Cluster zusammen, nach einem Vorfall.
+    trigger:
+      kind: event
+      source: alert
+    skill: lares-explain-window
+    tools: [lares, cluster]
+    output: [stored, github_issue]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 5
+    language: en
+    memory: false
+    dormant: >-
+      Waits for its own spec, the alert path and the cluster read tools; asked
+      in chat, the messenger answers it today.
+
+  - name: catalog-hygiene
+    sentence: >-
+      Findet im GA-Katalog unbenannte Adressen, DPT-Widersprüche, Verstöße
+      gegen die Namenskonvention und verwaiste Adressen und schlägt die
+      Korrektur als Pull Request vor.
+    trigger:
+      kind: schedule
+      cron: "0 4 * * 0"
+    skill: lares-catalog-hygiene
+    tools: [lares, github]
+    output: [github_pr]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 1
+    language: en
+    memory: false
+    dormant: Waits for its own spec, the GitHub reads and the pull-request delivery.
+
+  - name: new-device-rules
+    sentence: >-
+      Schlägt für ein neues Gerät Writer-Regeln und Dashboard-Panels als Pull
+      Request vor.
+    trigger:
+      kind: event
+      source: new_device
+    skill: lares-new-device
+    tools: [lares, github]
+    output: [github_pr]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 3
+    language: en
+    memory: false
+    dormant: Waits for its own spec and an event that announces a new device.
+
+  - name: renovate-triage
+    sentence: >-
+      Liest zu einem Renovate-Pull-Request das Changelog, bewertet das Risiko
+      und schlägt die Merge-Reihenfolge vor.
+    trigger:
+      kind: event
+      source: pull_request
+    skill: lares-renovate-triage
+    tools: [github]
+    output: [github_comment]
+    budget:
+      tool_calls: 30
+      minutes: 10
+      runs_per_day: 20
+    language: en
+    memory: false
+    dormant: Waits for its own spec, the GitHub reads and a pull-request event.
+
+  - name: incident-fix
+    sentence: >-
+      Schlägt nach einem Cluster-Vorfall die Korrektur als Pull Request vor,
+      den ein Mensch mergt.
+    trigger:
+      kind: event
+      source: alert
+    skill: lares-incident-fix
+    tools: [cluster, github]
+    output: [github_pr]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 3
+    language: en
+    memory: false
+    dormant: Waits for its own spec, the alert path and the cluster read tools.
+
+  - name: claude-chat
+    sentence: >-
+      Beantwortet Fragen im Claude-Chat über den Connector der MCP-Bridge.
+    trigger:
+      kind: message
+    tools: [lares]
+    # The answer stays in the Claude conversation; no target here reaches it.
+    output: [stored]
+    budget:
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 200
+    language: de
+    memory: false
+    dormant: >-
+      Runs in Claude.ai straight against the bridge, outside the harness: no
+      run, no ledger row. Declared so the catalogue is whole.
+
+  - name: ets-diff
+    sentence: >-
+      Beschreibt nach jedem ETS-Export in Klartext, was dazukam, was wegfiel
+      und wo das Risiko liegt.
+    trigger:
+      kind: event
+      source: ets_export
+    skill: lares-ets-diff
+    tools: [lares, github]
+    output: [github_issue]
+    budget:
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 3
+    language: en
+    memory: false
+    dormant: Waits for its own spec, an ETS-export event and the issue delivery.
+
+  - name: basalte-prose
+    sentence: >-
+      Schreibt die Prosa zu den Basalte-Logikblöcken aus dem Inventar ins Wiki.
+    trigger:
+      kind: schedule
+      cron: "0 5 * * 6"
+    skill: lares-basalte-prose
+    tools: [lares, lares-wiki]
+    output: [wiki_page]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 1
+    language: de
+    memory: false
+    dormant: Waits for its own spec and the wiki write key.
+
+  - name: wiki-drift
+    sentence: >-
+      Findet Wiki-Seiten, die hinter der Konfiguration zurückliegen, und
+      bringt sie nach.
+    trigger:
+      kind: schedule
+      cron: "0 5 * * 0"
+    skill: lares-wiki-drift
+    tools: [lares, github, lares-wiki]
+    output: [wiki_page, github_pr]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 1
+    language: de
+    memory: false
+    dormant: Waits for its own spec, the GitHub reads and the wiki write key.
+
+  - name: data-quality
+    sentence: >-
+      Prüft jede Woche Sensoren mit unplausiblen Werten und Kanäle, die
+      schweigen, ohne als schweigend deklariert zu sein.
+    trigger:
+      kind: schedule
+      cron: "0 6 * * 1"
+    skill: lares-data-quality
+    tools: [lares]
+    output: [github_issue]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 1
+    language: en
+    memory: false
+    dormant: Waits for its own spec and the issue delivery.
+
+  - name: maintenance-plan
+    sentence: >-
+      Leitet aus den Gerätesignalen einen Wartungsplan ab: Filter, Verschleiß,
+      fällige Prüfungen.
+    trigger:
+      kind: schedule
+      cron: "0 6 1 * *"
+    skill: lares-maintenance-plan
+    tools: [lares, lares-wiki]
+    output: [wiki_page]
+    budget:
+      tool_calls: 60
+      minutes: 15
+      runs_per_day: 1
+    language: de
+    memory: false
+    dormant: Waits for its own spec and the wiki write key.
+
+  - name: energy-report
+    sentence: >-
+      Schickt jeden Monat einen Bericht über Energie und Kosten des Hauses per
+      Mail.
+    trigger:
+      kind: schedule
+      cron: "0 7 1 * *"
+    skill: lares-energy-report
+    tools: [lares]
+    output: [mail]
+    budget:
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 1
+    language: de
+    memory: false
+    dormant: Waits for its own spec, its skill and the cron-job reconcile.
+
+  - name: restore-probe
+    sentence: >-
+      Berichtet, ob die Sicherungen im PBS sich wiederherstellen ließen.
+    trigger:
+      kind: schedule
+      cron: "0 8 * * 1"
+    skill: lares-restore-probe
+    tools: [lares]
+    output: [github_issue]
+    budget:
+      tool_calls: 30
+      minutes: 10
+      runs_per_day: 1
+    language: en
+    memory: false
+    dormant: Waits for its own spec, the PBS read tools and the issue delivery.

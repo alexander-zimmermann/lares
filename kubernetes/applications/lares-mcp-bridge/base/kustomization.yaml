@@ -18,6 +18,12 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
+# Hash on: the allowlists are an environment variable, so the pod rolls when they change.
+configMapGenerator:
+  - name: lares-mcp-bridge-client-tools
+    envs:
+      - config/client-tools.env
+
 labels:
   - includeSelectors: false
     pairs:

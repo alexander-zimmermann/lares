@@ -2,8 +2,8 @@ applicationName: lares-mcp-bridge
 
 deployment:
   enabled: true
-  # No ConfigMap is mounted, and there is no Stakater Reloader controller in the
-  # cluster — disable the chart's dead reloader.stakater.com/auto annotation.
+  # The allowlists come in as a hashed ConfigMap (pod rolls on change), and there
+  # is no Stakater Reloader controller in the cluster.
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
@@ -49,9 +49,12 @@ deployment:
     # Machine clients (agents) authenticate with a key from this file instead of a JWT
     MCP_AUTH_CLIENTS_FILE:
       value: /etc/lares-mcp-bridge/auth-clients.json
-    # What each machine client may see and call; the verdict, cache and NATS-subscribe tools stay out
+    # What each machine client may see and call, rendered from the agents' use-case file
     MCP_AUTH_CLIENT_TOOLS:
-      value: '{"lares-agent": ["list_*", "get_*", "query_*", "correlate_events", "search_wiki"]}'
+      valueFrom:
+        configMapKeyRef:
+          name: lares-mcp-bridge-client-tools
+          key: MCP_AUTH_CLIENT_TOOLS
     MCP_NATS_SERVERS:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)

@@ -1,0 +1,105 @@
+version: "3"
+
+# Tasks for the agent platform's declared files. Paths come from Taskfile.yaml vars:
+#   AGENT_TRIGGER_VALUES_PATH    — the trigger's values file; its image tag is
+#                                  the version the generator is installed at
+#   AGENT_USE_CASES_PATH         — the use-case file
+#   HERMES_SETTINGS_PATH         — the hand-written Hermes settings
+#   HERMES_CONFIG_PATH           — rendered: the Hermes configuration
+#   AGENT_CRON_JOBS_PATH         — rendered: the cron job set
+#   MCP_BRIDGE_CLIENT_TOOLS_PATH — rendered: the bridge's allowlists
+
+tasks:
+  create-harness-config:
+    desc: "render the Hermes config, the cron job set and the bridge's allowlists from use-cases.yaml"
+    summary: |
+      Render the use-case file with the trigger's generator, installed at the
+      image tag the trigger deploys: the Hermes configuration (settings.yaml
+      copied whole, then the platform toolsets, MCP servers and outbound hook),
+      the cron job set for the trigger, and the bridge's allowlists. Each file
+      is written whole; run it after every change to use-cases.yaml or
+      settings.yaml, and commit what it writes.
+      Reads: use-cases.yaml, settings.yaml, the trigger's values.yaml (tag).
+      Writes: config.yaml, cron-jobs.yaml, client-tools.env (hook validates).
+    cmds:
+      - task: generate
+        vars:
+          HERMES_CONFIG_OUT: "{{.HERMES_CONFIG_PATH}}"
+          CRON_JOBS_OUT: "{{.AGENT_CRON_JOBS_PATH}}"
+          CLIENT_TOOLS_OUT: "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}"
+
+  generate:
+    internal: true
+    desc: "write the three rendered files to the given paths"
+    requires:
+      vars: [HERMES_CONFIG_OUT, CRON_JOBS_OUT, CLIENT_TOOLS_OUT]
+    vars:
+      AGENT_TRIGGER_TAG:
+        sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
+    cmds:
+      - >
+        uv run --no-project --python 3.14
+        --with "lares-agent-trigger @ git+https://github.com/alexander-zimmermann/lares-agent-trigger@v{{.AGENT_TRIGGER_TAG}}"
+        lares-agent-trigger generate
+        --use-cases "{{.AGENT_USE_CASES_PATH}}"
+        --settings "{{.HERMES_SETTINGS_PATH}}"
+        --hermes-config "{{.HERMES_CONFIG_OUT}}"
+        --cron-jobs "{{.CRON_JOBS_OUT}}"
+        --client-tools "{{.CLIENT_TOOLS_OUT}}"
+
+  validate-use-cases:
+    desc: "validate use-cases.yaml with the trigger's loader at the deployed tag and check the rendered files are current"
+    summary: |
+      Render the use-case file into a temporary directory with the trigger's
+      generator at the image tag the trigger deploys — its loader checks the
+      schema, the one chat and the tool servers each enabled use case may hold,
+      and names the field that fails — then diff every rendered file against
+      the committed one; a stale or hand-edited one fails with the diff.
+      Reads: everything create-harness-config reads, and the three rendered files.
+      Pre-commit hook; needs network (the git tag) and a uv that knows Python 3.14.
+    vars:
+      AGENT_TRIGGER_TAG:
+        sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
+      TMP_DIR:
+        sh: mktemp -d
+    cmds:
+      - defer: rm -rf "{{.TMP_DIR}}"
+      # Freshness: every rendered file must match a fresh run of the generator.
+      - task: generate
+        vars:
+          HERMES_CONFIG_OUT: "{{.TMP_DIR}}/config.yaml"
+          CRON_JOBS_OUT: "{{.TMP_DIR}}/cron-jobs.yaml"
+          CLIENT_TOOLS_OUT: "{{.TMP_DIR}}/client-tools.env"
+      - >
+        for pair in
+        "{{.HERMES_CONFIG_PATH}}|{{.TMP_DIR}}/config.yaml"
+        "{{.AGENT_CRON_JOBS_PATH}}|{{.TMP_DIR}}/cron-jobs.yaml"
+        "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}|{{.TMP_DIR}}/client-tools.env"; do
+        committed="${pair%%|*}"; fresh="${pair#*|}";
+        diff -u "$committed" "$fresh" ||
+        { echo "$(basename "$committed") is stale or edited by hand: run 'task agents:create-harness-config'"; exit 1; };
+        done;
+        echo "OK: rendered files current (trigger v{{.AGENT_TRIGGER_TAG}})"
+
+  login-codex:
+    desc: "print the steps of the Codex device-code login, needed only after the Hermes data volume is lost"
+    summary: |
+      Hermes keeps the Codex login on its data volume and refreshes the token
+      itself. Only a lost volume needs a new login; a token that expired or was
+      revoked shows up as failing runs and answers from the Grok fallback.
+      Prints the steps; runs nothing against the cluster.
+    silent: true
+    cmds:
+      - |
+        cat <<'STEPS'
+        Codex login for Hermes (only after the data volume hermes-data is lost)
+
+        1. ChatGPT settings, Security: enable device code authorization for Codex.
+        2. Start the login in the running pod:
+             kubectl -n agents exec -it deploy/hermes -- hermes auth add openai-codex --type oauth
+        3. Open the URL it prints, sign in with the ChatGPT account, enter the code it shows.
+        4. Check the login is stored (it lands in /opt/data/auth.json on the volume):
+             kubectl -n agents exec deploy/hermes -- hermes auth list
+        5. Ask something in Discord: the answer must come from the Codex model in
+           settings.yaml (model.default), not from the Grok fallback.
+        STEPS

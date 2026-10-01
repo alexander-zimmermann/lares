@@ -125,7 +125,15 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   before the first colon, so both shapes are found by the subject alone.
 - **Use case** — one declared entry of the agent platform: a trigger, an
   assignment, an allowed tool list, an output kind and a budget. Declared
-  in a file in this repo; adding one is a pull request, never a rebuild.
+  in a file in this repo, from which the harness's configuration is
+  rendered; adding one is a pull request, never a rebuild. A use case that
+  does not run yet stays in the file as dormant, with its reason.
+- **Tool server** (avoid: MCP server, toolset) — what a use case's tool
+  list names: the MCP bridge under one machine-client key, with the
+  allowlist the bridge enforces for that key. Each says where it may be
+  granted: a read server to any run, a writing one only to the scheduled
+  runs that name it, a request server (a write request a person approves
+  elsewhere) only to the chat.
 - **Trigger** — what turns an event, a schedule or a message into a run,
   and the service that does it (`lares-agent-trigger`). Three kinds, one
   per use case: an episode event off the bus, a cron expression the
