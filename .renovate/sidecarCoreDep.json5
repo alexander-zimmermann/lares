@@ -13,4 +13,16 @@
       "versioningTemplate": "semver",
     },
   ],
+  "packageRules": [
+    {
+      // The regex manager edits pyproject.toml only; uv.lock follows in the same commit
+      "matchDepNames": ["alexander-zimmermann/nats-bridge-core"],
+      "postUpgradeTasks": {
+        "commands": ["uv lock --upgrade-package nats-bridge-core"],
+        "fileFilters": ["uv.lock"],
+        "executionMode": "branch",
+        "installTools": { "uv": {} },
+      },
+    },
+  ],
 }
