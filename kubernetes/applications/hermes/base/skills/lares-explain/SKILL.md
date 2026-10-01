@@ -98,8 +98,11 @@ The "Open:" line is dropped when nothing was left open.
   silent it is the device or the bus, if only one is silent it is the
   channel.
 - **appliance_runtime, appliance_standby, freezer_icing**: the appliance's
-  current channel via `query_timeseries`, plus room temperature and presence
-  (`query_unifi_events`).
+  current channel via `query_timeseries`, plus `query_room_climate` for the
+  appliance's room with `functions: ["Raumklima", "Sensorik"]`, and
+  `query_presence` for the same window: an appliance drawing power while
+  somebody is home may just be in use, one that does so with the house empty
+  cannot be.
 - **fbh_cold**: both queries, always — one alone cannot tell the two causes
   apart. `query_room_climate` for the room says what the room asked for,
   `query_heating_cycles` says what the burner delivered.
