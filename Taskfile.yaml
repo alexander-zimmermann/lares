@@ -21,6 +21,14 @@ vars:
   MIDEA_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/midea-nats-bridge/base/config/devices.yaml"
   DYSON_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/dyson-nats-bridge/base/values.yaml"
   DYSON_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/dyson-nats-bridge/base/config/devices.yaml"
+  # The agent platform: the use-case file and the settings the generator renders
+  # from, the tag it is installed at, and the three files it writes.
+  AGENT_TRIGGER_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/values.yaml"
+  AGENT_USE_CASES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/use-cases.yaml"
+  AGENT_CRON_JOBS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/cron-jobs.yaml"
+  HERMES_SETTINGS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/settings.yaml"
+  HERMES_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/config.yaml"
+  MCP_BRIDGE_CLIENT_TOOLS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-mcp-bridge/base/config/client-tools.env"
 
 includes:
   infra:
@@ -36,6 +44,8 @@ includes:
     taskfile: ./tasks/diagnostics.tasks.yaml
   basalte:
     taskfile: ./tasks/basalte.tasks.yaml
+  agents:
+    taskfile: ./tasks/agents.tasks.yaml
 
 tasks:
   default:
