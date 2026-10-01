@@ -38,9 +38,16 @@ room or a plant, where steps 2 and 3 fall away (see step 1).
    named: current value, age, unit — for the channel and for the siblings
    that matter. The bundle says which channels exist, this says what they
    read now. No number in the answer without its unit.
-3. **History.** `query_timeseries` on `knx_1h` for the channel, from the day
-   before the start until now, one-hour buckets. When was the last value,
-   where is the break?
+3. **History.** One `query_timeseries` call, never a second one over part of
+   the same window: `table: "knx_1h"`, `columns: ["avg_value", "min_value",
+   "max_value", "sample_count"]`, `filters: {"ga": "<the channel's ga>"}`,
+   `bucket: "1 hour"`, from the day before the start to the day after it —
+   or until now, when the start is less than three days back. The bundle's
+   observations already carry the last two days, so an older episode needs
+   no second window. When was the last value, where is the break?
+   These are the tables and their columns; looking them up with
+   `list_data_sources` or `get_schema` costs a round and tells you nothing
+   more.
 4. **Surroundings.** At least one, at most three queries, depending on the
    fault (see below). A result with zero rows is not a finding: drop the
    filter and ask again. `functions` are ETS function names such as
@@ -97,9 +104,12 @@ The "Open:" line is dropped when nothing was left open.
   neighbouring channels of the same device and the same room: if all are
   silent it is the device or the bus, if only one is silent it is the
   channel.
-- **appliance_runtime, appliance_standby, freezer_icing**: the appliance's
-  current channel via `query_timeseries`, plus `query_room_climate` for the
-  appliance's room with `functions: ["Raumklima", "Sensorik"]`, and
+- **appliance_runtime, appliance_standby, freezer_icing**: in the same step
+  and the same window as step 3, `query_timeseries` on `knx_appliance_1h`
+  with `columns: ["idle_floor", "on_samples", "total_samples"]` and the
+  channel's `ga` — `idle_floor` is the hour's standby draw, `on_samples` of
+  `total_samples` how much of the hour it ran — plus `query_room_climate`
+  for the appliance's room with `functions: ["Raumklima", "Sensorik"]`, and
   `query_presence` for the same window: an appliance drawing power while
   somebody is home may just be in use, one that does so with the house empty
   cannot be.
