@@ -32,8 +32,10 @@ spec:
       disk_cache: none
       disk_aio: io_uring
 
-      # Network configuration
+      # Network configuration: VLAN 10 "Kubernetes" (192.168.10.0/24, see README). The provider
+      # tags new VMs only; a VM that already runs is not re-tagged — set its tag by hand in Proxmox.
       network_bridge: vmbr0
+      vlan: 10
 
 ---
 metadata:
@@ -84,8 +86,10 @@ spec:
           disk_cache: none
           disk_aio: io_uring
 
-      # Network configuration
+      # Network configuration: VLAN 10 "Kubernetes" (192.168.10.0/24, see README). The provider
+      # tags new VMs only; a VM that already runs is not re-tagged — set its tag by hand in Proxmox.
       network_bridge: vmbr0
+      vlan: 10
 
 ---
 ###############################################################################
@@ -122,8 +126,10 @@ spec:
       disk_cache: none
       disk_aio: io_uring
 
-      # Network configuration
+      # Network configuration: VLAN 10 "Kubernetes" (192.168.10.0/24, see README). The provider
+      # tags new VMs only; a VM that already runs is not re-tagged — set its tag by hand in Proxmox.
       network_bridge: vmbr0
+      vlan: 10
 
 ---
 metadata:
@@ -174,5 +180,7 @@ spec:
           disk_cache: none
           disk_aio: io_uring
 
-      # Network configuration
+      # Network configuration: VLAN 10 "Kubernetes" (192.168.10.0/24, see README). The provider
+      # tags new VMs only; a VM that already runs is not re-tagged — set its tag by hand in Proxmox.
       network_bridge: vmbr0
+      vlan: 10

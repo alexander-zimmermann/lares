@@ -31,34 +31,19 @@ replacements:
           delimiter: "//"
           index: 1
 
-  # Inject BGP IP Pool ranges. default and alloy pools must be disjoint
-  # (Cilium rejects overlapping CIDRs even with disjoint serviceSelectors).
-  - sourceValue: 192.168.11.0
-    targets:
-      - select:
-          kind: CiliumLoadBalancerIPPool
-          name: default-bgp-ip-pool
-        fieldPaths:
-          - spec.blocks.0.start
-  - sourceValue: 192.168.11.199
-    targets:
-      - select:
-          kind: CiliumLoadBalancerIPPool
-          name: default-bgp-ip-pool
-        fieldPaths:
-          - spec.blocks.0.stop
+  # Inject the LoadBalancer pool: dev's own routed /24, same `.200`-`.254` block as prod
   - sourceValue: 192.168.11.200
     targets:
       - select:
           kind: CiliumLoadBalancerIPPool
-          name: alloy-bgp-ip-pool
+          name: default-bgp-ip-pool
         fieldPaths:
           - spec.blocks.0.start
-  - sourceValue: 192.168.11.255
+  - sourceValue: 192.168.11.254
     targets:
       - select:
           kind: CiliumLoadBalancerIPPool
-          name: alloy-bgp-ip-pool
+          name: default-bgp-ip-pool
         fieldPaths:
           - spec.blocks.0.stop
 
