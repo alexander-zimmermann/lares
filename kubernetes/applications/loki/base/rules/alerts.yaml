@@ -54,10 +54,11 @@ groups:
       - alert: LogHttp5xxBurst
         # Server errors as the apps log them: common log format (nginx),
         # logfmt (Grafana, Loki) and JSON (Authentik). Traefik's are a
-        # Prometheus rule on its request counters.
+        # Prometheus rule on its request counters; agent-log quotes a model
+        # source's status, not one it served.
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+", container!~"loki|traefik"}
+            count_over_time({namespace=~".+", container=~".+", container!~"loki|traefik|agent-log"}
               |~ `" 5[0-9]{2} |status=5[0-9]{2}\b|"status":\s?5[0-9]{2}\b` [5m])
           ) > 10
         for: 5m
@@ -83,3 +84,30 @@ groups:
         annotations:
           summary: "An IngressRoute points at a backend Traefik cannot resolve"
           description: "{{ $value }} Traefik line(s) in 12h naming a Service that is missing or has no servers. Query the traefik container for 'service not found', 'no servers found' or 'does not exist' to see which."
+
+  # Hermes logs to files only; the agent-log container streams agent.log
+  - name: agent-alerts
+    rules:
+      - alert: AgentModelSourceFailing
+        # Hermes' line format, anchored: a bare 402 would hit the timestamp's
+        # milliseconds. What does not heal itself fires on its first line;
+        # fallbacks, 401/403 (refreshed) and rate limits on the third in an hour.
+        expr: |
+          sum by (signal) (
+            count_over_time({namespace="agents", container="agent-log"}
+              |~ `Model entitlement rejection: | error_type=NotFoundError | summary=HTTP 402: |(?i:insufficient.credits)|refused for billing/credits|Codex token refresh failed|No Codex credentials stored|Codex auth is missing`
+              | regexp `(?P<signal>Model entitlement rejection|NotFoundError|HTTP 402|(?i:insufficient.credits)|refused for billing/credits|Codex token refresh failed|No Codex credentials stored|Codex auth is missing)`
+              [1h])
+          ) > 0
+          or
+          sum by (signal) (
+            count_over_time({namespace="agents", container="agent-log"}
+              |~ `Fallback activated| error_type=(AuthenticationError|PermissionDeniedError|RateLimitError) `
+              | regexp `(?P<signal>Fallback activated|AuthenticationError|PermissionDeniedError|RateLimitError)`
+              [1h])
+          ) >= 3
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent model source failing ({{ $labels.signal }})"
+          description: "{{ $value }} '{{ $labels.signal }}' line(s) in Hermes' agent.log in the last hour: the configured model source is failing, and runs fall back to Grok on prepaid credits or fail. The signal names the cause; a lost Codex login is repaired with `task agents:login-codex`."
