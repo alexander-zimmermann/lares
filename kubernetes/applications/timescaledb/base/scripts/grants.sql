@@ -104,12 +104,16 @@ BEGIN
     -- it as the run ends. SELECT comes with them, not on top of them:
     -- UPDATE ... WHERE reads the key columns, and the dedupe INSERT reads
     -- back the id it conflicted on. Sequence usage covers the identity
-    -- column on INSERT.
+    -- column on INSERT. A run a person asks for on an episode reads that
+    -- episode — the fault and what it was measured on, which its pointer
+    -- and its mail name — so SELECT on episodes, and on nothing else of the
+    -- engine's.
     IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_agent_trigger')
        AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'agent_runs') THEN
         GRANT CONNECT ON DATABASE homelab TO lares_agent_trigger;
         GRANT USAGE ON SCHEMA public TO lares_agent_trigger;
         GRANT SELECT, INSERT, UPDATE ON agent_runs, agent_memory TO lares_agent_trigger;
+        GRANT SELECT ON episodes TO lares_agent_trigger;
         EXECUTE format('GRANT USAGE, SELECT ON SEQUENCE %s TO lares_agent_trigger',
                        pg_get_serial_sequence('public.agent_runs', 'id'));
     END IF;

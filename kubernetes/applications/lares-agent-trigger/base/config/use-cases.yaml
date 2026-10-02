@@ -6,6 +6,8 @@
 # and reads it directly. `task agents:create-harness-config` renders from it,
 # with the trigger's generator at the deployed tag, the Hermes configuration,
 # the cron job set and the bridge's allowlists; pre-commit fails on a stale one.
+# The trigger mounts the cron job set too and brings Hermes's jobs in line with
+# it at every start.
 #
 # A use case either runs (`enabled: true`) or says why it does not
 # (`dormant: <reason>`). There is no `enabled: false`. A dormant use case
@@ -27,6 +29,16 @@ tool_servers:
     access: read
     # The verdict, cache and NATS-subscribe tools stay out.
     tools: [list_*, get_*, query_*, correlate_events, search_wiki]
+
+  # Starts a use case now through the trigger: a run on an episode, or a
+  # schedule's job. The chat only, so no event or cron run starts further runs.
+  - name: lares-runs
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    client: lares-runs
+    key_env: LARES_RUNS_MCP_KEY
+    timeout_seconds: 30
+    access: request
+    tools: [start_run]
 
 use_cases:
   - name: explain-episode
@@ -67,7 +79,7 @@ use_cases:
     # one per answered message. No skill: the message is the assignment.
     trigger:
       kind: message
-    tools: [lares]
+    tools: [lares, lares-runs]
     output: [discord]
     # Nothing here is enforced for a chat: the 201st message is answered, and
     # the day is counted on the ledger.
@@ -97,8 +109,9 @@ use_cases:
     # The rejected proposals it must not bring back for twelve weeks.
     memory: true
     dormant: >-
-      Waits for its skill, the back-test and memory tools, and the pull-request
-      delivery.
+      Waits for its skill, the back-test and memory tools, the pull-request
+      delivery, and a way to give its cron job lares-memory: the Jobs API takes
+      no tool list and no model per job.
 
   # The rest of the rated catalogue, each waiting for its own spec: trigger, tools
   # and output as rated there, schedules and budgets as placeholders.
@@ -319,7 +332,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec, its skill and the cron-job reconcile.
+    dormant: Waits for its own spec and its skill.
 
   - name: restore-probe
     sentence: >-

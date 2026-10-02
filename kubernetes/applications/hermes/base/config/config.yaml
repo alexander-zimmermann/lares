@@ -130,6 +130,7 @@ platform_toolsets:
   discord:
     - hermes-discord
     - lares
+    - lares-runs
   api_server:
     - lares
   cron:
@@ -157,3 +158,11 @@ mcp_servers:
         - query_*
         - correlate_events
         - search_wiki
+  lares-runs:
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    headers:
+      Authorization: Bearer ${env:LARES_RUNS_MCP_KEY}
+    timeout: 30
+    tools:
+      include:
+        - start_run

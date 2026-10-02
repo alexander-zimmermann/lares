@@ -117,8 +117,10 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Subject key** — how a run names its subject in the ledger's
   `subject_key` column: the subject's own id, optionally followed by a
   colon and what tells two runs on it apart — `42` or `42:escalated` for
-  an episode and the event kind that started the run, the session id and
-  the turn for a chat turn, the job id and the execution for a cron run.
+  an episode and the event kind that started the run,
+  `42:message:20261002T142005Z` for a run on it a person asked for in chat,
+  the session id and the turn for a chat turn, the job id and the execution
+  for a cron run.
   The colon is what lets one episode carry both an `appeared` and an
   `escalated` run under a unique key on use case and subject. Everything
   reading the ledger for a subject matches the whole key or the part
@@ -132,12 +134,15 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   list names: the MCP bridge under one machine-client key, with the
   allowlist the bridge enforces for that key. Each says where it may be
   granted: a read server to any run, a writing one only to the scheduled
-  runs that name it, a request server (a write request a person approves
-  elsewhere) only to the chat.
+  runs that name it, a request server (what a person asks for in
+  conversation: a write request approved elsewhere, a run started now) only
+  to the chat.
 - **Trigger** — what turns an event, a schedule or a message into a run,
   and the service that does it (`lares-agent-trigger`). Three kinds, one
   per use case: an episode event off the bus, a cron expression the
-  harness runs, or a person writing in chat. The trigger decides alone
+  harness runs, or a person writing in chat. The chat can also ask the
+  trigger to start an event or schedule use case now; that run's row
+  then records the message as what started it. The trigger decides alone
   whether an event deserves a run — the filter, the dedupe against the
   ledger's unique key and the daily cap all sit here — and it is the only
   writer of the ledger. Not the thing that fires: an episode event is an
