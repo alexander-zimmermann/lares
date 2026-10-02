@@ -154,10 +154,18 @@ mcp_servers:
     tools:
       include:
         - list_*
-        - get_*
+        - get_schema
+        - get_forecast
+        - get_pv_forecast
+        - get_weather_forecast
+        - get_episode
+        - get_current_state
+        - get_current_knx
+        - get_wiki_page
         - query_*
         - correlate_events
         - search_wiki
+        - backtest_fault
   lares-runs:
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     headers:

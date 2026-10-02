@@ -63,6 +63,12 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: lares-runs-mcp-key
+    # Bridge: the key of client lares-memory, the memory of a use case that keeps one
+    LARES_MEMORY_MCP_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: lares-memory-mcp-key
     # API server: /health for the probes, the Runs and Jobs API for lares-agent-trigger
     API_SERVER_ENABLED:
       value: "true"

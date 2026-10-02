@@ -27,8 +27,22 @@ tool_servers:
     key_env: LARES_MCP_KEY
     timeout_seconds: 60
     access: read
-    # The verdict, cache and NATS-subscribe tools stay out.
-    tools: [list_*, get_*, query_*, correlate_events, search_wiki]
+    # The verdict, memory, run and NATS-subscribe tools stay out; the get_ tools
+    # by name, get_memory being the memory server's.
+    tools:
+      - list_*
+      - get_schema
+      - get_forecast
+      - get_pv_forecast
+      - get_weather_forecast
+      - get_episode
+      - get_current_state
+      - get_current_knx
+      - get_wiki_page
+      - query_*
+      - correlate_events
+      - search_wiki
+      - backtest_fault
 
   # Starts a use case now through the trigger: a run on an episode, or a
   # schedule's job. The chat only, so no event or cron run starts further runs.
@@ -39,6 +53,16 @@ tool_servers:
     timeout_seconds: 30
     access: request
     tools: [start_run]
+
+  # A use case's memory: read on the bridge, appended through the trigger. Only
+  # for `memory: true`, and on the cron surface only while every cron job keeps one.
+  - name: lares-memory
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    client: lares-memory
+    key_env: LARES_MEMORY_MCP_KEY
+    timeout_seconds: 30
+    access: memory
+    tools: [get_memory, append_memory]
 
 use_cases:
   - name: explain-episode
@@ -108,10 +132,7 @@ use_cases:
     language: en
     # The rejected proposals it must not bring back for twelve weeks.
     memory: true
-    dormant: >-
-      Waits for its skill, the back-test and memory tools, the pull-request
-      delivery, and a way to give its cron job lares-memory: the Jobs API takes
-      no tool list and no model per job.
+    dormant: Waits for its skill and the pull-request delivery.
 
   # The rest of the rated catalogue, each waiting for its own spec: trigger, tools
   # and output as rated there, schedules and budgets as placeholders.
