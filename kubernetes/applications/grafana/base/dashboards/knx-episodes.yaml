@@ -28,7 +28,7 @@ spec:
           }
         ]
       },
-      "description": "Vorfälle der Erkennungskette: wiederholte Beobachtungen eines Fehlers, zu einer Episode gefaltet. Ersetzt den Wochenbericht. Der Fehlersatz mit seiner Einheit steht in faults.yaml, der Schweregrad 0-3 ist der Zustellvertrag auf der Gruppenadresse.",
+      "description": "Vorfälle der Erkennungskette: wiederholte Beobachtungen eines Fehlers, zu einer Episode gefaltet. Ersetzt den Wochenbericht. Der Fehlersatz mit seiner Einheit steht in faults.yaml, der Schweregrad 0-3 ist der Zustellvertrag auf der Gruppenadresse. Die Erklärungen der Agenten stehen neben ihrem Vorfall, ihre Urteile neben denen je Fehler; Gesundheit und Gedächtnis der Agenten in der Zeile Agenten.",
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 1,
@@ -412,7 +412,7 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "WITH ep AS (\n  SELECT e.id, e.fault, e.subject, e.started_at, e.last_seen_at, e.ended_at,\n         e.severity, e.peak_score, e.externally_delivered,\n         e.affected AS betroffen,\n         COALESCE(e.room, 'ohne Raum') AS raum,\n         e.verdict\n  FROM episode_view e\n  WHERE (e.folded = ('$herkunft' = 'folded') OR '$herkunft' = 'both')\n    AND e.fault = ANY (ARRAY[${fault:sqlstring}]::text[])\n    AND e.severity = ANY (ARRAY[${severity:csv}]::smallint[])\n)\nSELECT severity                                  AS \"Schweregrad\",\n       fault                                     AS \"Fehler\",\n       betroffen                                 AS \"Betroffen\",\n       raum                                      AS \"Raum\",\n       started_at                                AS \"Seit\",\n       EXTRACT(EPOCH FROM now() - started_at)    AS \"Dauer\",\n       round(peak_score::numeric, 2)             AS \"Spitzenwert\",\n       last_seen_at                              AS \"Zuletzt gesehen\",\n       CASE WHEN externally_delivered THEN 'Basalte' ELSE 'Engine' END AS \"Quelle\",\n       CASE verdict WHEN 'real' THEN 'Echt' WHEN 'nonsense' THEN 'Unsinn' ELSE 'unbeurteilt' END AS \"Urteil\"\nFROM ep WHERE ended_at IS NULL\nORDER BY severity DESC, started_at;",
+              "rawSql": "WITH ep AS (\n  SELECT e.id, e.fault, e.subject, e.started_at, e.last_seen_at, e.ended_at,\n         e.severity, e.peak_score, e.externally_delivered,\n         e.affected AS betroffen,\n         COALESCE(e.room, 'ohne Raum') AS raum,\n         e.verdict\n  FROM episode_view e\n  WHERE (e.folded = ('$herkunft' = 'folded') OR '$herkunft' = 'both')\n    AND e.fault = ANY (ARRAY[${fault:sqlstring}]::text[])\n    AND e.severity = ANY (ARRAY[${severity:csv}]::smallint[])\n)\nSELECT severity                                  AS \"Schweregrad\",\n       fault                                     AS \"Fehler\",\n       betroffen                                 AS \"Betroffen\",\n       x.tldr                                    AS \"Erklärung\",\n       raum                                      AS \"Raum\",\n       started_at                                AS \"Seit\",\n       EXTRACT(EPOCH FROM now() - started_at)    AS \"Dauer\",\n       round(peak_score::numeric, 2)             AS \"Spitzenwert\",\n       last_seen_at                              AS \"Zuletzt gesehen\",\n       CASE WHEN externally_delivered THEN 'Basalte' ELSE 'Engine' END AS \"Quelle\",\n       CASE verdict WHEN 'real' THEN 'Echt' WHEN 'nonsense' THEN 'Unsinn' ELSE 'unbeurteilt' END AS \"Urteil\",\n       regexp_replace(x.text, '^-# ', '- ', 'gn') AS \"Erklärungstext\"\nFROM ep\nLEFT JOIN LATERAL (\n  SELECT r.tldr, r.text\n  FROM agent_runs r\n  WHERE r.subject_kind = 'episode'\n    AND split_part(r.subject_key, ':', 1) = ep.id::text\n    AND r.status = 'completed' AND r.tldr IS NOT NULL\n  ORDER BY r.created_at DESC\n  LIMIT 1\n) x ON true\nWHERE ended_at IS NULL\nORDER BY severity DESC, started_at;",
               "refId": "A"
             }
           ],
@@ -590,6 +590,49 @@ spec:
                     "value": 100
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Erklärung"
+                },
+                "properties": [
+                  {
+                    "id": "custom.minWidth",
+                    "value": 320
+                  },
+                  {
+                    "id": "custom.tooltip.field",
+                    "value": "Erklärungstext"
+                  },
+                  {
+                    "id": "custom.tooltip.placement",
+                    "value": "right"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Erklärungstext"
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom.viz",
+                    "value": true
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "markdown",
+                      "dynamicHeight": true
+                    }
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 560
+                  }
+                ]
               }
             ]
           },
@@ -611,7 +654,7 @@ spec:
               }
             ]
           },
-          "description": "Was gerade offen ist, das Schwerste zuerst. Der Spitzenwert steht in der Einheit des Fehlers — die Sätze dazu stehen in faults.yaml."
+          "description": "Was gerade offen ist, das Schwerste zuerst. Der Spitzenwert steht in der Einheit des Fehlers — die Sätze dazu stehen in faults.yaml. Die Erklärung ist der erste Satz der neuesten Erklärung des Agenten zu diesem Vorfall; das Dreieck oben links in der Zelle zeigt den Volltext, ein Klick darauf hält ihn fest."
         },
         {
           "id": 7,
@@ -1435,7 +1478,7 @@ spec:
           },
           "gridPos": {
             "h": 9,
-            "w": 24,
+            "w": 12,
             "x": 0,
             "y": 54
           },
@@ -1559,7 +1602,773 @@ spec:
             "xTickLabelRotation": 0,
             "xTickLabelSpacing": 0
           },
-          "description": "Wie oft ein Fehler recht hatte und wie oft nicht \u2014 die Zahl, gegen die eine Schwelle von Hand bewegt wird. \"Unbeurteilt\" ist, was noch niemand beurteilt hat. Urteile werden im Gespr\u00e4ch gesetzt (set_verdict), automatisch passiert nichts."
+          "description": "Wie oft ein Fehler recht hatte und wie oft nicht — die Zahl, gegen die eine Schwelle von Hand bewegt wird. \"Unbeurteilt\" ist, was noch niemand beurteilt hat. Urteile werden im Gespräch gesetzt (set_verdict), automatisch passiert nichts."
+        },
+        {
+          "id": 17,
+          "type": "table",
+          "title": "Urteile je Anwendungsfall (12 Wochen)",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 54
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "WITH runs AS (\n  SELECT use_case, status, verdict, output_state\n  FROM agent_runs\n  WHERE created_at > now() - INTERVAL '12 weeks'\n),\npulls AS (\n  SELECT use_case,\n         count(*) FILTER (WHERE state = 'merged')              AS merged,\n         count(*) FILTER (WHERE state IN ('merged', 'closed')) AS decided\n  FROM runs, unnest(output_state) AS s(state)\n  GROUP BY 1\n)\nSELECT r.use_case                                           AS \"Anwendungsfall\",\n       count(*) FILTER (WHERE r.status = 'completed')       AS \"Läufe\",\n       count(r.verdict)                                     AS \"Beurteilt\",\n       count(*) FILTER (WHERE r.verdict = 'helpful')::numeric\n         / NULLIF(count(r.verdict), 0)                      AS \"Hilfreich\",\n       p.merged::numeric / NULLIF(p.decided, 0)             AS \"Gemergt\"\nFROM runs r\nLEFT JOIN pulls p ON p.use_case = r.use_case\nGROUP BY r.use_case, p.merged, p.decided\nORDER BY 2 DESC;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "Hilfreich|Gemergt"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percentunit"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "Läufe|Beurteilt"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "description": "Je Anwendungsfall die abgeschlossenen Läufe der letzten zwölf Wochen, wie viele davon beurteilt sind und welcher Anteil der beurteilten hilfreich war — die Zahl für die Frage, ob sich ein Agent lohnt. \"Gemergt\" ist der Anteil gemergter Pull Requests unter den entschiedenen, aus jedem Lauf, der einen geöffnet hat; offene zählen erst, wenn sie gemergt oder geschlossen sind. Fester Zeitraum, unabhängig von der Auswahl oben. Urteile werden im Gespräch gesetzt (set_verdict)."
+        },
+        {
+          "id": 18,
+          "type": "row",
+          "title": "Agenten",
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 63
+          },
+          "panels": []
+        },
+        {
+          "id": 19,
+          "type": "stat",
+          "title": "Gateway",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "454b7787-9ec4-42fc-9bf7-100716723e20"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 0,
+            "y": 64
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "454b7787-9ec4-42fc-9bf7-100716723e20"
+              },
+              "editorMode": "code",
+              "expr": "max(hermes_gateway_up) or vector(0)",
+              "legendFormat": "Gateway",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "text": "Aus",
+                      "color": "red",
+                      "index": 0
+                    },
+                    "1": {
+                      "text": "Läuft",
+                      "color": "green",
+                      "index": 1
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "description": "Ob das Hermes-Gateway läuft. Fällt es aus, sind der Chat, die geplanten Anwendungsfälle und jeder ausgelöste Lauf mit weg; Aus steht hier spätestens fünf Minuten danach, AgentGatewayDown folgt."
+        },
+        {
+          "id": 20,
+          "type": "stat",
+          "title": "Discord",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "454b7787-9ec4-42fc-9bf7-100716723e20"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 8,
+            "y": 64
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "454b7787-9ec4-42fc-9bf7-100716723e20"
+              },
+              "editorMode": "code",
+              "expr": "max(hermes_platform_up{hermes_platform=\"discord\"}) or vector(0)",
+              "legendFormat": "Discord",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "0": {
+                      "text": "Getrennt",
+                      "color": "red",
+                      "index": 0
+                    },
+                    "1": {
+                      "text": "Verbunden",
+                      "color": "green",
+                      "index": 1
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "description": "Ob das Gateway mit Discord verbunden ist — getrennt bleiben Nachrichten vom Telefon unbeantwortet. Ohne laufendes Gateway steht auch hier Getrennt."
+        },
+        {
+          "id": 21,
+          "type": "stat",
+          "title": "Fehlgeschlagene Läufe",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 16,
+            "y": 64
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT count(*) AS \"Fehlgeschlagen\"\nFROM agent_runs\nWHERE status = 'failed' AND $__timeFilter(created_at);",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "description": "Läufe im Zeitbereich, die gescheitert sind — ein ausgelöster Lauf erst nach seinem Wiederholungsversuch, ein Chat- oder Zeitplanlauf sofort. Den Grund nennt das Ledger: list_runs mit status=failed."
+        },
+        {
+          "id": 22,
+          "type": "timeseries",
+          "title": "Läufe je Tag nach Status",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', created_at) AS time,\n       CASE status WHEN 'completed' THEN 'Abgeschlossen'\n                   WHEN 'failed'    THEN 'Fehlgeschlagen'\n                   WHEN 'capped'    THEN 'Gedeckelt'\n                   WHEN 'running'   THEN 'Läuft'\n                   ELSE                  'Wartet' END AS metric,\n       count(*) AS value\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1, 2 ORDER BY 1;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "unit": "none",
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.7,
+                "drawStyle": "bars",
+                "fillOpacity": 75,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Abgeschlossen"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "green"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Fehlgeschlagen"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "red"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Gedeckelt"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Läuft"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Wartet"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "purple"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "description": "Jeder Lauf jedes Anwendungsfalls, ob von einem Vorfall, einem Zeitplan, aus dem Chat oder von Hand gestartet, am Tag seines Beginns. Gedeckelt heißt: das Tagesbudget des Anwendungsfalls war verbraucht, der Lauf fand nicht statt."
+        },
+        {
+          "id": 23,
+          "type": "timeseries",
+          "title": "Kosten je Tag",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 68
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', created_at)  AS time,\n       sum(cost)                       AS \"Kosten\",\n       sum(tokens_in + tokens_out)     AS \"Tokens\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1 ORDER BY 1;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "unit": "none",
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.7,
+                "drawStyle": "bars",
+                "fillOpacity": 75,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Kosten"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "currencyUSD"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "orange"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Tokens"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "custom.axisPlacement",
+                    "value": "right"
+                  },
+                  {
+                    "id": "custom.drawStyle",
+                    "value": "points"
+                  },
+                  {
+                    "id": "custom.pointSize",
+                    "value": 7
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "description": "Was die Läufe je Tag gekostet haben, in US-Dollar, wie Hermes sie schätzt. Über das ChatGPT-Abo kostet ein Lauf 0, Chatläufe tragen keinen Betrag — die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
+        },
+        {
+          "id": 24,
+          "type": "table",
+          "title": "Gedächtnis je Anwendungsfall",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 76
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT use_case                      AS \"Anwendungsfall\",\n       updated_at                    AS \"Stand\",\n       text                          AS \"Gedächtnis\"\nFROM agent_memory\nORDER BY use_case;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Anwendungsfall"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 190
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Stand"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Gedächtnis"
+                },
+                "properties": [
+                  {
+                    "id": "custom.wrapText",
+                    "value": true
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "description": "Die Arbeitsnotizen jedes Anwendungsfalls, die sein nächster Lauf mitliest — höchstens rund 8 KB, die ältesten Zeilen fallen zuerst. Steht hier etwas Falsches, wird es in agent_memory von Hand berichtigt. Ohne Zeitgrenze: eine Zeile je Anwendungsfall, auch wenn sie lange niemand angefasst hat."
         },
         {
           "id": 14,
@@ -1570,7 +2379,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 63
+            "y": 86
           },
           "panels": [
             {
@@ -1585,7 +2394,7 @@ spec:
                 "h": 10,
                 "w": 24,
                 "x": 0,
-                "y": 64
+                "y": 87
               },
               "targets": [
                 {
@@ -1596,7 +2405,7 @@ spec:
                   "editorMode": "code",
                   "format": "table",
                   "rawQuery": true,
-                  "rawSql": "WITH ep AS (\n  SELECT e.id, e.fault, e.subject, e.started_at, e.last_seen_at, e.ended_at,\n         e.severity, e.peak_score, e.externally_delivered,\n         e.affected AS betroffen,\n         COALESCE(e.room, 'ohne Raum') AS raum,\n         e.verdict\n  FROM episode_view e\n  WHERE (e.folded = ('$herkunft' = 'folded') OR '$herkunft' = 'both')\n    AND e.fault = ANY (ARRAY[${fault:sqlstring}]::text[])\n    AND e.severity = ANY (ARRAY[${severity:csv}]::smallint[])\n)\nSELECT ended_at                                   AS \"Beendet\",\n       severity                                   AS \"Schweregrad\",\n       fault                                      AS \"Fehler\",\n       betroffen                                  AS \"Betroffen\",\n       raum                                       AS \"Raum\",\n       started_at                                 AS \"Begonnen\",\n       EXTRACT(EPOCH FROM ended_at - started_at)  AS \"Dauer\",\n       round(peak_score::numeric, 2)              AS \"Spitzenwert\",\n       CASE verdict WHEN 'real' THEN 'Echt' WHEN 'nonsense' THEN 'Unsinn' ELSE 'unbeurteilt' END AS \"Urteil\"\nFROM ep WHERE ended_at IS NOT NULL AND $__timeFilter(ended_at)\nORDER BY ended_at DESC LIMIT 200;",
+                  "rawSql": "WITH ep AS (\n  SELECT e.id, e.fault, e.subject, e.started_at, e.last_seen_at, e.ended_at,\n         e.severity, e.peak_score, e.externally_delivered,\n         e.affected AS betroffen,\n         COALESCE(e.room, 'ohne Raum') AS raum,\n         e.verdict\n  FROM episode_view e\n  WHERE (e.folded = ('$herkunft' = 'folded') OR '$herkunft' = 'both')\n    AND e.fault = ANY (ARRAY[${fault:sqlstring}]::text[])\n    AND e.severity = ANY (ARRAY[${severity:csv}]::smallint[])\n)\nSELECT ended_at                                   AS \"Beendet\",\n       severity                                   AS \"Schweregrad\",\n       fault                                      AS \"Fehler\",\n       betroffen                                  AS \"Betroffen\",\n       x.tldr                                     AS \"Erklärung\",\n       raum                                       AS \"Raum\",\n       started_at                                 AS \"Begonnen\",\n       EXTRACT(EPOCH FROM ended_at - started_at)  AS \"Dauer\",\n       round(peak_score::numeric, 2)              AS \"Spitzenwert\",\n       CASE verdict WHEN 'real' THEN 'Echt' WHEN 'nonsense' THEN 'Unsinn' ELSE 'unbeurteilt' END AS \"Urteil\",\n       regexp_replace(x.text, '^-# ', '- ', 'gn') AS \"Erklärungstext\"\nFROM ep\nLEFT JOIN LATERAL (\n  SELECT r.tldr, r.text\n  FROM agent_runs r\n  WHERE r.subject_kind = 'episode'\n    AND split_part(r.subject_key, ':', 1) = ep.id::text\n    AND r.status = 'completed' AND r.tldr IS NOT NULL\n  ORDER BY r.created_at DESC\n  LIMIT 1\n) x ON true\nWHERE ended_at IS NOT NULL AND $__timeFilter(ended_at)\nORDER BY ended_at DESC LIMIT 200;",
                   "refId": "A"
                 }
               ],
@@ -1712,6 +2521,49 @@ spec:
                         "value": 110
                       }
                     ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Erklärung"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.minWidth",
+                        "value": 320
+                      },
+                      {
+                        "id": "custom.tooltip.field",
+                        "value": "Erklärungstext"
+                      },
+                      {
+                        "id": "custom.tooltip.placement",
+                        "value": "right"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Erklärungstext"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom.viz",
+                        "value": true
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "markdown",
+                          "dynamicHeight": true
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 560
+                      }
+                    ]
                   }
                 ]
               },
@@ -1733,7 +2585,7 @@ spec:
                   }
                 ]
               },
-              "description": "Die letzten 200 abgeschlossenen Vorfälle im Zeitbereich — die Vergleichsbasis, gegen die eine Schwelle getunt wird."
+              "description": "Die letzten 200 abgeschlossenen Vorfälle im Zeitbereich — die Vergleichsbasis, gegen die eine Schwelle getunt wird. Die Erklärung ist der erste Satz der neuesten Erklärung des Agenten zu diesem Vorfall; das Dreieck oben links in der Zelle zeigt den Volltext, ein Klick darauf hält ihn fest."
             }
           ]
         }
