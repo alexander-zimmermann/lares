@@ -11,7 +11,8 @@ spec:
     - name: instance-down
       rules:
         - alert: InstanceDown
-          expr: up == 0
+          # AgentTriggerDown covers the agents namespace, as a warning
+          expr: up{namespace!="agents"} == 0
           for: 1m
           labels:
             severity: critical
@@ -649,3 +650,113 @@ spec:
           annotations:
             summary: "Loki ruler has no rules loaded"
             description: "loki_prometheus_rule_group_rules has been absent for 15m — the ruler found nothing under /rules/fake. Check that the loki-alert-rules ConfigMap exists and the loki-sc-rules container wrote it. Every log-content alert is blind until this clears."
+
+    # Hermes pushes these gauges over OTLP; nothing scrapes it, and s6
+    # restarts a crashed gateway before Kubernetes notices.
+    - name: agents
+      rules:
+        - alert: AgentGatewayDown
+          # The gauge is 1 while the gateway lives; dead, it goes stale after 5m
+          expr: absent(hermes_gateway_up)
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent gateway down"
+            description: "Hermes has not reported a running gateway for 10m — the Discord chat, the scheduled use cases and every triggered run are down with it. Check the hermes pod in agents and the agent-log container beside it."
+
+        - alert: AgentGatewayFlapping
+          # Every gateway start mints a new instance id (config.yaml is read-only)
+          expr: count(count_over_time(hermes_gateway_up[1h])) > 5
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent gateway restarting over and over"
+            description: "{{ $value }} gateway processes reported within the last hour. s6 restarts a crashing gateway within seconds, so Kubernetes shows neither a container restart nor a failed probe; the agent-log container shows what kills it."
+
+        - alert: AgentDiscordDisconnected
+          # Every adapter state is its own series; one changing state must not reset `for`
+          expr: max without (hermes_platform_state) (hermes_platform_up{hermes_platform="discord"}) == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent Discord connection down"
+            description: "The gateway runs, but its Discord adapter has not been connected for 10m — messages from the phone go unanswered. A revoked bot token stays down until a new one is sealed; the agent-log container names the adapter's error."
+
+        - alert: AgentCronStalled
+          # The scheduler ticks every minute while it runs
+          expr: hermes_cron_jobs_overdue > 0 or hermes_cron_scheduler_heartbeat_age_seconds > 180
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent cron scheduler stalled"
+            description: "For 10m Hermes has reported overdue scheduled jobs or a scheduler heartbeat older than 3m — the scheduled use cases are not running. `hermes cron doctor` in the hermes pod names the cause."
+
+        - alert: AgentTriggerNotListening
+          # Idle with no pull waiting, or holding one event past its 40m ackWait
+          expr: |
+            nats_consumer_num_waiting{consumer_name="agent-trigger"} == 0
+            and (
+              nats_consumer_num_ack_pending{consumer_name="agent-trigger"} == 0
+              or min_over_time(nats_consumer_num_ack_pending{consumer_name="agent-trigger"}[45m]) > 0
+            )
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent trigger not listening"
+            description: "agent-trigger has no pull waiting on the EPISODE stream: idle for 10m, or stuck on one event for longer than any run takes. The pod runs, but new episodes go unexplained until it is restarted and binds again."
+
+        - alert: AgentTriggerBacklog
+          # One event takes at most 25m: two ten-minute attempts and the retry delay
+          expr: nats_consumer_num_pending{consumer_name="agent-trigger"} > 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent trigger falling behind"
+            description: "{{ $value }} episode event(s) have waited 30m for agent-trigger, longer than one event takes with its retry. The trigger hangs in a run or cannot keep up; its log and the open rows in agent_runs show which."
+
+        - alert: AgentTriggerConsumerAbsent
+          # `up` covers the NATS exporter; this covers the consumer being gone
+          expr: |
+            absent(nats_consumer_num_waiting{consumer_name="agent-trigger"})
+            or absent(nats_consumer_num_pending{consumer_name="agent-trigger"})
+            or absent(nats_consumer_num_ack_pending{consumer_name="agent-trigger"})
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent trigger consumer missing"
+            description: "The NATS exporter has reported no agent-trigger consumer on EPISODE for 15m — the Consumer CRD was deleted or never reconciled. The trigger cannot bind, and AgentTriggerNotListening and AgentTriggerBacklog are blind until this clears."
+
+        - alert: AgentTriggerDown
+          expr: up{job="lares-agent-trigger"} == 0 or absent(up{job="lares-agent-trigger"})
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent trigger down"
+            description: "Prometheus has not scraped lares-agent-trigger for 5m. No episode starts a run, and no chat or cron turn gets its row in agent_runs."
+
+        - alert: AgentTriggerCapped
+          # The counter appears with its first refusal, which increase() misses
+          expr: |
+            sum by (use_case) (increase(agent_trigger_capped_total[1h])) > 0
+            or sum by (use_case) (agent_trigger_capped_total unless agent_trigger_capped_total offset 1h)
+          labels:
+            severity: info
+          annotations:
+            summary: "Agent use case {{ $labels.use_case }} hit its daily cap"
+            description: "{{ $labels.use_case }} has spent its runs for the day and refused events in the last hour. Those episodes stay unexplained; the cap resets at midnight."
+
+        - alert: AgentMessengerBudget
+          # Counted, not enforced: the 201st message is still answered
+          expr: sum(increase(agent_trigger_recorded_runs_total{use_case="messenger"}[1d])) > 200
+          labels:
+            severity: info
+          annotations:
+            summary: "Agent chat above its daily budget"
+            description: "{{ $value | printf \"%.0f\" }} chat turns in the last 24h, above the messenger's 200 a day. Nothing is refused; a loop or a stuck conversation looks like this."

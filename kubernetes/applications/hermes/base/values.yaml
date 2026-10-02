@@ -21,6 +21,10 @@ deployment:
   # The image entrypoint (s6-overlay) stays; only the command changes.
   args: ["gateway", "run"]
 
+  # Registry authentication for the dhi.io image of agent-log
+  imagePullSecrets:
+    - name: dhi-registry-secret
+
   env:
     # Discord: the bot token and the one user allowed to talk to it
     DISCORD_BOT_TOKEN:
@@ -193,6 +197,24 @@ deployment:
 
   securityContext:
     fsGroup: 10000
+
+  # Streams agent.log, which Hermes writes as a file only, from its end for Loki
+  additionalContainers:
+    agent-log:
+      image: dhi.io/busybox:1-alpine3.23
+      command: ["tail", "-n", "0", "-F", "/opt/data/logs/agent.log"]
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+          readOnly: true
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: [ALL]
 
 service:
   enabled: true

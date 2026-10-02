@@ -56,6 +56,12 @@ alertmanager:
                 - severity = "critical"
               receiver: "argocd-critical"
               repeat_interval: 4h
+        # Agent platform: warning at most, never a siren; its info findings mail above
+        - matchers:
+            - alertname =~ "Agent.*"
+          group_by: ["alertname", "use_case"]
+          receiver: "agents-warning"
+          repeat_interval: 24h
         # Delivery watchdogs: grouped by their shared label instead of the
         # alertname, so a multi-bridge outage stays a single notification
         - matchers:
@@ -127,6 +133,11 @@ alertmanager:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/devices-token
             user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
             priority: "0"
+      - name: "agents-warning"
+        pushover_configs:
+          - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/agents-token
+            user_key_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/user_key
+            priority: "0"
       - name: "watchdog"
         pushover_configs:
           - token_file: /etc/alertmanager/secrets/alertmanager-pushover-tokens/prometheus-token
@@ -139,7 +150,7 @@ alertmanager:
         email_configs:
           - to: admin@zimmermann.sh
     # Setting this key replaces the chart defaults wholesale — the first four
-    # rules below are carried over from them verbatim.
+    # rules below are carried over from them, the third sparing agent findings.
     inhibit_rules:
       - source_matchers:
           - severity = "critical"
@@ -155,6 +166,8 @@ alertmanager:
           - alertname = "InfoInhibitor"
         target_matchers:
           - severity = "info"
+          # Agent findings have no namespace for a warning to share; they mail on their own
+          - alertname !~ "Agent.*"
         equal: ["namespace"]
       - target_matchers:
           - alertname = "InfoInhibitor"
