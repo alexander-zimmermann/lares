@@ -2,12 +2,12 @@ applicationName: lares-agent-trigger
 
 deployment:
   enabled: true
-  # The use-case file comes in as a hashed ConfigMap (pod rolls on change), and
-  # there is no Stakater Reloader controller in the cluster.
+  # The use-case file and the cron job set come in as hashed ConfigMaps (pod
+  # rolls on change), and there is no Stakater Reloader controller in the cluster.
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.6.0
+    tag: 0.7.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -23,6 +23,9 @@ deployment:
   env:
     USE_CASES_FILE:
       value: /etc/lares-agent-trigger/use-cases.yaml
+    # The cron job set rendered from it, reconciled into Hermes at every start
+    CRON_JOBS_FILE:
+      value: /etc/lares-agent-trigger/cron-jobs.yaml
     NATS_SERVERS:
       value: nats://nats.nats.svc.cluster.local:4222
     # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
@@ -79,12 +82,16 @@ deployment:
     # The episode on the knx-episodes dashboard; the host is set per overlay
     DASHBOARD_EPISODE_URL:
       value: PLACEHOLDER_DASHBOARD_EPISODE_URL
-    # Hook receiver: Hermes posts every finished chat and cron turn here, signed
-    # with the key both pods read from the hermes SealedSecret
+    # Hook receiver and the trigger's own API: Hermes posts every finished chat
+    # and cron turn here, signed with the key both pods read from the hermes
+    # SealedSecret; the bridge forwards start_run here with a key sealed for both
+    # namespaces
     HTTP_PORT:
       value: "8080"
     HOOK_SECRET_FILE:
       value: /etc/lares-agent-trigger/hook-secret
+    API_KEY_FILE:
+      value: /etc/lares-agent-trigger/api-key
     LOG_FORMAT:
       value: json
     METRICS_PORT:
@@ -99,6 +106,9 @@ deployment:
     use-cases:
       configMap:
         name: lares-agent-trigger-use-cases
+    cron-jobs:
+      configMap:
+        name: lares-agent-trigger-cron-jobs
     nats-credentials:
       secret:
         secretName: lares-agent-trigger-nats-credentials
@@ -138,11 +148,21 @@ deployment:
         items:
           - key: trigger-hook-secret
             path: trigger-hook-secret
+    api-key:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: trigger-api-key
+            path: trigger-api-key
 
   volumeMounts:
     use-cases:
       mountPath: /etc/lares-agent-trigger/use-cases.yaml
       subPath: use-cases.yaml
+      readOnly: true
+    cron-jobs:
+      mountPath: /etc/lares-agent-trigger/cron-jobs.yaml
+      subPath: cron-jobs.yaml
       readOnly: true
     nats-credentials:
       mountPath: /etc/lares-agent-trigger/nkey-seed
@@ -171,6 +191,10 @@ deployment:
     hook-secret:
       mountPath: /etc/lares-agent-trigger/hook-secret
       subPath: trigger-hook-secret
+      readOnly: true
+    api-key:
+      mountPath: /etc/lares-agent-trigger/api-key
+      subPath: trigger-api-key
       readOnly: true
 
   ports:

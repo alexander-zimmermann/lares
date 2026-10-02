@@ -7,7 +7,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
-    tag: 1.22.0
+    tag: 1.23.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -66,6 +66,12 @@ deployment:
       value: http://wiki-js.wiki-js.svc
     MCP_WIKIJS_TOKEN_FILE:
       value: /etc/lares-mcp-bridge/wikijs-token
+    # start_run carries the chat's request to lares-agent-trigger, with the key
+    # sealed for both namespaces and mounted from the SealedSecret in this directory.
+    MCP_TRIGGER_URL:
+      value: http://lares-agent-trigger.agents.svc.cluster.local:8080
+    MCP_TRIGGER_KEY_FILE:
+      value: /etc/lares-mcp-bridge/trigger-api-key
     MCP_LOG_FORMAT:
       value: json
     TZ:
@@ -114,6 +120,12 @@ deployment:
         items:
           - key: clients.json
             path: clients.json
+    trigger-api-key:
+      secret:
+        secretName: lares-mcp-bridge-trigger-api-key
+        items:
+          - key: api-key
+            path: api-key
 
   volumeMounts:
     db-username:
@@ -143,6 +155,10 @@ deployment:
     auth-clients:
       mountPath: /etc/lares-mcp-bridge/auth-clients.json
       subPath: clients.json
+      readOnly: true
+    trigger-api-key:
+      mountPath: /etc/lares-mcp-bridge/trigger-api-key
+      subPath: api-key
       readOnly: true
 
   ports:

@@ -39,7 +39,8 @@ spec:
               protocol: TCP
 
     # lares-agent-trigger reaching the harness's API server: the Runs API is
-    # how an episode event becomes a run, and the trigger is the only caller.
+    # how an episode event becomes a run, the Jobs API how the cron jobs are
+    # kept in line with the declaration; the trigger is the only caller.
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: agents
@@ -50,7 +51,7 @@ spec:
               protocol: TCP
 
     # hermes posting every finished chat and cron turn to lares-agent-trigger,
-    # which writes its ledger row.
+    # which writes its ledger row; the bridge forwarding the chat's start_run.
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: agents

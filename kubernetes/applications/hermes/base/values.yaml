@@ -53,7 +53,13 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: lares-mcp-key
-    # API server: /health for the probes now, run creation for agent-trigger later
+    # Bridge: the key of client lares-runs, the chat's start_run
+    LARES_RUNS_MCP_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: lares-runs-mcp-key
+    # API server: /health for the probes, the Runs and Jobs API for lares-agent-trigger
     API_SERVER_ENABLED:
       value: "true"
     API_SERVER_HOST:
