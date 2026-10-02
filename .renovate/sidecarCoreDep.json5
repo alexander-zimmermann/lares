@@ -21,7 +21,8 @@
         "commands": ["uv lock --upgrade-package nats-bridge-core"],
         "fileFilters": ["uv.lock"],
         "executionMode": "branch",
-        "installTools": { "uv": {} },
+        // containerbase installs uv through pip, so python comes first
+        "installTools": { "python": {}, "uv": {} },
       },
     },
   ],
