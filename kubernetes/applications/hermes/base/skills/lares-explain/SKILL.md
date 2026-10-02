@@ -31,7 +31,7 @@ room or a plant, where steps 2 and 3 fall away (see step 1).
    `heat_recovery_decay` name a plant. Then skip steps 2 and 3 and take two
    queries from the per-fault list below instead. Never pass that subject
    to a tool as a `room`: it is the engine's own slug, the catalog spells
-   the room differently (`eg-buero` is `Büro`). `query_room_climate`
+   the room differently (`eg-buero` is `Büro (E3)`). `query_room_climate`
    validates a room against the catalog and names the valid ones when it
    misses, so one call finds the right spelling.
 2. **Channel.** `get_current_knx` with the `room` and `name` the bundle
@@ -117,8 +117,9 @@ The "Open:" line is dropped when nothing was left open.
   apart. `query_room_climate` for the room says what the room asked for,
   `query_heating_cycles` says what the burner delivered.
   Resolve the room first: the subject is a slug (`eg-buero`), the catalog
-  spells it `Büro`, and passing the slug returns `unknown_room` with every
-  valid room named — pick yours from that list.
+  spells it `Büro (E3)` — room names carry the ETS space id — and passing
+  the slug returns `unknown_room` with every valid room named; pick yours
+  from that list.
   Narrow with `functions: ["Raumklima", "Sensorik", "Sicherheit"]`, which
   drops sockets, blinds, scenes and presence, and set `bucket` as wide as
   the episode window — unfiltered and hourly, four hours of one room are

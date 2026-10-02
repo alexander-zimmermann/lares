@@ -20,10 +20,17 @@ the `lares-explain` skill.
 - A channel is a KNX group address, named `Function.Device.Datapoint`
   (`Beleuchtung.Gebäude.EG.Küche.Track.Ein/Aus-Status`). `room` and
   `function` are separate filter fields, `name` matches a substring.
-- Functions are the ETS names: `Beleuchtung`, `Schalten`, `Sensorik`,
-  `Beschattung`, `Bewegungsmelder`, `Raumklima`, `Versorgungstechnik`,
-  `Haushaltstechnik`, `Sicherheitstechnik`, `Entertainment`, `Person`.
-  Datapoints such as `Temperatur` are not functions.
+- Functions are the ETS names, all sixteen of them: `Allgemein`,
+  `Bedienelement`, `Beleuchtung`, `Beschattung`, `Bewegungsmelder`,
+  `Diagnose`, `Entertainment`, `Haushaltstechnik`, `Person`, `Raumklima`,
+  `Schalten`, `Sensorik`, `Sicherheit`, `Sicherheitstechnik`,
+  `Versorgungstechnik`, `Zutritt`. Datapoints such as `Temperatur` are not
+  functions.
+- A room carries the ETS space id: `Büro (E3)`, `Flur (K1)`, `Küche (E6)`.
+  Pass it whole. The id is what tells rooms of the same name apart — there
+  are three `Flur`, one per storey, and a `Garten` building part beside the
+  `Garten (G5)` room inside it. `query_room_climate` names every valid room
+  when it does not know the one you passed.
 - Names, rooms and datapoints are German; keep them verbatim.
 
 ## Command and state
