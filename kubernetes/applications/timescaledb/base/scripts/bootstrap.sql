@@ -912,6 +912,26 @@ CREATE INDEX IF NOT EXISTS agent_runs_use_case_created_at_idx
     ON agent_runs (use_case, created_at DESC);
 
 -- =========================================================
+-- An episode's newest explanation, so the dashboard and the MCP bridge
+-- pick the same one instead of each carrying its own copy of the rule:
+-- the newest completed run on the episode that left a first line. A run
+-- still going, capped or failed has nothing to show beside it. The subject
+-- key is the episode id, alone or with the event kind behind a colon.
+-- =========================================================
+CREATE OR REPLACE VIEW episode_explanation_view AS
+SELECT DISTINCT ON (episode_id)
+       -- Inside CASE, so a filter pushed into the view never casts a chat key.
+       CASE WHEN r.subject_kind = 'episode'
+            THEN split_part(r.subject_key, ':', 1)::bigint
+       END AS episode_id,
+       r.id AS run_id, r.tldr, r.text, r.created_at
+FROM agent_runs r
+WHERE r.subject_kind = 'episode'
+  AND r.status = 'completed'
+  AND r.tldr IS NOT NULL
+ORDER BY episode_id, r.created_at DESC;
+
+-- =========================================================
 -- Memory — the working notes of one use case, bounded to about 8 KB by
 -- the writer so the notes stay readable on the dashboard and never grow
 -- into a hidden second truth beside the ledger. Owner-editable.
