@@ -779,6 +779,41 @@ CREATE INDEX IF NOT EXISTS episodes_fault_started_at_idx ON episodes (fault, sta
 CREATE UNIQUE INDEX IF NOT EXISTS episodes_open_idx
     ON episodes (fault, subject) WHERE ended_at IS NULL;
 
+CREATE TABLE IF NOT EXISTS episode_observations (
+    episode_id BIGINT           NOT NULL REFERENCES episodes (id),
+    time       TIMESTAMPTZ      NOT NULL,
+    score      DOUBLE PRECISION NOT NULL,
+    severity   SMALLINT         NOT NULL CHECK (severity BETWEEN 1 AND 3),
+    value      DOUBLE PRECISION,
+    PRIMARY KEY (episode_id, time)
+);
+
+CREATE TABLE IF NOT EXISTS episode_events (
+    episode_id BIGINT      NOT NULL REFERENCES episodes (id),
+    kind       TEXT        NOT NULL CHECK (kind IN ('appeared', 'escalated', 'ended')),
+    time       TIMESTAMPTZ NOT NULL,
+    severity   SMALLINT    NOT NULL CHECK (severity BETWEEN 0 AND 3),
+    PRIMARY KEY (episode_id, kind)
+);
+
+-- =========================================================
+-- Episode verdicts — was that situation real, or was it nonsense? One row
+-- per episode: the primary key is what makes a second thought overwrite the
+-- first instead of stacking beside it. Binary on purpose, and attached to
+-- the individual episode rather than the fault, so it stays visible *when*
+-- a fault is wrong — only at night, only in summer, only while the laundry
+-- runs. Nothing in the detection pipeline reads this table; the counts are
+-- shown per fault on the dashboard and thresholds stay a human decision.
+-- Written by lares_mcp_bridge_verdict — a role that may touch this table and
+-- nothing else, because the MCP bridge is where verdicts are given.
+-- Read by lares_mcp_bridge_ro / grafana_ro.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS episode_verdicts (
+    episode_id BIGINT      PRIMARY KEY REFERENCES episodes (id),
+    verdict    TEXT        NOT NULL CHECK (verdict IN ('real', 'nonsense')),
+    decided_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- =========================================================
 -- One reading of an episode, so the dashboard, the MCP bridge and anything
 -- else resolve a subject the same way instead of each carrying its own copy
@@ -819,41 +854,6 @@ SELECT r.id, r.fault, r.subject, r.kind AS entity_kind, r.ref AS entity_ref,
 FROM resolved r
 LEFT JOIN ga_catalog c ON c.ga = r.ref
 LEFT JOIN episode_verdicts v ON v.episode_id = r.id;
-
-CREATE TABLE IF NOT EXISTS episode_observations (
-    episode_id BIGINT           NOT NULL REFERENCES episodes (id),
-    time       TIMESTAMPTZ      NOT NULL,
-    score      DOUBLE PRECISION NOT NULL,
-    severity   SMALLINT         NOT NULL CHECK (severity BETWEEN 1 AND 3),
-    value      DOUBLE PRECISION,
-    PRIMARY KEY (episode_id, time)
-);
-
-CREATE TABLE IF NOT EXISTS episode_events (
-    episode_id BIGINT      NOT NULL REFERENCES episodes (id),
-    kind       TEXT        NOT NULL CHECK (kind IN ('appeared', 'escalated', 'ended')),
-    time       TIMESTAMPTZ NOT NULL,
-    severity   SMALLINT    NOT NULL CHECK (severity BETWEEN 0 AND 3),
-    PRIMARY KEY (episode_id, kind)
-);
-
--- =========================================================
--- Episode verdicts — was that situation real, or was it nonsense? One row
--- per episode: the primary key is what makes a second thought overwrite the
--- first instead of stacking beside it. Binary on purpose, and attached to
--- the individual episode rather than the fault, so it stays visible *when*
--- a fault is wrong — only at night, only in summer, only while the laundry
--- runs. Nothing in the detection pipeline reads this table; the counts are
--- shown per fault on the dashboard and thresholds stay a human decision.
--- Written by lares_mcp_bridge_verdict — a role that may touch this table and
--- nothing else, because the MCP bridge is where verdicts are given.
--- Read by lares_mcp_bridge_ro / grafana_ro.
--- =========================================================
-CREATE TABLE IF NOT EXISTS episode_verdicts (
-    episode_id BIGINT      PRIMARY KEY REFERENCES episodes (id),
-    verdict    TEXT        NOT NULL CHECK (verdict IN ('real', 'nonsense')),
-    decided_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
 
 -- =========================================================
 -- Ledger — one row per run of every use case, whatever started it: an
