@@ -80,3 +80,15 @@ patches:
             memory: 256Mi
           limits:
             memory: 768Mi
+      # agent-log only tails a file
+      - op: test
+        path: /spec/template/spec/containers/1/name
+        value: agent-log
+      - op: add
+        path: /spec/template/spec/containers/1/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi
