@@ -4,6 +4,12 @@ version: "3"
 # password file — come from the git-ignored .env (keys in .env.example).
 dotenv: [".env"]
 
+env:
+  # The validate tasks install a sidecar package from its deployed tag, each
+  # with its own `requires-python` floor; uv's own interpreters are always a
+  # patch release it can download to meet one.
+  UV_PYTHON_PREFERENCE: only-managed
+
 vars:
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
   KNX_BRIDGE_DIR: "{{.ROOT_DIR}}/../knx-nats-bridge"
