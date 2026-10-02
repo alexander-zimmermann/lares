@@ -745,6 +745,15 @@ SELECT add_retention_policy('mcp_forecasts', INTERVAL '90 days');
 -- `fingerprint` is the rule that last made the row — the fault's kind and
 -- parameters — so a later rule can tell its own rows from an earlier
 -- rule's leftovers; NULL on rows older than the stamp.
+-- `subject` is the engine's own token for what was measured: a group
+-- address for a channel fault, a slug for one measured on a room or a
+-- plant. `entity_kind` says which, and `entity_ref` is the group address
+-- the catalog resolves — the subject itself for a channel, a channel that
+-- stands for the room or plant otherwise. A ref is never the channel a
+-- room fault measured: it compares a setpoint against a reading, so
+-- reporting either as "the channel" would be a claim the fault never made.
+-- Both NULL on rows older than the columns; `episode_view` reads those the
+-- way they were always read.
 -- Written by lares_diagnostics_engine_rw, read by lares_mcp_bridge_ro / grafana_ro.
 -- Plain tables, no hypertable — episode volume is a handful a week.
 -- =========================================================
@@ -752,6 +761,8 @@ CREATE TABLE IF NOT EXISTS episodes (
     id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     fault        TEXT             NOT NULL,
     subject      TEXT             NOT NULL,
+    entity_kind  TEXT             CHECK (entity_kind IN ('channel', 'room', 'plant')),
+    entity_ref   TEXT,
     started_at   TIMESTAMPTZ      NOT NULL,
     last_seen_at TIMESTAMPTZ      NOT NULL,
     -- Set when the quiet window makes the end decidable, not at last_seen_at.
@@ -767,6 +778,47 @@ CREATE INDEX IF NOT EXISTS episodes_fault_started_at_idx ON episodes (fault, sta
 -- One open episode per fault and subject, enforced for every writer.
 CREATE UNIQUE INDEX IF NOT EXISTS episodes_open_idx
     ON episodes (fault, subject) WHERE ended_at IS NULL;
+
+-- =========================================================
+-- One reading of an episode, so the dashboard, the MCP bridge and anything
+-- else resolve a subject the same way instead of each carrying its own copy
+-- of the rule. `affected` is what a person recognises: the channel's name
+-- for a channel fault, the room for a room fault, the plant's own token for
+-- a plant — never a channel for a fault that did not measure one.
+-- Rows written before `entity_kind` existed carry neither column; they are
+-- read as they always were, by pulling a group address out of the subject.
+-- =========================================================
+CREATE OR REPLACE VIEW episode_view AS
+WITH resolved AS (
+    SELECT e.*,
+           COALESCE(
+               e.entity_kind,
+               CASE WHEN e.subject ~ '[0-9]+/[0-9]+/[0-9]+' THEN 'channel' END
+           ) AS kind,
+           COALESCE(
+               e.entity_ref, substring(e.subject from '[0-9]+/[0-9]+/[0-9]+')
+           ) AS ref
+    FROM episodes e
+)
+SELECT r.id, r.fault, r.subject, r.kind AS entity_kind, r.ref AS entity_ref,
+       -- Only a channel fault was measured on the channel the ref names;
+       -- for the others the ref merely locates the room.
+       CASE WHEN r.kind = 'channel' THEN c.ga END   AS channel_ga,
+       CASE WHEN r.kind = 'channel' THEN c.name END AS channel_name,
+       c.room,
+       -- Falls back the way it always did when the catalog does not know
+       -- the address: the bracketed label, then the subject itself.
+       COALESCE(
+           CASE r.kind WHEN 'channel' THEN c.name WHEN 'room' THEN c.room END,
+           substring(r.subject from '\[([^]]+)\]'),
+           r.subject
+       ) AS affected,
+       r.severity, r.started_at, r.last_seen_at, r.ended_at,
+       r.peak_score, r.folded, r.externally_delivered, r.fingerprint,
+       v.verdict, v.decided_at
+FROM resolved r
+LEFT JOIN ga_catalog c ON c.ga = r.ref
+LEFT JOIN episode_verdicts v ON v.episode_id = r.id;
 
 CREATE TABLE IF NOT EXISTS episode_observations (
     episode_id BIGINT           NOT NULL REFERENCES episodes (id),
