@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  // pep621 skips PEP 508 direct references, so the nats-bridge-core dependency
-  // is tracked by its git tag instead. Only the bridges that depend on it.
+  // pep621 skips PEP 508 direct references, so a git-tag dependency is tracked
+  // by its tag instead. Only the repos that depend on one.
   "customManagers": [
     {
       "customType": "regex",

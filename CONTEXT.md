@@ -136,7 +136,9 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   granted: a read server to any run, a writing one only to the scheduled
   runs that name it, a request server (what a person asks for in
   conversation: a write request approved elsewhere, a run started now) only
-  to the chat.
+  to the chat, a memory server only to the use cases that keep a memory —
+  and, where the harness hands one list to all event runs or all cron jobs,
+  only while every use case on that list keeps one.
 - **Trigger** — what turns an event, a schedule or a message into a run,
   and the service that does it (`lares-agent-trigger`). Three kinds, one
   per use case: an episode event off the bus, a cron expression the
