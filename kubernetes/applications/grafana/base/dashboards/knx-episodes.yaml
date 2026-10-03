@@ -826,7 +826,8 @@ spec:
                     "value": null
                   }
                 ]
-              }
+              },
+              "min": 0
             },
             "overrides": []
           },
@@ -1311,7 +1312,8 @@ spec:
                     "value": null
                   }
                 ]
-              }
+              },
+              "min": 0
             },
             "overrides": [
               {
@@ -2027,7 +2029,8 @@ spec:
                     "value": null
                   }
                 ]
-              }
+              },
+              "min": 0
             },
             "overrides": [
               {
@@ -2197,7 +2200,8 @@ spec:
                     "value": null
                   }
                 ]
-              }
+              },
+              "min": 0
             },
             "overrides": [
               {
