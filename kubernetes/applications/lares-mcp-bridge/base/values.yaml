@@ -7,7 +7,7 @@ deployment:
   reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
-    tag: 1.23.0
+    tag: 1.24.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
