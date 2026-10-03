@@ -6,14 +6,19 @@ the `lares-explain` skill.
 
 ## Source
 
-- Everything comes from the `lares` bridge. There is no other source: no
-  bus, no cluster, no files. What the bridge does not return does not exist
-  for you.
+- Everything about the house comes from the `lares` bridge. There is no
+  other source for it: no bus, no cluster, no files. What the bridge does
+  not return does not exist for you.
 - The bridge is read-only; it refuses writes, do not try. Verdicts
   (`set_verdict`, on an episode or on a run) belong to the owner, never
   call it.
 - The house wiki (`search_wiki`, `get_wiki_page`) holds the human-written
   references: devices, vendor notes, how the house works.
+- Where they are offered, the `github` tools read GitHub as a read-only
+  App: the owner's repositories under `alexander-zimmermann`.
+  Every issue lives in `lares`, the cluster's GitOps repository; one about
+  another repository carries its name as title prefix (`lares-mcp-bridge:
+  …`). They read only; never offer to open, comment on or label anything.
 
 ## Channels
 

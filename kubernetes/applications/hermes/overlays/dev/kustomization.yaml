@@ -92,3 +92,26 @@ patches:
             memory: 8Mi
           limits:
             memory: 32Mi
+      # The init containers copy two files; the page cache of the 25 MB binary counts here
+      - op: test
+        path: /spec/template/spec/initContainers/0/name
+        value: github-mcp-copier
+      - op: add
+        path: /spec/template/spec/initContainers/0/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 64Mi
+      - op: test
+        path: /spec/template/spec/initContainers/1/name
+        value: github-mcp-server
+      - op: add
+        path: /spec/template/spec/initContainers/1/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 64Mi
