@@ -156,6 +156,14 @@ spec:
             - port: "443"
               protocol: TCP
 
+    # lares-mcp-bridge: the backup tools read the PBS API
+    - toFQDNs:
+        - matchName: backup-01.zimmermann.eu.com
+      toPorts:
+        - ports:
+            - port: "8007"
+              protocol: TCP
+
     # node-red: UniFi mails via iCloud IMAP
     - toFQDNs:
         - matchName: imap.mail.me.com

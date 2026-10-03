@@ -69,6 +69,13 @@ deployment:
     # update_wiki_page writes under a second key whose group has read:pages + write:pages
     MCP_WIKIJS_WRITE_TOKEN_FILE:
       value: /etc/lares-mcp-bridge/wikijs-write-token
+    # The backup tools read the PBS through an API token with the Audit role on /
+    MCP_PBS_URL:
+      value: https://backup-01.zimmermann.eu.com:8007
+    MCP_PBS_TOKEN_ID:
+      value: lares-mcp-bridge@pbs!lares-mcp-bridge
+    MCP_PBS_TOKEN_FILE:
+      value: /etc/lares-mcp-bridge/pbs-token
     # The storage tools list rustfs with a list-only key (Kyverno clones from `rustfs` namespace)
     MCP_S3_ENDPOINT_URL:
       value: http://rustfs-svc.rustfs.svc.cluster.local:9000
@@ -130,6 +137,12 @@ deployment:
         items:
           - key: token
             path: token
+    pbs-token:
+      secret:
+        secretName: lares-mcp-bridge-pbs-token
+        items:
+          - key: token
+            path: token
     s3-access-key:
       secret:
         secretName: rustfs-lares-mcp-bridge-credentials
@@ -182,6 +195,10 @@ deployment:
       readOnly: true
     wikijs-write-token:
       mountPath: /etc/lares-mcp-bridge/wikijs-write-token
+      subPath: token
+      readOnly: true
+    pbs-token:
+      mountPath: /etc/lares-mcp-bridge/pbs-token
       subPath: token
       readOnly: true
     s3-access-key:
