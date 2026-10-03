@@ -155,9 +155,12 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   verdict.
 - **Delivery** — the deterministic step of the trigger that carries a
   run's output to the targets its use case declares: the ledger row
-  itself, a message on the Discord home channel, a mail through the relay.
-  The model never delivers; the row records what each target created, and
-  a target that refuses fails the run while the stored text stays.
+  itself, a message on the Discord home channel, a mail through the relay,
+  a page in the house wiki. The model never delivers; the row records what
+  each target created, and a target that refuses fails the run while the
+  stored text stays. A target that takes a structured output — the wiki
+  page names its path and title in a block after the run's sentence — is
+  checked before anything leaves, and one that does not hold is a refusal.
 - **Ledger** — the `agent_runs` table: one row per run of every kind,
   whatever started it. The one place verdicts, counts and costs are read
   from; its unique key on use case and subject is also what keeps one

@@ -104,6 +104,16 @@ spec:
             - port: "5432"
               protocol: TCP
 
+    # lares-mcp-bridge: the storage tools list the object store (Service port 9000)
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: rustfs
+            app.kubernetes.io/name: rustfs
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
+
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: wiki-js

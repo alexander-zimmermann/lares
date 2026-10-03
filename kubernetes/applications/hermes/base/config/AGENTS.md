@@ -14,6 +14,10 @@ the `lares-explain` skill.
   call it.
 - The house wiki (`search_wiki`, `get_wiki_page`) holds the human-written
   references: devices, vendor notes, how the house works.
+- The object store (`list_s3_buckets`, `list_s3_objects`) holds the
+  database and volume backups and the archive; `nats-archive` and
+  `influxdb-archive` are the history older than a year and exist nowhere
+  else. Its newest objects say whether the backups still arrive.
 - Where they are offered, the `github` tools read GitHub as a read-only
   App: the owner's repositories under `alexander-zimmermann`.
   Every issue lives in `lares`, the cluster's GitOps repository; one about
