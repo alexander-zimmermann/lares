@@ -18,7 +18,8 @@ ledger_hook:
   trigger_url: http://lares-agent-trigger.agents.svc.cluster.local:8080
   secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
 
-# What `tools` may name: the bridge under one client key each, `tools` its allowlist.
+# What `tools` may name: the bridge under one client key each, `tools` its
+# allowlist; and GitHub's own server, which Hermes starts itself.
 tool_servers:
   # Reads the house: series, episodes, runs, catalog, wiki.
   - name: lares
@@ -64,6 +65,19 @@ tool_servers:
     access: memory
     tools: [get_memory, append_memory]
 
+  # Reads GitHub: issues, pull requests, files, commits. Hermes starts it,
+  # signed in as the read-only App lares-agent-reader.
+  - name: github
+    kind: github
+    command: /opt/github-mcp/github-mcp-server
+    app_id: 5176504
+    installation_id: 167554581
+    private_key_file: /etc/github-reader/private-key
+    toolsets: [repos, issues, pull_requests]
+    timeout_seconds: 60
+    access: read
+    tools: [get_*, list_*, search_*, issue_read, pull_request_read]
+
 use_cases:
   - name: explain-episode
     sentence: >-
@@ -103,7 +117,7 @@ use_cases:
     # one per answered message. No skill: the message is the assignment.
     trigger:
       kind: message
-    tools: [lares, lares-runs]
+    tools: [lares, lares-runs, github]
     output: [discord]
     # Nothing here is enforced for a chat: the 201st message is answered, and
     # the day is counted on the ledger.

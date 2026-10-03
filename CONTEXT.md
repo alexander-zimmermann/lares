@@ -132,7 +132,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   does not run yet stays in the file as dormant, with its reason.
 - **Tool server** (avoid: MCP server, toolset) — what a use case's tool
   list names: the MCP bridge under one machine-client key, with the
-  allowlist the bridge enforces for that key. Each says where it may be
+  allowlist the bridge enforces for that key, or GitHub's own server, which
+  the harness starts signed in as a GitHub App that may only read. Each says where it may be
   granted: a read server to any run, a writing one only to the scheduled
   runs that name it, a request server (what a person asks for in
   conversation: a write request approved elsewhere, a run started now) only

@@ -97,6 +97,15 @@
 - name: "status/stale"
   color: "e11d21"
   description: "Stale"
+- name: "status/needs-info"
+  color: "e11d21"
+  description: "Waiting on reporter for more information"
+- name: "status/needs-triage"
+  color: "e11d21"
+  description: "Maintainer needs to evaluate this issue"
+- name: "status/ready-for-agent"
+  color: "e11d21"
+  description: "Fully specified, ready for an AFK agent"
 
 # Types
 - name: "type/bug"
@@ -120,3 +129,30 @@
 - name: "type/security"
   color: "d1adfe"
   description: "Security Fix"
+
+# Wayfinder
+- name: "wayfinder:grilling"
+  color: "c2e0c6"
+  description: "Wayfinder decision ticket (conversation)"
+- name: "wayfinder:map"
+  color: "5319e7"
+  description: "Wayfinder map issue"
+- name: "wayfinder:prototype"
+  color: "fef2c0"
+  description: "Wayfinder prototype ticket"
+- name: "wayfinder:research"
+  color: "bfd4f2"
+  description: "Wayfinder research ticket (agent)"
+- name: "wayfinder:task"
+  color: "d4c5f9"
+  description: "Wayfinder task ticket"
+
+# Agents
+- name: "agent/proposal"
+  color: "1d76db"
+  description: "Proposed by the lares-agent GitHub App"
+
+# Repositories
+- name: "lares-mcp-bridge"
+  color: "5319E7"
+  description: "MCP server bridging IoT data sources (KNX/EMS/WARP/SolarEdge) to Claude"

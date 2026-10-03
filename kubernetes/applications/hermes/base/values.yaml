@@ -25,6 +25,42 @@ deployment:
   imagePullSecrets:
     - name: dhi-registry-secret
 
+  # Copy the GitHub MCP server out of its distroless image with a static busybox;
+  # the chart orders init containers by name.
+  initContainers:
+    github-mcp-copier:
+      image: busybox:1.37.0-musl
+      command: ["cp", "/bin/busybox", "/copier/busybox"]
+      volumeMounts:
+        - name: github-mcp-copier
+          mountPath: /copier
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: [ALL]
+    github-mcp-server:
+      image: ghcr.io/github/github-mcp-server:v1.14.0
+      command:
+        ["/copier/busybox", "cp", "/server/github-mcp-server", "/opt/github-mcp/github-mcp-server"]
+      volumeMounts:
+        - name: github-mcp-copier
+          mountPath: /copier
+          readOnly: true
+        - name: github-mcp
+          mountPath: /opt/github-mcp
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: [ALL]
+
   env:
     # Discord: the bot token and the one user allowed to talk to it
     DISCORD_BOT_TOKEN:
@@ -136,6 +172,21 @@ deployment:
     hermes-skills:
       configMap:
         name: hermes-skills
+    # The GitHub MCP server binary, and the static busybox that copies it
+    github-mcp-copier:
+      emptyDir:
+        medium: Memory
+        sizeLimit: 4Mi
+    github-mcp:
+      emptyDir:
+        sizeLimit: 64Mi
+    # The key of the read-only GitHub App the GitHub server signs in as
+    github-reader:
+      secret:
+        secretName: lares-agent-github-reader
+        items:
+          - key: private-key
+            path: private-key
 
   volumeMounts:
     # All Hermes state: sessions, memories, cron ledger, logs
@@ -162,6 +213,13 @@ deployment:
     hermes-skills:
       mountPath: /opt/data/skills/lares-explain/SKILL.md
       subPath: SKILL.md
+      readOnly: true
+    # The generated config starts the GitHub server from here, signed in with this key
+    github-mcp:
+      mountPath: /opt/github-mcp
+      readOnly: true
+    github-reader:
+      mountPath: /etc/github-reader
       readOnly: true
 
   ports:
