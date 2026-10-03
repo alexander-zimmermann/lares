@@ -27,3 +27,10 @@ pbs_user:
     role_id: "Audit"
     create_token: true
     token_name: "metrics"
+
+  ## lares-mcp-bridge: the agents' backup tools (token only)
+  lares-mcp-bridge:
+    path: "/"
+    role_id: "Audit"
+    create_token: true
+    token_name: "lares-mcp-bridge"
