@@ -14,6 +14,9 @@ the `lares-explain` skill.
   call it.
 - The house wiki (`search_wiki`, `get_wiki_page`) holds the human-written
   references: devices, vendor notes, how the house works.
+- The backup server (`list_pbs_datastores`, `list_pbs_snapshots`,
+  `list_pbs_tasks`) says what the PBS holds and whether it was verified; a
+  job state `null` means it never ran, not that it passed.
 - The object store (`list_s3_buckets`, `list_s3_objects`) holds the
   database and volume backups and the archive; `nats-archive` and
   `influxdb-archive` are the history older than a year and exist nowhere
