@@ -27,7 +27,22 @@ spec:
           containers:
             - name: compactor
               image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.8.0
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
               env:
+                # The image's HOME is /app, which the read-only root makes unwritable.
+                - name: HOME
+                  value: /tmp
+                - name: TMPDIR
+                  value: /tmp
                 - name: RUSTFS_URL
                   value: "http://rustfs-svc.rustfs.svc.cluster.local:9000"
                 - name: ACCESS_KEY
@@ -44,6 +59,9 @@ spec:
                 # Once nothing is left to catch up this costs a few existence probes.
                 - name: COMPACT_BACKFILL_DAYS
                   value: "5"
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
               resources:
                 requests:
                   cpu: "100m"
@@ -51,3 +69,6 @@ spec:
                 limits:
                   cpu: "1000m"
                   memory: "1Gi"
+          volumes:
+            - name: tmp
+              emptyDir: {}
