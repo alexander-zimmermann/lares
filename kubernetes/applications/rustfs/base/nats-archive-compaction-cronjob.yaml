@@ -26,7 +26,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: compactor
-              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.7.0
+              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.8.0
               env:
                 - name: RUSTFS_URL
                   value: "http://rustfs-svc.rustfs.svc.cluster.local:9000"
