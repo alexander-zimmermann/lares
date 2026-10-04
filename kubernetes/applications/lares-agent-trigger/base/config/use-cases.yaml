@@ -78,17 +78,6 @@ tool_servers:
     access: read
     tools: [get_*, list_*, search_*, issue_read, pull_request_read]
 
-  # Writes one page of the house wiki, under a Wiki.js key whose group may
-  # write pages. Only for the schedule use cases that name it, once a cron job
-  # can carry a tool list of its own.
-  - name: lares-wiki
-    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
-    client: lares-wiki
-    key_env: LARES_WIKI_MCP_KEY
-    timeout_seconds: 30
-    access: write
-    tools: [update_wiki_page]
-
 use_cases:
   - name: explain-episode
     sentence: >-
@@ -298,7 +287,7 @@ use_cases:
       kind: schedule
       cron: "0 5 * * 6"
     skill: lares-basalte-prose
-    tools: [lares, lares-wiki]
+    tools: [lares]
     output: [wiki_page]
     budget:
       tool_calls: 60
@@ -306,7 +295,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec and a cron job that can hold the wiki write.
+    dormant: Waits for its own spec and the trigger's Wiki.js key.
 
   - name: wiki-drift
     sentence: >-
@@ -316,7 +305,7 @@ use_cases:
       kind: schedule
       cron: "0 5 * * 0"
     skill: lares-wiki-drift
-    tools: [lares, github, lares-wiki]
+    tools: [lares, github]
     output: [wiki_page, github_pr]
     budget:
       tool_calls: 60
@@ -325,8 +314,8 @@ use_cases:
     language: de
     memory: false
     dormant: >-
-      Waits for its own spec, the GitHub reads and a cron job that can hold the
-      wiki write.
+      Waits for its own spec, the GitHub reads, the trigger's Wiki.js key and the
+      pull-request delivery.
 
   - name: data-quality
     sentence: >-
@@ -354,7 +343,7 @@ use_cases:
       kind: schedule
       cron: "0 6 1 * *"
     skill: lares-maintenance-plan
-    tools: [lares, lares-wiki]
+    tools: [lares]
     output: [wiki_page]
     budget:
       tool_calls: 60
@@ -362,7 +351,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec and a cron job that can hold the wiki write.
+    dormant: Waits for its own spec and the trigger's Wiki.js key.
 
   - name: energy-report
     sentence: >-
