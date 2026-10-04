@@ -21,7 +21,7 @@ Two reasons carry this:
 - **Reading and writing are two identities.** The harness reads issues,
   pull requests and files that anyone can write into; whatever such a text
   talks the model into, it holds no token that writes. The write App's
-  pull requests appear as `homelab-zimmermann-lares-agent[bot]` with the
+  pull requests appear as `lares-agent-writer[bot]` with the
   label `agent/proposal`, and the trigger reads their outcome back into the
   ledger, so the merged share of Propose is a count, not a guess.
 
