@@ -145,7 +145,7 @@ spec:
         - matchPattern: "*.discord.gg" # hermes: Discord gateway websocket and the per-region resume URL it hands out
         - matchPattern: "*.discordapp.com" # hermes: Discord CDN (attachments)
         - matchPattern: "*.discordapp.net" # hermes: Discord media proxy
-        - matchName: api.github.com # hermes: the GitHub MCP server's reads, the minter's installation tokens
+        - matchName: api.github.com # hermes: the GitHub MCP server's reads; lares-agent-trigger: deliveries and read-back as the write App
         - matchName: raw.githubusercontent.com # hermes: the GitHub MCP server fetches file contents here
         - matchName: PLACEHOLDER_AUTH_HOST
         - matchName: registry.npmjs.org # node-red: OIDC dependency at start, palette installs

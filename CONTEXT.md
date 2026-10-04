@@ -120,7 +120,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   an episode and the event kind that started the run,
   `42:message:20261002T142005Z` for a run on it a person asked for in chat,
   the session id and the turn for a chat turn, the job id and the execution
-  for a cron run.
+  for a cron run, `manual:` and the moment for a run fed by hand.
   The colon is what lets one episode carry both an `appeared` and an
   `escalated` run under a unique key on use case and subject. Everything
   reading the ledger for a subject matches the whole key or the part
@@ -152,15 +152,20 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   episode event, and the trigger is what listens for it.
 - **Run** — one execution of a use case, from trigger to output, recorded
   as one row in the ledger with its subject, model, cost, tool trace and
-  verdict.
+  verdict. A run fed by hand (`trigger = manual`) asks no model: its text
+  is given through the trigger's API and delivered like any other.
 - **Delivery** — the deterministic step of the trigger that carries a
   run's output to the targets its use case declares: the ledger row
   itself, a message on the Discord home channel, a mail through the relay,
-  a page in the house wiki. The model never delivers; the row records what
-  each target created, and a target that refuses fails the run while the
-  stored text stays. A target that takes a structured output — the wiki
-  page names its path and title in a block after the run's sentence — is
+  a page in the house wiki, a pull request, an issue or a comment on
+  GitHub, opened as the write App. The model never delivers; the row
+  records what each target created, and a target that refuses fails the
+  run while the stored text stays. A target that takes a structured output
+  — the wiki page names its path and title in a block after the run's
+  sentence, a GitHub write is one fenced block per thing to open — is
   checked before anything leaves, and one that does not hold is a refusal.
+  An event run, a cron run and a run fed by hand are delivered alike; a
+  chat is answered in its own conversation.
 - **Ledger** — the `agent_runs` table: one row per run of every kind,
   whatever started it. The one place verdicts, counts and costs are read
   from; its unique key on use case and subject is also what keeps one
@@ -183,7 +188,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   activate. A person merges or discards; nothing is applied automatically.
 - **Proposal** — one pull request from Propose: a new fault sentence, a
   moved threshold, a dormant fault to activate or a fault to retire, with
-  its evidence and a back-test against history. A person merges or
-  rejects it; a rejection keeps the same proposal away for a while.
+  its evidence and a back-test against history. Opened by the trigger as a
+  delivery, never by the model
+  ([ADR 0005](docs/adr/0005-github-reads-through-the-official-server-writes-as-deliveries.md)),
+  labelled `agent/proposal`. A person merges or rejects it; a rejection
+  keeps the same proposal away for a while, and the outcome is read back
+  into the ledger.
 - **Answer** — a person asking about house or
   cluster data in conversation through the MCP bridge. Not an agent role.

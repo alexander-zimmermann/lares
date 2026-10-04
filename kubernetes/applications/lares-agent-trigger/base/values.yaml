@@ -82,6 +82,21 @@ deployment:
     # The episode on the knx-episodes dashboard; the host is set per overlay
     DASHBOARD_EPISODE_URL:
       value: PLACEHOLDER_DASHBOARD_EPISODE_URL
+    # Delivery to GitHub: pull requests, issues and comments opened as the write
+    # App (Homelab Zimmermann Lares Agent), whose key stays in this pod; the
+    # open pull requests are read back once a day as the same App
+    GITHUB_APP_ID:
+      valueFrom:
+        secretKeyRef:
+          name: lares-agent-github-app
+          key: app-id
+    GITHUB_APP_INSTALLATION_ID:
+      valueFrom:
+        secretKeyRef:
+          name: lares-agent-github-app
+          key: installation-id
+    GITHUB_APP_PRIVATE_KEY_FILE:
+      value: /etc/lares-agent-trigger/github-app-private-key
     # Hook receiver and the trigger's own API: Hermes posts every finished chat
     # and cron turn here, signed with the key both pods read from the hermes
     # SealedSecret; the bridge forwards start_run here with a key sealed for both
@@ -154,6 +169,12 @@ deployment:
         items:
           - key: trigger-api-key
             path: trigger-api-key
+    github-app-private-key:
+      secret:
+        secretName: lares-agent-github-app
+        items:
+          - key: private-key
+            path: private-key
 
   volumeMounts:
     use-cases:
@@ -195,6 +216,10 @@ deployment:
     api-key:
       mountPath: /etc/lares-agent-trigger/api-key
       subPath: trigger-api-key
+      readOnly: true
+    github-app-private-key:
+      mountPath: /etc/lares-agent-trigger/github-app-private-key
+      subPath: private-key
       readOnly: true
 
   ports:
