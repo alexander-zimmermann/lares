@@ -66,6 +66,16 @@ deployment:
       value: http://wiki-js.wiki-js.svc
     MCP_WIKIJS_TOKEN_FILE:
       value: /etc/lares-mcp-bridge/wikijs-token
+    # update_wiki_page writes under a second key whose group has read:pages + write:pages
+    MCP_WIKIJS_WRITE_TOKEN_FILE:
+      value: /etc/lares-mcp-bridge/wikijs-write-token
+    # The storage tools list rustfs with a list-only key (Kyverno clones from `rustfs` namespace)
+    MCP_S3_ENDPOINT_URL:
+      value: http://rustfs-svc.rustfs.svc.cluster.local:9000
+    MCP_S3_ACCESS_KEY_FILE:
+      value: /etc/lares-mcp-bridge/s3-access-key
+    MCP_S3_SECRET_KEY_FILE:
+      value: /etc/lares-mcp-bridge/s3-secret-key
     # start_run carries the chat's request to lares-agent-trigger, with the key
     # sealed for both namespaces and mounted from the SealedSecret in this directory.
     MCP_TRIGGER_URL:
@@ -114,6 +124,24 @@ deployment:
         items:
           - key: token
             path: token
+    wikijs-write-token:
+      secret:
+        secretName: lares-mcp-bridge-wikijs-write-token
+        items:
+          - key: token
+            path: token
+    s3-access-key:
+      secret:
+        secretName: rustfs-lares-mcp-bridge-credentials
+        items:
+          - key: RUSTFS_ACCESS_KEY
+            path: access-key
+    s3-secret-key:
+      secret:
+        secretName: rustfs-lares-mcp-bridge-credentials
+        items:
+          - key: RUSTFS_SECRET_KEY
+            path: secret-key
     auth-clients:
       secret:
         secretName: lares-mcp-bridge-auth-clients
@@ -151,6 +179,18 @@ deployment:
     wikijs-token:
       mountPath: /etc/lares-mcp-bridge/wikijs-token
       subPath: token
+      readOnly: true
+    wikijs-write-token:
+      mountPath: /etc/lares-mcp-bridge/wikijs-write-token
+      subPath: token
+      readOnly: true
+    s3-access-key:
+      mountPath: /etc/lares-mcp-bridge/s3-access-key
+      subPath: access-key
+      readOnly: true
+    s3-secret-key:
+      mountPath: /etc/lares-mcp-bridge/s3-secret-key
+      subPath: secret-key
       readOnly: true
     auth-clients:
       mountPath: /etc/lares-mcp-bridge/auth-clients.json

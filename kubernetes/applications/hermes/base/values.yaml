@@ -105,6 +105,12 @@ deployment:
         secretKeyRef:
           name: hermes-credentials
           key: lares-memory-mcp-key
+    # Bridge: the key of client lares-wiki, the wiki write of a use case that names it
+    LARES_WIKI_MCP_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: hermes-credentials
+          key: lares-wiki-mcp-key
     # API server: /health for the probes, the Runs and Jobs API for lares-agent-trigger
     API_SERVER_ENABLED:
       value: "true"

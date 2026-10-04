@@ -73,6 +73,9 @@ spec:
             - secretRef:
                 name: rustfs-redpanda-connect-credentials
               prefix: REDPANDA_
+            - secretRef:
+                name: rustfs-lares-mcp-bridge-credentials
+              prefix: MCPBRIDGE_
           env:
             - name: HOME
               value: /tmp

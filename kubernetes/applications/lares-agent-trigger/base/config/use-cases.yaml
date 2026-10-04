@@ -21,7 +21,7 @@ ledger_hook:
 # What `tools` may name: the bridge under one client key each, `tools` its
 # allowlist; and GitHub's own server, which Hermes starts itself.
 tool_servers:
-  # Reads the house: series, episodes, runs, catalog, wiki.
+  # Reads the house: series, episodes, runs, catalog, wiki, backups.
   - name: lares
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     client: lares-agent
@@ -77,6 +77,17 @@ tool_servers:
     timeout_seconds: 60
     access: read
     tools: [get_*, list_*, search_*, issue_read, pull_request_read]
+
+  # Writes one page of the house wiki, under a Wiki.js key whose group may
+  # write pages. Only for the schedule use cases that name it, once a cron job
+  # can carry a tool list of its own.
+  - name: lares-wiki
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    client: lares-wiki
+    key_env: LARES_WIKI_MCP_KEY
+    timeout_seconds: 30
+    access: write
+    tools: [update_wiki_page]
 
 use_cases:
   - name: explain-episode
@@ -295,7 +306,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec and the wiki write key.
+    dormant: Waits for its own spec and a cron job that can hold the wiki write.
 
   - name: wiki-drift
     sentence: >-
@@ -313,7 +324,9 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec, the GitHub reads and the wiki write key.
+    dormant: >-
+      Waits for its own spec, the GitHub reads and a cron job that can hold the
+      wiki write.
 
   - name: data-quality
     sentence: >-
@@ -349,7 +362,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: Waits for its own spec and the wiki write key.
+    dormant: Waits for its own spec and a cron job that can hold the wiki write.
 
   - name: energy-report
     sentence: >-
@@ -371,7 +384,8 @@ use_cases:
 
   - name: restore-probe
     sentence: >-
-      Berichtet, ob die Sicherungen im PBS sich wiederherstellen ließen.
+      Berichtet, ob die Sicherungen im PBS und im Objektspeicher sich
+      wiederherstellen ließen.
     trigger:
       kind: schedule
       cron: "0 8 * * 1"
@@ -384,4 +398,4 @@ use_cases:
       runs_per_day: 1
     language: en
     memory: false
-    dormant: Waits for its own spec, the PBS read tools and the issue delivery.
+    dormant: Waits for its own spec and the issue delivery.

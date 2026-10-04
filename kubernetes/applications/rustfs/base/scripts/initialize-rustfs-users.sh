@@ -1,10 +1,11 @@
 #!/bin/sh
 set -eu
 
-# Provisions per-app, bucket-scoped RustFS IAM users. Each consumer
-# gets its own access key with a least-privilege policy limited to its own bucket;
-# the shared admin key stays only for in-namespace operators (bucket-init,
-# nats-archive compactor).
+# Provisions per-app RustFS IAM users. Each consumer gets its own access key
+# with a least-privilege policy: limited to its own bucket, or, for the bridge's
+# storage tools, listing every bucket without reading an object. The shared
+# admin key stays only for in-namespace operators (bucket-init, nats-archive
+# compactor).
 #
 # The `rc admin` verbs are naturally idempotent (user add / policy create /
 # policy attach all exit 0 on repeat — verified against rustfs 1.0.0-beta.7), so
@@ -17,7 +18,7 @@ set -eu
 EP="http://rustfs-svc.rustfs.svc.cluster.local:9000"
 rc alias set admin "$EP" "$ADMIN_RUSTFS_ACCESS_KEY" "$ADMIN_RUSTFS_SECRET_KEY"
 
-# provision <slug> <bucket> <readwrite|writeonly> <access-key> <secret-key>
+# provision <slug> <bucket|*> <readwrite|writeonly|listonly> <access-key> <secret-key>
 provision() {
   slug=$1
   bucket=$2
@@ -29,6 +30,10 @@ provision() {
   if [ "$mode" = "writeonly" ]; then
     cat > /tmp/policy.json <<EOF
 {"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:PutObject"],"Resource":["arn:aws:s3:::${bucket}/*"]}]}
+EOF
+  elif [ "$mode" = "listonly" ]; then
+    cat > /tmp/policy.json <<EOF
+{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:ListAllMyBuckets","s3:ListBucket"],"Resource":["arn:aws:s3:::${bucket}"]}]}
 EOF
   else
     cat > /tmp/policy.json <<EOF
@@ -43,6 +48,7 @@ provision authentik           authentik-backups     readwrite "$AUTHENTIK_RUSTFS
 provision wiki-js             wiki-js-backups       readwrite "$WIKIJS_RUSTFS_ACCESS_KEY"      "$WIKIJS_RUSTFS_SECRET_KEY"
 provision timescaledb         timescaledb-backups   readwrite "$TIMESCALEDB_RUSTFS_ACCESS_KEY" "$TIMESCALEDB_RUSTFS_SECRET_KEY"
 provision redpanda-connect    nats-archive          writeonly "$REDPANDA_RUSTFS_ACCESS_KEY"    "$REDPANDA_RUSTFS_SECRET_KEY"
+provision lares-mcp-bridge    "*"                   listonly  "$MCPBRIDGE_RUSTFS_ACCESS_KEY"   "$MCPBRIDGE_RUSTFS_SECRET_KEY"
 
 echo ">>> done; current users:"
 rc admin user ls admin
