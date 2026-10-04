@@ -29,7 +29,7 @@ deployment:
   # the chart orders init containers by name.
   initContainers:
     github-mcp-copier:
-      image: busybox:1.37.0-musl
+      image: busybox:1.38.0-musl
       command: ["cp", "/bin/busybox", "/copier/busybox"]
       volumeMounts:
         - name: github-mcp-copier
