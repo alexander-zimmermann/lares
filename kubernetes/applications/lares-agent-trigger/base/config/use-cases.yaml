@@ -133,20 +133,26 @@ use_cases:
     sentence: >-
       Schlägt jede Woche Änderungen an der Fehlerliste als Pull Request vor,
       mit Belegen und einem Back-Test über die letzten acht Wochen.
+    # Sunday 03:00 house time; the chat starts it now through start_run.
     trigger:
       kind: schedule
       cron: "0 3 * * 0"
     skill: lares-propose
-    tools: [lares, lares-memory]
+    # The house and the back-test, its memory, and GitHub for the fault list
+    # and its closed pull requests; the trigger opens the new ones.
+    tools: [lares, lares-memory, github]
     output: [github_pr]
+    # About twenty reads a run; ten minutes is the harness's own run budget,
+    # which tells every run to wrap up at eight. Two a day leave a Sunday
+    # request from the chat beside the night's run.
     budget:
-      tool_calls: 80
-      minutes: 20
-      runs_per_day: 1
+      tool_calls: 40
+      minutes: 10
+      runs_per_day: 2
     language: en
     # The rejected proposals it must not bring back for twelve weeks.
     memory: true
-    dormant: Waits for its skill.
+    enabled: true
 
   # The rest of the rated catalogue, each waiting for its own spec: trigger, tools
   # and output as rated there, schedules and budgets as placeholders.

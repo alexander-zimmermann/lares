@@ -185,7 +185,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Propose** — the agent role that periodically
   reads episodes, verdicts and data and offers changes to the fault list as
   pull requests: a new fault sentence, a moved threshold, a dormant fault to
-  activate. A person merges or discards; nothing is applied automatically.
+  activate, a fault to retire. A person merges or discards; nothing is
+  applied automatically.
 - **Proposal** — one pull request from Propose: a new fault sentence, a
   moved threshold, a dormant fault to activate or a fault to retire, with
   its evidence and a back-test against history. Opened by the trigger as a
