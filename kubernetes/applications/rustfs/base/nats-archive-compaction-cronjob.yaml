@@ -1,5 +1,6 @@
 # Daily compaction of nats-archive: merges 24 hour-files per stream into one
 # daily.parquet, then removes the source hour-folders. Runs at 01:00 UTC.
+# Streams are discovered from the bucket, so a new sidecar needs no change here.
 # Image is built from /Users/alexander/Development/nats-archive-compactor.
 apiVersion: batch/v1
 kind: CronJob
@@ -39,6 +40,10 @@ spec:
                     secretKeyRef:
                       name: rustfs-admin-credentials
                       key: RUSTFS_SECRET_KEY
+                # Catch up days that never got a daily file, 5 per stream per run.
+                # Once nothing is left to catch up this costs a few existence probes.
+                - name: COMPACT_BACKFILL_DAYS
+                  value: "5"
               resources:
                 requests:
                   cpu: "100m"
