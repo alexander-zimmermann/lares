@@ -189,7 +189,7 @@ faults:
       KG.Hauswirtschaftsraum.K1-L3.Entfeuchter:
         max_run_hours: 24
       KG.Hauswirtschaftsraum.K3-L1.Trockner:
-        max_run_hours: 4
+        max_run_hours: 5
       # Laundry days chain loads back to back for 10-13 h; only a run past
       # two of those in a row is a fault.
       KG.Hauswirtschaftsraum.K4-L1.Waschmaschine:
