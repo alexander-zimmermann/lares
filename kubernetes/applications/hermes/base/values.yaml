@@ -169,9 +169,18 @@ deployment:
         items:
           - key: .no-bundled-skills
             path: .no-bundled-skills
-    hermes-skills:
+    hermes-skill-explain:
       configMap:
         name: hermes-skills
+        items:
+          - key: lares-explain
+            path: SKILL.md
+    hermes-skill-propose:
+      configMap:
+        name: hermes-skills
+        items:
+          - key: lares-propose
+            path: SKILL.md
     # The GitHub MCP server binary, and the static busybox that copies it
     github-mcp-copier:
       emptyDir:
@@ -205,13 +214,17 @@ deployment:
       mountPath: /opt/data/AGENTS.md
       subPath: AGENTS.md
       readOnly: true
-    # Marker only; the skill index then holds lares-explain and Hermes' own essential skill
+    # Marker only; the skill index then holds the lares skills and Hermes' own essential skill
     hermes-no-bundled-skills:
       mountPath: /opt/data/.no-bundled-skills
       subPath: .no-bundled-skills
       readOnly: true
-    hermes-skills:
+    hermes-skill-explain:
       mountPath: /opt/data/skills/lares-explain/SKILL.md
+      subPath: SKILL.md
+      readOnly: true
+    hermes-skill-propose:
+      mountPath: /opt/data/skills/lares-propose/SKILL.md
       subPath: SKILL.md
       readOnly: true
     # The generated config starts the GitHub server from here, signed in with this key

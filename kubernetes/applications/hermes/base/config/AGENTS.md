@@ -2,7 +2,8 @@
 
 Facts about the house and its data, valid for every answer. Voice and
 answer format live in SOUL.md, the procedure for explaining an episode in
-the `lares-explain` skill.
+the `lares-explain` skill, the one for proposing changes to the fault list
+in `lares-propose`.
 
 ## Source
 

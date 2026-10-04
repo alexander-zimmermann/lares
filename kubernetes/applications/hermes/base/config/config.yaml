@@ -137,6 +137,7 @@ platform_toolsets:
   cron:
     - hermes-cron
     - lares
+    - lares-memory
     - github
 hooks:
   outbound:
@@ -176,6 +177,15 @@ mcp_servers:
     tools:
       include:
         - start_run
+  lares-memory:
+    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    headers:
+      Authorization: Bearer ${env:LARES_MEMORY_MCP_KEY}
+    timeout: 30
+    tools:
+      include:
+        - get_memory
+        - append_memory
   github:
     command: /opt/github-mcp/github-mcp-server
     args:
