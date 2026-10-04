@@ -143,12 +143,12 @@ use_cases:
     tools: [lares, lares-memory, github]
     output: [github_pr]
     # About twenty reads a run; ten minutes is the harness's own run budget,
-    # which tells every run to wrap up at eight. Two a day leave a Sunday
-    # request from the chat beside the night's run.
+    # which tells every run to wrap up at eight. Three a day leave room on a
+    # Sunday for requests from the chat beside the night's run.
     budget:
       tool_calls: 40
       minutes: 10
-      runs_per_day: 2
+      runs_per_day: 3
     language: en
     # The rejected proposals it must not bring back for twelve weeks.
     memory: true

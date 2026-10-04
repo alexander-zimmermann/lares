@@ -36,8 +36,12 @@ why it yields no proposal, and the other kinds still follow.
    - `get_memory` with `use_case: "propose-faults"`: the rejected list, and
      ideas the owner wrote there.
    - `search_pull_requests` twice, `owner: "alexander-zimmermann"`,
-     `repo: "lares"`: query `is:pr is:open label:agent/proposal`, and query
-     `is:pr is:closed is:unmerged label:agent/proposal closed:>=<today minus 12 weeks>`.
+     `repo: "lares"`, `sort: "updated"`, `order: "desc"`, `perPage: 30`:
+     query `is:pr is:open label:agent/proposal`, and query
+     `is:pr is:closed is:unmerged label:agent/proposal`. No date in the
+     query: the search indexes a closing date late, and a pull request
+     closed minutes ago would be missing; the twelve weeks are read off
+     each result's `closed_at`.
    - `get_file_contents`, owner `alexander-zimmermann`, repo `lares`, path
      `kubernetes/applications/lares-diagnostics-engine/base/config/faults.yaml`:
      the file on `main`, the one your diff is applied to.
@@ -48,8 +52,9 @@ why it yields no proposal, and the other kinds still follow.
      device or room it accuses (`subject`), severity, peak score, start and
      verdict (`real` or `nonsense`). Never list the unjudged ones: eight
      weeks of `channel_silence` alone are close to a thousand rows.
-2. **Rejections.** A closed pull request whose number the memory does not
-   carry yet was rejected since it was last read. For each: one
+2. **Rejections.** A pull request closed in the last twelve weeks whose
+   number the memory does not carry yet was rejected since it was last
+   read. For each: one
    `pull_request_read` with `method: "get_comments"` for the owner's
    closing comment, then one `append_memory` line, without line breaks:
    `<closed date> rejected #<number> <kind> <fault> <what changed> (<the evidence its body gave: judged and nonsense counts, or back-test episodes>): "<the comment, one line, at most 120 characters>"`
