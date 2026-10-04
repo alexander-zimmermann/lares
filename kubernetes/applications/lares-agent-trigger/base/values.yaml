@@ -83,7 +83,7 @@ deployment:
     DASHBOARD_EPISODE_URL:
       value: PLACEHOLDER_DASHBOARD_EPISODE_URL
     # Delivery to GitHub: pull requests, issues and comments opened as the write
-    # App (Homelab Zimmermann Lares Agent), whose key stays in this pod; the
+    # App (Lares Agent Writer), whose key stays in this pod; the
     # open pull requests are read back once a day as the same App
     GITHUB_APP_ID:
       valueFrom:
