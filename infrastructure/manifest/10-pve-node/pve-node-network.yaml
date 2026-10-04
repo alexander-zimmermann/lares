@@ -2,7 +2,10 @@
 ## carries no address of its own; the management address sits on VLAN 5. Both
 ## interfaces stage their changes (`reload: false`), so tofu never pulls the
 ## host's own management path out from under itself: the node applies them
-## together from the Proxmox UI or with `ifreload -a`.
+## together from the Proxmox UI (Apply Configuration) or with
+## `pvesh set /nodes/pve-1/network`, and `pvesh delete` on the same path
+## discards them. `ifreload -a` does not: it reads `/etc/network/interfaces`,
+## while a staged change waits in `/etc/network/interfaces.new`.
 pve_node_network:
   pve-1:
     bridges:
