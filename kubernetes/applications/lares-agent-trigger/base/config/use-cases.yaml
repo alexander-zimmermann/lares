@@ -146,7 +146,7 @@ use_cases:
     language: en
     # The rejected proposals it must not bring back for twelve weeks.
     memory: true
-    dormant: Waits for its skill and the pull-request delivery.
+    dormant: Waits for its skill.
 
   # The rest of the rated catalogue, each waiting for its own spec: trigger, tools
   # and output as rated there, schedules and budgets as placeholders.
@@ -188,7 +188,7 @@ use_cases:
       runs_per_day: 1
     language: en
     memory: false
-    dormant: Waits for its own spec, the GitHub reads and the pull-request delivery.
+    dormant: Waits for its own spec.
 
   - name: new-device-rules
     sentence: >-
@@ -224,7 +224,7 @@ use_cases:
       runs_per_day: 20
     language: en
     memory: false
-    dormant: Waits for its own spec, the GitHub reads and a pull-request event.
+    dormant: Waits for its own spec and a pull-request event.
 
   - name: incident-fix
     sentence: >-
@@ -278,7 +278,7 @@ use_cases:
       runs_per_day: 3
     language: en
     memory: false
-    dormant: Waits for its own spec, an ETS-export event and the issue delivery.
+    dormant: Waits for its own spec and an ETS-export event.
 
   - name: basalte-prose
     sentence: >-
@@ -313,9 +313,7 @@ use_cases:
       runs_per_day: 1
     language: de
     memory: false
-    dormant: >-
-      Waits for its own spec, the GitHub reads, the trigger's Wiki.js key and the
-      pull-request delivery.
+    dormant: Waits for its own spec and the trigger's Wiki.js key.
 
   - name: data-quality
     sentence: >-
@@ -333,7 +331,7 @@ use_cases:
       runs_per_day: 1
     language: en
     memory: false
-    dormant: Waits for its own spec and the issue delivery.
+    dormant: Waits for its own spec.
 
   - name: maintenance-plan
     sentence: >-
@@ -387,4 +385,4 @@ use_cases:
       runs_per_day: 1
     language: en
     memory: false
-    dormant: Waits for its own spec and the issue delivery.
+    dormant: Waits for its own spec.
