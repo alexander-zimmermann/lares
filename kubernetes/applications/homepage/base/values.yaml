@@ -117,6 +117,15 @@ deployment:
     initialDelaySeconds: 5
     periodSeconds: 15
 
+  # The image's prerendered index lacks settings.yaml; revalidate on start instead of waiting for a browser to.
+  lifecycle:
+    postStart:
+      exec:
+        command:
+          - sh
+          - -c
+          - for i in $(seq 30); do wget -q -O /dev/null http://localhost:3000/api/revalidate && exit 0; sleep 2; done
+
   containerSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
