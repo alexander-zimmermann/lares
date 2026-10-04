@@ -118,8 +118,10 @@ variable "reload" {
     Whether the node reloads its network configuration after this interface is
     created, updated or deleted. When `false`, the change is only staged on the
     node (`/etc/network/interfaces.new`) and takes effect on the next reload,
-    from the Proxmox UI or `ifreload -a`. Set to `null` to use the provider
-    default (`true`).
+    from the Proxmox UI (Apply Configuration) or with
+    `pvesh set /nodes/<node>/network`; `pvesh delete` on the same path discards
+    it. `ifreload -a` reads `/etc/network/interfaces` and leaves a staged
+    change untouched. Set to `null` to use the provider default (`true`).
   EOT
   type        = bool
   default     = null
