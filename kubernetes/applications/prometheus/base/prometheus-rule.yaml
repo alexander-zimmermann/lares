@@ -194,15 +194,16 @@ spec:
       rules:
         - alert: UnifiArmStateDrift
           # unifi_arm_sync_ok is emitted by the redpanda-connect unifi_arm_alarm
-          # stream on every KNX status telegram (~5 min heartbeat): 1 = UniFi
-          # reached the KNX-requested state, 0 = it did not.
+          # stream on every KNX status telegram (~5 min heartbeat) as one series
+          # holding the latest read-back: 1 = UniFi reached the KNX-requested
+          # state, 0 = it did not.
           expr: min(unifi_arm_sync_ok) == 0
           for: 10m
           labels:
             severity: critical
           annotations:
             summary: "UniFi arm state out of sync with KNX"
-            description: "UniFi has not reached the state requested by KNX for >10m. The ~5min KNX status heartbeat re-asserts every cycle, so persistent drift means the POST is not taking effect — the house may be unprotected or falsely armed."
+            description: "UniFi has not reached the state requested by KNX for >10m. The ~5min KNX status heartbeat re-asserts every cycle, so persistent drift means the POST is not taking effect — the house may be unprotected or falsely armed. If GET /proxy/protect/integration/v1/arm-profiles answers 400 \"global alarm manager is enabled\", Protect has switched the Alarm Manager to Global mode, where the integration API cannot arm; set it back to Local."
 
         - alert: UnifiArmSyncStale
           expr: absent(unifi_arm_sync_ok)

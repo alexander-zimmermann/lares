@@ -51,6 +51,8 @@ pipeline:
     #    re-POSTing the steady state stays silent instead of logging a 400 every
     #    cycle. A genuine 5xx/network error still sets the error flag, which the
     #    catch clears so the read-back below can determine the real state.
+    #    Protect's Global alarm-manager mode also answers 400 (the integration
+    #    API cannot arm there); the read-back reports that as drift.
     - branch:
         request_map: 'root = ""'
         processors:
@@ -127,9 +129,8 @@ output:
                 processors:
                   - mapping: 'root = {"knx_value": meta("knx_unscharf").number()}'
           processors:
+            # One unlabelled series: the latest read-back, so a disarm clears an earlier arm drift.
             - metric:
                 type: gauge
                 name: unifi_arm_sync_ok
                 value: ${! meta("sync_ok") }
-                labels:
-                  intended: ${! meta("protect_action") }
