@@ -1,0 +1,105 @@
+# Nightly restart of rustfs at 00:30 UTC, ahead of the 01:00-04:30 load chain.
+# Every window of concurrent LIST and scanner work lifts resident memory by
+# roughly 100 MiB and it does not come back, so the floor climbs until it meets
+# the 1 GiB limit. A restart puts the floor back to ~150 MiB. The cause sits in
+# the scanner's cache copies and is addressed upstream in rustfs#8346.
+apiVersion: v1
+kind: ServiceAccount
+
+metadata:
+  name: rustfs-restart
+  namespace: rustfs
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+
+metadata:
+  name: rustfs-restart
+  namespace: rustfs
+
+rules:
+  # `rollout restart` patches the pod template; `rollout status` watches it.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "patch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+
+metadata:
+  name: rustfs-restart
+  namespace: rustfs
+
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rustfs-restart
+
+subjects:
+  - kind: ServiceAccount
+    name: rustfs-restart
+    namespace: rustfs
+
+---
+apiVersion: batch/v1
+kind: CronJob
+
+metadata:
+  name: rustfs-nightly-restart
+  namespace: rustfs
+
+spec:
+  schedule: "30 0 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          serviceAccountName: rustfs-restart
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: dhi-registry-secret
+          containers:
+            - name: restart
+              # `:1-dev` ships /bin/sh, which the two-step restart needs.
+              image: dhi.io/kubectl:1-dev
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                runAsUser: 1000
+                runAsGroup: 1000
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+                seccompProfile:
+                  type: RuntimeDefault
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  kubectl -n rustfs rollout restart deployment/rustfs
+                  kubectl -n rustfs rollout status deployment/rustfs --timeout=5m
+              env:
+                - name: HOME
+                  value: /tmp
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: tmp
+              emptyDir: {}
