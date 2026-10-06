@@ -1,8 +1,10 @@
-# Nightly restart of rustfs at 00:30 UTC, ahead of the 01:00-04:30 load chain.
+# Restarts rustfs at 00:30 and 05:30 UTC, around the 01:00-05:00 load chain.
 # Every window of concurrent LIST and scanner work lifts resident memory by
 # roughly 100 MiB and it does not come back, so the floor climbs until it meets
-# the 1 GiB limit. A restart puts the floor back to ~150 MiB. The cause sits in
-# the scanner's cache copies and is addressed upstream in rustfs#8346.
+# the 1 GiB limit. A restart puts the floor back to ~150 MiB. One slot is not
+# enough: the chain alone costs ~580 MiB and the remaining 19 hours another
+# ~150 MiB. 00:30 enters the chain from the floor, 05:30 clears what it left.
+# The cause sits in the scanner's cache copies, addressed upstream in rustfs#8346.
 apiVersion: v1
 kind: ServiceAccount
 
@@ -51,7 +53,8 @@ metadata:
   namespace: rustfs
 
 spec:
-  schedule: "30 0 * * *"
+  # 05:30 is after the last chain job (block-storage snapshot-cleanup, 05:00).
+  schedule: "30 0,5 * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
