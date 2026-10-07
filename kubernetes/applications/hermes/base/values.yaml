@@ -43,7 +43,7 @@ deployment:
         capabilities:
           drop: [ALL]
     github-mcp-server:
-      image: ghcr.io/github/github-mcp-server:v2.0.0
+      image: ghcr.io/github/github-mcp-server:v2.0.1
       command:
         ["/copier/busybox", "cp", "/server/github-mcp-server", "/opt/github-mcp/github-mcp-server"]
       volumeMounts:
