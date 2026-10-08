@@ -63,7 +63,7 @@ jobs:
       - name: Generate Diff
         env:
           # renovate: datasource=docker depName=dagandersen/argocd-diff-preview
-          DIFF_PREVIEW_VERSION: v0.2.15
+          DIFF_PREVIEW_VERSION: v0.2.16
         run: |
           # Run the diff against the Argo CD chart the cluster runs, not the tool's default 'latest'.
           ARGOCD_CHART_VERSION=$(yq '.helmCharts[] | select(.name == "argo-cd") | .version' main/kubernetes/bootstrap/gitops-controller/base/kustomization.yaml)
