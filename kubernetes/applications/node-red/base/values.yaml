@@ -17,7 +17,7 @@ deployment:
 
   image:
     repository: docker.io/nodered/node-red
-    tag: 5.0.7
+    tag: 5.0.8
     pullPolicy: IfNotPresent
 
   # No API access required.
