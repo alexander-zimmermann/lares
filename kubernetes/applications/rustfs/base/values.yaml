@@ -68,12 +68,14 @@ extraEnv:
   # Redundant since rc.4 defaults it to true; kept explicit to pin the contract.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
-  # One scanner cycle walks all ~39,800 directories in ~250s, and the 60s default
+  # One scanner cycle walks all ~41,000 directories in ~260s, and the 60s default
   # interval restarts it immediately: the built-in idle backoff never engages
   # because the archive always has dirty buckets. An explicit cycle is a minimum
-  # cadence that dirty-usage wakeups cannot bypass (rustfs#8121).
+  # cadence that dirty-usage wakeups cannot bypass (rustfs#8121). Resident memory
+  # scales with the sweep rate: halving it halved the daily drift, so six hours
+  # trades usage-statistics freshness we do not need for headroom we do.
   - name: RUSTFS_SCANNER_CYCLE
-    value: "3600"
+    value: "21600"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
   # Host URLs are injected per environment via overlay replacements.
   - name: RUSTFS_BROWSER_REDIRECT_URL
