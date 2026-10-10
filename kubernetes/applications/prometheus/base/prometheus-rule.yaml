@@ -179,16 +179,18 @@ spec:
             description: "The last scanner data-usage publication failed (result=3) and has not recovered within 30 minutes."
 
         - alert: RustfsScannerUsageStale
-          # A fresh pod reports 0 until its first durable save.
+          # Two cycles without a save. Derived from the configured cadence, which
+          # is tuned per deployment; a fresh pod reports 0 until its first save.
           expr: |
-            time() - rustfs_scanner_usage_last_durable_success_unix_seconds > 7200
+            time() - rustfs_scanner_usage_last_durable_success_unix_seconds
+              > 2 * rustfs_scanner_cycle_interval_seconds
             and rustfs_scanner_usage_last_durable_success_unix_seconds > 0
           for: 30m
           labels:
             severity: warning
           annotations:
-            summary: "RustFS scanner has not saved a durable usage snapshot for over 2 hours"
-            description: "rustfs_scanner_usage_last_durable_success_unix_seconds stopped advancing — two full scanner cycles (~40 min each on this workload) without a durable root save."
+            summary: "RustFS scanner has not saved a durable usage snapshot for two full cycles"
+            description: "rustfs_scanner_usage_last_durable_success_unix_seconds stopped advancing for more than twice rustfs_scanner_cycle_interval_seconds — the scanner is not completing cycles."
 
     - name: unifi-arm-sync-alerts
       rules:
