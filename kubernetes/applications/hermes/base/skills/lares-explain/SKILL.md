@@ -33,7 +33,8 @@ room or a plant, where steps 2 and 3 fall away (see step 1).
    to a tool as a `room`: it is the engine's own slug, the catalog spells
    the room differently (`eg-buero` is `Büro (E3)`). `query_room_climate`
    validates a room against the catalog and names the valid ones when it
-   misses, so one call finds the right spelling.
+   misses — a `refused` result, not an error — so one call finds the right
+   spelling.
 2. **Channel.** `get_current_knx` with the `room` and `name` the bundle
    named: current value, age, unit — for the channel and for the siblings
    that matter. The bundle says which channels exist, this says what they
@@ -135,11 +136,17 @@ The "Open:" line is dropped when nothing was left open.
 - **heat_recovery_decay, gas boiler faults**: `query_heating_cycles` and
   `query_room_climate` for the room, outdoor temperature via the weather.
 - **pv_underperformance**: `query_energy_flow` and `get_pv_forecast` for the
-  day; clouds are not a cause, deviation from the forecast is.
+  day, those two calls and nothing else — no `query_timeseries` on the
+  solaredge tables; clouds are not a cause, deviation from the forecast is.
 
 ## Limits
 
 - At most ten tool calls per explanation.
+- Column names come from the per-fault list above or from `get_schema`,
+  never from memory. A refused call — the result says `refused` and names
+  the valid tables, columns or rooms — is corrected once, alone, from that
+  list. Never retry as a parallel batch of guesses: three failed calls in a
+  row pause the whole server for a minute, for this run and the next.
 - Never query raw `knx` data over more than one day; hourly aggregates are
   enough, the database is small.
 - Set no verdicts; the owner does that.
