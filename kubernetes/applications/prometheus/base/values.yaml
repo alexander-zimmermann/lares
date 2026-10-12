@@ -178,6 +178,11 @@ alertmanager:
         target_matchers:
           - severity =~ "warning|info"
         equal: ["instance"]
+      # Global mode is the cause of arm drift; the symptom need not siren a second time
+      - source_matchers:
+          - alertname = "UnifiArmGlobalMode"
+        target_matchers:
+          - alertname = "UnifiArmStateDrift"
 
   alertmanagerSpec:
     # Mount the Pushover secret so token_file / user_key_file can reference it

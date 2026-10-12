@@ -205,7 +205,19 @@ spec:
             severity: critical
           annotations:
             summary: "UniFi arm state out of sync with KNX"
-            description: "UniFi has not reached the state requested by KNX for >10m. The ~5min KNX status heartbeat re-asserts every cycle, so persistent drift means the POST is not taking effect — the house may be unprotected or falsely armed. If GET /proxy/protect/integration/v1/arm-profiles answers 400 \"global alarm manager is enabled\", Protect has switched the Alarm Manager to Global mode, where the integration API cannot arm; set it back to Local."
+            description: "UniFi has not reached the state requested by KNX for >10m. The ~5min KNX status heartbeat re-asserts every cycle, so persistent drift means the POST is not taking effect — the house may be unprotected or falsely armed. When UnifiArmGlobalMode fires as well, that is the cause and carries the fix."
+
+        - alert: UnifiArmGlobalMode
+          # unifi_arm_global_mode is 1 when the last arm-profile POST was refused
+          # with "global alarm manager is enabled": Protect came up in Global mode
+          # (any UDM reboot can do that) and the integration API cannot arm there.
+          expr: max(unifi_arm_global_mode) == 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "UniFi Protect alarm manager is in Global mode"
+            description: "Protect refuses the arm-profile POST because its Alarm Manager runs in Global mode, so KNX arm/disarm no longer reaches UniFi. In Protect: disarm, set Settings → Alarm Manager to Local (the toggle is greyed out while a profile is armed), re-arm. The next KNX heartbeat re-syncs and clears this."
 
         - alert: UnifiArmSyncStale
           expr: absent(unifi_arm_sync_ok)

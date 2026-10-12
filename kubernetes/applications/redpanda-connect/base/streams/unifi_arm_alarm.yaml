@@ -11,8 +11,10 @@
 #
 # Flow (sequential, so ordering is guaranteed without a race):
 #   1. POST enable/disable. Best-effort: a 400 ("already in target state") is
-#      harmless, and a genuine UDM outage also fails the read-back below, which
-#      rejects the message for JetStream redelivery.
+#      harmless, a 400 "global alarm manager is enabled" is flagged (Protect
+#      came up in Global mode, where this API cannot arm), and a genuine UDM
+#      outage also fails the read-back below, which rejects the message for
+#      JetStream redelivery.
 #   2. GET /nvrs and read armMode — the source of truth for what UniFi actually
 #      did. Compare to the intended action -> unifi_arm_sync_ok gauge.
 #   3. Publish both status polarities to NATS; the knx-nats-bridge writer rules
@@ -44,6 +46,8 @@ pipeline:
           deleted()
         }
         meta protect_action = if $subj == "knx.14.1.26" { "enable" } else { "disable" }
+        # Set by the POST result below; stays 0 when the POST itself failed.
+        meta protect_global = "0"
 
     # 1. POST the arm-profile enable/disable (side-effect only; response is
     #    discarded — the read-back is authoritative). 204 = applied, 400 =
@@ -52,7 +56,9 @@ pipeline:
     #    cycle. A genuine 5xx/network error still sets the error flag, which the
     #    catch clears so the read-back below can determine the real state.
     #    Protect's Global alarm-manager mode also answers 400 (the integration
-    #    API cannot arm there); the read-back reports that as drift.
+    #    API cannot arm there); its body names it, so that case is flagged into
+    #    protect_global for the unifi_arm_global_mode gauge and a WARN line.
+    #    The read-back still reports it as drift.
     - branch:
         request_map: 'root = ""'
         processors:
@@ -64,9 +70,17 @@ pipeline:
                 Accept: "application/json"
               retries: 0
               successful_on: [200, 204, 400]
-        result_map: 'root = deleted()'
+          # Only the Global-mode verdict leaves the branch; the response itself is dropped.
+          - mapping: 'root.global = content().string().lowercase().contains("global alarm manager")'
+        result_map: 'meta protect_global = if this.global { "1" } else { "0" }'
     - catch:
         - mapping: 'root = this'
+    - switch:
+        - check: meta("protect_global") == "1"
+          processors:
+            - log:
+                level: WARN
+                message: 'arm-profiles/${! meta("protect_action") } refused: Protect alarm manager is in Global mode, set it back to Local'
 
     # 2. Read back the real NVR arm state. On failure the branch sets the error
     #    flag, the result_map is skipped, and the message is rejected below for
@@ -134,3 +148,8 @@ output:
                 type: gauge
                 name: unifi_arm_sync_ok
                 value: ${! meta("sync_ok") }
+            # 1 while the last POST was refused because Protect runs the Global alarm manager.
+            - metric:
+                type: gauge
+                name: unifi_arm_global_mode
+                value: ${! meta("protect_global") }
