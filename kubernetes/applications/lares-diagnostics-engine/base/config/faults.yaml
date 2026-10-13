@@ -297,26 +297,28 @@ faults:
 
   - name: freezer_icing
     sentence: "Der Gefrierschrank lässt seinen Verdichter über den Tag mehr als
-      15 Prozentpunkte länger laufen als im gesunden Zustand — der Verdampfer
-      vereist, lange bevor im Fach etwas antaut."
+      5 Prozentpunkte länger laufen, als bei der aktuellen Küchentemperatur
+      gesund ist — der Verdampfer vereist, lange bevor im Fach etwas antaut."
     unit: "× der erlaubten Erhöhung"
     kind: drift
     # The share of the day the compressor runs, in percent — same CUSUM as
     # standby drift, over the one signal that shows ice before the food does.
     signal: duty_cycle
     parameters:
-      # A healthy freezer has headroom to spare; 15 points of it gone is the
-      # line, and only what stands past that line accumulates.
-      rise_pct: 15
-      # How long a larger rise must stand: the June measurement (80 % of the
-      # day) fills this in under two days, a warm shopping load never does.
-      budget_pct_h: 600
+      # Winter days scatter 2.4 points around the room-following reference,
+      # the widest +6: five points is the line, only what stands past it
+      # accumulates.
+      rise_pct: 5
+      # How long a larger rise must stand: a 10-point step fills this in two
+      # days, a warm shopping load never does.
+      budget_pct_h: 240
       window_hours: 24
       # Lower than the standby fault's: the hours a door event covers are cut
       # out of the day, so the coverage has to leave room for one.
       min_window_fraction: 0.6
       # Three hours in which the compressor never stopped is a door standing
-      # open, not ice — normal cycling idles at some point in every hour.
+      # open, not ice — healthy runs peak at 40 min, and only a heat wave or
+      # SuperFrost reaches this.
       door_run_hours: 3
       # This compressor runs at 180 mA and up and idles at 50-67, so the
       # threshold sits in the middle of a wide gap.
@@ -325,13 +327,20 @@ faults:
       dpt: "7.012"
       include: "%.Gefrierschrank.Stromwert"
     references:
-      # Read off the summers before the icing, never derived from history:
-      # the iced state has stood for months and would become the new normal.
+      # Read off two winter fortnights at 21 °C in the kitchen, never derived
+      # from history: the iced state has stood for months and would become
+      # the new normal. The level follows the kitchen at two points per
+      # kelvin — a warm room buys the same cold with more running, and that
+      # puts August's 91 % at 26.6 °C on the line instead of on the bus.
       # Keyed by the one fragment the Stromwert channel and the appliance's
       # Vereisung address share, so the target template renders to the
       # latter.
       Gefrierschrank:
-        healthy_duty_pct: 50
+        healthy_duty_pct: 78
+        ambient:
+          channel: "Sensorik.EG.Küche.Sensor.Temperatur"
+          at_c: 21
+          per_kelvin: 2.0
     target:
       # The writer rule carries fault.freezer_icing.<ga-slug> to the
       # freezer's own Vereisung address in the appliance group, generated
