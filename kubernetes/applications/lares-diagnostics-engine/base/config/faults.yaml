@@ -490,6 +490,11 @@ faults:
       # mean anything — December overcast, or a forecast that never
       # arrived. Such a day counts as unmeasured, not as quiet.
       min_expected_kwh: 3
+      # The engine's clock is the inverter aggregate, which closes a UTC
+      # day two hours after midnight; without this the verdict on
+      # yesterday would reach the house at the 03:20 UTC run. Held until
+      # 06:00 local has passed, it lands around 09:20, summer and winter.
+      judge_after_local_hour: 6
     target:
       # The writer rule carries fault.pv_underperformance to the PV
       # Erzeugung-Leistung-Anomalie address.
