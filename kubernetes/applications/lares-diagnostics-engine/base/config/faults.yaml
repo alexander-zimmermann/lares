@@ -309,9 +309,10 @@ faults:
       # the widest +6: five points is the line, only what stands past it
       # accumulates.
       rise_pct: 5
-      # How long a larger rise must stand: a 10-point step fills this in two
-      # days, a warm shopping load never does.
-      budget_pct_h: 240
+      # How long a larger rise must stand: the one confirmed icing (two days
+      # after a door left open, January 2026) had spent 229 point-hours when
+      # it was defrosted by hand; a warm shopping load never fills this.
+      budget_pct_h: 200
       window_hours: 24
       # Lower than the standby fault's: the hours a door event covers are cut
       # out of the day, so the coverage has to leave room for one.
