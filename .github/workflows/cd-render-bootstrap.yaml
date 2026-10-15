@@ -25,7 +25,7 @@ jobs:
           # renovate: datasource=github-releases depName=kubernetes-sigs/kustomize extractVersion=^kustomize/(?<version>.+)$
           kustomize: v5.8.3
           # renovate: datasource=github-releases depName=helm/helm
-          helm: v4.3.0
+          helm: v4.3.1
 
       - name: Render Manifests
         run: |
