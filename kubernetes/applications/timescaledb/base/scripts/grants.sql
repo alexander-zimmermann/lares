@@ -85,6 +85,14 @@ BEGIN
                        pg_get_serial_sequence('public.episodes', 'id'));
     END IF;
 
+    -- Read cursor — the same engine role advances where an external fault
+    -- stops reading the bus archive, in the transaction that writes the
+    -- episodes that read produced. UPDATE covers the upsert.
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'lares_diagnostics_engine_rw')
+       AND EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'fault_cursors') THEN
+        GRANT INSERT, UPDATE ON fault_cursors TO lares_diagnostics_engine_rw;
+    END IF;
+
     -- Verdict writer — its own role, because it is the one credential an
     -- LLM-facing server holds: it may write exactly one table, and reads
     -- `episodes` only to name the episode it is judging. Deliberately outside

@@ -797,6 +797,22 @@ CREATE TABLE IF NOT EXISTS episode_events (
 );
 
 -- =========================================================
+-- Fault read cursors — how far an external fault has read the bus
+-- archive. Basalte writes those faults' severities to the bus itself; the
+-- engine reads the writes back and records episodes, and this row is where
+-- it stops reading: the next run continues from `read_through`, a fault
+-- switched on starts the record at its first run instead of folding
+-- thirty days of test and rebuild telegrams into phantom episodes.
+-- One row per fault; a fault that never ran has none.
+-- Written by lares_diagnostics_engine_rw, read by the same engine's read role.
+-- =========================================================
+CREATE TABLE IF NOT EXISTS fault_cursors (
+    fault        TEXT        PRIMARY KEY,
+    read_through TIMESTAMPTZ NOT NULL,
+    updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- =========================================================
 -- Episode verdicts — was that situation real, or was it nonsense? One row
 -- per episode: the primary key is what makes a second thought overwrite the
 -- first instead of stacking beside it. Binary on purpose, and attached to
