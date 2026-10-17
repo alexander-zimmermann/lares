@@ -7,7 +7,8 @@ tasks:
       List every logic block in the Studio export with its devices, thresholds
       and notifications — the set a newly planned fault is checked against.
       What the block types do is product knowledge: wiki basalte-logic-blocks.
-      Reads: the Studio export. Writes: ~/Downloads/basalte-inventory.md.
+      Reads: the Studio export. Writes: ~/Downloads/basalte-inventory.md, the
+      wiki page basalte-logic-inventory verbatim (replace it after every export).
       Arguments: [path/to/export.bcfg, default BASALTE_EXPORT_PATH]
     vars:
       EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'

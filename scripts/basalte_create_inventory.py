@@ -13,6 +13,7 @@ import collections
 import json
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -79,37 +80,89 @@ def extract(export: Path) -> list[dict]:
     return blocks, len(names)
 
 
-def render(blocks: list[dict], named: int) -> str:
-    pushing = sum(1 for b in blocks if b["notif"])
+TIER_RE = re.compile(r"^(Info|Warnung|Kritisch|Ende)\s*:\s*(.+)$", re.DOTALL)
+TIER_ORDER = ("Info", "Warnung", "Kritisch", "Ende")
+
+
+def group_messages(notif: list[str]) -> list[tuple[str, list[str]]]:
+    """One row per sentence, with every tier it is sent as — a receiver
+    carries the same sentence as Info, Warnung and Kritisch mail."""
+    tiers: dict[str, set[str]] = {}
+    order: list[str] = []
+    for message in notif:
+        txt = " ".join(str(message).split()).replace("|", "/")
+        m = TIER_RE.match(txt)
+        tier, sentence = (m.group(1), m.group(2)) if m else ("", txt)
+        if sentence not in tiers:
+            tiers[sentence] = set()
+            order.append(sentence)
+        if tier:
+            tiers[sentence].add(tier)
+    return [(s, [t for t in TIER_ORDER if t in tiers[s]]) for s in order]
+
+
+def merged(blocks: list[dict]) -> list[tuple[str, list[dict]]]:
+    """Blocks that share a name (one per device: 21× Standby) as one group,
+    sorted by name."""
+    groups: dict[str, list[dict]] = collections.defaultdict(list)
+    for b in blocks:
+        groups[str(b["name"])].append(b)
+    return sorted(groups.items())
+
+
+def render(blocks: list[dict], named: int, export: Path) -> str:
+    notifying = [b for b in blocks if b["notif"]]
     messages = sum(len(b["notif"]) for b in blocks)
-    summary = (
-        f"**{len(blocks)} logic blocks**, **{pushing} of them notifying**, carrying "
-        f"**{messages} distinct notifications** between them. {named} named objects in the export."
-    )
-    out = ["# Basalte logic: inventory", ""]
-    out += [
-        "Generated from the Studio export with `task basalte:create-inventory`.",
+    sentences = sum(len(group_messages([m for b in g for m in b["notif"]])) for _, g in merged(notifying))
+    exported = datetime.fromtimestamp(export.stat().st_mtime).strftime("%d.%m.%Y %H:%M")
+    today = datetime.now().strftime("%d.%m.%Y")
+    out = [
+        "# Basalte-Logik: Inventar",
         "",
-        summary,
+        (
+            f"Generiert am {today} aus `{export.name}` (Export vom {exported}) mit "
+            "`task basalte:create-inventory`. Erzeugte Seite: nach dem nächsten Export neu "
+            "schreiben, nicht von Hand ändern."
+        ),
         "",
-        "## Notifications",
+        (
+            f"**{len(blocks)} Logikblöcke**, davon **{len(notifying)} mit Meldungen**: "
+            f"{messages} Meldungstexte, {sentences} verschiedene Sätze. {named} benannte Objekte im Export."
+        ),
         "",
-        "The existing set, against which every newly planned fault has to be checked.",
-        "One row per notification — a block often carries several, one per room or device.",
+        "## Meldungen",
         "",
-        "| Block | Message | Thresholds | Devices |",
-        "|---|---|---|---|",
+        (
+            "Der Bestand, gegen den jeder neu geplante Fehler geprüft wird. Je Block eine Tabelle, "
+            "eine Zeile pro Satz; die Stufen daneben sagen, als was er verschickt wird."
+        ),
+        "",
     ]
-    for b in sorted([x for x in blocks if x["notif"]], key=lambda x: str(x["name"])):
-        refs = ", ".join(r for r in map(str, b["refs"]) if not r.startswith("?")) or "—"
-        th = ", ".join(map(str, b["thresholds"])) or "—"
-        for message in b["notif"]:
-            txt = str(message).replace("\n", " ").replace("|", "/")
-            out.append(f"| {b['name']} | {txt} | {th} | {refs} |")
-    out += ["", "## All blocks", "", "| Block | Nodes | Node types |", "|---|---:|---|"]
-    for b in sorted(blocks, key=lambda x: str(x["name"])):
-        kinds = ", ".join(f"{k}×{v}" for k, v in sorted(b["kinds"].items()) if k != "comment")
-        out.append(f"| {b['name']} | {b['n']} | {kinds[:150]} |")
+    for name, group in merged(notifying):
+        count = f" ({len(group)} Blöcke)" if len(group) > 1 else ""
+        out += [f"### {name}{count}", ""]
+        refs = sorted({r for b in group for r in map(str, b["refs"]) if not r.startswith("?")})
+        th = sorted({str(t) for b in group for t in b["thresholds"]})
+        if th:
+            out.append(f"Schwellen: {', '.join(th)}  ")
+        if refs:
+            out.append(f"Geräte: {', '.join(refs)}  ")
+        if th or refs:
+            out.append("")
+        out += ["| Meldung | Stufen |", "|---|---|"]
+        for sentence, tiers in group_messages([m for b in group for m in b["notif"]]):
+            out.append(f"| {sentence} | {' · '.join(tiers) or '—'} |")
+        out.append("")
+    out += ["## Alle Blöcke", "", "| Block | Anzahl | Knoten | Knotentypen |", "|---|---:|---:|---|"]
+    for name, group in merged(blocks):
+        same = all(b["kinds"] == group[0]["kinds"] for b in group)
+        kinds = (
+            ", ".join(f"{k}×{v}" for k, v in sorted(group[0]["kinds"].items()) if k != "comment")
+            if same
+            else ", ".join(sorted({k for b in group for k in b["kinds"] if k != "comment"})) + " (je Block verschieden)"
+        )
+        nodes = f"{min(b['n'] for b in group)}–{max(b['n'] for b in group)}" if len({b["n"] for b in group}) > 1 else str(group[0]["n"])
+        out.append(f"| {name} | {len(group)} | {nodes} | {kinds[:150]} |")
     out.append("")
     return "\n".join(out)
 
@@ -117,5 +170,5 @@ def render(blocks: list[dict], named: int) -> str:
 if __name__ == "__main__":
     export_path = Path(sys.argv[1])
     blocks, named = extract(export_path)
-    sys.stdout.write(render(blocks, named))
+    sys.stdout.write(render(blocks, named, export_path))
     print(f"{len(blocks)} blocks from {export_path.name}, {named} named objects", file=sys.stderr)
