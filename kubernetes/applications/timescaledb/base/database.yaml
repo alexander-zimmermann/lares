@@ -8,7 +8,7 @@ metadata:
 spec:
   instances: 1
 
-  imageName: ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb:18.3-ts2.26-tk
+  imageName: ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb:18.6-ts2.26-tk
 
   primaryUpdateStrategy: unsupervised
 
