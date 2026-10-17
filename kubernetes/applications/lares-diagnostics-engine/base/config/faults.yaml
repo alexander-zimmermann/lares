@@ -512,118 +512,105 @@ faults:
 
   # External faults: Basalte detects, writes the severity to the fault
   # address and delivers push/e-mail itself; the engine reads the writes
-  # back and records episodes. All dormant until the Studio logic writes
-  # them — and, on the re-purposed addresses, until the telegrams of the
-  # switched-off engine detectors have left the 30-day read window.
+  # back from its per-fault cursor and records episodes — a fault's first
+  # run starts the record there, nothing older is read. A fault runs once
+  # its Studio block writes the address; one that writes a wrong tier
+  # stays dormant until it is fixed.
   - name: system_pressure_low
-    sentence: "Der Systemdruck der Gastherme liegt unter 1,0 bar."
+    sentence: "Der Systemdruck der Gastherme liegt unter 1,0 bar (unter 0,7 bar
+      kritisch)."
     unit: "bar"
     kind: external
     scope:
       include: "%.Gastherme.System-Druck-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
-        Katalog, und niemand schreibt sie."
-      active_when: "Die Studio-Logik schreibt die Adresse."
 
   - name: burner_idle_despite_demand
-    sentence: "Der Brenner liefert länger als 2 h 0 % Modulation, obwohl das
-      Vorlauf-Soll mehr als 5 K über dem Ist liegt."
-    unit: "%"
+    sentence: "Die Pumpe läuft, der Brenner bleibt länger als 2 h aus, obwohl das
+      Vorlauf-Soll mehr als 5 K über dem Ist liegt (länger als 4 h kritisch)."
+    unit: "K"
     kind: external
     scope:
       include: "%.Gastherme.Brenner.Modulation-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
-        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
-      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
-        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
 
   - name: dhw_cold
-    sentence: "Das Warmwasser liegt länger als 3 h unter 40 °C."
+    sentence: "Das Warmwasser liegt länger als 12 h unter 45 °C (länger als 24 h
+      kritisch)."
     unit: "°C"
     kind: external
     scope:
       include: "%.Gastherme.Warmwasser.Ist-Temperatur-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
-        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
-      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
-        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
+
+  - name: dhw_flow_running
+    sentence: "Das Warmwasser fließt länger als 30 min ununterbrochen (länger als
+      60 min kritisch) — Hahn offen oder Leck."
+    unit: "min"
+    kind: external
+    scope:
+      include: "%.Gastherme.Warmwasser.Durchfluss-Anomalie"
 
   - name: flow_under_setpoint
     sentence: "Der Vorlauf bleibt bei laufendem Brenner über 3 h mehr als 5 K
-      unter dem Sollwert."
+      unter dem Sollwert (über 6 h kritisch)."
     unit: "K"
     kind: external
     scope:
       include: "%.Gastherme.Heizung.Vorlauf.Ist-Temperatur-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
-        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
-      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
-        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
 
   - name: heating_spread_collapsed
-    sentence: "Der Rücklauf liegt bei laufendem Brenner über 1 h weniger als
-      3 K unter dem Vorlauf."
+    sentence: "Der Rücklauf liegt über 1 h Brennerzeit weniger als 3 K unter dem
+      Vorlauf (über 2 h Warnung)."
     unit: "K"
     kind: external
     scope:
       include: "%.Gastherme.Heizung.Rücklauf.Ist-Temperatur-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; auf der Adresse liegen
-        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
-      active_when: "Die Studio-Logik schreibt die Adresse und die Alt-Telegramme
-        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
 
   - name: kwl_airflow_low
-    sentence: "Die KWL liefert bei der eingestellten Stufe anhaltend weniger
-      als 80 % des Sollvolumens oder gar keinen Luftstrom."
+    sentence: "Die KWL liefert bei der eingestellten Stufe länger als 30 min
+      weniger als 80 % des Sollvolumens (unter 50 % Warnung) oder länger als
+      1 h gar keinen Luftstrom (kritisch)."
     unit: "m³/h"
     kind: external
     scope:
       include: "%.KWL.Luftstrom-Anomalie"
     dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
-        Katalog, und niemand schreibt sie."
-      active_when: "Die Studio-Logik schreibt die Adresse."
+      reason: "Kette A des Studio-Blocks schreibt Stufe 1 jedes Mal 30 min nach
+        dem Wechsel auf Lüfterstufe 1, bei 135 m³/h — dem Sollwert dieser
+        Stufe (24 Mal zwischen dem 12. und 17.10.2026)."
+      active_when: "Das 30-Tage-Fenster zeigt keine Stufe 1 mehr, die 30 min
+        nach einem Wechsel auf Lüfterstufe 1 bei Nennluftstrom kam."
 
   - name: inverter_temperature_high
-    sentence: "Die Temperatur eines Wechselrichters liegt über 70 °C."
+    sentence: "Die Temperatur eines Wechselrichters liegt über 70 °C (über 80 °C
+      kritisch)."
     unit: "°C"
     kind: external
     scope:
       include: "%.Photovoltaik.Wechselrichter-%.Temperatur-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; auf den Adressen liegen
-        noch Alt-Telegramme der abgeschalteten Engine-Detektoren."
-      active_when: "Die Studio-Logik schreibt die Adressen und die Alt-Telegramme
-        (vor September 2026) sind aus dem 30-Tage-Fenster gelaufen."
 
   - name: grid_voltage_out_of_range
-    sentence: "Die Netzspannung liegt auf mindestens einer Phase außerhalb von
-      207–253 V."
+    sentence: "Die Netzspannung liegt auf L1 oder L3 länger als 10 min außerhalb
+      von 207–253 V (außerhalb von 195–265 V sofort kritisch)."
     unit: "V"
     kind: external
     scope:
       include: "%.Energiezähler.Strom.Spannung-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; die Adresse steht im
-        Katalog, und niemand schreibt sie."
-      active_when: "Die Studio-Logik schreibt die Adresse."
+
+  - name: wallbox_no_fast_current
+    sentence: "Die Wallbox hat bei angestecktem Auto, Freigabe und Schnellmodus
+      seit mehr als 5 min keine 16 A freigegeben (seit mehr als 60 min
+      kritisch)."
+    unit: "A"
+    kind: external
+    scope:
+      include: "%.Wallbox.Ladeleistung-Anomalie"
 
   - name: dehumidifier_ineffective
-    sentence: "Ein Entfeuchter läuft über 4 h, während die Luftfeuchte um
-      weniger als 2 % fällt."
+    sentence: "Ein Entfeuchter läuft über 4 h, während die Luftfeuchte seit dem
+      Einschalten um weniger als 4 Prozentpunkte fällt (über 8 h Warnung)."
     unit: "%"
     kind: external
     scope:
       include: "Raumklima.%.Entfeuchter-Anomalie"
-    dormant:
-      reason: "Die Studio-Logik ist noch nicht gebaut; beide Adressen stehen im
-        Katalog, und niemand schreibt sie."
-      active_when: "Die Studio-Logik schreibt die Adressen."
 
   # The volume watchdog: the notification count is itself a declared fault.
   # It measures the episode stream every other fault writes, so it is
