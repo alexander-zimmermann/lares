@@ -101,13 +101,16 @@ which fault it touched is said so in the body, not guessed.
   its comments. The body lists every judged episode; the back-test of the
   entry as declared shows what goes away.
 - **`activation`** — a dormant fault whose `dormant.active_when` sentence
-  is observed in the data now. Every dormant fault today waits for an
-  address to be written; one `get_current_knx` with `name: "-Anomalie"`
-  shows all of them at once, value and age. For an address its scope
-  names that was written in the last 30 days, one `query_timeseries` on
-  `knx_1h` (`columns: ["sample_count"]`, `filters: {"ga": "<its ga>"}`,
-  `bucket: "1 day"`, `aggregation: "sum"`, the last 30 days) counts the
-  writes per day. The diff removes the `dormant` block. An `external` fault
+  is observed in the data now. Read that sentence first: a dormant fault
+  waits for an address to be written, or for a Studio block to stop
+  writing a wrong tier — there the writes are the reason it waits, not
+  the signal. One `get_current_knx` with
+  `name: "-Anomalie"` shows every fault address at once, value and age.
+  For an address its scope names that was written in the last 30 days,
+  one `query_timeseries` on `knx_1h` (`columns: ["sample_count"]`,
+  `filters: {"ga": "<its ga>"}`, `bucket: "1 day"`, `aggregation: "sum"`,
+  the last 30 days) counts the writes per day. The diff removes the
+  `dormant` block. An `external` fault
   cannot be back-tested (the engine only reads back what Basalte writes);
   the observed writes take the back-test's place, and the body says so.
 - **`new fault`** — only a measured kind (`drift`, `duration`,
