@@ -572,12 +572,6 @@ faults:
     kind: external
     scope:
       include: "%.KWL.Luftstrom-Anomalie"
-    dormant:
-      reason: "Kette A des Studio-Blocks schreibt Stufe 1 jedes Mal 30 min nach
-        dem Wechsel auf Lüfterstufe 1, bei 135 m³/h — dem Sollwert dieser
-        Stufe (24 Mal zwischen dem 12. und 17.10.2026)."
-      active_when: "Das 30-Tage-Fenster zeigt keine Stufe 1 mehr, die 30 min
-        nach einem Wechsel auf Lüfterstufe 1 bei Nennluftstrom kam."
 
   - name: inverter_temperature_high
     sentence: "Die Temperatur eines Wechselrichters liegt über 70 °C (über 80 °C
