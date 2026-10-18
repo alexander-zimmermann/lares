@@ -192,6 +192,20 @@ spec:
             summary: "RustFS scanner has not saved a durable usage snapshot for two full cycles"
             description: "rustfs_scanner_usage_last_durable_success_unix_seconds stopped advancing for more than twice rustfs_scanner_cycle_interval_seconds — the scanner is not completing cycles."
 
+        # Resident memory still ratchets per scanner sweep on 1.0.2, reduced but
+        # not gone (lares#2143, rustfs#8121). 75 % rather than 85 % because the
+        # notification router mutes during quiet hours: the threshold has to
+        # leave a full night of headroom so a morning check is still in time.
+        # Normal peak is ~40 %, so this only fires on the climb.
+        - alert: RustfsMemoryClimbing
+          expr: rustfs_memory_usage_percent > 75
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RustFS memory at {{ $value | printf \"%.0f\" }} % of its limit"
+            description: "Resident memory has been above 75 % of the cgroup limit for 30 minutes. The known leak lifts the floor per scanner sweep and it does not come back; restart to reset it: kubectl -n rustfs rollout restart deployment/rustfs."
+
     - name: unifi-arm-sync-alerts
       rules:
         - alert: UnifiArmStateDrift
