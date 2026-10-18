@@ -56,6 +56,9 @@ metadata:
 spec:
   # 02:30 splits the chain, 05:30 is after its last job (snapshot-cleanup, 05:00).
   schedule: "30 0,2,5 * * *"
+  # Suspended for the 1.0.2 soak: the slope has to be measured without a reset.
+  # RustfsMemoryClimbing at 75 % is the guard meanwhile (lares#2143).
+  suspend: true
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
