@@ -12,14 +12,8 @@ entries:
     attrs:
       name: platform-admins
 
-  # Custom scope mapping to include groups claim in OIDC tokens
+  # The built-in profile scope carries the groups claim; a second mapping would list every group twice.
   - model: authentik_providers_oauth2.scopemapping
-    state: present
+    state: absent
     identifiers:
       managed: custom.homelab/scope-groups
-    attrs:
-      name: "OAuth Mapping: groups"
-      scope_name: groups
-      description: "Exposes user groups as a groups claim in OIDC tokens"
-      expression: |
-        return {"groups": [group.name for group in request.user.ak_groups.all()]}
