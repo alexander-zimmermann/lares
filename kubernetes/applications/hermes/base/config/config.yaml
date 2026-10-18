@@ -18,6 +18,10 @@ fallback_providers:
   - provider: xai
     model: grok-4.3
 
+# Compact at 256k tokens at the latest; the 1M-context fallback would otherwise run to about 500k on prepaid credits.
+compression:
+  threshold_tokens: 256000
+
 agent:
   # Unattended and read-only: everything the agent may read comes through the
   # bridge's MCP tools, and the bridge denies the rest a second time.
@@ -36,7 +40,6 @@ agent:
     - delegation
     - computer_use
     - discord_admin
-    - homeassistant
     - kanban
     # Discord's server-reading tools, which any explicit Discord toolset list switches on
     - discord
