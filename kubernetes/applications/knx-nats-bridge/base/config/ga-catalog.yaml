@@ -2615,33 +2615,33 @@
   room: Technikraum (K3)
   writable: false
 15/3/1:
-  dpt: '5.010'
+  dpt: '1.017'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodi
+  name: Versorgungstechnik.KWL.Automatikmodus
   room: Vorratsraum (K4)
   writable: true
 15/3/10:
   dpt: '1.011'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Mittel-Status
+  name: Versorgungstechnik.KWL.Lüfterstufe-Mittel-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/11:
   dpt: '1.017'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Hoch
+  name: Versorgungstechnik.KWL.Lüfterstufe-Hoch
   room: Vorratsraum (K4)
   writable: true
 15/3/12:
   dpt: '1.011'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Hoch-Status
+  name: Versorgungstechnik.KWL.Lüfterstufe-Hoch-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/2:
-  dpt: '5.010'
+  dpt: '1.011'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodi-Status
+  name: Versorgungstechnik.KWL.Automatikmodus-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/20:
@@ -2705,9 +2705,9 @@
   room: Vorratsraum (K4)
   writable: false
 15/3/3:
-  dpt: '1.017'
+  dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Auto
+  name: Versorgungstechnik.KWL.Lüfterstufe
   room: Vorratsraum (K4)
   writable: true
 15/3/30:
@@ -2747,39 +2747,39 @@
   room: Vorratsraum (K4)
   writable: false
 15/3/4:
-  dpt: '1.011'
+  dpt: '5.010'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Auto-Status
+  name: Versorgungstechnik.KWL.Lüfterstufe-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/5:
   dpt: '1.017'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Away
+  name: Versorgungstechnik.KWL.Lüfterstufe-Away
   room: Vorratsraum (K4)
   writable: true
 15/3/6:
   dpt: '1.011'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Away-Status
+  name: Versorgungstechnik.KWL.Lüfterstufe-Away-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/7:
   dpt: '1.017'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Niedrig
+  name: Versorgungstechnik.KWL.Lüfterstufe-Niedrig
   room: Vorratsraum (K4)
   writable: true
 15/3/8:
   dpt: '1.011'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Niedrig-Status
+  name: Versorgungstechnik.KWL.Lüfterstufe-Niedrig-Status
   room: Vorratsraum (K4)
   writable: false
 15/3/9:
   dpt: '1.017'
   function: Versorgungstechnik
-  name: Versorgungstechnik.KWL.Lüftermodus-Mittel
+  name: Versorgungstechnik.KWL.Lüfterstufe-Mittel
   room: Vorratsraum (K4)
   writable: true
 15/4/0:
@@ -10873,13 +10873,13 @@
 6/0/180:
   dpt: '5.010'
   function: Raumklima
-  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi
+  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodus
   room: Gebäude
   writable: false
 6/0/181:
   dpt: '5.010'
   function: Raumklima
-  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodi-Status
+  name: Raumklima.Zentral.Gebäude.KWL.Lüftermodus-Status
   room: Gebäude
   writable: false
 6/0/250:

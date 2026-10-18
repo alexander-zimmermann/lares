@@ -120,7 +120,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT time, value FROM knx WHERE time > now() - INTERVAL '30 days' AND knx_name = 'Versorgungstechnik.KWL.Lüftermodi-Status' ORDER BY time DESC LIMIT 1;",
+              "rawSql": "SELECT time, value FROM knx WHERE time > now() - INTERVAL '30 days' AND ga = '15/3/4' ORDER BY time DESC LIMIT 1;",
               "refId": "A"
             }
           ],
