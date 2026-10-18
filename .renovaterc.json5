@@ -46,9 +46,11 @@
       "dependencyDashboardApproval": true
     },
     {
-      // Hermes churns weekly, its config schema with it; every bump is reviewed against the generated config
+      // Hermes churns weekly, its config schema with it; every bump is reviewed against the generated config.
+      // Its old date tags (v2026.x) sort above the SemVer line and are never offered.
       "matchDatasources": ["docker"],
       "matchPackageNames": ["nousresearch/hermes-agent"],
+      "allowedVersions": "!/^v20\\d{2}\\./",
       "automerge": false
     }
   ]
