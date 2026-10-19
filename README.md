@@ -36,7 +36,7 @@ _Roman household guardians — a homelab stack across three independent layers: 
 
 ## About
 
-This is **Lares** — my personal homelab. In Roman religion, the _Lares_ were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and the AI agents that read the cluster today and — eventually — act on it all. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
+This is **Lares** — my personal homelab. In Roman religion, the _Lares_ were the guardian spirits of the home: of the threshold, the hearth, the household. The name fits, because what runs here isn't just infrastructure — it's a single [Proxmox VE](https://www.proxmox.com/) box tucked under the desk, running a [Talos Linux](https://www.talos.dev/) Kubernetes cluster that hosts everything from Grafana and Authentik down to the service that scrapes my solar inverter, the bridge that publishes KNX events to NATS, and the AI agents that explain what the house just did and propose fixes as pull requests. It's my playground, my production, and the place where I try things before I recommend them to colleagues.
 
 What I care about most is that **everything is declarative end-to-end.** A git push is the only way state reaches the cluster. There is no `kubectl apply`, no `tofu apply` at 2 a.m. from my laptop, no snowflake tweaks. [Renovate](https://docs.renovatebot.com/) opens PRs when new versions drop, I merge them, [Argo CD](https://argo-cd.readthedocs.io/) rolls them out. It's boring. Boring is the point.
 
@@ -49,11 +49,11 @@ The part I'm most proud of is how the repo is **split into three independent lay
 [![OpenTofu](https://img.shields.io/badge/OpenTofu-1.11+-844FBA?style=flat-square&logo=opentofu&logoColor=white)](https://opentofu.org/)
 [![Proxmox](https://img.shields.io/badge/Proxmox%20VE-9.0-E57000?style=flat-square&logo=proxmox&logoColor=white)](https://www.proxmox.com/)
 
-[OpenTofu](https://opentofu.org/) with the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider, driven by split YAML manifests. Manages the Proxmox cluster settings, node config, OS images, templates, and the entire VM/LXC fleet — including Windows 11 VMs with TPM/Secure Boot and a dedicated management VM that hosts Omni.
+[OpenTofu](https://opentofu.org/) with the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider, driven by split YAML manifests. Manages the Proxmox cluster settings, node config including VLANs, OS images, templates, and the entire VM/LXC fleet — including Windows 11 VMs with TPM/Secure Boot, a dedicated management VM that hosts Omni, and a [Proxmox Backup Server](https://www.proxmox.com/en/products/proxmox-backup-server/overview) VM that a second provider, [`jkossis/proxmox`](https://github.com/jkossis/terraform-provider-proxmox), configures through its API.
 
 **This layer has nothing to do with Kubernetes.** I could throw away everything above it and still have a clean, reproducible "Proxmox managed by code" setup.
 
-**Swap-out**: any IaC for any hypervisor. Replace `bpg/proxmox` with `libvirt`, `vsphere`, or a cloud provider and rewrite the `pve_*` modules. The manifest structure and cloud-init plumbing stay.
+**Swap-out**: any IaC for any hypervisor. Replace `bpg/proxmox` with `libvirt`, `vsphere`, or a cloud provider and rewrite the `pve_*` and `pbs_*` modules. The manifest structure and cloud-init plumbing stay.
 
 → [Full docs](infrastructure/README.md)
 
@@ -62,9 +62,9 @@ The part I'm most proud of is how the repo is **split into three independent lay
 [![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Ftalos_version&style=flat-square&logo=talos&logoColor=white&color=blue&label=Talos)](https://www.talos.dev/)
 [![Omni](https://img.shields.io/badge/Managed%20by-Omni-ff7300?style=flat-square&logo=sidero&logoColor=white)](https://omni.siderolabs.com/)
 
-Three YAML files describe the cluster: versions, machine shapes, system extensions. [Omni](https://omni.siderolabs.com/) does the rest — hands out Talos configs, bootstraps etcd, rotates certificates, tunnels the API server past my dynamic IP.
+A cluster template and a machine-class file describe the cluster: versions, machine shapes, system extensions; a smaller `dev` template shares the same shape. [Omni](https://omni.siderolabs.com/) does the rest — hands out Talos configs, bootstraps etcd, rotates certificates, tunnels the API server past my dynamic IP.
 
-Machine classes ([`homelab-machine-classes.yaml`](cluster/homelab-machine-classes.yaml)) are auto-provisioned: **3× control plane** (4 vCPU, 4 GB) and **3× worker** (6 vCPU, 10 GB, extra storage disk). Omni picks fresh VMs, assigns roles, done.
+Machine classes ([`homelab-machine-classes.yaml`](cluster/homelab-machine-classes.yaml)) are auto-provisioned: **3× control plane** (4 vCPU, 5 GB) and **3× worker** (6 vCPU, 10 GB, extra storage disk). Omni picks fresh VMs, assigns roles, done.
 
 **Swap-out**: Omni supports [many infrastructure providers](https://docs.siderolabs.com/omni/infrastructure-and-extensions/infrastructure-providers) — libvirt, vSphere, AWS, Hetzner, bare-metal PXE. Only two fields (`providerid`, `providerdata`) are Proxmox-specific.
 
@@ -75,7 +75,7 @@ Machine classes ([`homelab-machine-classes.yaml`](cluster/homelab-machine-classe
 [![Argo CD](https://img.shields.io/badge/Argo%20CD-GitOps-EF7B4D?style=flat-square&logo=argo&logoColor=white)](https://argo-cd.readthedocs.io/)
 [![Kustomize](https://img.shields.io/badge/Kustomize-1A73E8?style=flat-square&logo=kubernetes&logoColor=white)](https://kustomize.io/)
 
-Standard CNCF Kubernetes manifests, grouped into `bootstrap/` (day-zero), `components/` (shared infra — ingress, cert-manager, CSI, sealed-secrets, …), and `applications/` (25+ end-user apps). Two Argo CD `ApplicationSet`s auto-discover new folders by convention; I never hand-write an `Application` resource.
+Standard CNCF Kubernetes manifests, grouped into `bootstrap/` (day-zero), `components/` (shared infra — ingress, cert-manager, CSI, sealed-secrets, …), and `applications/` (35+ apps). Two Argo CD `ApplicationSet`s auto-discover new folders by convention; I never hand-write an `Application` resource.
 
 **Swap-out**: this tree is vanilla Kubernetes. Strip the `talos-ccm` bootstrap folder and it runs on k3s, kind, EKS, whatever. No Talos lock-in above the control-plane layer.
 
@@ -94,14 +94,14 @@ flowchart TB
     subgraph L3["Layer 3: Apps — Argo CD + Manifests"]
         direction LR
         argo[Argo CD]
-        apps[25+ Applications]
+        apps[35+ Applications]
         components[Shared Components]
         argo --> apps
         argo --> components
     end
     subgraph L2["Layer 2: Cluster — Omni + Talos"]
         direction LR
-        omni[Omni SaaS]
+        omni[Omni]
         talos[Talos Cluster<br/>3× CP · 3× Worker]
         omni --> talos
     end
@@ -110,8 +110,10 @@ flowchart TB
         tofu[OpenTofu]
         pve[Proxmox VE]
         mgmt[Omni Mgmt VM]
+        pbs[Backup Server VM]
         tofu --> pve
         pve --> mgmt
+        pve --> pbs
     end
 
     L1 -- VMs --> L2
@@ -129,28 +131,22 @@ flowchart TB
 
 ### Smart-Home data flow
 
-NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP. For "what's happening right now?" the MCP server reads the last retained message per subject straight from JetStream, so live answers don't wait on the ingest cycle.
+NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP. For "what's happening right now?" the MCP server reads the last retained message per subject straight from JetStream, so live answers don't wait on the ingest cycle. The diagnostics engine turns the archive into fault episodes and announces them on `episode.>`; lares-agent-trigger picks those up, has the [Hermes](https://github.com/NousResearch/hermes-agent) agent explain them through the same MCP tools, and delivers the answer to Discord and mail. On a schedule the agent also proposes changes to the fault list as GitHub pull requests.
 
 ```mermaid
 flowchart TB
     subgraph IOT[IoT]
         direction TB
         cam[UniFi Protect Cams] -- HTTP --> webhook[redpanda-connect<br/>unifi_webhook]
-        ems[EMS-ESP]
-        pv[solaredge2mqtt]
-        warp[WARP Wallbox]
-        fan[Dyson PC1] <-- local MQTT --> dysonb[dyson-nats-bridge]
-        dehum[Comfee dehumidifiers] <-- LAN :6444 --> mideab[midea-nats-bridge]
+        mqtt[MQTT devices<br/>EMS-ESP · solaredge2mqtt<br/>WARP · Bordbar]
+        devb[Device bridges<br/>dyson · midea · miele]
     end
 
-    nats[(NATS JetStream<br/>+ MQTT gateway<br/><br/>KNX · EMS_ESP · DYSON · MIDEA<br/>WARP · SOLAREDGE · UNIFI)]
+    nats[(NATS JetStream<br/>+ MQTT gateway)]
 
     webhook -- pub unifi.> --> nats
-    ems  -- MQTT --> nats
-    pv   -- MQTT --> nats
-    warp -- MQTT pub --> nats
-    dysonb <-- pub/sub dyson.> --> nats
-    mideab <-- pub/sub midea.> --> nats
+    mqtt -- MQTT --> nats
+    devb <-- pub/sub --> nats
 
     subgraph KX[KNX]
         direction TB
@@ -172,7 +168,7 @@ flowchart TB
         tsdb[(TimescaleDB)]
         rustfs[(rustfs<br/>parquet archive)]
         engine[lares-diagnostics-engine<br/>fault + forecast jobs]
-        mcp[lares-mcp-bridge<br/>MCP read tools]
+        mcp[lares-mcp-bridge<br/>MCP tools]
         claude((Claude.ai))
         ingest --> tsdb
         ingest --> rustfs
@@ -182,14 +178,26 @@ flowchart TB
         mcp -- MCP/HTTP --> claude
     end
 
+    subgraph AG[Agents]
+        direction LR
+        trigger[lares-agent-trigger]
+        hermes[Hermes]
+        out[Discord · Mail<br/>Wiki · GitHub PRs]
+        trigger -- run --> hermes
+        trigger -- deliver --> out
+    end
+
     nats -- sub --> ingest
     %% Undirected on purpose: an engine->nats arrow makes dagre rank the whole
     %% archive block above nats. The label carries the direction instead.
-    nats -. "engine pub fault.>" .- engine
+    nats -. "engine pub<br/>fault.> · episode.>" .- engine
     nats -- last-msg --> mcp
+    nats -- episode.> --> trigger
+    hermes -- MCP --> mcp
 
-    %% Invisible edge: pins the archive band below the KNX block.
+    %% Invisible edges: pin the archive band below KNX and the agents below it.
     KX ~~~ ARCH
+    ARCH ~~~ AG
 ```
 
 The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
@@ -212,12 +220,12 @@ Six VMs on the one Proxmox host, auto-provisioned by Omni — see [`cluster/home
 
 | Role          | Count | vCPU | RAM   | Root  | Extra disks                    |
 | ------------- | ----- | ---- | ----- | ----- | ------------------------------ |
-| Control plane | 3     | 4    | 4 GB  | 32 GB | —                              |
+| Control plane | 3     | 4    | 5 GB  | 32 GB | —                              |
 | Worker        | 3     | 6    | 10 GB | 64 GB | 128 GB (storage) + 4 GB (swap) |
 
 ### Network
 
-All-Ubiquiti stack — one uplink per tier, 10 GbE between switches, PoE on the edge.
+All-Ubiquiti stack — one uplink per tier, 10 GbE between switches, PoE on the edge. Six VLANs split the house by device class — Internal, Infrastructure, IoT LAN, IoT Cloud, Outdoor, Kubernetes — and the UDM firewalls between them; pods reach a zone only through Cilium's egress gateway, keyed by pod label ([ADR 0004](docs/adr/0004-network-zones-on-the-udm-egress-keys-per-pod-label.md)).
 
 | Device                                                    | Role                                                 |
 | --------------------------------------------------------- | ---------------------------------------------------- |
@@ -243,8 +251,9 @@ A quick taste of what's running — full catalog in [`kubernetes/README.md`](kub
 - **GitOps everywhere** — [Argo CD](https://argo-cd.readthedocs.io/) reconciles the cluster, [Renovate](https://docs.renovatebot.com/) opens PRs for every dependency bump.
 - **Immutable OS** — [Talos Linux](https://www.talos.dev/) with disk encryption, managed by [Omni](https://omni.siderolabs.com/).
 - **Identity & edge** — [Authentik](https://goauthentik.io/) SSO/forward-auth, [Traefik](https://traefik.io/) with pre/post-auth middleware chains, [CrowdSec](https://www.crowdsec.net/) behavior-based IPS, [Cloudflare](https://www.cloudflare.com/) WAF.
-- **Data plane** — [CloudNativePG](https://cloudnative-pg.io/) with Barman S3 PITR backups, [TimescaleDB](https://www.timescale.com/) for sensor time-series, [Redis](https://redis.io/), [RustFS](https://github.com/rustfs/rustfs) for S3-compatible object storage.
-- **Streaming & agents** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus protocol bridges (KNX, solar) and `lares-mcp-bridge` (formerly `iot-mcp-bridge`), an MCP bridge that exposes the data to AI agents.
+- **Data plane** — [CloudNativePG](https://cloudnative-pg.io/) with Barman S3 PITR backups, [TimescaleDB](https://www.timescale.com/) for sensor time-series, [Redis](https://redis.io/), [RustFS](https://github.com/rustfs/rustfs) for S3-compatible object storage, [Longhorn](https://longhorn.io/) for replicated block storage, [Proxmox Backup Server](https://www.proxmox.com/en/products/proxmox-backup-server/overview) for the VMs.
+- **Streaming** — [NATS](https://nats.io/) JetStream as the message bus, [Redpanda Connect](https://docs.redpanda.com/redpanda-connect/about/) fanning streams into TimescaleDB and Parquet on S3, plus bridges for KNX, Dyson, Midea and Miele.
+- **Diagnostics & agents** — `lares-diagnostics-engine` turns the time series into fault episodes and PV forecasts, `lares-mcp-bridge` exposes the data to AI clients over MCP, and `lares-agent-trigger` runs the [Hermes](https://github.com/NousResearch/hermes-agent) agent that explains episodes on Discord and proposes fault-list changes as pull requests.
 - **Observability** — [Prometheus](https://prometheus.io/), [Grafana](https://grafana.com/), [Loki](https://grafana.com/oss/loki/), [Tempo](https://grafana.com/oss/tempo/), [Alloy](https://grafana.com/docs/alloy/), [Gatus](https://gatus.io/), plus [kromgo](https://github.com/kashalls/kromgo) powering the badges above.
 
 ## Repository structure
@@ -255,8 +264,8 @@ lares/
 ├── cluster/          # Layer 2 — Omni cluster templates + machine classes
 ├── kubernetes/       # Layer 3 — Argo CD-reconciled manifests
 │
-├── scripts/          # Helpers the tasks call (footprints, GA mappings, Basalte export)
-├── tasks/            # Taskfile includes (basalte, cluster, diagnostics, infra, k8s, knx)
+├── scripts/          # Helpers the tasks call (KNX footprints + GA mappings, Basalte export + checks, ingest grants)
+├── tasks/            # Taskfile includes (agents, basalte, cluster, diagnostics, infra, k8s, knx)
 └── Taskfile.yaml     # Top-level entry point — `task --list`
 ```
 
