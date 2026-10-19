@@ -87,24 +87,31 @@ Standard CNCF Kubernetes manifests, grouped into `bootstrap/` (day-zero), `compo
 
 ### Stack layers
 
-Three independent layers, left to right — Proxmox provisions VMs, Omni shapes them into a Talos cluster, Argo CD reconciles every app from `main`.
+Three independent layers, top to bottom — Proxmox provisions VMs, Omni shapes them into a Talos cluster, Argo CD reconciles every app from `main`.
 
 ```mermaid
-flowchart LR
-    subgraph L1["Layer 1 · OpenTofu"]
+---
+config:
+  layout: dagre
+---
+flowchart TB
+    subgraph L1["Layer 1"]
         pve[Proxmox VE<br/>Omni VM<br/>Backup VM]
     end
-    subgraph L2["Layer 2 · Omni + Talos"]
-        omni[Omni] --> talos[Talos<br/>3× CP<br/>3× Worker]
+    subgraph L2["Layer 2"]
+        omni[Omni]
+        talos[Talos<br/>3× CP<br/>3× Worker]
     end
-    subgraph L3["Layer 3 · Argo CD"]
-        argo[Argo CD] --> apps[35+ apps<br/>+ components]
+    subgraph L3["Layer 3"]
+        apps[35+ apps<br/>+ components]
+        argo[Argo CD]
     end
     pve -- hosts --> omni
     pve -- VMs --> talos
     talos -- kubeconfig --> argo
+    omni ~~~ apps
     dev[Me · Renovate] -- PRs --> repo[(GitHub: main)]
-    repo -- watched --> L3
+    repo -- watched --> argo
 ```
 
 ### Smart-Home data flow
