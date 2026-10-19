@@ -87,46 +87,24 @@ Standard CNCF Kubernetes manifests, grouped into `bootstrap/` (day-zero), `compo
 
 ### Stack layers
 
-Three independent layers stacked bottom-up — Proxmox provisions VMs, Omni shapes them into a Talos cluster, Argo CD reconciles every app from `main`.
+Three independent layers, left to right — Proxmox provisions VMs, Omni shapes them into a Talos cluster, Argo CD reconciles every app from `main`.
 
 ```mermaid
-flowchart TB
-    subgraph L3["Layer 3: Apps — Argo CD + Manifests"]
-        direction LR
-        argo[Argo CD]
-        apps[35+ Applications]
-        components[Shared Components]
-        argo --> apps
-        argo --> components
+flowchart LR
+    subgraph L1["Layer 1 · OpenTofu"]
+        pve[Proxmox VE<br/>Omni VM<br/>Backup VM]
     end
-    subgraph L2["Layer 2: Cluster — Omni + Talos"]
-        direction LR
-        omni[Omni]
-        talos[Talos Cluster<br/>3× CP · 3× Worker]
-        omni --> talos
+    subgraph L2["Layer 2 · Omni + Talos"]
+        omni[Omni] --> talos[Talos<br/>3× CP<br/>3× Worker]
     end
-    subgraph L1["Layer 1: Infrastructure — Proxmox + OpenTofu"]
-        direction LR
-        tofu[OpenTofu]
-        pve[Proxmox VE]
-        mgmt[Omni Mgmt VM]
-        pbs[Backup Server VM]
-        tofu --> pve
-        pve --> mgmt
-        pve --> pbs
+    subgraph L3["Layer 3 · Argo CD"]
+        argo[Argo CD] --> apps[35+ apps<br/>+ components]
     end
-
-    L1 -- VMs --> L2
-    L2 -- kubeconfig --> L3
-
-    renovate[Renovate Bot]
-    me[Me]
-    repo[(GitHub: main)]
-
-    me -- commits --> repo
-    renovate -- PRs --> repo
-    repo -- watched --> argo
-    mgmt -- hosts --> omni
+    pve -- hosts --> omni
+    pve -- VMs --> talos
+    talos -- kubeconfig --> argo
+    dev[Me · Renovate] -- PRs --> repo[(GitHub: main)]
+    repo -- watched --> L3
 ```
 
 ### Smart-Home data flow
@@ -136,68 +114,51 @@ NATS is the universal event bus. Every external source publishes there, the brid
 ```mermaid
 flowchart TB
     subgraph IOT[IoT]
-        direction TB
-        cam[UniFi Protect Cams] -- HTTP --> webhook[redpanda-connect<br/>unifi_webhook]
-        mqtt[MQTT devices<br/>EMS-ESP · solaredge2mqtt<br/>WARP · Bordbar]
-        devb[Device bridges<br/>dyson · midea · miele]
+        webhook[UniFi Protect<br/>via webhook]
+        mqtt[MQTT devices<br/>EMS-ESP · WARP<br/>SolarEdge<br/>Bordbar]
+        devb[Device bridges<br/>Dyson · Midea<br/>Miele]
     end
 
     nats[(NATS JetStream<br/>+ MQTT gateway)]
 
-    webhook -- pub unifi.> --> nats
+    webhook -- unifi.> --> nats
     mqtt -- MQTT --> nats
     devb <-- pub/sub --> nats
 
     subgraph KX[KNX]
-        direction TB
         bridge[knx-nats-bridge]
         nodered[node-RED]
-        knx[KNX Bus]
-        basalte[Basalte]
-        bridge <-- xknx tunnel --> knx
-        nodered -- KNX-Ultimate --> knx
-        knx --> basalte
+        knx[KNX Bus<br/>Basalte]
+        bridge <--> knx
+        nodered --> knx
     end
 
-    nats <-- pub/sub knx.> --> bridge
-    nats -- MQTT sub --> nodered
-
-    subgraph ARCH[Archive + analytics]
-        direction LR
-        ingest[redpanda-connect<br/>ingest streams]
+    subgraph ARCH[Archive + diagnostics]
+        ingest[Redpanda<br/>Connect]
         tsdb[(TimescaleDB)]
-        rustfs[(rustfs<br/>parquet archive)]
-        engine[lares-diagnostics-engine<br/>fault + forecast jobs]
-        mcp[lares-mcp-bridge<br/>MCP tools]
-        claude((Claude.ai))
+        rustfs[(rustfs<br/>parquet)]
+        engine[diagnostics<br/>engine]
+        mcp[mcp-bridge<br/>→ Claude.ai]
         ingest --> tsdb
         ingest --> rustfs
-        tsdb -- SELECT --> engine
-        engine -- INSERT --> tsdb
-        tsdb -- SELECT --> mcp
-        mcp -- MCP/HTTP --> claude
+        tsdb <--> engine
+        tsdb --> mcp
     end
 
     subgraph AG[Agents]
-        direction LR
-        trigger[lares-agent-trigger]
-        hermes[Hermes]
-        out[Discord · Mail<br/>Wiki · GitHub PRs]
-        trigger -- run --> hermes
-        trigger -- deliver --> out
+        trigger[agent-trigger]
+        hermes[Hermes<br/>MCP tools]
+        out[Discord · Mail<br/>Wiki · GitHub]
+        trigger --> hermes
+        trigger --> out
     end
 
-    nats -- sub --> ingest
-    %% Undirected on purpose: an engine->nats arrow makes dagre rank the whole
-    %% archive block above nats. The label carries the direction instead.
-    nats -. "engine pub<br/>fault.> · episode.>" .- engine
+    nats <-- knx.> --> bridge
+    nats -- MQTT --> nodered
+    nats --> ingest
+    engine -- fault.> episode.> --> nats
     nats -- last-msg --> mcp
     nats -- episode.> --> trigger
-    hermes -- MCP --> mcp
-
-    %% Invisible edges: pin the archive band below KNX and the agents below it.
-    KX ~~~ ARCH
-    ARCH ~~~ AG
 ```
 
 The KNX bus loops back into the data pipeline: every telegram the writer puts on the bus is seen by the reader on the same tunnel, republished on `knx.<ga>`, and ingested by redpanda-connect into the `knx` hypertable — so TSDB always reflects the live bus state regardless of who originated the write.
