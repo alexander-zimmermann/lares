@@ -127,6 +127,41 @@ spec:
             summary: "PBS verify failed for {{ $labels.vm_name }}"
             description: "The last verify of VM {{ $labels.vm_name }} (id {{ $labels.vm_id }}) in datastore {{ $labels.datastore }} did not pass."
 
+    - name: cnpg-backup-alerts
+      rules:
+        # barman-cloud plugin metrics exist only for clusters with a backup; every
+        # instance reports the same values, so max by job (<namespace>/<cluster>).
+        - alert: CnpgBackupStale
+          # 0 = no backup in the object store yet, which counts as stale.
+          expr: 'time() - max by (namespace, job) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp) > 26 * 3600'
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CNPG backup of {{ $labels.job }} stale"
+            description: "The newest base backup of {{ $labels.job }} finished {{ $value | humanizeDuration }} ago, more than 26 hours. The daily ScheduledBackup has not completed since; CnpgBackupFailed fires as well if it ran and failed."
+
+        - alert: CnpgBackupFailed
+          expr: |
+            max by (namespace, job) (barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp)
+              > max by (namespace, job) (barman_cloud_cloudnative_pg_io_last_available_backup_timestamp)
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CNPG backup of {{ $labels.job }} failed"
+            description: "The last backup attempt of {{ $labels.job }} failed at {{ $value | humanizeTimestamp }} and no backup has succeeded since. Check the failed Backup object and the plugin-barman-cloud sidecar logs; the next try is the next ScheduledBackup run."
+
+        - alert: CnpgWalArchiveFailing
+          # pg_stat_archiver on the primary of every cluster, backup or not; -1 = never failed.
+          expr: 'cnpg_pg_stat_archiver_last_failed_time > cnpg_pg_stat_archiver_last_archived_time'
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CNPG WAL archiving of {{ $labels.job }} failing"
+            description: "{{ $labels.pod }} has failed to archive WAL for more than 15 minutes without a single success. WAL piles up on the WAL volume until archiving works again; on a cluster with a backup, point-in-time recovery has a gap from the last archived file on."
+
     - name: rustfs-alerts
       rules:
         - alert: RustfsDriveOffline
