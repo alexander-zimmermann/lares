@@ -124,8 +124,8 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 |                                                                                                        | Component                                                        | Purpose                                                                         |
 | :----------------------------------------------------------------------------------------------------: | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 |    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />     | [Talos Linux](https://www.talos.dev/)                            | Immutable, API-managed Kubernetes OS                                            |
-|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />     | [Omni](https://omni.siderolabs.com/)                             | SaaS control plane for Talos (auto-provisioning, machine classes)               |
-|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cilium.png" height="18" />    | [Cilium](https://cilium.io/)                                     | eBPF CNI (kube-proxy replacement, L2 announcements)                             |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/talos.png" height="18" />     | [Omni](https://omni.siderolabs.com/)                             | Self-hosted control plane for Talos (auto-provisioning, machine classes)        |
+|    <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cilium.png" height="18" />    | [Cilium](https://cilium.io/)                                     | eBPF CNI (kube-proxy replacement, BGP, egress gateway)                          |
 |   <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/traefik.png" height="18" />    | [Traefik](https://traefik.io/)                                   | Ingress with pre/post-auth middleware chains                                    |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/cert-manager.png" height="18" /> | [cert-manager](https://cert-manager.io/)                         | Automated TLS via Cloudflare DNS-01                                             |
 |                                                                                                        | [external-dns](https://github.com/kubernetes-sigs/external-dns)  | Syncs ingress hostnames to Cloudflare                                           |
@@ -181,12 +181,18 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wikijs.png" height="18" />   | [Wiki.js](https://js.wiki/)                                                                  | Knowledge base                                      |
 | <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/node-red.png" height="18" /> | [Node-RED](https://nodered.org/)                                                             | Flow-based automation                               |
 |                                                                                                    | [knx-nats-bridge](https://github.com/alexander-zimmermann/knx-nats-bridge)                   | KNX bus ↔ NATS subjects (home automation gateway)   |
+|                                                                                                    | [dyson-nats-bridge](https://github.com/alexander-zimmermann/dyson-nats-bridge)               | Dyson devices ↔ NATS over local MQTT                |
+|                                                                                                    | [midea-nats-bridge](https://github.com/alexander-zimmermann/midea-nats-bridge)               | Comfee dehumidifiers ↔ NATS over the LAN            |
+|                                                                                                    | [miele-nats-bridge](https://github.com/alexander-zimmermann/miele-nats-bridge)               | Miele appliances → NATS via the Miele cloud API     |
 |                                                                                                    | [lares-mcp-bridge](https://github.com/alexander-zimmermann/lares-mcp-bridge)                 | MCP server exposing TimescaleDB / NATS to AI agents |
 |                                                                                                    | [lares-diagnostics-engine](https://github.com/alexander-zimmermann/lares-diagnostics-engine) | Fault-detection & forecast CronJobs on TimescaleDB  |
+|                                                                                                    | [lares-agent-trigger](https://github.com/alexander-zimmermann/lares-agent-trigger)           | Starts agent runs, delivers to Discord/mail/GitHub  |
+|                                                                                                    | [Hermes Agent](https://github.com/NousResearch/hermes-agent)                                 | Agent harness: Explain, Propose, Discord chat       |
 |                                                                                                    | [SolarEdge2MQTT](https://github.com/DerOetzi/solaredge2mqtt)                                 | PV inverter → MQTT (consumed by Redpanda Connect)   |
 |                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)                              | Prometheus metrics from the Fritz!Box               |
 |                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                                         | Prometheus metrics from the UniFi controller        |
 |                                                                                                    | [SMTPRelay](https://github.com/grafana/smtprelay)                                            | Outbound mail relay for cluster workloads           |
+|                                                                                                    | [Devolutions Gateway](https://github.com/Devolutions/devolutions-gateway)                    | Browser remote desktop behind Authentik             |
 
 ## Portability note
 
@@ -196,7 +202,7 @@ The whole `kubernetes/` tree is standard CNCF Kubernetes. Point a k3s or kind cl
 - A handful of `securityContext` tweaks tuned for Talos's strict defaults.
 - `storageClass` names assuming the Talos CSI drivers.
 
-Everything else (ingress, certs, DNS, Argo CD, all 25+ apps) is portable.
+Everything else (ingress, certs, DNS, Argo CD, all 35+ apps) is portable.
 
 ## Bootstrap sequence
 
