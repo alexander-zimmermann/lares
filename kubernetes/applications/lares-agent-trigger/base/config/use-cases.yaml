@@ -18,6 +18,10 @@ ledger_hook:
   trigger_url: http://lares-agent-trigger.agents.svc.cluster.local:8080
   secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
 
+# The share of new traces the trigger, the bridge and the engine keep, rendered into tracing.env.
+tracing:
+  sampling_ratio: 1.0
+
 # What `tools` may name: the bridge under one client key each, `tools` its
 # allowlist; and GitHub's own server, which Hermes starts itself.
 tool_servers:

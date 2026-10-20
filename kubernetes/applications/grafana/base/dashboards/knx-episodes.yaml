@@ -2272,6 +2272,222 @@ spec:
           "description": "Was die Läufe je Tag gekostet haben, in US-Dollar: Vorfälle, Zeitpläne und Chat. Jeder Modellaufruf kostet den Preis, den persons.yaml für die Modellquelle nennt, die ihn bedient hat. Über das ChatGPT-Abo kostet er 0, über den Ausweich-Zugang den Listenpreis. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced); die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
         },
         {
+          "id": 25,
+          "type": "table",
+          "title": "Läufe",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 76
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT created_at                         AS \"Zeit\",\n       use_case                           AS \"Anwendungsfall\",\n       enduser_id                         AS \"Person\",\n       surface                            AS \"Plattform\",\n       status                             AS \"Status\",\n       EXTRACT(EPOCH FROM duration)       AS \"Dauer\",\n       tokens_in + tokens_out             AS \"Tokens\",\n       cost                               AS \"Kosten\",\n       -- Tempo keeps a trace for 48 hours; an older row has no link.\n       CASE WHEN created_at > now() - interval '48 hours' THEN trace_id END AS \"Trace\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nORDER BY created_at DESC;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Zeit"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Anwendungsfall"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 190
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Person"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 120
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Plattform"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Status"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Dauer"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Tokens"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Kosten"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "currencyUSD"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 4
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 100
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Trace"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "type": "regex",
+                        "options": {
+                          "pattern": ".+",
+                          "result": {
+                            "text": "öffnen",
+                            "index": 0
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Trace in Tempo",
+                        "url": "/explore?schemaVersion=1&orgId=1&panes=%7B%22t%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22tempo%22%2C%22uid%22%3A%22tempo%22%7D%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22${__value.raw}%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-2d%22%2C%22to%22%3A%22now%22%7D%7D%7D"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "description": "Jeder Lauf aus agent_runs, der neueste zuerst. Trace öffnet die Spur des Laufs in Tempo, solange Tempo sie hält (48 Stunden); ein älterer oder nicht abgetasteter Lauf hat keinen Link. Person und Plattform stehen nur bei Chatläufen; Läufe der Maschinen lassen sie leer."
+        },
+        {
           "id": 24,
           "type": "table",
           "title": "Gedächtnis je Anwendungsfall",
@@ -2283,7 +2499,7 @@ spec:
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 76
+            "y": 86
           },
           "targets": [
             {
@@ -2383,7 +2599,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 86
+            "y": 96
           },
           "panels": [
             {
@@ -2398,7 +2614,7 @@ spec:
                 "h": 10,
                 "w": 24,
                 "x": 0,
-                "y": 87
+                "y": 97
               },
               "targets": [
                 {

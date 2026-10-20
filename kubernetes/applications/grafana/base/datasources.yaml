@@ -29,6 +29,7 @@ metadata:
   namespace: grafana
 
 spec:
+  uid: loki
   valuesFrom: []
   datasource:
     name: Loki
@@ -37,6 +38,15 @@ spec:
     url: http://loki-gateway.loki.svc:80
     isDefault: false
     editable: false
+    jsonData:
+      # A JSON log line written inside a span opens that span's trace.
+      derivedFields:
+        - name: trace_id
+          matcherType: regex
+          matcherRegex: '"trace_id":\s*"([0-9a-f]{32})"'
+          datasourceUid: tempo
+          url: "${__value.raw}"
+          urlDisplayLabel: Trace
   instanceSelector:
     matchLabels:
       homelab.app: grafana
@@ -50,6 +60,7 @@ metadata:
   namespace: grafana
 
 spec:
+  uid: tempo
   valuesFrom: []
   datasource:
     name: Tempo
@@ -58,6 +69,14 @@ spec:
     url: http://tempo.tempo.svc:3200
     isDefault: false
     editable: false
+    jsonData:
+      # A span's log lines are those that carry its trace id, in any namespace.
+      tracesToLogsV2:
+        datasourceUid: loki
+        spanStartTimeShift: "-5m"
+        spanEndTimeShift: "5m"
+        customQuery: true
+        query: '{namespace=~".+"} |= "${__trace.traceId}"'
   instanceSelector:
     matchLabels:
       homelab.app: grafana

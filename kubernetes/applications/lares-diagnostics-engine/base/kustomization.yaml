@@ -9,6 +9,8 @@ resources:
   - ./forecast-weather-cronjob.yaml
   - ./energy-balance-cronjob.yaml
   - ./detect-faults-cronjob.yaml
+  # The platform's sampling ratio, rendered from the trigger's use-case file.
+  - ../../lares-agent-trigger/base/tracing
 
 # The engine's two declared files: what counts as wrong, and what the
 # house is. Hash suffix on: an edit re-renders the CronJob reference, so

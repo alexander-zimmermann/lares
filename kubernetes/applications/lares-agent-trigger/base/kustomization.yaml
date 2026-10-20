@@ -8,10 +8,11 @@ namespace: agents
 # fight over its labels.
 
 # The engine's fault list, rendered into this namespace: a mail names the
-# fault's sentence in its subject. The sealed key of the write App the GitHub
-# deliveries are opened as.
+# fault's sentence in its subject. The platform's sampling ratio. The sealed
+# key of the write App the GitHub deliveries are opened as.
 resources:
   - ../../lares-diagnostics-engine/base/config
+  - ./tracing
   - sealed-secret.yaml
 
 helmCharts:

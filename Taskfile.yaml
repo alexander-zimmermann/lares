@@ -33,6 +33,7 @@ vars:
   AGENT_USE_CASES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/use-cases.yaml"
   AGENT_PERSONS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/persons.yaml"
   AGENT_CRON_JOBS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/cron-jobs.yaml"
+  AGENT_TRACING_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/tracing/tracing.env"
   HERMES_SETTINGS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/settings.yaml"
   HERMES_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/config.yaml"
   MCP_BRIDGE_CLIENT_TOOLS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-mcp-bridge/base/config/client-tools.env"

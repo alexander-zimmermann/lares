@@ -92,6 +92,6 @@ repos:
         language: system
         pass_filenames: false
         # The use-case file, the person declaration and the settings they
-        # render from, the three rendered files a hand edit would make stale,
+        # render from, the four rendered files a hand edit would make stale,
         # and the tag the generator is installed at.
-        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|values\.yaml)|hermes/base/config/(settings|config)\.yaml|lares-mcp-bridge/base/config/client-tools\.env)$
+        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|tracing/tracing\.env|values\.yaml)|hermes/base/config/(settings|config)\.yaml|lares-mcp-bridge/base/config/client-tools\.env)$
