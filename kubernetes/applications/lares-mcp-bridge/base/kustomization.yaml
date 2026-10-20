@@ -7,6 +7,8 @@ resources:
   - ./sealed-secret.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
+  # The platform's sampling ratio, rendered from the trigger's use-case file.
+  - ../../lares-agent-trigger/base/tracing
 
 helmCharts:
   - name: application

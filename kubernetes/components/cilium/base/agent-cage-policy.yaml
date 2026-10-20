@@ -123,7 +123,7 @@ spec:
             - port: "3000"
               protocol: TCP
 
-    # hermes: OTLP traces and gateway-health metrics
+    # hermes: OTLP traces and gateway-health metrics; the trigger: OTLP traces
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: alloy

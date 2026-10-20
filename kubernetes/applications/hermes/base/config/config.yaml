@@ -143,6 +143,7 @@ hooks:
       url: http://lares-agent-trigger.agents.svc.cluster.local:8080/hooks/hermes
       events:
         - post_api_request
+        - post_tool_call
         - on_session_end
       secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
       timeout: 10

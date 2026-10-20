@@ -9,32 +9,35 @@ version: "3"
 #   HERMES_CONFIG_PATH           — rendered: the Hermes configuration
 #   AGENT_CRON_JOBS_PATH         — rendered: the cron job set
 #   MCP_BRIDGE_CLIENT_TOOLS_PATH — rendered: the bridge's allowlists
+#   AGENT_TRACING_PATH           — rendered: the sampling ratio of the platform's services
 
 tasks:
   create-harness-config:
-    desc: "render the Hermes config, the cron job set and the bridge's allowlists from use-cases.yaml and persons.yaml"
+    desc: "render the Hermes config, the cron job set, the bridge's allowlists and the sampling ratio from use-cases.yaml and persons.yaml"
     summary: |
       Render the use-case file and the person declaration with the trigger's
       generator, installed at the image tag the trigger deploys: the Hermes
       configuration (settings.yaml copied whole, then the default profile's
       model and fallbacks, the platform toolsets, MCP servers and outbound
-      hook), the cron job set for the trigger, and the bridge's allowlists.
+      hook), the cron job set for the trigger, the bridge's allowlists, and the
+      sampling ratio the trigger, the bridge and the engine trace at.
       Each file is written whole; run it after every change to use-cases.yaml,
       persons.yaml or settings.yaml, and commit what it writes.
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
-      Writes: config.yaml, cron-jobs.yaml, client-tools.env (hook validates).
+      Writes: config.yaml, cron-jobs.yaml, client-tools.env, tracing.env (hook validates).
     cmds:
       - task: generate
         vars:
           HERMES_CONFIG_OUT: "{{.HERMES_CONFIG_PATH}}"
           CRON_JOBS_OUT: "{{.AGENT_CRON_JOBS_PATH}}"
           CLIENT_TOOLS_OUT: "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}"
+          TRACING_OUT: "{{.AGENT_TRACING_PATH}}"
 
   generate:
     internal: true
-    desc: "write the three rendered files to the given paths"
+    desc: "write the four rendered files to the given paths"
     requires:
-      vars: [HERMES_CONFIG_OUT, CRON_JOBS_OUT, CLIENT_TOOLS_OUT]
+      vars: [HERMES_CONFIG_OUT, CRON_JOBS_OUT, CLIENT_TOOLS_OUT, TRACING_OUT]
     vars:
       AGENT_TRIGGER_TAG:
         sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
@@ -49,6 +52,7 @@ tasks:
         --hermes-config "{{.HERMES_CONFIG_OUT}}"
         --cron-jobs "{{.CRON_JOBS_OUT}}"
         --client-tools "{{.CLIENT_TOOLS_OUT}}"
+        --tracing "{{.TRACING_OUT}}"
 
   validate-use-cases:
     desc: "validate use-cases.yaml and persons.yaml with the trigger's loader at the deployed tag and check the rendered files are current"
@@ -59,7 +63,7 @@ tasks:
       each enabled use case may hold and the model sources' bounds and prices,
       and name the field that fails — then diff every rendered file against
       the committed one; a stale or hand-edited one fails with the diff.
-      Reads: everything create-harness-config reads, and the three rendered files.
+      Reads: everything create-harness-config reads, and the four rendered files.
       Pre-commit hook; needs network (the git tag) and a uv that knows Python 3.14.
     vars:
       AGENT_TRIGGER_TAG:
@@ -74,11 +78,13 @@ tasks:
           HERMES_CONFIG_OUT: "{{.TMP_DIR}}/config.yaml"
           CRON_JOBS_OUT: "{{.TMP_DIR}}/cron-jobs.yaml"
           CLIENT_TOOLS_OUT: "{{.TMP_DIR}}/client-tools.env"
+          TRACING_OUT: "{{.TMP_DIR}}/tracing.env"
       - >
         for pair in
         "{{.HERMES_CONFIG_PATH}}|{{.TMP_DIR}}/config.yaml"
         "{{.AGENT_CRON_JOBS_PATH}}|{{.TMP_DIR}}/cron-jobs.yaml"
-        "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}|{{.TMP_DIR}}/client-tools.env"; do
+        "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}|{{.TMP_DIR}}/client-tools.env"
+        "{{.AGENT_TRACING_PATH}}|{{.TMP_DIR}}/tracing.env"; do
         committed="${pair%%|*}"; fresh="${pair#*|}";
         diff -u "$committed" "$fresh" ||
         { echo "$(basename "$committed") is stale or edited by hand: run 'task agents:create-harness-config'"; exit 1; };

@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.13.0
+    tag: 0.14.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -111,9 +111,14 @@ deployment:
       value: json
     METRICS_PORT:
       value: "9090"
-    # OTLP/HTTP collector for traces; the sampling ratio defaults to 0.1 like connect
+    # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
     TRACING_ENDPOINT:
       value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+    TRACING_SAMPLING_RATIO:
+      valueFrom:
+        configMapKeyRef:
+          name: agent-tracing
+          key: TRACING_SAMPLING_RATIO
     TZ:
       value: Europe/Berlin
 
