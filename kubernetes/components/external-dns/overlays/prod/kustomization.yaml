@@ -24,3 +24,16 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/args/9
         value: --domain-filter=zimmermann.sh
+
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: external-dns
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
