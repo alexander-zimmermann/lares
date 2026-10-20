@@ -98,13 +98,21 @@ collectors:
       type: LoadBalancer
       annotations: {}
     alloy:
-      # Syslog: TCP 601 / UDP 514 (RFC5424). OTLP HTTP: 4318 (rustfs metrics, redpanda-connect traces).
+      # Syslog: the port names the format, 514 = RFC3164, 601 = RFC5424. OTLP HTTP: 4318 (rustfs metrics, redpanda-connect traces).
       extraPorts:
-        - name: syslog-tcp
+        - name: syslog-tcp-5424
           port: 601
           targetPort: 601
           protocol: TCP
-        - name: syslog-udp
+        - name: syslog-udp-5424
+          port: 601
+          targetPort: 601
+          protocol: UDP
+        - name: syslog-tcp-3164
+          port: 514
+          targetPort: 514
+          protocol: TCP
+        - name: syslog-udp-3164
           port: 514
           targetPort: 514
           protocol: UDP
@@ -160,7 +168,32 @@ collectors:
               }
           }
 
-          // UDM traffic logging (CyberSecure) and UniFi devices send BSD syslog.
+          // EMS-ESP sends RFC5424 over UDP only.
+          listener {
+              address             = "0.0.0.0:601"
+              protocol            = "udp"
+              idle_timeout        = "0s"
+              use_rfc5424_message = true
+              labels              = {
+                  job       = "syslog",
+                  component = "loki.source.syslog",
+                  protocol  = "udp",
+              }
+          }
+
+          listener {
+              address       = "0.0.0.0:514"
+              protocol      = "tcp"
+              idle_timeout  = "0s"
+              syslog_format = "rfc3164"
+              labels        = {
+                  job       = "syslog",
+                  component = "loki.source.syslog",
+                  protocol  = "tcp",
+              }
+          }
+
+          // UDM traffic logging (CyberSecure) and UniFi devices send BSD syslog over UDP.
           listener {
               address       = "0.0.0.0:514"
               protocol      = "udp"
