@@ -1,0 +1,46 @@
+# PostSync Job granting cnpg_metrics_exporter read access on the blueprint table; GRANT is idempotent
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: authentik-apply-grants
+  namespace: authentik
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: psql
+          image: ghcr.io/cloudnative-pg/postgresql:18.6
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 26
+            runAsGroup: 26
+            readOnlyRootFilesystem: true
+          command: ["psql"]
+          args:
+            - "host=authentik-db-rw user=authentik dbname=authentik sslmode=disable"
+            - "-v"
+            - "ON_ERROR_STOP=1"
+            - "-c"
+            - "GRANT SELECT ON public.authentik_blueprints_blueprintinstance TO cnpg_metrics_exporter"
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authentik-db-app
+                  key: password
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

@@ -386,6 +386,28 @@ spec:
             summary: "ArgoCD application metrics absent"
             description: "argocd_app_info has not been scraped for more than 15m — sync/health drift detection is blind."
 
+    - name: authentik-alerts
+      rules:
+        - alert: AuthentikBlueprintError
+          # Custom query on authentik-db's primary; discovery retries hourly, 2h rides out an apply-order race.
+          expr: 'max by (namespace, blueprint) (cnpg_authentik_blueprint_error) > 0'
+          for: 2h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Authentik blueprint {{ $labels.blueprint }} failing"
+            description: "Blueprint {{ $labels.blueprint }} has been in status error for 2 hours. Its apply is rolled back, so Authentik runs what the last successful apply left and nothing new from the file. System → Blueprints shows the log; discovery retries every hour and the alert clears once the apply succeeds."
+
+        - alert: AuthentikBlueprintMetricsAbsent
+          # The exporter drops a failing custom query silently, which would blind the rule above.
+          expr: absent(cnpg_authentik_blueprint_error)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Authentik blueprint metrics absent"
+            description: "cnpg_authentik_blueprint_error has not been scraped for 15m, so AuthentikBlueprintError is blind. Check the exporter log of the authentik-db primary for the authentik_blueprint query and that authentik-apply-grants ran."
+
     - name: kubernetes-pods
       rules:
         - alert: PodCrashLooping

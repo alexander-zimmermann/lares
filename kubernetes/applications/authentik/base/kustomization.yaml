@@ -5,6 +5,7 @@ namespace: authentik
 resources:
   - ./namespace.yaml
   - ./database.yaml
+  - ./apply-grants-job.yaml
   - ./ingress-route.yaml
   - ./certificate.yaml
   - ./sealed-secret.yaml
