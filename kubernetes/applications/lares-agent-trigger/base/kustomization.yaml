@@ -24,13 +24,16 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-# Content-hash suffix: a change to the declared use cases or the cron job set
-# rendered from them produces a new ConfigMap name, so the Deployment reference
-# updates and ArgoCD rolls the pod, whose start reconciles the jobs.
+# Content-hash suffix: a change to the declared use cases, the model sources or
+# the cron job set rendered from them produces a new ConfigMap name, so the
+# Deployment reference updates and ArgoCD rolls the pod, whose start reconciles the jobs.
 configMapGenerator:
   - name: lares-agent-trigger-use-cases
     files:
       - use-cases.yaml=config/use-cases.yaml
+  - name: lares-agent-trigger-persons
+    files:
+      - persons.yaml=config/persons.yaml
   - name: lares-agent-trigger-cron-jobs
     files:
       - cron-jobs.yaml=config/cron-jobs.yaml

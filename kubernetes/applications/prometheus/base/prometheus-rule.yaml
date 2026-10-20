@@ -888,3 +888,14 @@ spec:
           annotations:
             summary: "Agent chat above its daily budget"
             description: "{{ $value | printf \"%.0f\" }} chat turns in the last 24h, above the messenger's 200 a day. Nothing is refused; a loop or a stuck conversation looks like this."
+
+        - alert: AgentCallUnpriced
+          # The counter appears with its first unpriced call, which increase() misses
+          expr: |
+            sum by (use_case, provider, model, reason) (increase(agent_trigger_unpriced_calls_total[1h])) > 0
+            or sum by (use_case, provider, model, reason) (agent_trigger_unpriced_calls_total unless agent_trigger_unpriced_calls_total offset 1h)
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent model call without a cost ({{ $labels.reason }}: {{ $labels.provider }}/{{ $labels.model }})"
+            description: "{{ $value | printf \"%.0f\" }} call(s) of {{ $labels.use_case }} on {{ $labels.provider }}/{{ $labels.model }} in the last hour have no cost, and their rows in agent_runs carry none. undeclared: no step of the profile's model source in persons.yaml names that provider and model; declare it with its list price, or find out why Hermes ran on it. no_usage: a metered call reported no tokens. no_calls: the run's calls never came through the hook."

@@ -110,4 +110,4 @@ groups:
           severity: warning
         annotations:
           summary: "Agent model source failing ({{ $labels.signal }})"
-          description: "{{ $value }} '{{ $labels.signal }}' line(s) in Hermes' agent.log in the last hour: the configured model source is failing, and runs fall back to Grok on prepaid credits or fail. The signal names the cause; a lost Codex login is repaired with `task agents:login-codex`."
+          description: "{{ $value }} '{{ $labels.signal }}' line(s) in Hermes' agent.log in the last hour: the configured model source is failing, and runs fall back to the capped OpenAI project or fail. The signal names the cause; a lost Codex login is repaired with `task agents:login-codex`."

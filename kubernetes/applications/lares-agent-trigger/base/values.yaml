@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.12.0
+    tag: 0.13.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -20,6 +20,9 @@ deployment:
   env:
     USE_CASES_FILE:
       value: /etc/lares-agent-trigger/use-cases.yaml
+    # The model sources and their prices, by which every model call is priced
+    PERSONS_FILE:
+      value: /etc/lares-agent-trigger/persons.yaml
     # The cron job set rendered from it, reconciled into Hermes at every start
     CRON_JOBS_FILE:
       value: /etc/lares-agent-trigger/cron-jobs.yaml
@@ -118,6 +121,9 @@ deployment:
     use-cases:
       configMap:
         name: lares-agent-trigger-use-cases
+    persons:
+      configMap:
+        name: lares-agent-trigger-persons
     cron-jobs:
       configMap:
         name: lares-agent-trigger-cron-jobs
@@ -177,6 +183,10 @@ deployment:
     use-cases:
       mountPath: /etc/lares-agent-trigger/use-cases.yaml
       subPath: use-cases.yaml
+      readOnly: true
+    persons:
+      mountPath: /etc/lares-agent-trigger/persons.yaml
+      subPath: persons.yaml
       readOnly: true
     cron-jobs:
       mountPath: /etc/lares-agent-trigger/cron-jobs.yaml
