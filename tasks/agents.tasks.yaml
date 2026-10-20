@@ -4,6 +4,7 @@ version: "3"
 #   AGENT_TRIGGER_VALUES_PATH    — the trigger's values file; its image tag is
 #                                  the version the generator is installed at
 #   AGENT_USE_CASES_PATH         — the use-case file
+#   AGENT_PERSONS_PATH           — the person declaration: the model sources
 #   HERMES_SETTINGS_PATH         — the hand-written Hermes settings
 #   HERMES_CONFIG_PATH           — rendered: the Hermes configuration
 #   AGENT_CRON_JOBS_PATH         — rendered: the cron job set
@@ -11,15 +12,16 @@ version: "3"
 
 tasks:
   create-harness-config:
-    desc: "render the Hermes config, the cron job set and the bridge's allowlists from use-cases.yaml"
+    desc: "render the Hermes config, the cron job set and the bridge's allowlists from use-cases.yaml and persons.yaml"
     summary: |
-      Render the use-case file with the trigger's generator, installed at the
-      image tag the trigger deploys: the Hermes configuration (settings.yaml
-      copied whole, then the platform toolsets, MCP servers and outbound hook),
-      the cron job set for the trigger, and the bridge's allowlists. Each file
-      is written whole; run it after every change to use-cases.yaml or
-      settings.yaml, and commit what it writes.
-      Reads: use-cases.yaml, settings.yaml, the trigger's values.yaml (tag).
+      Render the use-case file and the person declaration with the trigger's
+      generator, installed at the image tag the trigger deploys: the Hermes
+      configuration (settings.yaml copied whole, then the default profile's
+      model and fallbacks, the platform toolsets, MCP servers and outbound
+      hook), the cron job set for the trigger, and the bridge's allowlists.
+      Each file is written whole; run it after every change to use-cases.yaml,
+      persons.yaml or settings.yaml, and commit what it writes.
+      Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
       Writes: config.yaml, cron-jobs.yaml, client-tools.env (hook validates).
     cmds:
       - task: generate
@@ -42,18 +44,20 @@ tasks:
         --with "lares-agent-trigger @ git+https://github.com/alexander-zimmermann/lares-agent-trigger@v{{.AGENT_TRIGGER_TAG}}"
         lares-agent-trigger generate
         --use-cases "{{.AGENT_USE_CASES_PATH}}"
+        --persons "{{.AGENT_PERSONS_PATH}}"
         --settings "{{.HERMES_SETTINGS_PATH}}"
         --hermes-config "{{.HERMES_CONFIG_OUT}}"
         --cron-jobs "{{.CRON_JOBS_OUT}}"
         --client-tools "{{.CLIENT_TOOLS_OUT}}"
 
   validate-use-cases:
-    desc: "validate use-cases.yaml with the trigger's loader at the deployed tag and check the rendered files are current"
+    desc: "validate use-cases.yaml and persons.yaml with the trigger's loader at the deployed tag and check the rendered files are current"
     summary: |
-      Render the use-case file into a temporary directory with the trigger's
-      generator at the image tag the trigger deploys — its loader checks the
-      schema, the one chat and the tool servers each enabled use case may hold,
-      and names the field that fails — then diff every rendered file against
+      Render the use-case file and the person declaration into a temporary
+      directory with the trigger's generator at the image tag the trigger
+      deploys — its loaders check the schema, the one chat, the tool servers
+      each enabled use case may hold and the model sources' bounds and prices,
+      and name the field that fails — then diff every rendered file against
       the committed one; a stale or hand-edited one fails with the diff.
       Reads: everything create-harness-config reads, and the three rendered files.
       Pre-commit hook; needs network (the git tag) and a uv that knows Python 3.14.
@@ -86,7 +90,7 @@ tasks:
     summary: |
       Hermes keeps the Codex login on its data volume and refreshes the token
       itself. Only a lost volume needs a new login; a token that expired or was
-      revoked shows up as failing runs and answers from the Grok fallback.
+      revoked shows up as failing runs and answers from the OpenAI API fallback.
       Prints the steps; runs nothing against the cluster.
     silent: true
     cmds:
@@ -101,5 +105,5 @@ tasks:
         4. Check the login is stored (it lands in /opt/data/auth.json on the volume):
              kubectl -n agents exec deploy/hermes -- hermes auth list
         5. Ask something in Discord: the answer must come from the Codex model in
-           settings.yaml (model.default), not from the Grok fallback.
+           persons.yaml (the default profile's source), not from its fallback.
         STEPS

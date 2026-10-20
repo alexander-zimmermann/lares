@@ -2269,7 +2269,7 @@ spec:
               "sort": "desc"
             }
           },
-          "description": "Was die Läufe je Tag gekostet haben, in US-Dollar, wie Hermes sie schätzt. Über das ChatGPT-Abo kostet ein Lauf 0, Chatläufe tragen keinen Betrag — die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
+          "description": "Was die Läufe je Tag gekostet haben, in US-Dollar: Vorfälle, Zeitpläne und Chat. Jeder Modellaufruf kostet den Preis, den persons.yaml für die Modellquelle nennt, die ihn bedient hat. Über das ChatGPT-Abo kostet er 0, über den Ausweich-Zugang den Listenpreis. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced); die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
         },
         {
           "id": 24,

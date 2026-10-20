@@ -73,12 +73,12 @@ deployment:
       value: "1548229055348736034"
     DISCORD_HOME_CHANNEL_NAME:
       value: "#Allgemein"
-    # Model: xAI prepaid credits are the spend cap
-    XAI_API_KEY:
+    # Model fallback: a key of OpenAI project `machines`, whose hard monthly limit is the spend cap
+    OPENAI_API_KEY:
       valueFrom:
         secretKeyRef:
           name: hermes-credentials
-          key: xai-api-key
+          key: openai-api-key
     # Second provider for the model comparison, selected per API request; Discord stays on the default model
     ANTHROPIC_API_KEY:
       valueFrom:
