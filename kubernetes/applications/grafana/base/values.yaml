@@ -24,6 +24,10 @@ podLabels:
   # Additional label for consistent selectors in services and network policies
   component: grafana-server
 
+# Secrets are read only at start, so Reloader rolls the pod when one changes
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
 admin:
   # Reference to a SealedSecret containing the username and password for admin access
   existingSecret: "grafana-admin-credentials"

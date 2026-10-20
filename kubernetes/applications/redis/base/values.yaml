@@ -15,6 +15,9 @@ auth:
   existingSecretPasswordKey: "redis-password"
 
 master:
+  # The password is read only at start, so Reloader rolls the pod when it changes
+  annotations:
+    reloader.stakater.com/auto: "true"
   # Persistence is disabled as Redis is used only as a volatile cache
   persistence:
     enabled: false

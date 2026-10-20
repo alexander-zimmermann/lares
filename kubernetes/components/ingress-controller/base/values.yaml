@@ -1,6 +1,9 @@
 deployment:
   # Deploy as a Deployment for controlled scaling (alternate: DaemonSet)
   kind: Deployment
+  # The CrowdSec and Redis keys are read only when a middleware is built, so Reloader rolls the pods when one changes
+  annotations:
+    reloader.stakater.com/auto: "true"
 
   additionalVolumes:
     - name: crowdsec-traefik-lapi-key

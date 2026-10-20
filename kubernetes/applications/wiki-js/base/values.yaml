@@ -14,6 +14,10 @@ serviceAccount:
 service:
   type: LoadBalancer
 
+# The database password is read only at start, so Reloader rolls the pod when it changes
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
 # Database connection via CloudNativePG
 extraEnvVars:
   - name: DB_HOST

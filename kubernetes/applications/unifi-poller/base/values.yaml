@@ -2,9 +2,6 @@ applicationName: unpoller
 
 deployment:
   enabled: true
-  # ConfigMap uses a kustomize content-hash name, so a config change rolls the
-  # pod natively. No Stakater Reloader controller in the cluster.
-  reloadOnChange: false
   image:
     repository: ghcr.io/unpoller/unpoller
     tag: v5.6.3
