@@ -64,6 +64,41 @@ spec:
         serverName: PLACEHOLDER
         s3-force-path-style: "true"
 
+  # Blueprint status for AuthentikBlueprintError
+  monitoring:
+    customQueriesConfigMap:
+      - name: authentik-db-monitoring
+        key: queries.yaml
+
+---
+# Exporter query: one gauge per enabled blueprint, 1 while its last apply failed
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: authentik-db-monitoring
+  namespace: authentik
+  labels:
+    cnpg.io/reload: ""
+
+data:
+  queries.yaml: |
+    authentik_blueprint:
+      query: |
+        SELECT name AS blueprint, (status = 'error')::int AS error
+        FROM public.authentik_blueprints_blueprintinstance
+        WHERE enabled
+      primary: true
+      target_databases:
+        - authentik
+      metrics:
+        - blueprint:
+            usage: LABEL
+            description: Blueprint instance name
+        - error:
+            usage: GAUGE
+            description: 1 while the last apply of the blueprint failed
+
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup

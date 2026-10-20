@@ -166,3 +166,21 @@ server:
       # Prometheus Operator label (Opt-In)
       labels:
         release: prometheus
+
+worker:
+  # Task counters (authentik_tasks_errors_total) exist only in the worker process
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      # Prometheus Operator label (Opt-In)
+      labels:
+        release: prometheus
+
+prometheus:
+  # Chart alerts: NoWorkersConnected, PendingMigrations, FailedSystemTasks, DisconnectedOutposts
+  rules:
+    enabled: true
+    # Prometheus Operator label (Opt-In)
+    labels:
+      release: prometheus

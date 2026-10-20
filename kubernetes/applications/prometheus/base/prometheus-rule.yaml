@@ -162,6 +162,28 @@ spec:
             summary: "CNPG WAL archiving of {{ $labels.job }} failing"
             description: "{{ $labels.pod }} has failed to archive WAL for more than 15 minutes without a single success. WAL piles up on the WAL volume until archiving works again; on a cluster with a backup, point-in-time recovery has a gap from the last archived file on."
 
+    - name: longhorn-backup-alerts
+      rules:
+        - alert: LonghornBackupStale
+          # Claims on longhorn-backup; 0 = no backup yet, which counts as stale once the claim is 26 h old.
+          expr: |
+            (
+              (time() - max by (volume) (longhorn_volume_last_backup_at))
+                * on (volume) group_left (namespace, persistentvolumeclaim)
+                  max by (volume, namespace, persistentvolumeclaim) (
+                    label_replace(kube_persistentvolumeclaim_info{storageclass="longhorn-backup"}, "volume", "$1", "volumename", "(.+)")
+                  )
+                > 26 * 3600
+            )
+            unless on (namespace, persistentvolumeclaim)
+              time() - max by (namespace, persistentvolumeclaim) (kube_persistentvolumeclaim_created) <= 26 * 3600
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Longhorn backup of {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} stale"
+            description: "The newest backup of claim {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} finished {{ $value | humanizeDuration }} ago, more than 26 hours; an age of decades means it never had one. The daily backup-daily RecurringJob has not completed for this volume since. Check the volume's backups in the Longhorn UI and the longhorn-backups bucket on rustfs."
+
     - name: rustfs-alerts
       rules:
         - alert: RustfsDriveOffline
@@ -363,6 +385,28 @@ spec:
           annotations:
             summary: "ArgoCD application metrics absent"
             description: "argocd_app_info has not been scraped for more than 15m — sync/health drift detection is blind."
+
+    - name: authentik-alerts
+      rules:
+        - alert: AuthentikBlueprintError
+          # Custom query on authentik-db's primary; discovery retries hourly, 2h rides out an apply-order race.
+          expr: 'max by (namespace, blueprint) (cnpg_authentik_blueprint_error) > 0'
+          for: 2h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Authentik blueprint {{ $labels.blueprint }} failing"
+            description: "Blueprint {{ $labels.blueprint }} has been in status error for 2 hours. Its apply is rolled back, so Authentik runs what the last successful apply left and nothing new from the file. System → Blueprints shows the log; discovery retries every hour and the alert clears once the apply succeeds."
+
+        - alert: AuthentikBlueprintMetricsAbsent
+          # The exporter drops a failing custom query silently, which would blind the rule above.
+          expr: absent(cnpg_authentik_blueprint_error)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Authentik blueprint metrics absent"
+            description: "cnpg_authentik_blueprint_error has not been scraped for 15m, so AuthentikBlueprintError is blind. Check the exporter log of the authentik-db primary for the authentik_blueprint query and that authentik-apply-grants ran."
 
     - name: kubernetes-pods
       rules:

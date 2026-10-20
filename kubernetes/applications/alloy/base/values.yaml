@@ -32,12 +32,13 @@ clusterMetrics:
   destinations:
     - prometheus
   collector: alloy-metrics
-  # EndpointSlice state for ServiceWithoutReadyEndpoints; the default allow list drops it
+  # Dropped by the default allow list: EndpointSlice state (ServiceWithoutReadyEndpoints), claim age (LonghornBackupStale)
   kube-state-metrics:
     metricsTuning:
       includeMetrics:
         - kube_endpointslice_info
         - kube_endpointslice_endpoints
+        - kube_persistentvolumeclaim_created
 
 clusterEvents:
   enabled: true
