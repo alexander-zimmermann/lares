@@ -28,6 +28,8 @@ entries:
       name: github-require-2fa
     attrs:
       name: github-require-2fa
+      # Passing runs land in the event log too, not only failures
+      execution_logging: true
       expression: |
         userinfo = context.get("oauth_userinfo", {})
         if not userinfo.get("two_factor_authentication", False):
@@ -44,15 +46,31 @@ entries:
       sources:
         - !Find [authentik_sources_oauth.oauthsource, [slug, github]]
 
-  # Policy Binding: attaches the 2FA policy to the GitHub source
+  # Source bindings never run at sign-in, so the 2FA policy is not bound to the source
   - model: authentik_policies.policybinding
-    state: present
+    state: absent
     identifiers:
       target: !Find [authentik_sources_oauth.oauthsource, [slug, github]]
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, github-require-2fa]]
       order: 0
+
+  # Source flow: every bound policy must pass, else the SSO check alone admits the sign-in
+  - model: authentik_flows.flow
+    state: present
+    identifiers:
+      slug: default-source-authentication
     attrs:
-      target: !Find [authentik_sources_oauth.oauthsource, [slug, github]]
+      policy_engine_mode: all
+
+  # Policy Binding: the 2FA policy runs when a GitHub sign-in plans the source flow
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_flows.flow, [slug, default-source-authentication]]
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, github-require-2fa]]
-      order: 0
+      order: 10
+    attrs:
+      target: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, github-require-2fa]]
+      order: 10
       enabled: true
