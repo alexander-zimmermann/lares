@@ -882,37 +882,51 @@ LEFT JOIN episode_verdicts v ON v.episode_id = r.id;
 -- the target has one (a pull request is open, merged or closed; a Discord
 -- message has no state). `tool_trace` records which tools a run called,
 -- never what they returned. `verdict` is the person's judgement on the
--- output, written by the MCP bridge and nothing else.
+-- output, written by the MCP bridge and nothing else. `enduser_id` is the
+-- handle of the person a chat turn answered (an undeclared profile's name
+-- on a turn from one), named as OpenTelemetry's `enduser.id`, and
+-- `surface` is `discord` or `web`, where the turn came in; a machine's
+-- run leaves both NULL. `trace_id` is set only when the run's trace was
+-- sampled. The `review_*` columns sum a chat turn's background reviews on
+-- its row and stay NULL without one; a person's spend is `cost` plus
+-- `review_cost`.
 -- Written by lares_agent_trigger, read by the read-only roles.
 -- Plain table, no hypertable — run volume is a handful a day.
 -- =========================================================
 CREATE TABLE IF NOT EXISTS agent_runs (
-    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    use_case       TEXT           NOT NULL,
-    trigger        TEXT           NOT NULL CHECK (trigger IN ('event', 'schedule', 'message', 'manual')),
-    subject_kind   TEXT           NOT NULL CHECK (subject_kind IN ('episode', 'alert_group', 'chat', 'none')),
-    subject_key    TEXT,
-    session_id     TEXT,
-    harness_run_id TEXT,
-    status         TEXT           NOT NULL CHECK (status IN ('queued', 'running', 'completed', 'failed', 'capped')),
-    attempt        SMALLINT       NOT NULL DEFAULT 1,
-    error          TEXT,
-    tldr           TEXT,
-    text           TEXT,
-    language       TEXT,
-    output_ref     TEXT[]         NOT NULL DEFAULT '{}',
-    output_state   TEXT[]         NOT NULL DEFAULT '{}',
-    model_source   TEXT,
-    model          TEXT,
-    tokens_in      INTEGER,
-    tokens_out     INTEGER,
-    cost           NUMERIC(10, 6),
-    duration       INTERVAL,
-    tool_trace     JSONB,
-    verdict        TEXT           CHECK (verdict IN ('helpful', 'useless')),
-    verdict_at     TIMESTAMPTZ,
-    created_at     TIMESTAMPTZ    NOT NULL DEFAULT now(),
-    finished_at    TIMESTAMPTZ,
+    id                BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    use_case          TEXT           NOT NULL,
+    trigger           TEXT           NOT NULL CHECK (trigger IN ('event', 'schedule', 'message', 'manual')),
+    subject_kind      TEXT           NOT NULL CHECK (subject_kind IN ('episode', 'alert_group', 'chat', 'none')),
+    subject_key       TEXT,
+    session_id        TEXT,
+    enduser_id        TEXT,
+    surface           TEXT           CHECK (surface IN ('discord', 'web')),
+    harness_run_id    TEXT,
+    trace_id          TEXT,
+    status            TEXT           NOT NULL CHECK (status IN ('queued', 'running', 'completed', 'failed', 'capped')),
+    attempt           SMALLINT       NOT NULL DEFAULT 1,
+    error             TEXT,
+    tldr              TEXT,
+    text              TEXT,
+    language          TEXT,
+    output_ref        TEXT[]         NOT NULL DEFAULT '{}',
+    output_state      TEXT[]         NOT NULL DEFAULT '{}',
+    model_source      TEXT,
+    model             TEXT,
+    tokens_in         INTEGER,
+    tokens_out        INTEGER,
+    cost              NUMERIC(10, 6),
+    review_tokens_in  INTEGER,
+    review_tokens_out INTEGER,
+    review_cost       NUMERIC(10, 6),
+    review_text       TEXT,
+    duration          INTERVAL,
+    tool_trace        JSONB,
+    verdict           TEXT           CHECK (verdict IN ('helpful', 'useless')),
+    verdict_at        TIMESTAMPTZ,
+    created_at        TIMESTAMPTZ    NOT NULL DEFAULT now(),
+    finished_at       TIMESTAMPTZ,
     -- One state per delivered output, positions matching.
     CONSTRAINT agent_runs_output_positions
         CHECK (cardinality(output_ref) = cardinality(output_state)),
@@ -926,6 +940,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS agent_runs_subject_idx
     ON agent_runs (use_case, subject_kind, subject_key);
 CREATE INDEX IF NOT EXISTS agent_runs_use_case_created_at_idx
     ON agent_runs (use_case, created_at DESC);
+CREATE INDEX IF NOT EXISTS agent_runs_enduser_id_created_at_idx
+    ON agent_runs (enduser_id, created_at DESC);
 
 -- =========================================================
 -- An episode's newest explanation, so the dashboard and the MCP bridge
