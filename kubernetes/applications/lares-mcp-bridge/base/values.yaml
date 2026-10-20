@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
-    tag: 1.29.0
+    tag: 1.30.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -86,6 +86,14 @@ deployment:
       value: http://lares-agent-trigger.agents.svc.cluster.local:8080
     MCP_TRIGGER_KEY_FILE:
       value: /etc/lares-mcp-bridge/trigger-api-key
+    # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+    MCP_TRACING_ENDPOINT:
+      value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+    MCP_TRACING_SAMPLING_RATIO:
+      valueFrom:
+        configMapKeyRef:
+          name: agent-tracing
+          key: TRACING_SAMPLING_RATIO
     MCP_LOG_FORMAT:
       value: json
     TZ:
