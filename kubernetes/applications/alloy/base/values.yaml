@@ -95,9 +95,16 @@ collectors:
       - loki
       - prometheus
       - tempo
+    # The operator applies its Service through Helm, which merges ports by number and drops 601/udp beside 601/tcp.
+    # extraService is rendered by this chart instead and applied server-side by Argo (ports keyed by number and protocol).
     service:
+      enabled: false
       type: LoadBalancer
-      annotations: {}
+      annotations:
+        argocd.argoproj.io/sync-options: ServerSideApply=true
+    extraService:
+      enabled: true
+      fullname: alloy-alloy-receiver
     alloy:
       # Syslog: the port names the format, 514 = RFC3164, 601 = RFC5424. OTLP HTTP: 4318 (rustfs metrics, redpanda-connect traces).
       extraPorts:

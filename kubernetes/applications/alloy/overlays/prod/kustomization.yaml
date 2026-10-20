@@ -153,7 +153,7 @@ patches:
           - name: GOMEMLIMIT
             value: "241591910"
 
-  # Alloy Receiver: syslog and OTLP ingress, service with static IP and BGP advertisement
+  # Alloy Receiver: syslog and OTLP ingress
   - target:
       kind: Alloy
       name: alloy-alloy-receiver
@@ -172,9 +172,15 @@ patches:
         value:
           - name: GOMEMLIMIT
             value: "241591910"
+
+  # Alloy Receiver service (chart extraService) with static IP
+  - target:
+      kind: Service
+      name: alloy-alloy-receiver
+    patch: |-
       - op: test
-        path: /spec/service/type
+        path: /spec/type
         value: LoadBalancer
       - op: add
-        path: /spec/service/annotations/io.cilium~1lb-ipam-ips
+        path: /metadata/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.200"
