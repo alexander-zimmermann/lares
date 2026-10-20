@@ -70,13 +70,13 @@ spec:
     isDefault: false
     editable: false
     jsonData:
-      # A span's log lines are those that carry its trace id, in any namespace.
+      # A span's log lines are those that carry its trace id; Tempo and Loki only echo it from a lookup.
       tracesToLogsV2:
         datasourceUid: loki
         spanStartTimeShift: "-5m"
         spanEndTimeShift: "5m"
         customQuery: true
-        query: '{namespace=~".+"} |= "${__trace.traceId}"'
+        query: '{namespace=~".+", namespace!~"tempo|loki"} |= "${__trace.traceId}"'
   instanceSelector:
     matchLabels:
       homelab.app: grafana
