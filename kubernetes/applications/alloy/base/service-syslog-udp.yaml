@@ -1,0 +1,29 @@
+---
+# UDP syslog for the alloy-receiver, beside the operator-rendered alloy-alloy-receiver (TCP).
+# Helm merges Service ports by number, so both protocols on one port need two Services sharing one IP.
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: alloy-alloy-receiver-udp
+  labels:
+    # Same labels as the operator-rendered Service: alloy-bgp-ip-pool and the alloy BGP advertisement select on them
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    lbipam.cilium.io/sharing-key: alloy-receiver
+
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/instance: alloy-alloy-receiver
+    app.kubernetes.io/name: alloy-receiver
+  ports:
+    - name: syslog-udp-5424
+      port: 601
+      targetPort: 601
+      protocol: UDP
+    - name: syslog-udp-3164
+      port: 514
+      targetPort: 514
+      protocol: UDP

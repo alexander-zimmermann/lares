@@ -178,3 +178,15 @@ patches:
       - op: add
         path: /spec/service/annotations/io.cilium~1lb-ipam-ips
         value: "192.168.10.200"
+
+  # Alloy Receiver UDP syslog: same static IP as the receiver
+  - target:
+      kind: Service
+      name: alloy-alloy-receiver-udp
+    patch: |-
+      - op: test
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations/io.cilium~1lb-ipam-ips
+        value: "192.168.10.200"

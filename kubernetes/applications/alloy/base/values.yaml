@@ -96,26 +96,21 @@ collectors:
       - tempo
     service:
       type: LoadBalancer
-      annotations: {}
+      # Shares its IP with alloy-alloy-receiver-udp (service-syslog-udp.yaml)
+      annotations:
+        lbipam.cilium.io/sharing-key: alloy-receiver
     alloy:
       # Syslog: the port names the format, 514 = RFC3164, 601 = RFC5424. OTLP HTTP: 4318 (rustfs metrics, redpanda-connect traces).
+      # UDP ports live in service-syslog-udp.yaml: Helm merges Service ports by number, so 601/tcp would replace 601/udp here.
       extraPorts:
         - name: syslog-tcp-5424
           port: 601
           targetPort: 601
           protocol: TCP
-        - name: syslog-udp-5424
-          port: 601
-          targetPort: 601
-          protocol: UDP
         - name: syslog-tcp-3164
           port: 514
           targetPort: 514
           protocol: TCP
-        - name: syslog-udp-3164
-          port: 514
-          targetPort: 514
-          protocol: UDP
         - name: otlp-http
           port: 4318
           targetPort: 4318

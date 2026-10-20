@@ -6,6 +6,7 @@ resources:
   - ./namespace.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
+  - ./service-syslog-udp.yaml
 
 helmCharts:
   - name: k8s-monitoring
