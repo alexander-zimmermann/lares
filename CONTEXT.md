@@ -107,9 +107,27 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   an agent's loop: takes the assignment, calls the model, executes tools,
   stops. HolmesGPT, kagent, the Codex CLI and Hermes are harnesses. Which
   one runs is a decision on the map, not part of the term.
-- **Model source** (avoid: provider, backend, gateway) — where an agent's
-  model comes from and how it is paid for: a subscription, a metered API,
-  or a machine in the house.
+- **Profile** — the harness's unit of configuration, profile notes,
+  sessions and model login, reachable under its own prefix. The default
+  profile belongs to the machines; each person has exactly one.
+- **Person** (avoid: user, account) — a declared household member with one
+  sign-in, one profile, one set of profile notes, one model source and one
+  tool list. Known in Git by a handle; the identity (name, e-mail, Discord
+  account) lives only in the sign-in provider. A standard's field names
+  keep the standard's spelling: OpenTelemetry's `enduser.id` holds the
+  handle, and so does the ledger's `enduser_id`.
+- **Handle** — a person's public name in Git and in the sign-in provider,
+  chosen by the household; never a legal name.
+- **Household** — the group whose membership grants a person the chat
+  surfaces.
+- **Surface** — where a turn reaches the harness: Discord, the API server,
+  cron, the web chat. The harness hands out tool servers per surface.
+- **Model source** (avoid: provider, backend, gateway) — where the model of
+  an agent or a person comes from and how it is paid for: a subscription, a
+  metered API, or a machine in the house. A free plan counts as a
+  subscription at no cost. Every source names a capped metered fallback. A
+  source on the same account as the default profile is
+  `shared-with-default`.
 - **Subject** — what an explanation is about: one episode (house) or one
   firing alert group (cluster). Not the episode's own `subject` column,
   which names the channel a fault was measured on; say "channel" for that.
@@ -174,6 +192,10 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   case in `agent_memory`: bounded to about 8 KB, visible on the dashboard
   and editable by the owner. Never a second truth for what the tables
   already hold.
+- **Profile notes** (avoid: memory) — the harness's own working notes in
+  one profile, carried from turn to turn; in a person's profile, what the
+  harness remembers of that person. Not Memory, which stays a use case's
+  notes in `agent_memory`.
 - **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not
