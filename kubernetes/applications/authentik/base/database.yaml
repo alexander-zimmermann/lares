@@ -67,6 +67,9 @@ spec:
   # Blueprint status for AuthentikBlueprintError
   monitoring:
     customQueriesConfigMap:
+      # Listed as CNPG's webhook would prepend it, so the live list matches Git
+      - name: cnpg-default-monitoring
+        key: queries
       - name: authentik-db-monitoring
         key: queries.yaml
 
