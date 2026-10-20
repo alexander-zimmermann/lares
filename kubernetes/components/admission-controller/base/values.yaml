@@ -1,28 +1,11 @@
 admissionController:
   replicas: 1
-  container:
-    resources:
-      requests:
-        cpu: 25m
 
 backgroundController:
   replicas: 1
-  resources:
-    requests:
-      cpu: 25m
-    limits:
-      memory: 256Mi
 
 cleanupController:
   replicas: 1
-  resources:
-    requests:
-      cpu: 25m
 
 reportsController:
   replicas: 1
-  resources:
-    requests:
-      cpu: 25m
-    limits:
-      memory: 256Mi

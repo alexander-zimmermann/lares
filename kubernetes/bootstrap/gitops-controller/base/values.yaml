@@ -73,30 +73,10 @@ repoServer:
   livenessProbe:
     timeoutSeconds: 3
 
-# ApplicationSet controller generates Applications from generators (e.g. Git, List, Cluster, etc.)
-applicationSet:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 250m
-      memory: 128Mi
-
 # Notifications controller off: Alertmanager owns delivery, and the
 # ArgoCD alerts already exist as debounced PrometheusRules on argocd_app_info
 notifications:
   enabled: false
-
-# Internal Redis for ArgoCD (caching/locking)
-redis:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-    limits:
-      cpu: 200m
-      memory: 128Mi
 
 # Dex fronts Authentik as OIDC upstream — see configs.cm.[dex.config]
 dex:

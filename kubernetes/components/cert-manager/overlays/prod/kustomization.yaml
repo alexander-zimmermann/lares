@@ -3,3 +3,58 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # cert-manager controller resources
+  - target:
+      kind: Deployment
+      name: cert-manager
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: cert-manager-chart-controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+
+  # cert-manager cainjector resources
+  - target:
+      kind: Deployment
+      name: cert-manager-cainjector
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: cert-manager-chart-cainjector
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 96Mi
+          limits:
+            cpu: 100m
+            memory: 192Mi
+
+  # cert-manager webhook resources
+  - target:
+      kind: Deployment
+      name: cert-manager-webhook
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: cert-manager-chart-webhook
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi

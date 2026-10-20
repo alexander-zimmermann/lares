@@ -15,33 +15,9 @@ crds:
 webhook:
   hostNetwork: true
   securePort: 10260
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      cpu: 100m
-      memory: 64Mi
-
-cainjector:
-  resources:
-    requests:
-      cpu: 10m
-      memory: 96Mi
-    limits:
-      cpu: 100m
-      memory: 192Mi
 
 # Use a stable, short name for all rendered resources
 fullnameOverride: "cert-manager"
-
-resources:
-  requests:
-    cpu: 10m
-    memory: 64Mi
-  limits:
-    cpu: 100m
-    memory: 128Mi
 
 # Prometheus Monitoring
 prometheus:

@@ -3,3 +3,72 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # Kyverno admission controller resources
+  - target:
+      kind: Deployment
+      name: kyverno-admission-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: kyverno
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 128Mi
+          limits:
+            memory: 384Mi
+
+  # Kyverno background controller resources
+  - target:
+      kind: Deployment
+      name: kyverno-background-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+
+  # Kyverno cleanup controller resources
+  - target:
+      kind: Deployment
+      name: kyverno-cleanup-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+
+  # Kyverno reports controller resources
+  - target:
+      kind: Deployment
+      name: kyverno-reports-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 256Mi

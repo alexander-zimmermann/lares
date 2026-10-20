@@ -117,3 +117,39 @@ patches:
         value:
           name: GOMEMLIMIT
           value: "483183821"
+
+  # ArgoCD ApplicationSet controller generates Applications from generators
+  - target:
+      kind: Deployment
+      name: argocd-applicationset-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/resources
+        value: {}
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 128Mi
+
+  # ArgoCD internal Redis for caching
+  - target:
+      kind: Deployment
+      name: argocd-redis
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/resources
+        value: {}
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi

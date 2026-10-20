@@ -3,3 +3,35 @@ kind: Kustomization
 
 resources:
   - ../../base
+
+patches:
+  # Sealed Secrets controller resources
+  - target:
+      kind: Deployment
+      name: sealed-secrets-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: GOMAXPROCS
+            valueFrom:
+              resourceFieldRef:
+                resource: limits.cpu
+                divisor: "1"
+          - name: GOMEMLIMIT
+            valueFrom:
+              resourceFieldRef:
+                resource: limits.memory
+                divisor: "1"
