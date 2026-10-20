@@ -9,6 +9,9 @@ secrets:
 lapi:
   # Enables LAPI (Local API): central management component of CrowdSec
   enabled: true
+  # Secrets are read only at start, so Reloader rolls the pod when one changes
+  deployAnnotations:
+    reloader.stakater.com/auto: "true"
 
   env:
     # Register CrowdSec instance with console
@@ -57,6 +60,9 @@ lapi:
 agent:
   # Enable CrowdSec agent (as daemonset)
   enabled: true
+  # Secrets are read only at start, so Reloader rolls the pods when one changes
+  daemonsetAnnotations:
+    reloader.stakater.com/auto: "true"
 
   env:
     # Install default collections (including Traefik and Authentik support)
@@ -93,6 +99,9 @@ agent:
 appsec:
   # Enables CrowdSec AppSec (WAF component)
   enabled: true
+  # Secrets are read only at start, so Reloader rolls the pod when one changes
+  deployAnnotations:
+    reloader.stakater.com/auto: "true"
 
   env:
     # Install default collections (including Traefik and Authentik support)

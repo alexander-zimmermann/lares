@@ -1,4 +1,8 @@
 global:
+  # Secrets are read only at start, so Reloader rolls server and worker when one changes
+  deploymentAnnotations:
+    reloader.stakater.com/auto: "true"
+
   env:
     # Database password from a Secret created by the CloudNativePG Cluster
     - name: AUTHENTIK_POSTGRESQL__PASSWORD

@@ -2,9 +2,6 @@ applicationName: lares-mcp-bridge
 
 deployment:
   enabled: true
-  # The allowlists come in as a hashed ConfigMap (pod rolls on change), and there
-  # is no Stakater Reloader controller in the cluster.
-  reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
     tag: 1.29.0

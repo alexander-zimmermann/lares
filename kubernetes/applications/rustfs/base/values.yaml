@@ -11,6 +11,10 @@ mode:
 secret:
   existingSecret: rustfs-admin-credentials
 
+# Secrets are read only at start, so Reloader rolls the pod when one changes
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+
 config:
   rustfs:
     # Service DNS used for internal access.

@@ -2,7 +2,6 @@ applicationName: dyson-nats-bridge
 
 deployment:
   enabled: true
-  reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/dyson-nats-bridge
     tag: 0.13.0

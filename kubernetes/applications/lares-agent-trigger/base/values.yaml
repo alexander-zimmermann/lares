@@ -2,9 +2,6 @@ applicationName: lares-agent-trigger
 
 deployment:
   enabled: true
-  # The use-case file and the cron job set come in as hashed ConfigMaps (pod
-  # rolls on change), and there is no Stakater Reloader controller in the cluster.
-  reloadOnChange: false
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
     tag: 0.12.0

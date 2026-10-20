@@ -10,6 +10,10 @@ global:
 provider:
   name: cloudflare
 
+# The token is read only at start, so Reloader rolls the pod when it changes
+deploymentAnnotations:
+  reloader.stakater.com/auto: "true"
+
 # Cloudflare API Token (mounted from SealedSecret)
 env:
   - name: CF_API_TOKEN

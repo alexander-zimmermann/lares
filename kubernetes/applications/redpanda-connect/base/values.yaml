@@ -16,6 +16,11 @@ service:
       targetPort: 4196
       protocol: TCP
 
+# Secrets are read only at start, so Reloader rolls the pod when one changes
+deployment:
+  annotations:
+    reloader.stakater.com/auto: "true"
+
 env:
   # NATS user (cloned from nats namespace by Kyverno)
   - name: NATS_PASSWORD

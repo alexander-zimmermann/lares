@@ -8,3 +8,7 @@ jetstream:
       secret:
         name: nats-operator-nkey
         key: nkey.seed
+
+# The NKey identity is fixed when a connection is built, so Reloader rolls the pod when it changes
+podAnnotations:
+  reloader.stakater.com/auto: "true"

@@ -37,6 +37,7 @@ kubernetes/
 │   ├── ingress-controller/     # Traefik + middleware chains (pre/post-auth)
 │   ├── metrics-server/
 │   ├── prometheus-crds/
+│   ├── reloader/               # Rolls workloads when a Secret they read changes
 │   ├── sealed-secrets-controller/
 │   └── talos-ccm/
 │
@@ -72,7 +73,7 @@ flowchart LR
     argo -- reconciles --> cluster
 ```
 
-Secrets are encrypted with [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — the master key lives in `components/sealed-secrets-controller/base/master-key.yaml` and is **not** in git (it's seeded once per cluster via `task k8s:init`). Every `secret.yaml` in the tree has a matching `sealed-secret.yaml` that Argo applies; the controller decrypts it in-cluster.
+Secrets are encrypted with [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) — the master key lives in `components/sealed-secrets-controller/base/master-key.yaml` and is **not** in git (it's seeded once per cluster via `task k8s:init`). Every `secret.yaml` in the tree has a matching `sealed-secret.yaml` that Argo applies; the controller decrypts it in-cluster. When a Secret changes, [Reloader](https://github.com/stakater/Reloader) rolls each workload that reads it and carries `reloader.stakater.com/auto: "true"`: every `application`-chart app by default, third-party charts that read their Secrets only at start by opt-in. A ConfigMap change rolls its workload through the kustomize content-hash name.
 
 ### Key material
 
@@ -115,6 +116,8 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 
 If your app needs secrets: write them as plain `secret.yaml`, then `task k8s:seal -- kubernetes/applications/<name>/base/secret.yaml`, commit only the `sealed-secret.yaml`.
 
+If a third-party chart reads those secrets only at start, opt its workload in to Reloader with `reloader.stakater.com/auto: "true"` (workload or pod annotations); `application`-chart apps carry it by default.
+
 ## Catalog
 
 All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](https://github.com/homarr-labs/dashboard-icons), served through jsDelivr. Rows without an icon are for projects that don't have a curated brand-icon (yet).
@@ -132,6 +135,7 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 |                                                                                                        | external-services                                                | Ingress routes to out-of-cluster endpoints (Proxmox, PBS, FRITZ!Box, KNX-IP, …) |
 |                                                                                                        | [Kyverno](https://kyverno.io/)                                   | Policy engine (secret replication, admission)                                   |
 |                                                                                                        | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Git-safe, cluster-decryptable secrets                                           |
+|                                                                                                        | [Reloader](https://github.com/stakater/Reloader)                 | Rolls workloads when a Secret they read changes                                 |
 
 ### GitOps & Automation
 

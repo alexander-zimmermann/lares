@@ -386,6 +386,26 @@ spec:
             summary: "ArgoCD application metrics absent"
             description: "argocd_app_info has not been scraped for more than 15m — sync/health drift detection is blind."
 
+    - name: reloader-alerts
+      rules:
+        - alert: ReloaderReloadFailed
+          # Reloader seeds the success="false" series at 0 on start, so the first failure after a restart counts too.
+          expr: increase(reloader_reload_executed_total{success="false"}[15m]) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Reloader failed to roll a workload"
+            description: "A Secret changed, but Reloader could not update a workload that reads it in the last 15m, so that workload still runs on the old value. The Reloader log and the ReloadFail event on the workload name it. Reloader does not retry, and this alert clears after 15m either way."
+
+        - alert: ReloaderMetricsAbsent
+          expr: absent(reloader_reload_executed_total)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Reloader metrics absent"
+            description: "reloader_reload_executed_total has not been scraped for more than 15m, so ReloaderReloadFailed is blind and a failed reload goes unnoticed."
+
     - name: authentik-alerts
       rules:
         - alert: AuthentikBlueprintError
