@@ -145,8 +145,7 @@ tasks:
       once: add them and commit again.
       Reads: the catalog, the sidecar configs, faults.yaml, ga-mappings/.
       Writes: the generated files in ga-mappings/.
-      Needs network (git tags) and a uv that knows Python 3.14 (the bridges)
-      and 3.15 (the engine).
+      Needs network (git tags) and a uv that knows Python 3.15.
     vars:
       MIELE_TAG:
         sh: yq '.deployment.image.tag' "{{.MIELE_VALUES_PATH}}"
@@ -162,17 +161,17 @@ tasks:
       # One environment per package: the bridges pin nats-bridge-core at
       # their own tags, which one shared resolve could not satisfy.
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "miele-nats-bridge @ git+https://github.com/alexander-zimmermann/miele-nats-bridge@v{{.MIELE_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" miele
         "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.MIELE_CONFIG_PATH}}"
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "midea-nats-bridge @ git+https://github.com/alexander-zimmermann/midea-nats-bridge@v{{.MIDEA_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" midea
         "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.MIDEA_CONFIG_PATH}}"
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "dyson-nats-bridge @ git+https://github.com/alexander-zimmermann/dyson-nats-bridge@v{{.DYSON_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" dyson
         "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DYSON_CONFIG_PATH}}"
@@ -184,7 +183,7 @@ tasks:
           "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
       # Every file, the hand-written ones too, as the bridge loads them.
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "knx-nats-bridge @ git+https://github.com/alexander-zimmermann/knx-nats-bridge@v{{.KNX_BRIDGE_TAG}}"
         python -c
         "import sys; from pathlib import Path;
@@ -209,7 +208,7 @@ tasks:
         sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"
     cmds:
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "knx-nats-bridge @ git+https://github.com/alexander-zimmermann/knx-nats-bridge@v{{.KNX_BRIDGE_TAG}}"
         python -c
         "import sys; from pathlib import Path;
