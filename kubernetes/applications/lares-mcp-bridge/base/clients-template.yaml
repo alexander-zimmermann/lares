@@ -13,5 +13,6 @@ spec:
         {
           "lares-agent": {{ index . "lares-agent" | toJson }},
           "lares-runs": {{ index . "lares-runs" | toJson }},
-          "lares-memory": {{ index . "lares-memory" | toJson }}
+          "lares-memory": {{ index . "lares-memory" | toJson }},
+          "az1003": {{ index . "az1003" | toJson }}
         }

@@ -2272,6 +2272,117 @@ spec:
           "description": "Was die Läufe je Tag gekostet haben, in US-Dollar: Vorfälle, Zeitpläne und Chat. Jeder Modellaufruf kostet den Preis, den persons.yaml für die Modellquelle nennt, die ihn bedient hat. Über das ChatGPT-Abo kostet er 0, über den Ausweich-Zugang den Listenpreis. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced); die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
         },
         {
+          "id": 26,
+          "type": "timeseries",
+          "title": "Läufe je Person und Plattform",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 76
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', created_at) AS time,\n       CASE WHEN enduser_id IS NULL AND surface IS NULL THEN 'Maschinen'\n            ELSE COALESCE(enduser_id, 'niemand') || ' · ' || surface END AS metric,\n       count(*) AS value\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1, 2 ORDER BY 1;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "unit": "none",
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.7,
+                "drawStyle": "bars",
+                "fillOpacity": 75,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "min": 0
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Maschinen"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "blue"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "description": "Jeder Lauf am Tag seines Beginns, nach der Person, der er geantwortet hat, und wo sie geschrieben hat: discord oder web, der Web-Chat. Maschinen sind die Läufe der Vorfälle und Zeitpläne, auch die per start_run erbetenen. „niemand · discord“ und ein Name, der in persons.yaml fehlt oder ruht, sind Chatläufe, die so nicht kommen sollten; ihre Zeilen tragen nur Zahlen."
+        },
+        {
           "id": 25,
           "type": "table",
           "title": "Läufe",
@@ -2283,7 +2394,7 @@ spec:
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 76
+            "y": 84
           },
           "targets": [
             {
@@ -2531,7 +2642,7 @@ spec:
             "h": 10,
             "w": 24,
             "x": 0,
-            "y": 86
+            "y": 94
           },
           "targets": [
             {
@@ -2631,7 +2742,7 @@ spec:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 96
+            "y": 104
           },
           "panels": [
             {
@@ -2646,7 +2757,7 @@ spec:
                 "h": 10,
                 "w": 24,
                 "x": 0,
-                "y": 97
+                "y": 105
               },
               "targets": [
                 {

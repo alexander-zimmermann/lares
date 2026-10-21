@@ -83,6 +83,11 @@ display:
 # Session isolation on every gateway platform
 group_sessions_per_user: true
 
+# One gateway on 8642 serves every profile, a person's under /p/<handle>/.
+# Hermes would write the switch into config.yaml at boot, which is read-only here.
+gateway:
+  multiplex_profiles: true
+
 # Gateway and Discord liveness as metrics into the Alloy receiver; Kubernetes
 # cannot see a gateway crash under s6, the alert rules on hermes_gateway_up can.
 monitoring:

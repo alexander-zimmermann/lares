@@ -43,15 +43,22 @@ deployment:
       value: lares-mcp-bridge
     MCP_AUTH_RESOURCE_URL:
       value: PLACEHOLDER_AUTH_RESOURCE_URL
-    # Machine clients (agents) authenticate with a key from this file instead of a JWT
+    # Clients (the agents' machine clients and one per person) authenticate with a key from this file instead of a JWT
     MCP_AUTH_CLIENTS_FILE:
       value: /etc/lares-mcp-bridge/auth-clients.json
-    # What each machine client may see and call, rendered from the agents' use-case file
+    # What each client may see and call, rendered from use-cases.yaml and persons.yaml
     MCP_AUTH_CLIENT_TOOLS:
       valueFrom:
         configMapKeyRef:
           name: lares-mcp-bridge-client-tools
           key: MCP_AUTH_CLIENT_TOOLS
+    # The clients that are persons, by handle, rendered from persons.yaml; a token's
+    # preferred_username in this list is that person too
+    MCP_AUTH_PERSONS:
+      valueFrom:
+        configMapKeyRef:
+          name: lares-mcp-bridge-client-tools
+          key: MCP_AUTH_PERSONS
     MCP_NATS_SERVERS:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)

@@ -8,6 +8,8 @@ resources:
   - ./sealed-secret.yaml
   - ./certificate.yaml
   - ./ingress-route.yaml
+  # Each person's profile config (task agents:create-harness-config)
+  - ./profiles
 
 # Every profile's .env, a template of the sealed keys (task agents:create-harness-config)
 patches:
@@ -19,6 +21,9 @@ helmCharts:
     releaseName: hermes
     version: 9.3.2
     valuesFile: values.yaml
+    # Each person's config, .env and shared files, mounted into their profile
+    additionalValuesFiles:
+      - profiles/profiles.values.yaml
     namespace: agents
 
 # Hash on: the Deployment mounts these, so the pod rolls when config or a skill changes.
@@ -27,6 +32,8 @@ configMapGenerator:
     files:
       - config/config.yaml
       - config/SOUL.md
+      # One persona for every person, beside the default profile's own
+      - config/persons-SOUL.md
       - config/AGENTS.md
     # Empty marker file: without it Hermes seeds its 58 bundled skills into the volume on every boot
     literals:

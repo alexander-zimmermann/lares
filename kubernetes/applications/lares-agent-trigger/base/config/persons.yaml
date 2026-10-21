@@ -1,11 +1,15 @@
 # The model sources of the agent platform, the one the default profile runs
 # on, and the persons. The default profile belongs to the machines: every event
-# and cron run. No person is declared, so the default profile serves the chat.
+# and cron run. Each enabled person chats on a profile of their own, named by
+# the handle, which is also their bridge client and their Authentik username.
 #
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # beside use-cases.yaml and prices every model call by the source step that
 # served it. `task agents:create-harness-config` renders every profile's
 # `model` and `fallback_providers` from it, and each person's profile.
+#
+# A person's identity never lands here: their Discord id is sealed in the
+# default profile's .env as DISCORD_USER_<HANDLE>, their keys in their own.
 #
 # A source's `bound` caps what it may spend: `subscription` costs nothing per
 # call, `capped` is metered against a hard limit and names its list price in
@@ -16,25 +20,40 @@ default_profile:
   model: owner-subscription
 
 model_sources:
-  # The owner's ChatGPT login (token on the data volume). The Codex backend
-  # serves the current line only: it answers a retired id with HTTP 404
+  # The owner's ChatGPT subscription, one login per profile on the data volume:
+  # the default profile's and the owner's, sharing one Codex window. The Codex
+  # backend serves the current line only: it answers a retired id with HTTP 404
   # `model_not_found`, and because `model_catalog` is off, Hermes cannot notice
   # and silently spends the day on the fallback. Pin an id the picker
   # (`hermes model --refresh`) lists, and re-check it when the fallback banner
   # shows up in an answer.
-  # Login, by hand: ChatGPT Settings → Security → device code authorization = on,
-  # then `kubectl -n agents exec -it deploy/hermes -- hermes auth add openai-codex
-  # --type oauth`; `hermes auth list` shows it stored. Its refresh token is
-  # single-use, so a volume restored from a backup may need a new login.
+  # Login, by hand, once per profile: ChatGPT Settings → Security → device code
+  # authorization = on, then `kubectl -n agents exec -it deploy/hermes -c hermes
+  # -- /command/s6-setuidgid hermes hermes auth add openai-codex --type oauth`,
+  # with `-p <handle>` before `auth` for a person's profile; as root, the login
+  # would be root's file until Hermes restarts. Only `auth add` writes the
+  # profile's own login; `hermes -p <handle> model` or a copied auth.json puts
+  # the person's token into the machines' login or is healed away. Its refresh
+  # token is single-use, so a volume restored from a backup may need a new login.
   - name: owner-subscription
     provider: openai-codex
     model: gpt-6-sol
     account: shared-with-default
     bound: subscription
     fallback:
-      # OpenAI project `machines`: 5 USD hard monthly limit, prepaid credit,
-      # auto recharge off. List price of 2026-10-20.
+      # Each profile's own OpenAI project, `machines` for the default and
+      # `owner` for the owner: 5 USD hard monthly limit, prepaid credit, auto
+      # recharge off. List price of 2026-10-20.
       - provider: openai-api
         model: gpt-6-luna
         bound: capped
         price: {input: 0.10, cached_input: 0.01, output: 0.50}
+
+persons:
+  # The owner, on the machines' subscription with a Codex login of their own.
+  - name: az1003
+    discord: admin
+    tools: [lares, lares-runs, github]
+    model: owner-subscription
+    keep_answers: true
+    enabled: true

@@ -16,7 +16,8 @@ pbs_realm_openid:
     username_claim: "username"
     ## Only the users below can log in; an unlisted Authentik account is rejected
     autocreate: false
+    ## By handle: the Authentik username is the person's handle in persons.yaml
     users:
-      alexander:
+      az1003:
         role_id: "Admin"
         path: "/"

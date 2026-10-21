@@ -129,8 +129,8 @@ use_cases:
       kind: message
     tools: [lares, lares-runs, github]
     output: [discord]
-    # Nothing here is enforced for a chat: the 201st message is answered, and
-    # the day is counted on the ledger.
+    # Nothing here is enforced for a chat: the 201st message of a person is
+    # answered, and AgentMessengerBudget counts the day per person.
     budget:
       tool_calls: 40
       minutes: 10
