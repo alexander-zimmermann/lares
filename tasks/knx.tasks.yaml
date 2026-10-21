@@ -183,7 +183,6 @@ tasks:
           "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
 
   validate-ga-mappings:
-    desc: "validate ga-mappings/ with the bridge's loader at the deployed tag"
     summary: |
       Load every file in ga-mappings/ with the bridge's loader at the deployed
       tag — schema, DPTs, the reader-loop guard, one writer per address across
@@ -222,7 +221,6 @@ tasks:
         echo "OK: generated files current"
 
   validate-ga-catalog:
-    desc: "validate ga-catalog.yaml with the bridge's loader at the deployed tag"
     summary: |
       Load the catalog with the bridge's loader at the image tag the app
       deploys — the JSON-Schema ships in the package — so a skew between the

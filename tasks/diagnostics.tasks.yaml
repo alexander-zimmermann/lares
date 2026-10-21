@@ -9,7 +9,6 @@ version: "3"
 
 tasks:
   validate-faults:
-    desc: "validate faults.yaml with the engine's loader at the deployed tag"
     summary: |
       Load the fault list with the engine's own loader, installed from GitHub
       at the image tag the detect-faults cronjob deploys — schema validation
@@ -32,7 +31,6 @@ tasks:
         "{{.DIAGNOSTICS_FAULTS_PATH}}"
 
   validate-site:
-    desc: "validate site.yaml with the engine's loader at the deployed tag"
     summary: |
       Load the site file — what the house is: location, timezone, PV planes
       — with the engine's own loader at the deployed tag: schema validation

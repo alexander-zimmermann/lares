@@ -20,7 +20,6 @@ version: "3"
 
 tasks:
   create-harness-config:
-    desc: "render the Hermes configs, each person's profile, the cron job set, the bridge's allowlists, the sampling ratio and the key templates from use-cases.yaml and persons.yaml"
     summary: |
       The pre-commit hook agents:create-harness-config. Render the use-case
       file and the person declaration with the trigger's generator, installed

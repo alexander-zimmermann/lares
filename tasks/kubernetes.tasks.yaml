@@ -171,7 +171,6 @@ tasks:
         done
 
   validate-ingest-grants:
-    desc: "check grants.sql grants the ingest role exactly the tables the streams write"
     summary: |
       Compare the `INSERT INTO` target of every Redpanda Connect stream with
       the table array `grants.sql` grants the `connect` role. A stream whose
@@ -182,7 +181,6 @@ tasks:
       - python3 scripts/validate_ingest_grants.py
 
   validate-sealed-templates:
-    desc: "check every key a SealedSecret template names is sealed"
     summary: |
       Read every SealedSecret under kubernetes/ and the template patches beside
       them, and compare the keys each `spec.template.data` file names
