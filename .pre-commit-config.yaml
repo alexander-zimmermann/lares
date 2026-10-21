@@ -57,15 +57,16 @@ repos:
         language: system
         pass_filenames: false
         files: ^kubernetes/applications/knx-nats-bridge/base/(config/ga-catalog\.yaml|values\.yaml)$
-      - id: knx-validate-ga-mappings
-        name: knx:validate-ga-mappings
-        entry: task knx:validate-ga-mappings
+      - id: knx-create-ga-mappings
+        name: knx:create-ga-mappings
+        entry: task knx:create-ga-mappings
         language: system
         pass_filenames: false
-        # Everything the generated files derive from: the mappings and the
-        # catalog, the sidecar bridges' device lists with their bindings and
-        # the tags their descriptors are read at, the fault list and the tag
-        # its loader is read at, and the generator itself.
+        # Writes the generated files; a commit whose files it changed stops once.
+        # Runs on everything they derive from: the mappings and the catalog,
+        # the sidecar bridges' device lists with their bindings and the tags
+        # their descriptors are read at, the fault list and the tag its loader
+        # is read at, and the generator itself.
         files: ^(kubernetes/applications/knx-nats-bridge/base/(ga-mappings/.*\.yaml|config/ga-catalog\.yaml|values\.yaml)|kubernetes/applications/(miele|midea|dyson)-nats-bridge/base/(config/.*\.yaml|values\.yaml)|kubernetes/applications/lares-diagnostics-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)|scripts/knx_generate_ga_mappings\.py)$
       - id: validate-ingest-grants
         name: k8s:validate-ingest-grants
