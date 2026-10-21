@@ -26,7 +26,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: energy-balance
-              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.45.0
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.46.0
               command: ["lares-diagnostics-engine", "energy-balance"]
               env:
                 - name: MCP_DB_HOST
@@ -55,6 +55,14 @@ spec:
                 # The site file — what the house is; read by every job.
                 - name: MCP_SITE_FILE
                   value: /etc/lares-diagnostics-engine/site.yaml
+                # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+                - name: MCP_TRACING_ENDPOINT
+                  value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+                - name: MCP_TRACING_SAMPLING_RATIO
+                  valueFrom:
+                    configMapKeyRef:
+                      name: agent-tracing
+                      key: TRACING_SAMPLING_RATIO
                 - name: TZ
                   value: Europe/Berlin
               resources:
