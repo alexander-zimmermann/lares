@@ -60,10 +60,8 @@ deployment:
           drop: [ALL]
 
   # Every key comes from the profile's .env (hermes-env below); the pod env holds no secret.
+  # Who may write to the bot is discord.allow_from in config.yaml, rendered from persons.yaml.
   env:
-    # Discord: the one user allowed to talk to the bot
-    DISCORD_ALLOWED_USERS:
-      value: "880499253825388565"
     # API server: /health for the probes, the Runs and Jobs API for lares-agent-trigger
     API_SERVER_ENABLED:
       value: "true"

@@ -64,7 +64,7 @@ alertmanager:
         # Agent platform: warning at most, never a siren; its info findings mail above
         - matchers:
             - alertname =~ "Agent.*"
-          group_by: ["alertname", "use_case"]
+          group_by: ["alertname", "use_case", "enduser_id"]
           receiver: "agents-warning"
           repeat_interval: 24h
         # Delivery watchdogs: grouped by their shared label instead of the

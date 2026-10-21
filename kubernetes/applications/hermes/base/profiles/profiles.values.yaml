@@ -3,5 +3,55 @@
 # persons' SOUL.md, AGENTS.md and the marker that keeps the bundled skills out,
 # each mounted read-only into the person's profile.
 deployment:
-  volumes: {}
-  volumeMounts: {}
+  volumes:
+    hermes-az1003-env:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: az1003.env
+            path: .env
+    hermes-az1003-config:
+      configMap:
+        name: hermes-profiles
+        items:
+          - key: az1003
+            path: config.yaml
+    hermes-az1003-soul:
+      configMap:
+        name: hermes-config
+        items:
+          - key: persons-SOUL.md
+            path: SOUL.md
+    hermes-az1003-agents:
+      configMap:
+        name: hermes-config
+        items:
+          - key: AGENTS.md
+            path: AGENTS.md
+    hermes-az1003-no-bundled-skills:
+      configMap:
+        name: hermes-config
+        items:
+          - key: .no-bundled-skills
+            path: .no-bundled-skills
+  volumeMounts:
+    hermes-az1003-env:
+      mountPath: /opt/data/profiles/az1003/.env
+      subPath: .env
+      readOnly: true
+    hermes-az1003-config:
+      mountPath: /opt/data/profiles/az1003/config.yaml
+      subPath: config.yaml
+      readOnly: true
+    hermes-az1003-soul:
+      mountPath: /opt/data/profiles/az1003/SOUL.md
+      subPath: SOUL.md
+      readOnly: true
+    hermes-az1003-agents:
+      mountPath: /opt/data/profiles/az1003/AGENTS.md
+      subPath: AGENTS.md
+      readOnly: true
+    hermes-az1003-no-bundled-skills:
+      mountPath: /opt/data/profiles/az1003/.no-bundled-skills
+      subPath: .no-bundled-skills
+      readOnly: true

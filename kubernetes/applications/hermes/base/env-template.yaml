@@ -13,8 +13,14 @@ spec:
       default.env: |
         API_SERVER_KEY='{{ index . "api-server-key" }}'
         DISCORD_BOT_TOKEN='{{ index . "discord-bot-token" }}'
+        DISCORD_USER_AZ1003='{{ index . "discord-user-az1003" }}'
         LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
         LARES_MCP_KEY='{{ index . "lares-mcp-key" }}'
-        LARES_RUNS_MCP_KEY='{{ index . "lares-runs-mcp-key" }}'
         LARES_MEMORY_MCP_KEY='{{ index . "lares-memory-mcp-key" }}'
         OPENAI_API_KEY='{{ index . "openai-api-key" }}'
+      az1003.env: |
+        API_SERVER_KEY='{{ index . "az1003-api-server-key" }}'
+        LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
+        LARES_MCP_KEY='{{ index . "az1003-lares-mcp-key" }}'
+        LARES_RUNS_MCP_KEY='{{ index . "lares-runs-mcp-key" }}'
+        OPENAI_API_KEY='{{ index . "az1003-openai-api-key" }}'
