@@ -59,6 +59,7 @@ includes:
     taskfile: ./tasks/agents.tasks.yaml
 
 tasks:
+  # Lists what you run yourself; a pre-commit hook's task has no desc (`task --list-all`).
   default:
     cmds:
       - cmd: task --list
