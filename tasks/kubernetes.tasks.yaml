@@ -180,3 +180,15 @@ tasks:
       live. Called by the pre-commit hook. No network, no dependencies.
     cmds:
       - python3 scripts/validate_ingest_grants.py
+
+  validate-sealed-templates:
+    desc: "check every key a SealedSecret template names is sealed"
+    summary: |
+      Read every SealedSecret under kubernetes/ and the template patches beside
+      them, and compare the keys each `spec.template.data` file names
+      (`{{ index . "key" }}` or `{{ .key }}`) with the keys the SealedSecret of
+      the same name in the same directory seals. Sealed Secrets renders a key
+      it does not hold as an empty value without an error, so this is the only
+      gate. Called by the pre-commit hook. No cluster; uv fetches PyYAML once.
+    cmds:
+      - uv run --no-project --with pyyaml python scripts/validate_sealed_templates.py

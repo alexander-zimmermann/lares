@@ -5,7 +5,13 @@
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # and reads it directly. `task agents:create-harness-config` renders from it,
 # with the trigger's generator at the deployed tag, the Hermes configuration,
-# the cron job set and the bridge's allowlists; pre-commit fails on a stale one.
+# the cron job set, the bridge's allowlists and the templates of Hermes's .env
+# and the bridge's clients.json; pre-commit fails on a stale one.
+#
+# Every variable named here (`secret_env`, `key_env`) is sealed in
+# hermes-credentials under its name in lower case and dashed, a client's key in
+# lares-mcp-bridge-auth-clients under the client's name; pre-commit fails on a
+# template naming a key that is not sealed.
 # The trigger mounts the cron job set too and brings Hermes's jobs in line with
 # it at every start.
 #

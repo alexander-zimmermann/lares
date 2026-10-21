@@ -69,6 +69,14 @@ discord:
   require_mention: false
   auto_thread: false
 
+platforms:
+  discord:
+    # Where the house writes first; /sethome cannot, the config is read-only
+    home_channel:
+      platform: discord
+      chat_id: "1548229055348736034"
+      name: "#Allgemein"
+
 display:
   platforms:
     discord:
