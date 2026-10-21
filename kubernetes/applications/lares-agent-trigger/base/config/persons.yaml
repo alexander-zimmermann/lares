@@ -22,6 +22,10 @@ model_sources:
   # and silently spends the day on the fallback. Pin an id the picker
   # (`hermes model --refresh`) lists, and re-check it when the fallback banner
   # shows up in an answer.
+  # Login, by hand: ChatGPT Settings → Security → device code authorization = on,
+  # then `kubectl -n agents exec -it deploy/hermes -- hermes auth add openai-codex
+  # --type oauth`; `hermes auth list` shows it stored. Its refresh token is
+  # single-use, so a volume restored from a backup may need a new login.
   - name: owner-subscription
     provider: openai-codex
     model: gpt-6-sol
