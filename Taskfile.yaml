@@ -38,6 +38,7 @@ vars:
   HERMES_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/config.yaml"
   MCP_BRIDGE_CLIENT_TOOLS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-mcp-bridge/base/config/client-tools.env"
   HERMES_ENV_TEMPLATE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/env-template.yaml"
+  HERMES_PROFILES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/profiles"
   MCP_BRIDGE_CLIENTS_TEMPLATE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-mcp-bridge/base/clients-template.yaml"
 
 includes:

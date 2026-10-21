@@ -1,10 +1,11 @@
-# The model sources of the agent platform, and the one the default profile
-# runs on. The default profile belongs to the machines: every event and cron run.
+# The model sources of the agent platform, the one the default profile runs
+# on, and the persons. The default profile belongs to the machines: every event
+# and cron run. No person is declared, so the default profile serves the chat.
 #
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # beside use-cases.yaml and prices every model call by the source step that
-# served it. `task agents:create-harness-config` renders the default profile's
-# `model` and `fallback_providers` into the Hermes configuration from it.
+# served it. `task agents:create-harness-config` renders every profile's
+# `model` and `fallback_providers` from it, and each person's profile.
 #
 # A source's `bound` caps what it may spend: `subscription` costs nothing per
 # call, `capped` is metered against a hard limit and names its list price in

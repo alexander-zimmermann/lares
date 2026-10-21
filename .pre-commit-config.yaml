@@ -86,15 +86,15 @@ repos:
         language: system
         pass_filenames: false
         files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/site\.yaml|detect-faults-cronjob\.yaml)$
-      - id: agents-validate-use-cases
-        name: agents:validate-use-cases
-        entry: task agents:validate-use-cases
+      - id: agents-create-harness-config
+        name: agents:create-harness-config
+        entry: task agents:create-harness-config
         language: system
         pass_filenames: false
-        # The use-case file, the person declaration and the settings they
-        # render from, the rendered files a hand edit would make stale, and
-        # the tag the generator is installed at.
-        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|tracing/tracing\.env|values\.yaml)|hermes/base/(config/(settings|config)\.yaml|env-template\.yaml)|lares-mcp-bridge/base/(config/client-tools\.env|clients-template\.yaml))$
+        # Writes the rendered files; a commit whose files it changed stops once.
+        # Runs on the declarations and the settings, the rendered files a hand
+        # edit would change, and the tag the generator is installed at.
+        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|tracing/tracing\.env|values\.yaml)|hermes/base/(config/(settings|config)\.yaml|env-template\.yaml|profiles/.*)|lares-mcp-bridge/base/(config/client-tools\.env|clients-template\.yaml))$
       - id: k8s-validate-sealed-templates
         name: k8s:validate-sealed-templates
         entry: task k8s:validate-sealed-templates
