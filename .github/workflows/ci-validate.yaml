@@ -188,7 +188,7 @@ jobs:
           # renovate: datasource=github-releases depName=google/go-containerregistry
           crane: v0.22.1
           # renovate: datasource=github-releases depName=kyverno/kyverno
-          kyverno: v1.19.1
+          kyverno: v1.19.2
 
       - name: Login to Registries
         env:
