@@ -21,7 +21,7 @@ tasks:
         sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.DIAGNOSTICS_CRONJOB_PATH}}"
     cmds:
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
         python -c
         "import sys; from pathlib import Path;
@@ -41,7 +41,7 @@ tasks:
         sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.DIAGNOSTICS_CRONJOB_PATH}}"
     cmds:
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
         python -c
         "import sys; from pathlib import Path;

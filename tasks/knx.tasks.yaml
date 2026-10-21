@@ -145,7 +145,8 @@ tasks:
       once: add them and commit again.
       Reads: the catalog, the sidecar configs, faults.yaml, ga-mappings/.
       Writes: the generated files in ga-mappings/.
-      Needs network (git tags) and a uv that knows Python 3.14.
+      Needs network (git tags) and a uv that knows Python 3.14 (the bridges)
+      and 3.15 (the engine).
     vars:
       MIELE_TAG:
         sh: yq '.deployment.image.tag' "{{.MIELE_VALUES_PATH}}"
@@ -177,7 +178,7 @@ tasks:
         "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DYSON_CONFIG_PATH}}"
       - for: [diagnostics, channels]
         cmd: >
-          uv run --no-project --python 3.14
+          uv run --no-project --python 3.15
           --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
           python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" {{.ITEM}}
           "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
