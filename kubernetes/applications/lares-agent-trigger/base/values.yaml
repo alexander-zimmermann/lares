@@ -1,22 +1,18 @@
 applicationName: lares-agent-trigger
-
 deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.14.0
+    tag: 0.15.0
     pullPolicy: IfNotPresent
-
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
     role: agent
-
   # A second replica would fetch the same event twice; the dedupe would catch
   # it, but the durable consumer is meant to have one reader.
   replicas: 1
   strategy:
     type: Recreate
-
   env:
     USE_CASES_FILE:
       value: /etc/lares-agent-trigger/use-cases.yaml
@@ -61,7 +57,7 @@ deployment:
     ALERTMANAGER_URL:
       value: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
     # Delivery to Discord: the bot token of the hermes SealedSecret and the
-    # harness's own DISCORD_HOME_CHANNEL (#Allgemein)
+    # harness's own home channel (#Allgemein, its settings.yaml)
     DISCORD_BOT_TOKEN_FILE:
       value: /etc/lares-agent-trigger/discord-bot-token
     DISCORD_HOME_CHANNEL:
@@ -121,7 +117,6 @@ deployment:
           key: TRACING_SAMPLING_RATIO
     TZ:
       value: Europe/Berlin
-
   volumes:
     use-cases:
       configMap:
@@ -169,8 +164,8 @@ deployment:
       secret:
         secretName: hermes-credentials
         items:
-          - key: trigger-hook-secret
-            path: trigger-hook-secret
+          - key: lares-agent-trigger-hook-secret
+            path: lares-agent-trigger-hook-secret
     api-key:
       secret:
         secretName: hermes-credentials
@@ -183,7 +178,6 @@ deployment:
         items:
           - key: private-key
             path: private-key
-
   volumeMounts:
     use-cases:
       mountPath: /etc/lares-agent-trigger/use-cases.yaml
@@ -223,7 +217,7 @@ deployment:
       readOnly: true
     hook-secret:
       mountPath: /etc/lares-agent-trigger/hook-secret
-      subPath: trigger-hook-secret
+      subPath: lares-agent-trigger-hook-secret
       readOnly: true
     api-key:
       mountPath: /etc/lares-agent-trigger/api-key
@@ -233,7 +227,6 @@ deployment:
       mountPath: /etc/lares-agent-trigger/github-app-private-key
       subPath: private-key
       readOnly: true
-
   ports:
     - containerPort: 8080
       name: http
@@ -241,7 +234,6 @@ deployment:
     - containerPort: 9090
       name: metrics
       protocol: TCP
-
   # /healthz is NATS- and ledger-gated; a harness outage is a failed run with
   # its own alert, never a restart loop here.
   livenessProbe:
@@ -251,7 +243,6 @@ deployment:
       port: metrics
     initialDelaySeconds: 30
     periodSeconds: 30
-
   readinessProbe:
     enabled: true
     httpGet:
@@ -259,7 +250,6 @@ deployment:
       port: metrics
     initialDelaySeconds: 10
     periodSeconds: 10
-
   containerSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
@@ -267,10 +257,8 @@ deployment:
     readOnlyRootFilesystem: true
     capabilities:
       drop: [ALL]
-
   securityContext:
     fsGroup: 1000
-
 service:
   enabled: true
   type: ClusterIP
@@ -283,7 +271,6 @@ service:
       name: metrics
       protocol: TCP
       targetPort: metrics
-
 serviceMonitor:
   enabled: true
   additionalLabels:
