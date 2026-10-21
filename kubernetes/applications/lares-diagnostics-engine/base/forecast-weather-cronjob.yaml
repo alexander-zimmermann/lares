@@ -28,7 +28,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: fetcher
-              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.45.0
+              image: ghcr.io/alexander-zimmermann/lares-diagnostics-engine:1.46.0
               command: ["lares-diagnostics-engine", "forecast-weather"]
               env:
                 - name: MCP_DB_HOST
@@ -70,6 +70,14 @@ spec:
                   value: /etc/lares-diagnostics-engine/site.yaml
                 - name: MCP_AUTH_ENABLED
                   value: "false"
+                # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+                - name: MCP_TRACING_ENDPOINT
+                  value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+                - name: MCP_TRACING_SAMPLING_RATIO
+                  valueFrom:
+                    configMapKeyRef:
+                      name: agent-tracing
+                      key: TRACING_SAMPLING_RATIO
               resources:
                 requests:
                   cpu: 20m
