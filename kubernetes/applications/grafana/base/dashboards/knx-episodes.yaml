@@ -2294,7 +2294,7 @@ spec:
               "editorMode": "code",
               "format": "table",
               "rawQuery": true,
-              "rawSql": "SELECT created_at                         AS \"Zeit\",\n       use_case                           AS \"Anwendungsfall\",\n       enduser_id                         AS \"Person\",\n       surface                            AS \"Plattform\",\n       status                             AS \"Status\",\n       EXTRACT(EPOCH FROM duration)       AS \"Dauer\",\n       tokens_in + tokens_out             AS \"Tokens\",\n       cost                               AS \"Kosten\",\n       -- Tempo keeps a trace for 48 hours; an older row has no link.\n       CASE WHEN created_at > now() - interval '48 hours' THEN trace_id END AS \"Trace\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nORDER BY created_at DESC;",
+              "rawSql": "SELECT created_at                         AS \"Zeit\",\n       use_case                           AS \"Anwendungsfall\",\n       enduser_id                         AS \"Person\",\n       surface                            AS \"Plattform\",\n       status                             AS \"Status\",\n       EXTRACT(EPOCH FROM duration)       AS \"Dauer\",\n       tokens_in + tokens_out             AS \"Tokens\",\n       cost                               AS \"Kosten\",\n       -- Tempo keeps a trace for 48 hours; an older row has no link.\n       CASE WHEN created_at > now() - interval '48 hours' THEN trace_id END AS \"Trace\",\n       -- The person's bridge calls while the run ran (no person: the calls without one).\n       CASE WHEN created_at > now() - interval '48 hours' AND finished_at IS NOT NULL AND duration IS NOT NULL\n            THEN '/explore?schemaVersion=1&orgId=1&panes=%7B%22b%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22tempo%22%2C%22uid%22%3A%22tempo%22%7D%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7Bresource.service.name%3D%5C%22lares-mcp-bridge%5C%22%20%26%26%20name%3D~%5C%22tools%2Fcall.%2A%5C%22%20%26%26%20span.enduser.id%3D'\n                 || COALESCE('%5C%22' || enduser_id || '%5C%22', 'nil')\n                 || '%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22'\n                 || (EXTRACT(EPOCH FROM finished_at - duration) * 1000)::bigint\n                 || '%22%2C%22to%22%3A%22'\n                 || (EXTRACT(EPOCH FROM finished_at) * 1000)::bigint\n                 || '%22%7D%7D%7D'\n       END AS \"Bridge\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nORDER BY created_at DESC;",
               "refId": "A"
             }
           ],
@@ -2470,6 +2470,38 @@ spec:
                     ]
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Bridge"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "type": "regex",
+                        "options": {
+                          "pattern": ".+",
+                          "result": {
+                            "text": "öffnen",
+                            "index": 0
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Bridge-Aufrufe in Tempo",
+                        "url": "${__value.raw}"
+                      }
+                    ]
+                  }
+                ]
               }
             ]
           },
@@ -2485,7 +2517,7 @@ spec:
             },
             "showHeader": true
           },
-          "description": "Jeder Lauf aus agent_runs, der neueste zuerst. Trace öffnet die Spur des Laufs in Tempo, solange Tempo sie hält (48 Stunden); ein älterer oder nicht abgetasteter Lauf hat keinen Link. Person und Plattform stehen nur bei Chatläufen; Läufe der Maschinen lassen sie leer."
+          "description": "Jeder Lauf aus agent_runs, der neueste zuerst. Trace öffnet die Spur des Laufs in Tempo, solange Tempo sie hält (48 Stunden); ein älterer oder nicht abgetasteter Lauf hat keinen Link. Bridge sucht in Tempo die Aufrufe der Person an der MCP-Bridge, während der Lauf lief; bei einem Lauf ohne Person die Aufrufe ohne Person. Person und Plattform stehen nur bei Chatläufen; Läufe der Maschinen lassen sie leer."
         },
         {
           "id": 24,

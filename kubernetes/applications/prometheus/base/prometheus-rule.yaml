@@ -899,3 +899,14 @@ spec:
           annotations:
             summary: "Agent model call without a cost ({{ $labels.reason }}: {{ $labels.provider }}/{{ $labels.model }})"
             description: "{{ $value | printf \"%.0f\" }} call(s) of {{ $labels.use_case }} on {{ $labels.provider }}/{{ $labels.model }} in the last hour have no cost, and their rows in agent_runs carry none. undeclared: no step of the profile's model source in persons.yaml names that provider and model; declare it with its list price, or find out why Hermes ran on it. no_usage: a metered call reported no tokens. no_calls: the run's calls never came through the hook."
+
+        - alert: AgentBridgeTokenUnknown
+          # A new pod's series has no past, which increase() misses
+          expr: |
+            sum(increase(lares_mcp_bridge_unknown_tokens_total[1h])) > 0
+            or sum(lares_mcp_bridge_unknown_tokens_total unless lares_mcp_bridge_unknown_tokens_total offset 1h) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "MCP bridge token without a person"
+            description: "{{ $value | printf \"%.0f\" }} call(s) to the MCP bridge in the last hour came with an Authentik token whose username is no handle in persons.yaml. The bridge let them in, and they read only the machines' runs. The Claude.ai connector is the owner's: if the owner's Authentik username is not the owner's handle, set it to the handle. Otherwise someone else holds a token for the bridge; Authentik's events name who signed in to lares-mcp-bridge."
