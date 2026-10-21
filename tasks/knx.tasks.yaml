@@ -3,7 +3,8 @@ version: "3"
 # What changed decides the task: lares config, Studio, Node-Red or compasX
 # export → create-ets-devices (the ETS steps of a publish: wiki ets-kaenx-creator);
 # ETS → export the project. Then always: create-ga-catalog →
-# validate-ets-devices → commit the catalog and versions.yaml.
+# validate-ets-devices → commit the catalog and versions.yaml; the commit's
+# hook rewrites the generated GA mappings.
 
 vars:
   CONSUMERS_DIR: "{{.ROOT_DIR}}/kubernetes/applications/nats/base/consumers"
@@ -131,23 +132,20 @@ tasks:
         --todo-dir "{{.TODO_DIR}}"
 
   create-ga-mappings:
-    desc: "write the generated files in ga-mappings/ from descriptors, address blocks and faults.yaml"
     summary: |
-      Write every generated GA-mapping file whole, each with its package installed
-      at the deployed tag: miele/midea/dyson.yaml from descriptor × address block,
+      The pre-commit hook knx:create-ga-mappings. Write every generated
+      GA-mapping file whole, each with its package installed at the deployed
+      tag: miele/midea/dyson.yaml from descriptor × address block,
       diagnostics.yaml and channels.yaml from the fault list's name templates.
-      Every rule resolves against the catalog by name, so run it after every
-      catalog change; a DPT mismatch fails, an unnamed field is listed.
-      Reads: the catalog, the sidecar configs, faults.yaml. Writes: ga-mappings/ (hook validates).
-    cmds:
-      - task: generate-ga-mappings
-        vars: { OUT_DIR: "{{.KNX_GA_MAPPINGS_DIR}}" }
-
-  generate-ga-mappings:
-    internal: true
-    desc: "write the generated GA-mapping files into OUT_DIR"
-    requires:
-      vars: [OUT_DIR]
+      Every rule resolves against the catalog by name; a DPT mismatch fails,
+      an unnamed field is listed. Then load every file in ga-mappings/ with
+      the bridge's loader at its deployed tag — schema, DPTs, the reader-loop
+      guard, one writer per address across files — and check every target
+      against the catalog. A commit whose generated files this changed stops
+      once: add them and commit again.
+      Reads: the catalog, the sidecar configs, faults.yaml, ga-mappings/.
+      Writes: the generated files in ga-mappings/.
+      Needs network (git tags) and a uv that knows Python 3.14.
     vars:
       MIELE_TAG:
         sh: yq '.deployment.image.tag' "{{.MIELE_VALUES_PATH}}"
@@ -157,6 +155,8 @@ tasks:
         sh: yq '.deployment.image.tag' "{{.DYSON_VALUES_PATH}}"
       DIAGNOSTICS_ENGINE_TAG:
         sh: yq '.spec.jobTemplate.spec.template.spec.containers[0].image | split(":") | .[1]' "{{.DIAGNOSTICS_CRONJOB_PATH}}"
+      KNX_BRIDGE_TAG:
+        sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"
     cmds:
       # One environment per package: the bridges pin nats-bridge-core at
       # their own tags, which one shared resolve could not satisfy.
@@ -164,39 +164,24 @@ tasks:
         uv run --no-project --python 3.14
         --with "miele-nats-bridge @ git+https://github.com/alexander-zimmermann/miele-nats-bridge@v{{.MIELE_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" miele
-        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIELE_CONFIG_PATH}}"
+        "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.MIELE_CONFIG_PATH}}"
       - >
         uv run --no-project --python 3.14
         --with "midea-nats-bridge @ git+https://github.com/alexander-zimmermann/midea-nats-bridge@v{{.MIDEA_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" midea
-        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.MIDEA_CONFIG_PATH}}"
+        "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.MIDEA_CONFIG_PATH}}"
       - >
         uv run --no-project --python 3.14
         --with "dyson-nats-bridge @ git+https://github.com/alexander-zimmermann/dyson-nats-bridge@v{{.DYSON_TAG}}"
         python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" dyson
-        "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DYSON_CONFIG_PATH}}"
+        "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DYSON_CONFIG_PATH}}"
       - for: [diagnostics, channels]
         cmd: >
           uv run --no-project --python 3.14
           --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
           python "{{.SCRIPTS_DIR}}/knx_generate_ga_mappings.py" {{.ITEM}}
-          "{{.KNX_CATALOG_PATH}}" "{{.OUT_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
-
-  validate-ga-mappings:
-    summary: |
-      Load every file in ga-mappings/ with the bridge's loader at the deployed
-      tag — schema, DPTs, the reader-loop guard, one writer per address across
-      files — check every target against the catalog, and diff each generated
-      file against a fresh run of its generator; a stale one fails with the diff.
-      Reads: ga-mappings/, the catalog, everything create-ga-mappings reads.
-      Pre-commit hook; needs network (git tags) and a uv that knows Python 3.14.
-    vars:
-      KNX_BRIDGE_TAG:
-        sh: yq '.deployment.image.tag' "{{.KNX_BRIDGE_VALUES_PATH}}"
-      TMP_DIR:
-        sh: mktemp -d
-    cmds:
-      - defer: rm -rf "{{.TMP_DIR}}"
+          "{{.KNX_CATALOG_PATH}}" "{{.KNX_GA_MAPPINGS_DIR}}" "{{.DIAGNOSTICS_FAULTS_PATH}}"
+      # Every file, the hand-written ones too, as the bridge loads them.
       - >
         uv run --no-project --python 3.14
         --with "knx-nats-bridge @ git+https://github.com/alexander-zimmermann/knx-nats-bridge@v{{.KNX_BRIDGE_TAG}}"
@@ -210,15 +195,6 @@ tasks:
         sys.exit(f'dangling rule targets, GA not in catalog: {dangling}') if dangling else
         print(f'OK: {len(rules)} rules on {len(rules.subjects())} subjects, all GAs in catalog (bridge v{{.KNX_BRIDGE_TAG}})')"
         "{{.KNX_GA_MAPPINGS_DIR}}" "{{.KNX_CATALOG_PATH}}"
-      # Freshness: every generated file must match a fresh run of its generator.
-      - task: generate-ga-mappings
-        vars: { OUT_DIR: "{{.TMP_DIR}}" }
-      - >
-        for f in "{{.TMP_DIR}}"/*.yaml; do
-        diff -u "{{.KNX_GA_MAPPINGS_DIR}}/$(basename "$f")" "$f" ||
-        { echo "$(basename "$f") is stale: run 'task knx:create-ga-mappings'"; exit 1; };
-        done;
-        echo "OK: generated files current"
 
   validate-ga-catalog:
     summary: |
