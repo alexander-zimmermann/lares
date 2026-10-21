@@ -40,13 +40,13 @@ tasks:
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
       Writes: config.yaml, profiles/, cron-jobs.yaml, client-tools.env, tracing.env,
       env-template.yaml and clients-template.yaml.
-      Needs network (the git tag) and a uv that knows Python 3.14.
+      Needs network (the git tag) and a uv that knows Python 3.15.
     vars:
       AGENT_TRIGGER_TAG:
         sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
     cmds:
       - >
-        uv run --no-project --python 3.14
+        uv run --no-project --python 3.15
         --with "lares-agent-trigger @ git+https://github.com/alexander-zimmermann/lares-agent-trigger@v{{.AGENT_TRIGGER_TAG}}"
         lares-agent-trigger generate
         --use-cases "{{.AGENT_USE_CASES_PATH}}"
