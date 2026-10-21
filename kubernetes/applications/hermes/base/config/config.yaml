@@ -3,8 +3,9 @@
 # and use-cases.yaml.
 
 # Hermes settings: everything use-cases.yaml and persons.yaml do not render.
-# Copied whole into config.yaml, which is mounted read-only: what runs is what
-# is reviewed here. The model and its fallbacks come from persons.yaml.
+# Copied whole into every profile's config.yaml, which is mounted read-only:
+# what runs is what is reviewed here. The model, its fallbacks and the working
+# directory come from persons.yaml.
 
 # Compact at 256k tokens at the latest; the fallback's price doubles past 272k input tokens.
 compression:
@@ -37,10 +38,6 @@ agent:
   run_budget_seconds: 600
   # The first live answers stopped after one tool call at the default (medium)
   reasoning_effort: high
-
-# Context files (AGENTS.md) are discovered from the gateway's working directory
-terminal:
-  cwd: /opt/data
 
 approvals:
   # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.
@@ -122,13 +119,16 @@ tools:
   tool_search:
     enabled: "off"
 
-# Rendered from persons.yaml: the default profile's source and its fallbacks, in order.
+# Rendered from persons.yaml: the default profile's source, its fallbacks in order,
+# and the profile's directory, where Hermes discovers the context files.
 model:
   provider: openai-codex
   default: gpt-6-sol
 fallback_providers:
   - provider: openai-api
     model: gpt-6-luna
+terminal:
+  cwd: /opt/data
 
 # Rendered from use-cases.yaml: what each surface may hold, the tool servers,
 # and the hook that reports every finished turn.

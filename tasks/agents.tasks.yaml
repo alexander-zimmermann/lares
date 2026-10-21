@@ -4,13 +4,15 @@ version: "3"
 #   AGENT_TRIGGER_VALUES_PATH    — the trigger's values file; its image tag is
 #                                  the version the generator is installed at
 #   AGENT_USE_CASES_PATH         — the use-case file
-#   AGENT_PERSONS_PATH           — the person declaration: the model sources
+#   AGENT_PERSONS_PATH           — the person declaration: the model sources and the persons
 #   HERMES_SETTINGS_PATH         — the hand-written Hermes settings
-#   HERMES_CONFIG_PATH           — rendered: the Hermes configuration
+#   HERMES_CONFIG_PATH           — rendered: the default profile's Hermes configuration
+#   HERMES_PROFILES_PATH         — rendered: each person's profile config, their ConfigMap
+#                                  and the chart values that mount them
 #   AGENT_CRON_JOBS_PATH         — rendered: the cron job set
-#   MCP_BRIDGE_CLIENT_TOOLS_PATH — rendered: the bridge's allowlists
+#   MCP_BRIDGE_CLIENT_TOOLS_PATH — rendered: the bridge's allowlists and its persons
 #   AGENT_TRACING_PATH           — rendered: the sampling ratio of the platform's services
-#   HERMES_ENV_TEMPLATE_PATH     — rendered: the default profile's .env, a template of
+#   HERMES_ENV_TEMPLATE_PATH     — rendered: every profile's .env, a template of
 #                                  the sealed keys beside Hermes's SealedSecret
 #   MCP_BRIDGE_CLIENTS_TEMPLATE_PATH
 #                                — rendered: the bridge's clients.json, a template of
@@ -18,38 +20,28 @@ version: "3"
 
 tasks:
   create-harness-config:
-    desc: "render the Hermes config, the cron job set, the bridge's allowlists, the sampling ratio and the key templates from use-cases.yaml and persons.yaml"
+    desc: "render the Hermes configs, each person's profile, the cron job set, the bridge's allowlists, the sampling ratio and the key templates from use-cases.yaml and persons.yaml"
     summary: |
-      Render the use-case file and the person declaration with the trigger's
-      generator, installed at the image tag the trigger deploys: the Hermes
-      configuration (settings.yaml copied whole, then the default profile's
-      model and fallbacks, the platform toolsets, MCP servers and outbound
-      hook), the cron job set for the trigger, the bridge's allowlists, the
-      sampling ratio the trigger, the bridge and the engine trace at, and the
-      templates that compose Hermes's .env and the bridge's clients.json from
-      the keys sealed one by one beside them.
-      Each file is written whole; run it after every change to use-cases.yaml,
-      persons.yaml or settings.yaml, and commit what it writes. A key a
-      template names must be sealed too (task k8s:validate-sealed-templates).
+      The pre-commit hook agents:create-harness-config. Render the use-case
+      file and the person declaration with the trigger's generator, installed
+      at the image tag the trigger deploys, and write every file in place:
+      the default profile's Hermes configuration (settings.yaml copied whole,
+      then its model, fallbacks and directory, the platform toolsets, MCP
+      servers and outbound hook, and the persons' Discord routes and rights),
+      each enabled person's profile config with the ConfigMap and chart
+      values that mount it, the cron job set for the trigger, the bridge's
+      allowlists and persons, the sampling ratio the trigger, the bridge and
+      the engine trace at, and the templates that compose every profile's
+      .env and the bridge's clients.json from the keys sealed one by one
+      beside them.
+      The trigger's loaders refuse a declaration that breaks a rule and name
+      the field. A commit whose rendered files this changed stops once: add
+      them and commit again. A key a template names must be sealed too
+      (task k8s:validate-sealed-templates).
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
-      Writes: config.yaml, cron-jobs.yaml, client-tools.env, tracing.env,
-      env-template.yaml and clients-template.yaml (hook validates).
-    cmds:
-      - task: generate
-        vars:
-          HERMES_CONFIG_OUT: "{{.HERMES_CONFIG_PATH}}"
-          CRON_JOBS_OUT: "{{.AGENT_CRON_JOBS_PATH}}"
-          CLIENT_TOOLS_OUT: "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}"
-          TRACING_OUT: "{{.AGENT_TRACING_PATH}}"
-          ENV_TEMPLATE_OUT: "{{.HERMES_ENV_TEMPLATE_PATH}}"
-          CLIENTS_TEMPLATE_OUT: "{{.MCP_BRIDGE_CLIENTS_TEMPLATE_PATH}}"
-
-  generate:
-    internal: true
-    desc: "write the rendered files to the given paths"
-    requires:
-      vars:
-        [HERMES_CONFIG_OUT, CRON_JOBS_OUT, CLIENT_TOOLS_OUT, TRACING_OUT, ENV_TEMPLATE_OUT, CLIENTS_TEMPLATE_OUT]
+      Writes: config.yaml, profiles/, cron-jobs.yaml, client-tools.env, tracing.env,
+      env-template.yaml and clients-template.yaml.
+      Needs network (the git tag) and a uv that knows Python 3.14.
     vars:
       AGENT_TRIGGER_TAG:
         sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
@@ -61,53 +53,13 @@ tasks:
         --use-cases "{{.AGENT_USE_CASES_PATH}}"
         --persons "{{.AGENT_PERSONS_PATH}}"
         --settings "{{.HERMES_SETTINGS_PATH}}"
-        --hermes-config "{{.HERMES_CONFIG_OUT}}"
-        --cron-jobs "{{.CRON_JOBS_OUT}}"
-        --client-tools "{{.CLIENT_TOOLS_OUT}}"
-        --tracing "{{.TRACING_OUT}}"
-        --env-template "{{.ENV_TEMPLATE_OUT}}"
-        --clients-template "{{.CLIENTS_TEMPLATE_OUT}}"
-
-  validate-use-cases:
-    desc: "validate use-cases.yaml and persons.yaml with the trigger's loader at the deployed tag and check the rendered files are current"
-    summary: |
-      Render the use-case file and the person declaration into a temporary
-      directory with the trigger's generator at the image tag the trigger
-      deploys — its loaders check the schema, the one chat, the tool servers
-      each enabled use case may hold and the model sources' bounds and prices,
-      and name the field that fails — then diff every rendered file against
-      the committed one; a stale or hand-edited one fails with the diff.
-      Reads: everything create-harness-config reads, and the rendered files.
-      Pre-commit hook; needs network (the git tag) and a uv that knows Python 3.14.
-    vars:
-      AGENT_TRIGGER_TAG:
-        sh: yq '.deployment.image.tag' "{{.AGENT_TRIGGER_VALUES_PATH}}"
-      TMP_DIR:
-        sh: mktemp -d
-    cmds:
-      - defer: rm -rf "{{.TMP_DIR}}"
-      # Freshness: every rendered file must match a fresh run of the generator.
-      - task: generate
-        vars:
-          HERMES_CONFIG_OUT: "{{.TMP_DIR}}/config.yaml"
-          CRON_JOBS_OUT: "{{.TMP_DIR}}/cron-jobs.yaml"
-          CLIENT_TOOLS_OUT: "{{.TMP_DIR}}/client-tools.env"
-          TRACING_OUT: "{{.TMP_DIR}}/tracing.env"
-          ENV_TEMPLATE_OUT: "{{.TMP_DIR}}/env-template.yaml"
-          CLIENTS_TEMPLATE_OUT: "{{.TMP_DIR}}/clients-template.yaml"
-      - >
-        for pair in
-        "{{.HERMES_CONFIG_PATH}}|{{.TMP_DIR}}/config.yaml"
-        "{{.AGENT_CRON_JOBS_PATH}}|{{.TMP_DIR}}/cron-jobs.yaml"
-        "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}|{{.TMP_DIR}}/client-tools.env"
-        "{{.AGENT_TRACING_PATH}}|{{.TMP_DIR}}/tracing.env"
-        "{{.HERMES_ENV_TEMPLATE_PATH}}|{{.TMP_DIR}}/env-template.yaml"
-        "{{.MCP_BRIDGE_CLIENTS_TEMPLATE_PATH}}|{{.TMP_DIR}}/clients-template.yaml"; do
-        committed="${pair%%|*}"; fresh="${pair#*|}";
-        diff -u "$committed" "$fresh" ||
-        { echo "${committed#{{.ROOT_DIR}}/} is stale or edited by hand: run 'task agents:create-harness-config'"; exit 1; };
-        done;
-        echo "OK: rendered files current (trigger v{{.AGENT_TRIGGER_TAG}})"
+        --hermes-config "{{.HERMES_CONFIG_PATH}}"
+        --cron-jobs "{{.AGENT_CRON_JOBS_PATH}}"
+        --client-tools "{{.MCP_BRIDGE_CLIENT_TOOLS_PATH}}"
+        --tracing "{{.AGENT_TRACING_PATH}}"
+        --env-template "{{.HERMES_ENV_TEMPLATE_PATH}}"
+        --clients-template "{{.MCP_BRIDGE_CLIENTS_TEMPLATE_PATH}}"
+        --profiles "{{.HERMES_PROFILES_PATH}}"
 
   login-codex:
     desc: "print the steps of the Codex device-code login, needed only after the Hermes data volume is lost"

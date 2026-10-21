@@ -9,7 +9,7 @@ resources:
   - ./certificate.yaml
   - ./ingress-route.yaml
 
-# The default profile's .env, a template of the sealed keys (task agents:create-harness-config)
+# Every profile's .env, a template of the sealed keys (task agents:create-harness-config)
 patches:
   - path: ./env-template.yaml
 

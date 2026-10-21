@@ -1,6 +1,7 @@
 # Hermes settings: everything use-cases.yaml and persons.yaml do not render.
-# Copied whole into config.yaml, which is mounted read-only: what runs is what
-# is reviewed here. The model and its fallbacks come from persons.yaml.
+# Copied whole into every profile's config.yaml, which is mounted read-only:
+# what runs is what is reviewed here. The model, its fallbacks and the working
+# directory come from persons.yaml.
 
 # Compact at 256k tokens at the latest; the fallback's price doubles past 272k input tokens.
 compression:
@@ -33,10 +34,6 @@ agent:
   run_budget_seconds: 600
   # The first live answers stopped after one tool call at the default (medium)
   reasoning_effort: high
-
-# Context files (AGENTS.md) are discovered from the gateway's working directory
-terminal:
-  cwd: /opt/data
 
 approvals:
   # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.

@@ -10,7 +10,7 @@ resources:
   # The platform's sampling ratio, rendered from the trigger's use-case file.
   - ../../lares-agent-trigger/base/tracing
 
-# The machine clients' clients.json, a template of the sealed keys (task agents:create-harness-config)
+# The clients' clients.json, a template of the sealed keys (task agents:create-harness-config)
 patches:
   - path: ./clients-template.yaml
 
