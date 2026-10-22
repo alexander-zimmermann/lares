@@ -14,7 +14,8 @@ repos:
       - id: check-added-large-files
       - id: detect-private-key
       - id: end-of-file-fixer
-        exclude: '.*/secrets/.*'
+        # Vendored plugins stay byte-identical to their upstream commit
+        exclude: '.*/secrets/.*|^kubernetes/applications/hermes/base/plugins/'
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: trailing-whitespace
@@ -46,6 +47,7 @@ repos:
     hooks:
       - id: ruff
         args: [--fix]
+        exclude: '^kubernetes/applications/hermes/base/plugins/'
 
   # The validate tasks install the sidecar loaders from GitHub at the tags the
   # app manifests deploy, so the tag-bearing manifests are watched as well.

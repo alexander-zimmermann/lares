@@ -43,6 +43,11 @@ configMapGenerator:
     files:
       - lares-explain=skills/lares-explain/SKILL.md
       - lares-propose=skills/lares-propose/SKILL.md
+  # fastfinge/hermes-session-reset-policy v0.3.0, unchanged at the catalog's pin 0f2ea5ad995f1e4ba7c92c2dbd21afa868b8ae21; Renovate does not track it
+  - name: hermes-plugin-session-reset-policy
+    files:
+      - plugins/hermes-session-reset-policy/plugin.yaml
+      - plugins/hermes-session-reset-policy/__init__.py
 
 # Every agent-log container, the default profile's and each person's, runs this one image.
 images:
