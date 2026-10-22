@@ -18,7 +18,7 @@ helmCharts:
   - name: grafana-mcp
     repo: oci://ghcr.io/grafana-community/helm-charts
     releaseName: grafana-mcp
-    version: 0.28.1
+    version: 0.29.0
     valuesFile: values.yaml
     namespace: grafana
 
