@@ -105,6 +105,15 @@ metrics:
       labels:
         release: prometheus
 
+# Traces every request (default sampleRate 1.0): services behind Traefik follow its sampling decision
+tracing:
+  otlp:
+    enabled: true
+    http:
+      enabled: true
+      # Same collector as the bridges; Alloy forwards to Tempo
+      endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318/v1/traces
+
 global:
   # Disable new version checks
   checkNewVersion: false
