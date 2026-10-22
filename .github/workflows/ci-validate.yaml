@@ -20,12 +20,15 @@ jobs:
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
         id: filter
         with:
+          # A README under kubernetes/ deploys nothing; other Markdown there (Hermes persona, skills) does
+          predicate-quantifier: some-with-excludes
           filters: |
             infra:
               - 'infrastructure/**'
               - '.github/workflows/ci-validate.yaml'
             k8s:
               - 'kubernetes/**'
+              - '!kubernetes/**/README.md'
               - '.github/workflows/ci-validate.yaml'
 
   # 2. Standard Contribution Checks (runs always)
