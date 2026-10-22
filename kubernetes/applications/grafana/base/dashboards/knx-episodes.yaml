@@ -1721,7 +1721,7 @@ spec:
         {
           "id": 19,
           "type": "stat",
-          "title": "Gateway",
+          "title": "Hermes",
           "datasource": {
             "type": "prometheus",
             "uid": "454b7787-9ec4-42fc-9bf7-100716723e20"
@@ -1740,7 +1740,7 @@ spec:
               },
               "editorMode": "code",
               "expr": "max(hermes_gateway_up) or vector(0)",
-              "legendFormat": "Gateway",
+              "legendFormat": "Hermes",
               "range": true,
               "refId": "A"
             }
@@ -1800,7 +1800,7 @@ spec:
             "textMode": "auto",
             "wideLayout": true
           },
-          "description": "Ob das Hermes-Gateway läuft. Fällt es aus, sind der Chat, die geplanten Anwendungsfälle und jeder ausgelöste Lauf mit weg; Aus steht hier spätestens fünf Minuten danach, AgentGatewayDown folgt."
+          "description": "Ob Hermes läuft. Fällt es aus, sind der Chat, die geplanten Anwendungsfälle und jeder ausgelöste Lauf mit weg; Aus steht hier spätestens fünf Minuten danach, HermesDown folgt."
         },
         {
           "id": 20,
@@ -1884,7 +1884,7 @@ spec:
             "textMode": "auto",
             "wideLayout": true
           },
-          "description": "Ob das Gateway mit Discord verbunden ist — getrennt bleiben Nachrichten vom Telefon unbeantwortet. Ohne laufendes Gateway steht auch hier Getrennt."
+          "description": "Ob Hermes mit Discord verbunden ist — getrennt bleiben Nachrichten vom Telefon unbeantwortet. Läuft Hermes nicht, steht auch hier Getrennt."
         },
         {
           "id": 21,
