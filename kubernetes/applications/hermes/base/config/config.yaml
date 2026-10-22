@@ -184,9 +184,9 @@ hooks:
       timeout: 10
 mcp_servers:
   lares:
-    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares
     headers:
-      Authorization: Bearer ${env:LARES_MCP_KEY}
+      Authorization: Bearer ${env:LARES_GATEWAY_KEY}
     timeout: 60
     tools:
       include:
@@ -203,25 +203,23 @@ mcp_servers:
         - correlate_events
         - search_wiki
         - backtest_fault
+      resources: false
+      prompts: false
   lares-memory:
-    url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares-memory
     headers:
-      Authorization: Bearer ${env:LARES_MEMORY_MCP_KEY}
+      Authorization: Bearer ${env:LARES_MEMORY_GATEWAY_KEY}
     timeout: 30
     tools:
       include:
         - get_memory
         - append_memory
+      resources: false
+      prompts: false
   github:
-    command: /opt/github-mcp/github-mcp-server
-    args:
-      - stdio
-      - --read-only
-      - --toolsets=repos,issues,pull_requests
-    env:
-      GITHUB_APP_ID: '5176504'
-      GITHUB_APP_INSTALLATION_ID: '167554581'
-      GITHUB_APP_PRIVATE_KEY_PATH: /etc/github-reader/private-key
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/github
+    headers:
+      Authorization: Bearer ${env:GITHUB_GATEWAY_KEY}
     timeout: 60
     tools:
       include:

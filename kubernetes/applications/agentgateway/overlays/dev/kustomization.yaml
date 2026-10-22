@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  # One Rust process proxying a few calls a minute, no session state.
+  - target:
+      kind: Deployment
+      name: agentgateway
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: agentgateway
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 48Mi
+          limits:
+            cpu: 500m
+            memory: 192Mi

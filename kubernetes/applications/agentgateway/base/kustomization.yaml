@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: agents
+
+# No namespace.yaml here: `agents` is created and owned by the hermes
+# application at wave 12, and two ArgoCD apps rendering one Namespace would
+# fight over its labels.
+resources:
+  - sealed-secret.yaml
+
+helmCharts:
+  - name: agentgateway-standalone
+    repo: oci://cr.agentgateway.dev/charts
+    releaseName: agentgateway
+    version: v1.6.0
+    valuesFile: values.yaml
+    # The routes' keys as variables, the routes and each credential they attach,
+    # mounted whole (task agents:create-harness-config)
+    additionalValuesFiles:
+      - config/routes.values.yaml
+    namespace: agents
+    apiVersions:
+      - monitoring.coreos.com/v1
+
+# The routes, rendered by task agents:create-harness-config; the content hash
+# rolls the gateway when they change.
+configMapGenerator:
+  - name: agentgateway-routes
+    files:
+      - config.yaml=config/routes.yaml
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: agentgateway
+
+# Wave 12 = beside hermes, its only caller, which owns the namespace; after
+# lares-mcp-bridge (11), whose clients' keys it attaches.
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "12"

@@ -23,42 +23,6 @@ deployment:
   imagePullSecrets:
     - name: dhi-registry-secret
 
-  # Copy the GitHub MCP server out of its distroless image with a static busybox;
-  # the chart orders init containers by name.
-  initContainers:
-    github-mcp-copier:
-      image: busybox:1.38.0-musl
-      command: ["cp", "/bin/busybox", "/copier/busybox"]
-      volumeMounts:
-        - name: github-mcp-copier
-          mountPath: /copier
-      securityContext:
-        runAsUser: 10000
-        runAsGroup: 10000
-        runAsNonRoot: true
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: [ALL]
-    github-mcp-server:
-      image: ghcr.io/github/github-mcp-server:v2.0.3
-      command:
-        ["/copier/busybox", "cp", "/server/github-mcp-server", "/opt/github-mcp/github-mcp-server"]
-      volumeMounts:
-        - name: github-mcp-copier
-          mountPath: /copier
-          readOnly: true
-        - name: github-mcp
-          mountPath: /opt/github-mcp
-      securityContext:
-        runAsUser: 10000
-        runAsGroup: 10000
-        runAsNonRoot: true
-        readOnlyRootFilesystem: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: [ALL]
-
   # Every key comes from the profile's .env (hermes-env below); the pod env holds no secret.
   # Who may write to the bot is discord.allow_from in config.yaml, rendered from persons.yaml.
   env:
@@ -134,21 +98,6 @@ deployment:
         items:
           - key: lares-propose
             path: SKILL.md
-    # The GitHub MCP server binary, and the static busybox that copies it
-    github-mcp-copier:
-      emptyDir:
-        medium: Memory
-        sizeLimit: 4Mi
-    github-mcp:
-      emptyDir:
-        sizeLimit: 64Mi
-    # The key of the read-only GitHub App the GitHub server signs in as
-    github-reader:
-      secret:
-        secretName: lares-agent-github-reader
-        items:
-          - key: private-key
-            path: private-key
 
   volumeMounts:
     # All Hermes state: sessions, memories, cron ledger, logs
@@ -184,13 +133,6 @@ deployment:
     hermes-skill-propose:
       mountPath: /opt/data/skills/lares-propose/SKILL.md
       subPath: SKILL.md
-      readOnly: true
-    # The generated config starts the GitHub server from here, signed in with this key
-    github-mcp:
-      mountPath: /opt/github-mcp
-      readOnly: true
-    github-reader:
-      mountPath: /etc/github-reader
       readOnly: true
 
   ports:

@@ -17,6 +17,11 @@ version: "3"
 #   MCP_BRIDGE_CLIENTS_TEMPLATE_PATH
 #                                — rendered: the bridge's clients.json, a template of
 #                                  the sealed keys beside the bridge's SealedSecret
+#   AGENT_GATEWAY_ROUTES_PATH    — rendered: the gateway's routes, which name every key
+#                                  as a variable and every credential as a file
+#   AGENT_GATEWAY_ROUTES_VALUES_PATH
+#                                — rendered: the gateway's chart values that set those
+#                                  variables and mount the routes and each credential
 
 tasks:
   create-harness-config:
@@ -30,16 +35,17 @@ tasks:
       each enabled person's profile config with the ConfigMap and chart
       values that mount it, the cron job set for the trigger, the bridge's
       allowlists and persons, the sampling ratio the trigger, the bridge and
-      the engine trace at, and the templates that compose every profile's
-      .env and the bridge's clients.json from the keys sealed one by one
-      beside them.
+      the engine trace at, the templates that compose every profile's .env and
+      the bridge's clients.json from the keys sealed one by one beside them,
+      the gateway's routes, and the gateway's chart values that set their keys
+      and mount the routes and each credential they attach.
       The trigger's loaders refuse a declaration that breaks a rule and name
       the field. A commit whose rendered files this changed stops once: add
       them and commit again. A key a template names must be sealed too
       (task k8s:validate-sealed-templates).
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
       Writes: config.yaml, profiles/, cron-jobs.yaml, client-tools.env, tracing.env,
-      env-template.yaml and clients-template.yaml.
+      env-template.yaml, clients-template.yaml, config/routes.yaml and config/routes.values.yaml.
       Needs network (the git tag) and a uv that knows Python 3.15.
     vars:
       AGENT_TRIGGER_TAG:
@@ -58,4 +64,6 @@ tasks:
         --tracing "{{.AGENT_TRACING_PATH}}"
         --env-template "{{.HERMES_ENV_TEMPLATE_PATH}}"
         --clients-template "{{.MCP_BRIDGE_CLIENTS_TEMPLATE_PATH}}"
+        --routes "{{.AGENT_GATEWAY_ROUTES_PATH}}"
+        --routes-values "{{.AGENT_GATEWAY_ROUTES_VALUES_PATH}}"
         --profiles "{{.HERMES_PROFILES_PATH}}"
