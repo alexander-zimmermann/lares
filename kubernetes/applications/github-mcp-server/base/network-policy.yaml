@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+
+metadata:
+  name: github-mcp-server
+
+spec:
+  # The server authenticates no caller: it answers whoever brings a token, so
+  # the gateway, which attaches one, is the only pod that may reach it.
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: github-mcp-server
+
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: agentgateway
+      toPorts:
+        - ports:
+            - port: "8082"
+              protocol: TCP
