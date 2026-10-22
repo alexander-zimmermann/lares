@@ -4,8 +4,8 @@ metadata:
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # OAuth2/OIDC Provider for the lares-mcp-bridge MCP server.
-  # Used by claude.ai's custom-connector OAuth flow (oauth_anthropic_creds).
+  # OAuth2/OIDC Provider of the claude.ai connector, which signs in on the gateway's
+  # public route; the gateway checks the tokens and hands out this client.
   - model: authentik_providers_oauth2.oauth2provider
     state: present
     identifiers:

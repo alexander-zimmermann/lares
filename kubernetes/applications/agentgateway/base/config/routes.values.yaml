@@ -46,14 +46,8 @@ extraVolumes:
     secret:
       secretName: agentgateway-keys
       items:
-        - key: lares-agent
-          path: lares-agent
-        - key: az1003
-          path: az1003
-        - key: lares-runs
-          path: lares-runs
-        - key: lares-memory
-          path: lares-memory
+        - key: lares-mcp-bridge
+          path: lares-mcp-bridge
   - name: github-mcp-server-token
     secret:
       secretName: github-mcp-server-token

@@ -964,14 +964,3 @@ spec:
           annotations:
             summary: "Agent cron turn on the profile of {{ $labels.enduser_id }}"
             description: "{{ $value | printf \"%.0f\" }} cron turn(s) in the last hour ran on the profile of {{ $labels.enduser_id }}. Only the default profile runs the declared jobs, so these have no row in agent_runs and no use case. A job was created in that profile: `hermes -p {{ $labels.enduser_id }} cron list` in the hermes pod names it, and `cron remove <id>` deletes it."
-
-        - alert: AgentBridgeTokenUnknown
-          # A new pod's series has no past, which increase() misses
-          expr: |
-            sum(increase(lares_mcp_bridge_unknown_tokens_total[1h])) > 0
-            or sum(lares_mcp_bridge_unknown_tokens_total unless lares_mcp_bridge_unknown_tokens_total offset 1h) > 0
-          labels:
-            severity: warning
-          annotations:
-            summary: "MCP bridge token without a person"
-            description: "{{ $value | printf \"%.0f\" }} call(s) to the MCP bridge in the last hour came with an Authentik token whose username is no handle in persons.yaml. The bridge let them in, and they read only the machines' runs. The Claude.ai connector is the owner's: if the owner's Authentik username is not the owner's handle, set it to the handle. Otherwise someone else holds a token for the bridge; Authentik's events name who signed in to lares-mcp-bridge."

@@ -156,7 +156,7 @@ spec:
               protocol: TCP
 
     # Internet by name. Authentik sits behind Cloudflare like every *.zimmermann.sh host,
-    # so the OIDC and JWKS calls of all three agents leave the cluster too.
+    # so the OIDC and JWKS calls (hermes, node-red, the gateway) leave the cluster too.
     - toFQDNs:
         - matchName: chatgpt.com # hermes: Codex, the primary model (ChatGPT login)
         - matchName: auth.openai.com # hermes: Codex token refresh

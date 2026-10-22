@@ -2,11 +2,11 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 
 metadata:
-  name: lares-mcp-bridge-tls-cert
-  namespace: lares-mcp-bridge
+  name: agentgateway-tls-cert
+  namespace: agents
 
 spec:
-  secretName: lares-mcp-bridge-tls-cert
+  secretName: agentgateway-tls-cert
   issuerRef:
     name: letsencrypt-dns01-issuer
     kind: ClusterIssuer
