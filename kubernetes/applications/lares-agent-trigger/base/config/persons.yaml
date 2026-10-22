@@ -54,7 +54,7 @@ persons:
   # The owner, on the machines' subscription with a Codex login of their own.
   - name: az1003
     discord: admin
-    tools: [lares, lares-runs, github]
+    tools: [lares, lares-runs, github, grafana, cloudflare]
     connectors: [claude-ai]
     model: owner-subscription
     keep_answers: true

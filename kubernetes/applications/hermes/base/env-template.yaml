@@ -25,4 +25,6 @@ spec:
         LARES_GATEWAY_KEY='{{ index . "az1003-lares-gateway-key" }}'
         LARES_RUNS_GATEWAY_KEY='{{ index . "az1003-lares-runs-gateway-key" }}'
         GITHUB_GATEWAY_KEY='{{ index . "az1003-github-gateway-key" }}'
+        GRAFANA_GATEWAY_KEY='{{ index . "az1003-grafana-gateway-key" }}'
+        CLOUDFLARE_GATEWAY_KEY='{{ index . "az1003-cloudflare-gateway-key" }}'
         OPENAI_API_KEY='{{ index . "az1003-openai-api-key" }}'

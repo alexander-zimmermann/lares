@@ -38,6 +38,16 @@ extraEnv:
       secretKeyRef:
         name: agentgateway-keys
         key: az1003-github-gateway-key
+  - name: AZ1003_GRAFANA_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: agentgateway-keys
+        key: az1003-grafana-gateway-key
+  - name: AZ1003_CLOUDFLARE_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: agentgateway-keys
+        key: az1003-cloudflare-gateway-key
 extraVolumes:
   - name: routes
     configMap:
@@ -48,6 +58,10 @@ extraVolumes:
       items:
         - key: lares-mcp-bridge
           path: lares-mcp-bridge
+        - key: grafana-mcp
+          path: grafana-mcp
+        - key: cloudflare-mcp-token
+          path: cloudflare-mcp-token
   - name: github-mcp-server-token
     secret:
       secretName: github-mcp-server-token
