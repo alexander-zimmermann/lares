@@ -101,5 +101,6 @@ repos:
         entry: task k8s:validate-sealed-templates
         language: system
         pass_filenames: false
-        # Every SealedSecret, the template patches beside it, and the check itself.
-        files: ^(kubernetes/.*/(sealed-secret|[a-z-]*template)\.yaml|scripts/validate_sealed_templates\.py)$
+        # Every SealedSecret, the templates beside it, every manifest and values file that
+        # reads a key of one, and the check itself.
+        files: ^(kubernetes/.*\.yaml|scripts/validate_sealed_templates\.py)$
