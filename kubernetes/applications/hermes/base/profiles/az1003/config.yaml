@@ -152,7 +152,8 @@ terminal:
   cwd: /opt/data/profiles/az1003
 
 # Rendered from persons.yaml and use-cases.yaml: az1003's tool servers on
-# Discord and the API server, and the hook that reports every finished turn.
+# Discord and the API server, the web chat's skill tools, and the hook that
+# reports every finished turn.
 platform_toolsets:
   discord:
     - hermes-discord
@@ -162,6 +163,7 @@ platform_toolsets:
     - grafana
     - cloudflare
   api_server:
+    - skills
     - lares
     - lares-runs
     - github

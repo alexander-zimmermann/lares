@@ -20,6 +20,10 @@
 # A use case either runs (`enabled: true`) or says why it does not
 # (`dormant: <reason>`). There is no `enabled: false`. A dormant use case
 # renders nothing, so it may name tool servers and event sources still to be built.
+#
+# `scripts` are cron jobs without a model: Hermes runs the file from the
+# default profile's scripts/ (mounted from hermes/base/scripts) and posts its
+# output itself. A script runs or is dormant like a use case.
 
 # Where Hermes reports every finished turn, so each one gets its ledger row.
 ledger_hook:
@@ -162,6 +166,18 @@ connectors:
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
     tools: ["*"]
+
+# The Sunday digest of what each profile learned: the skills created, changed and
+# archived in the week, names only, read from every profile's own skill ledger.
+scripts:
+  - name: skill-digest
+    sentence: Posts the week's skill names per profile to #Allgemein on Sunday evening.
+    trigger:
+      kind: schedule
+      cron: "0 18 * * 0"
+    script: skill-digest.py
+    deliver: discord
+    dormant: Waits for a Hermes release whose Jobs API takes script jobs (NousResearch/hermes-agent#143213).
 
 use_cases:
   - name: explain-episode
