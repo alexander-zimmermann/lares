@@ -184,6 +184,22 @@ alertmanager:
         target_matchers:
           - alertname = "UnifiArmStateDrift"
 
+  # Pushover: the summary as title and each alert's description as text, not the default dump
+  templateFiles:
+    pushover.tmpl: |-
+      {{ define "pushover.default.title" -}}
+      {{ if eq .Status "resolved" }}Resolved: {{ end -}}
+      {{ with .CommonAnnotations.summary }}{{ . }}{{ else }}{{ .CommonLabels.alertname }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }}){{ end }}{{ end }}
+      {{- end }}
+      {{ define "pushover.default.message" -}}
+      {{ range .Alerts.Firing -}}
+      {{ if gt (len $.Alerts) 1 }}{{ .Annotations.summary }}: {{ end }}{{ or .Annotations.description .Annotations.summary .Labels.alertname }}
+      {{ end -}}
+      {{ range .Alerts.Resolved -}}
+      Resolved: {{ or .Annotations.summary .Labels.alertname }}
+      {{ end -}}
+      {{- end }}
+
   alertmanagerSpec:
     # Mount the Pushover secret so token_file / user_key_file can reference it
     secrets:
