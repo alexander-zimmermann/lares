@@ -910,6 +910,19 @@ spec:
             summary: "Agent chat of {{ $labels.enduser_id }} above its daily budget"
             description: "{{ $value | printf \"%.0f\" }} chat turns of {{ $labels.enduser_id }} in the last 24h, above the messenger's 200 a day per person. Nothing is refused; a loop or a stuck conversation looks like this. Without a name it is the default profile's chat."
 
+        - alert: AgentOnFallback
+          # The counter appears with its first fallback answer, which increase() misses: a new series counts whole
+          expr: |
+            sum by (enduser_id) (
+              (agent_trigger_cost_usd_total{step="fallback"} unless agent_trigger_cost_usd_total{step="fallback"} offset 1d)
+              or increase(agent_trigger_cost_usd_total{step="fallback"}[1d])
+            ) > 0
+          labels:
+            severity: info
+          annotations:
+            summary: "Agent answers of {{ or $labels.enduser_id \"the default profile\" }} came from the fallback"
+            description: "Answers of {{ or $labels.enduser_id \"the default profile\" }} in the last 24h came from the fallback of its model source: {{ $value | printf \"%.2f\" }} USD, and {{ with printf `sum((agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"} unless agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"} offset 7d) or increase(agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"}[7d]))` $labels.enduser_id | query }}{{ . | first | value | printf \"%.2f\" }}{{ end }} USD in the last 7 days, against the hard monthly limit of its OpenAI project. The source's window is spent, its model was refused, or its login failed, which AgentModelSourceFailing names. Once the project's limit is reached, the fallback fails too and AgentChatFailed fires."
+
         - alert: AgentCallUnpriced
           # The counter appears with its first unpriced call, which increase() misses
           expr: |
