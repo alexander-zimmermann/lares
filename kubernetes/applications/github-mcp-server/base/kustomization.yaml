@@ -10,7 +10,6 @@ namespace: agents
 resources:
   - sealed-secret.yaml
   - token.yaml
-  - network-policy.yaml
 
 helmCharts:
   - name: application

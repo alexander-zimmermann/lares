@@ -5,8 +5,7 @@ deployment:
     repository: ghcr.io/github/github-mcp-server
     tag: v2.0.3
 
-  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium);
-  # network-policy.yaml admits the gateway only
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
     role: agent
 
