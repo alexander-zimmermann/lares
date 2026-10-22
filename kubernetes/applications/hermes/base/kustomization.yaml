@@ -26,7 +26,7 @@ helmCharts:
       - profiles/profiles.values.yaml
     namespace: agents
 
-# Hash on: the Deployment mounts these, so the pod rolls when config or a skill changes.
+# Hash on: the Deployment mounts these, so the pod rolls when config, a skill or a script changes.
 configMapGenerator:
   - name: hermes-config
     files:
@@ -48,6 +48,11 @@ configMapGenerator:
     files:
       - plugins/hermes-session-reset-policy/plugin.yaml
       - plugins/hermes-session-reset-policy/__init__.py
+  # The scripts Hermes's cron runs without a model; values.yaml mounts them as the default
+  # profile's scripts/ directory.
+  - name: hermes-scripts
+    files:
+      - scripts/skill-digest.py
 
 # Every agent-log container, the default profile's and each person's, runs this one image.
 images:

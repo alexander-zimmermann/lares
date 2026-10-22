@@ -97,6 +97,9 @@ deployment:
     hermes-plugin-session-reset-policy:
       configMap:
         name: hermes-plugin-session-reset-policy
+    hermes-scripts:
+      configMap:
+        name: hermes-scripts
 
   volumeMounts:
     # All Hermes state: sessions, memories, cron ledger, logs
@@ -132,6 +135,11 @@ deployment:
     # A plugin is its own directory under plugins/; Hermes finds the manifest there and looks no deeper
     hermes-plugin-session-reset-policy:
       mountPath: /opt/data/plugins/hermes-session-reset-policy
+      readOnly: true
+    # Hermes runs a cron script only from under the profile's own scripts/, so the repo's
+    # scripts are that directory of the default profile, read-only inside the data volume
+    hermes-scripts:
+      mountPath: /opt/data/scripts
       readOnly: true
 
   ports:
