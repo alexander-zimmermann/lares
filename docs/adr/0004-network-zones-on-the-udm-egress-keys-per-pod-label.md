@@ -13,7 +13,7 @@ convention: `.1` gateway, `.2`–`.49` fixed addresses, `.50`–`.199` DHCP,
 
 The UDM sees the cluster only as node IPs and cannot tell pods apart, so
 it is given exactly two exceptions: the egress IPs `.2` and `.3`, one
-secondary address per gateway worker. Cilium's egress gateway decides,
+secondary address per egress gateway worker. Cilium's egress gateway decides,
 from pod label and destination CIDR, which traffic leaves with one of
 them: `egress-infra`, `egress-iot`, `egress-outdoor`. A pod without the
 label leaves with the node IP and is dropped at the zone border; a pod
@@ -21,9 +21,10 @@ with one label still reaches the other zones with the node IP and is
 dropped there. The UDM therefore holds one rule with ports per zone for
 the pair and no knowledge of pods.
 
-A Cilium network policy exists only where the UDM is blind: the four LLM
-agents (`role=agent`) are caged inside the cluster and towards the
-internet by FQDN. No other namespace carries a network policy.
+A Cilium network policy exists only where the UDM is blind: the pods that
+run agents or act for them (`role=agent`) are caged inside the cluster
+and towards the internet by FQDN. No other namespace carries a network
+policy.
 
 The LoadBalancer pool stays a BGP-routed prefix and every LAN client
 reaches every LB IP directly; `*.zimmermann.sh` keeps going through

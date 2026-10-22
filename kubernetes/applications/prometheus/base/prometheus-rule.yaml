@@ -780,27 +780,27 @@ spec:
             description: "loki_prometheus_rule_group_rules has been absent for 15m — the ruler found nothing under /rules/fake. Check that the loki-alert-rules ConfigMap exists and the loki-sc-rules container wrote it. Every log-content alert is blind until this clears."
 
     # Hermes pushes these gauges over OTLP; nothing scrapes it, and s6
-    # restarts a crashed gateway before Kubernetes notices.
+    # restarts a crashed Hermes process before Kubernetes notices.
     - name: agents
       rules:
-        - alert: AgentGatewayDown
-          # The gauge is 1 while the gateway lives; dead, it goes stale after 5m
+        - alert: HermesDown
+          # The gauge is 1 while Hermes runs; dead, it goes stale after 5m
           expr: absent(hermes_gateway_up)
           for: 5m
           labels:
             severity: warning
           annotations:
-            summary: "Agent gateway down"
-            description: "Hermes has not reported a running gateway for 10m — the Discord chat, the scheduled use cases and every triggered run are down with it. Check the hermes pod in agents and the agent-log container beside it."
+            summary: "Hermes down"
+            description: "Hermes has not reported itself running for 10m — the Discord chat, the scheduled use cases and every triggered run are down with it. Check the hermes pod in agents and the agent-log container beside it."
 
-        - alert: AgentGatewayFlapping
-          # Every gateway start mints a new instance id (config.yaml is read-only)
+        - alert: HermesFlapping
+          # Every Hermes start mints a new instance id (config.yaml is read-only)
           expr: count(count_over_time(hermes_gateway_up[1h])) > 5
           labels:
             severity: warning
           annotations:
-            summary: "Agent gateway restarting over and over"
-            description: "{{ $value }} gateway processes reported within the last hour. s6 restarts a crashing gateway within seconds, so Kubernetes shows neither a container restart nor a failed probe; the agent-log container shows what kills it."
+            summary: "Hermes restarting over and over"
+            description: "{{ $value }} Hermes processes reported within the last hour. s6 restarts a crashing Hermes within seconds, so Kubernetes shows neither a container restart nor a failed probe; the agent-log container shows what kills it."
 
         - alert: AgentDiscordDisconnected
           # Every adapter state is its own series; one changing state must not reset `for`
@@ -810,7 +810,7 @@ spec:
             severity: warning
           annotations:
             summary: "Agent Discord connection down"
-            description: "The gateway runs, but its Discord adapter has not been connected for 10m — messages from the phone go unanswered. A revoked bot token stays down until a new one is sealed; the agent-log container names the adapter's error."
+            description: "Hermes runs, but its Discord adapter has not been connected for 10m — messages from the phone go unanswered. A revoked bot token stays down until a new one is sealed; the agent-log container names the adapter's error."
 
         - alert: AgentCronStalled
           # The scheduler ticks every minute while it runs
