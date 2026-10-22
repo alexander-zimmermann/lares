@@ -1580,6 +1580,787 @@ spec:
           ],
           "title": "Mischerposition über Zeit",
           "type": "timeseries"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 26
+          },
+          "id": 32,
+          "panels": [],
+          "title": "Heizkreis-Regelung",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "description": "Vom Soll des RC310 über Mischer und Kessel bis zum Rücklauf. Die gestrichelte Linie bei 50 °C markiert den Rücklauf, ab dem der Kessel kaum noch Brennwert nutzt.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "dashed"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 50
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "RC310 Soll"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "orange",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Mischer Soll"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "yellow",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Boden Ist"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Kessel Soll"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Kessel Ist (Spitze)"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "dark-red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Rücklauf (Spitze)"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Außen gedämpft"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "green",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 27
+          },
+          "id": 33,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.4.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(targetflowtemp) AS \"RC310 Soll\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND targetflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "RC310 Soll"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(flowsettemp) AS \"Mischer Soll\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'mixer_data_hc1' AND flowsettemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Mischer Soll"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(flowtemphc) AS \"Boden Ist\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'mixer_data_hc1' AND flowtemphc IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Boden Ist"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(selflowtemp) AS \"Kessel Soll\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND selflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Kessel Soll"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, max(curflowtemp) AS \"Kessel Ist (Spitze)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND curflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Kessel Ist (Spitze)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, max(rettemp) AS \"Rücklauf (Spitze)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND rettemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Rücklauf (Spitze)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, avg(dampedoutdoortemp) AS \"Außen gedämpft\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data' AND dampedoutdoortemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Außen gedämpft"
+            }
+          ],
+          "title": "Vorlauf-Kette",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "description": "Was der RC310 gerade fährt. Komfort/Spar folgt dem Zeitprogramm, der Absenkmodus sagt, was Sparbetrieb heißt.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "fillOpacity": 70,
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineWidth": 0,
+                "spanNulls": false
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "comfort": {
+                      "color": "orange",
+                      "index": 0,
+                      "text": "Komfort"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "eco": {
+                      "color": "blue",
+                      "index": 1,
+                      "text": "Spar"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "auto": {
+                      "color": "green",
+                      "index": 2,
+                      "text": "Auto"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "manual": {
+                      "color": "yellow",
+                      "index": 3,
+                      "text": "Hand"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "reduce": {
+                      "color": "green",
+                      "index": 4,
+                      "text": "reduziert"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "outdoor": {
+                      "color": "red",
+                      "index": 5,
+                      "text": "außen: aus"
+                    }
+                  },
+                  "type": "value"
+                },
+                {
+                  "options": {
+                    "room": {
+                      "color": "purple",
+                      "index": 6,
+                      "text": "Raum"
+                    }
+                  },
+                  "type": "value"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 0,
+            "y": 35
+          },
+          "id": 34,
+          "options": {
+            "alignValue": "left",
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "mergeValues": true,
+            "rowHeight": 0.9,
+            "showValue": "auto",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.4.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(mode, time) AS \"Betriebsmodus\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND mode IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Betriebsmodus"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(modetype, time) AS \"Betriebsart\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND modetype IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Betriebsart"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(reducemode, time) AS \"Absenkmodus\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND reducemode IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Absenkmodus"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(program, time) AS \"Programm\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND program IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Programm"
+            }
+          ],
+          "title": "Betrieb RC310",
+          "type": "state-timeline"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "description": "Brennerstarts je Stunde, Heizung und Warmwasser zusammen. Jeder Start kostet Spül- und Anlaufverluste.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "orange",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "bars",
+                "fillOpacity": 80,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 12,
+            "x": 12,
+            "y": 35
+          },
+          "id": 35,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.4.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT time_bucket('1 hour', time) AS time, count(*) FILTER (WHERE burner_on AND NOT burner_was_on) AS \"Starts\" FROM (SELECT time, curburnpow > 0 AS burner_on, lag(curburnpow > 0) OVER (ORDER BY time) AS burner_was_on FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND curburnpow IS NOT NULL) s GROUP BY 1 ORDER BY 1;",
+              "refId": "Starts"
+            }
+          ],
+          "title": "Brennerstarts pro Stunde",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "description": "Die von Hand gesetzten Werte an RC310, Mischer und Kessel. Jeder neue Abschnitt in einer Zeile ist eine Änderung.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "blue",
+                "mode": "fixed"
+              },
+              "custom": {
+                "fillOpacity": 70,
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineWidth": 0,
+                "spanNulls": false
+              },
+              "decimals": 1,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 40
+          },
+          "id": 36,
+          "options": {
+            "alignValue": "left",
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": false
+            },
+            "mergeValues": true,
+            "rowHeight": 0.8,
+            "showValue": "always",
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.4.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(boilhyston, time) AS \"Einschaltdifferenz (K)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND boilhyston IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Einschaltdifferenz (K)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(boilhystoff, time) AS \"Ausschaltdifferenz (K)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND boilhystoff IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Ausschaltdifferenz (K)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(burnminperiod, time) AS \"Antipendelzeit (min)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'boiler_data' AND burnminperiod IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Antipendelzeit (min)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(flowtempoffset, time) AS \"Mischer-Anhebung (K)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'mixer_data_hc1' AND flowtempoffset IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Mischer-Anhebung (K)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(designtemp, time) AS \"Endpunkt (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND designtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Endpunkt (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(baseflowtemp, time) AS \"Fußpunkt (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND baseflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Fußpunkt (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(maxflowtemp, time) AS \"Max. Vorlauf (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND maxflowtemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Max. Vorlauf (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(offsettemp, time) AS \"Parallelverschiebung (K)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND offsettemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Parallelverschiebung (K)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(noreducetemp, time) AS \"Durchheizen unter (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND noreducetemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Durchheizen unter (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(ecotemp, time) AS \"Spartemperatur (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND ecotemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Spartemperatur (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(comforttemp, time) AS \"Komforttemperatur (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND comforttemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Komforttemperatur (°C)"
+            },
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "time_series",
+              "hide": false,
+              "rawQuery": true,
+              "rawSql": "SELECT $__timeGroup(time, '$__interval') AS time, last(summertemp, time) AS \"Sommerbetrieb ab (°C)\" FROM ems_esp WHERE $__timeFilter(time) AND topic = 'thermostat_data_hc1' AND summertemp IS NOT NULL GROUP BY 1 ORDER BY 1;",
+              "refId": "Sommerbetrieb ab (°C)"
+            }
+          ],
+          "title": "Einstellungen",
+          "type": "state-timeline"
         }
       ],
       "preload": false,
