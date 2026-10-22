@@ -8,7 +8,7 @@ resources:
 
 helmCharts:
   - name: application
-    repo: https://stakater.github.io/stakater-charts
+    repo: oci://ghcr.io/stakater/charts
     releaseName: pbs-exporter
     version: 9.3.2
     valuesFile: values.yaml

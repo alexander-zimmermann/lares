@@ -14,7 +14,7 @@ resources:
 
 helmCharts:
   - name: agentgateway-standalone
-    repo: oci://cr.agentgateway.dev/charts
+    repo: oci://ghcr.io/agentgateway/charts
     releaseName: agentgateway
     version: v1.6.0
     valuesFile: values.yaml
