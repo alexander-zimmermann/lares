@@ -60,3 +60,24 @@ tasks:
         --routes "{{.AGENT_GATEWAY_ROUTES_PATH}}"
         --routes-values "{{.AGENT_GATEWAY_ROUTES_VALUES_PATH}}"
         --profiles "{{.HERMES_PROFILES_PATH}}"
+
+  check-codex-login:
+    desc: "check a profile's Codex login against its source's account rule, after `auth add` [handle]"
+    summary: |
+      The step after a Codex login, as the comment at owner-subscription in
+      persons.yaml says. Reads the account rule of the profile's model source
+      from persons.yaml and runs scripts/check_codex_login.py in the Hermes
+      container, which reads every profile's auth.json as a plain file and
+      prints one verdict, never a token; the script names them all. Fails on
+      any but ok.
+      Arguments: [handle] (default: the default profile)
+    vars:
+      PROFILE: '{{.CLI_ARGS | default "default"}}'
+      MODEL: '{{if eq .PROFILE "default"}}.default_profile.model{{else}}.persons[] | select(.name == "{{.PROFILE}}") | .model{{end}}'
+      ACCOUNT:
+        sh: yq '({{.MODEL}}) as $m | .model_sources[] | select(.name == $m) | .account' "{{.AGENT_PERSONS_PATH}}"
+    preconditions:
+      - sh: test -n "{{.ACCOUNT}}"
+        msg: "persons.yaml declares no profile {{.PROFILE}} on a model source"
+    cmds:
+      - kubectl -n agents exec -i deploy/hermes -c hermes -- python3 - "{{.PROFILE}}" "{{.ACCOUNT}}" < scripts/check_codex_login.py
