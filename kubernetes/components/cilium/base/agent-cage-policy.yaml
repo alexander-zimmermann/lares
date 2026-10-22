@@ -5,8 +5,9 @@ metadata:
   name: agent-cage
 
 spec:
-  # The pods that run agents or act on their behalf (the hermes harness, the MCP
-  # bridge, the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
+  # The pods that run agents or act on their behalf (the hermes harness, the
+  # gateway in front of its tool servers, GitHub's own server, the MCP bridge,
+  # the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
   # with the node IP, so their egress is fenced here, inside the cluster and towards
   # the internet by name. Ingress is untouched. One policy for all of them, so the
   # allow list is the union of what each needs. Verdicts stay AUDIT while policyAuditMode is set.
@@ -28,7 +29,8 @@ spec:
             dns:
               - matchPattern: "*"
 
-    # In-cluster services, container ports: the policy sees the pod behind the Service
+    # In-cluster services, container ports: the policy sees the pod behind the Service.
+    # The gateway calling the bridge behind its routes.
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: lares-mcp-bridge
@@ -36,6 +38,26 @@ spec:
       toPorts:
         - ports:
             - port: "8080"
+              protocol: TCP
+
+    # hermes reaching every tool server through the gateway
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: agentgateway
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+
+    # The gateway calling GitHub's own server behind the github route
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: github-mcp-server
+      toPorts:
+        - ports:
+            - port: "8082"
               protocol: TCP
 
     # lares-agent-trigger reaching the harness's API server: the Runs API is
@@ -123,7 +145,7 @@ spec:
             - port: "3000"
               protocol: TCP
 
-    # hermes: OTLP traces and gateway-health metrics; the trigger and the bridge: OTLP traces
+    # hermes: OTLP traces and its process metrics; the trigger, the bridge and the gateway: OTLP traces
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: alloy
@@ -144,8 +166,8 @@ spec:
         - matchPattern: "*.discord.gg" # hermes: Discord gateway websocket and the per-region resume URL it hands out
         - matchPattern: "*.discordapp.com" # hermes: Discord CDN (attachments)
         - matchPattern: "*.discordapp.net" # hermes: Discord media proxy
-        - matchName: api.github.com # hermes: the GitHub MCP server's reads; lares-agent-trigger: deliveries and read-back as the write App
-        - matchName: raw.githubusercontent.com # hermes: the GitHub MCP server fetches file contents here
+        - matchName: api.github.com # github-mcp-server: the reads; lares-agent-trigger: deliveries and read-back as the write App
+        - matchName: raw.githubusercontent.com # github-mcp-server: file contents
         - matchName: PLACEHOLDER_AUTH_HOST
         - matchName: registry.npmjs.org # node-red: OIDC dependency at start, palette installs
         - matchName: api.mcs3.miele.com # node-red: Miele flows

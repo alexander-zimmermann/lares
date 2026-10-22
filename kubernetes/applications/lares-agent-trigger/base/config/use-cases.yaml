@@ -5,13 +5,15 @@
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # and reads it directly. `task agents:create-harness-config` renders from it,
 # with the trigger's generator at the deployed tag, the Hermes configuration,
-# the cron job set, the bridge's allowlists and the templates of Hermes's .env
-# and the bridge's clients.json; pre-commit fails on a stale one.
+# the cron job set, the bridge's allowlists, and the templates of Hermes's .env,
+# the bridge's clients.json and the gateway's routes; pre-commit fails on a stale one.
 #
 # Every variable named here (`secret_env`, `key_env`) is sealed in
-# hermes-credentials under its name in lower case and dashed, a client's key in
-# lares-mcp-bridge-auth-clients under the client's name; pre-commit fails on a
-# template naming a key that is not sealed.
+# hermes-credentials under its name in lower case and dashed, a person's own
+# value under the handle and that name. Each `key_env` is sealed again in
+# agentgateway-routes, beside each bridge client's key under the client's name,
+# as lares-mcp-bridge-auth-clients holds it; pre-commit fails on a template
+# naming a key that is not sealed.
 # The trigger mounts the cron job set too and brings Hermes's jobs in line with
 # it at every start.
 #
@@ -24,18 +26,26 @@ ledger_hook:
   trigger_url: http://lares-agent-trigger.agents.svc.cluster.local:8080
   secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
 
-# The share of new traces the trigger, the bridge and the engine keep, rendered into tracing.env.
+# The share of new traces the trigger, the bridge, the engine and the gateway
+# keep, rendered into tracing.env and the gateway's routes.
 tracing:
   sampling_ratio: 1.0
 
-# What `tools` may name: the bridge under one client key each, `tools` its
-# allowlist; and GitHub's own server, which Hermes starts itself.
+# The one door between Hermes and every tool server, and where it sends a span of every call.
+gateway:
+  url: http://agentgateway.agents.svc.cluster.local:8080
+  otlp_endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+
+# What `tools` may name. Each is an HTTP endpoint behind a route of its own on
+# the gateway, which serves its `tools` only and attaches its credential; Hermes
+# holds a key for the route, never the server's. The bridge under one machine
+# client each, `tools` also its allowlist; and GitHub's own server.
 tool_servers:
   # Reads the house: series, episodes, runs, catalog, wiki, backups.
   - name: lares
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     client: lares-agent
-    key_env: LARES_MCP_KEY
+    key_env: LARES_GATEWAY_KEY
     timeout_seconds: 60
     access: read
     # The verdict, memory, run and NATS-subscribe tools stay out; the get_ tools
@@ -60,7 +70,7 @@ tool_servers:
   - name: lares-runs
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     client: lares-runs
-    key_env: LARES_RUNS_MCP_KEY
+    key_env: LARES_RUNS_GATEWAY_KEY
     timeout_seconds: 30
     access: request
     tools: [start_run]
@@ -70,20 +80,22 @@ tool_servers:
   - name: lares-memory
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     client: lares-memory
-    key_env: LARES_MEMORY_MCP_KEY
+    key_env: LARES_MEMORY_GATEWAY_KEY
     timeout_seconds: 30
     access: memory
     tools: [get_memory, append_memory]
 
-  # Reads GitHub: issues, pull requests, files, commits. Hermes starts it,
-  # signed in as the read-only App lares-agent-reader.
+  # Reads GitHub: issues, pull requests, files, commits. GitHub's own server,
+  # read-only; the gateway attaches the installation token of the read-only App
+  # lares-agent-reader, renewed every 30 minutes (github-mcp-server).
   - name: github
-    kind: github
-    command: /opt/github-mcp/github-mcp-server
-    app_id: 5176504
-    installation_id: 167554581
-    private_key_file: /etc/github-reader/private-key
-    toolsets: [repos, issues, pull_requests]
+    kind: http
+    url: http://github-mcp-server.agents.svc.cluster.local:8082/mcp
+    credential:
+      secret: github-mcp-server-token
+      key: token
+      header: Authorization
+    key_env: GITHUB_GATEWAY_KEY
     timeout_seconds: 60
     access: read
     tools: [get_*, list_*, search_*, issue_read, pull_request_read]
