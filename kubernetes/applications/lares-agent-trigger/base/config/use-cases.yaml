@@ -40,7 +40,7 @@ gateway:
 # the gateway, which serves its `tools` only, attaches its credential and names
 # the caller to the server: the route, and the person behind the key. Hermes
 # holds a key for the route, never the server's. The bridge under three routes,
-# and GitHub's own server.
+# and the vendors' own servers.
 tool_servers:
   # Reads the house: series, episodes, runs, catalog, wiki, backups.
   - name: lares
@@ -104,6 +104,52 @@ tool_servers:
     access: read
     tools: [get_*, list_*, search_*, issue_read, pull_request_read]
 
+  # Reads the cluster: metrics, logs, traces, alert rules, dashboards. Grafana's
+  # own server (grafana-mcp), without its write and raw-API tools, as the Viewer
+  # service account lares-agent-reader; the gateway attaches the key it admits.
+  - name: grafana
+    kind: http
+    url: http://grafana-mcp.grafana.svc.cluster.local:8000/mcp
+    credential:
+      secret: agentgateway-keys
+      key: grafana-mcp
+      header: Authorization
+    key_env: GRAFANA_GATEWAY_KEY
+    timeout_seconds: 60
+    access: read
+    # Every tool definition sits in the prompt, so only the reads a question
+    # about the cluster needs: data sources, queries, alert rules, dashboards.
+    tools:
+      - list_datasources
+      - query_prometheus
+      - list_prometheus_metric_names
+      - list_prometheus_label_values
+      - query_loki_logs
+      - query_loki_stats
+      - list_loki_label_values
+      - search_tempo_traces
+      - get_tempo_trace
+      - alerting_rules_read
+      - alerting_silences_read
+      - search_dashboards
+      - get_dashboard_panel_queries
+
+  # Reads the Cloudflare edge in front of every public host: analytics, DNS,
+  # WAF and Access rules. Cloudflare's hosted server; `execute` runs whatever
+  # the model writes against the API, so the token's read permissions are the
+  # only limit. The gateway attaches the account token lares-agent-reader.
+  - name: cloudflare
+    kind: http
+    url: https://mcp.cloudflare.com/mcp
+    credential:
+      secret: agentgateway-keys
+      key: cloudflare-mcp-token
+      header: Authorization
+    key_env: CLOUDFLARE_GATEWAY_KEY
+    timeout_seconds: 60
+    access: read
+    tools: [search, execute, docs, whoami]
+
 # A person's own MCP client, signed in through Authentik on the gateway's public
 # address (agentgateway/base/ingress-route.yaml); persons.yaml says who holds one.
 connectors:
@@ -156,7 +202,7 @@ use_cases:
     # one per answered message. No skill: the message is the assignment.
     trigger:
       kind: message
-    tools: [lares, lares-runs, github]
+    tools: [lares, lares-runs, github, grafana, cloudflare]
     output: [discord]
     # Nothing here is enforced for a chat: the 201st message of a person is
     # answered, and AgentMessengerBudget counts the day per person.
@@ -204,7 +250,7 @@ use_cases:
       kind: event
       source: alert
     skill: lares-explain-window
-    tools: [lares, cluster]
+    tools: [lares, grafana, cloudflare]
     output: [stored, github_issue]
     budget:
       tool_calls: 60
@@ -213,8 +259,8 @@ use_cases:
     language: en
     memory: false
     dormant: >-
-      Waits for its own spec, the alert path and the cluster read tools; asked
-      in chat, the messenger answers it today.
+      Waits for its own spec and the alert path; asked in chat, the messenger
+      answers it today.
 
   - name: catalog-hygiene
     sentence: >-
@@ -279,7 +325,7 @@ use_cases:
       kind: event
       source: alert
     skill: lares-incident-fix
-    tools: [cluster, github]
+    tools: [grafana, cloudflare, github]
     output: [github_pr]
     budget:
       tool_calls: 60
@@ -287,7 +333,7 @@ use_cases:
       runs_per_day: 3
     language: en
     memory: false
-    dormant: Waits for its own spec, the alert path and the cluster read tools.
+    dormant: Waits for its own spec and the alert path.
 
   - name: claude-chat
     sentence: >-

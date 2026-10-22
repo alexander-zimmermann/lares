@@ -152,6 +152,77 @@ binds:
                             set:
                               X-Client-Id: '"github"'
                               X-Enduser-Id: apiKey.enduser_id
+          - name: grafana
+            matches:
+              - path:
+                  exact: /mcp/grafana
+            policies:
+              apiKey:
+                mode: strict
+                keys:
+                  - key: ${AZ1003_GRAFANA_GATEWAY_KEY}
+                    metadata:
+                      enduser_id: az1003
+              mcpAuthorization:
+                rules:
+                  - mcp.tool.name == "list_datasources"
+                  - mcp.tool.name == "query_prometheus"
+                  - mcp.tool.name == "list_prometheus_metric_names"
+                  - mcp.tool.name == "list_prometheus_label_values"
+                  - mcp.tool.name == "query_loki_logs"
+                  - mcp.tool.name == "query_loki_stats"
+                  - mcp.tool.name == "list_loki_label_values"
+                  - mcp.tool.name == "search_tempo_traces"
+                  - mcp.tool.name == "get_tempo_trace"
+                  - mcp.tool.name == "alerting_rules_read"
+                  - mcp.tool.name == "alerting_silences_read"
+                  - mcp.tool.name == "search_dashboards"
+                  - mcp.tool.name == "get_dashboard_panel_queries"
+              backendAuth:
+                key:
+                  value:
+                    file: /etc/agentgateway/credentials/agentgateway-keys/grafana-mcp
+            backends:
+              - mcp:
+                  statefulMode: stateless
+                  targets:
+                    - name: grafana
+                      mcp:
+                        host: http://grafana-mcp.grafana.svc.cluster.local:8000/mcp
+                      policies:
+                        transformations:
+                          request:
+                            set:
+                              X-Client-Id: '"grafana"'
+                              X-Enduser-Id: apiKey.enduser_id
+          - name: cloudflare
+            matches:
+              - path:
+                  exact: /mcp/cloudflare
+            policies:
+              apiKey:
+                mode: strict
+                keys:
+                  - key: ${AZ1003_CLOUDFLARE_GATEWAY_KEY}
+                    metadata:
+                      enduser_id: az1003
+              mcpAuthorization:
+                rules:
+                  - mcp.tool.name == "search"
+                  - mcp.tool.name == "execute"
+                  - mcp.tool.name == "docs"
+                  - mcp.tool.name == "whoami"
+              backendAuth:
+                key:
+                  value:
+                    file: /etc/agentgateway/credentials/agentgateway-keys/cloudflare-mcp-token
+            backends:
+              - mcp:
+                  statefulMode: stateless
+                  targets:
+                    - name: cloudflare
+                      mcp:
+                        host: https://mcp.cloudflare.com/mcp
           - name: claude-ai
             matches:
               - path:

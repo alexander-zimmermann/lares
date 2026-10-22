@@ -14,12 +14,13 @@ A person's own MCP client, a connector such as the claude.ai connector,
 comes in through the gateway too: on a public route of its own, where the
 gateway signs the person in through Authentik and serves the connector's
 tool list to the persons the declaration names. Whichever way a call comes
-in, the gateway names the caller to the server in two headers it sets
-itself, the route (`X-Client-Id`) and the person (`X-Enduser-Id`), over
-whatever the caller sent. The MCP bridge takes a call only with the one
-key the gateway calls it with and keeps no sign-in of its own; what
-depends on the caller, a person's own runs and verdicts, it reads from
-those headers.
+in, the gateway names the caller to a server in the cluster in two headers
+it sets itself, the route (`X-Client-Id`) and the person (`X-Enduser-Id`),
+over whatever the caller sent; a vendor's hosted server outside the
+cluster gets its credential and learns no one. The MCP bridge takes a
+call only with the one key the gateway calls it with and keeps no
+sign-in of its own; what depends on the caller, a person's own runs and
+verdicts, it reads from those headers.
 
 Four reasons carry this:
 

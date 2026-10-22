@@ -149,9 +149,12 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   does not run yet stays in the file as dormant, with its reason.
 - **Tool server** (avoid: MCP server, toolset) — what a use case's tool
   list names: an endpoint behind a route of its own on the gateway,
-  either the MCP bridge, under one route per server it serves, or
-  GitHub's own server, reading with the token of a GitHub App that may
-  only read. Each says where it may be
+  either the MCP bridge, under one route per server it serves, or a
+  vendor's own server that only reads: GitHub's, with the token of a
+  GitHub App that may only read; Grafana's, the cluster's metrics, logs,
+  traces and alerts as a Viewer service account; Cloudflare's hosted
+  one, the edge with an API token that holds read permissions only.
+  Each says where it may be
   granted: a read server to any run, a writing one only to the scheduled
   runs that name it, a request server (what a person asks for in
   conversation: a write request approved elsewhere, a run started now) only
@@ -162,8 +165,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   person's connector, and every tool server
   ([ADR 0006](docs/adr/0006-every-tool-server-is-an-http-endpoint-behind-one-gateway.md)).
   It signs in each caller, serves each route's tool list, names the
-  caller to the server (the route, and the person) and attaches the
-  credential the server expects. Hermes is the harness,
+  caller to a server in the cluster (the route, and the person) and
+  attaches the credential the server expects. Hermes is the harness,
   never "the gateway"; Hermes's own identifiers (`hermes gateway run`,
   `gateway.*`, `hermes_gateway_up`) keep their names. The Cilium egress
   gateway is always called by that full name.

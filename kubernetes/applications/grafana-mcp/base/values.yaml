@@ -1,0 +1,80 @@
+# Grafana's own tool server behind the gateway's grafana route, its only caller.
+# It reads as the Viewer service account lares-agent-reader and serves neither
+# its write tools nor the raw Grafana API.
+fullnameOverride: grafana-mcp
+
+image:
+  # Docker Hub without the prefix; the tag is the chart's appVersion
+  registry: ""
+  repository: grafana/mcp-grafana
+
+grafana:
+  url: http://grafana.grafana.svc.cluster.local
+
+disableWrite: true
+
+# The image's entrypoint serves SSE on 0.0.0.0:8000; the later flag wins.
+extraArgs:
+  - --transport=streamable-http
+  - --disable-api
+  - --usage-stats=disabled
+  - --loki-guardrail-mode=enforce
+  - --enabled-tools=search,datasource,prometheus,loki,tempo,alerting,dashboard
+  # The gateway sends the Service name as Host, without the port; any other Host gets 403
+  - --allowed-hosts=grafana-mcp.grafana.svc.cluster.local
+  # Probes on a side listener that skips the Host check
+  - --healthz-address=:8081
+
+env:
+  # Read on every call, so a renewed token needs no restart
+  GRAFANA_SERVICE_ACCOUNT_TOKEN_FILE: /etc/grafana-mcp/grafana-token/token
+  # OTLP over gRPC only; a call from the gateway continues the gateway's trace
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://alloy-alloy-receiver.alloy.svc.cluster.local:4317
+  OTEL_EXPORTER_OTLP_TRACES_INSECURE: "true"
+  OTEL_TRACES_SAMPLER: parentbased_traceidratio
+
+envValueFrom:
+  # Every call must bring it as a bearer token: the key the gateway calls with
+  MCP_GRAFANA_SERVER_TOKEN:
+    secretKeyRef:
+      name: grafana-mcp-gateway-key
+      key: key
+  # The platform's sampling ratio, rendered from use-cases.yaml
+  OTEL_TRACES_SAMPLER_ARG:
+    configMapKeyRef:
+      name: agent-tracing
+      key: TRACING_SAMPLING_RATIO
+
+# Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+podLabels:
+  role: agent
+
+# The caller key is an environment variable, read at start
+podAnnotations:
+  secret.reloader.stakater.com/reload: grafana-mcp-gateway-key
+
+volumes:
+  - name: grafana-token
+    secret:
+      secretName: lares-agent-reader-token
+      items:
+        - key: token
+          path: token
+
+volumeMounts:
+  - name: grafana-token
+    mountPath: /etc/grafana-mcp/grafana-token
+    readOnly: true
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8081
+  initialDelaySeconds: 5
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: 8081
+  initialDelaySeconds: 2

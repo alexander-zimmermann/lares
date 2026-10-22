@@ -107,6 +107,7 @@ collectors:
       fullname: alloy-alloy-receiver
     alloy:
       # Syslog: the port names the format, 514 = RFC3164, 601 = RFC5424. OTLP HTTP: 4318 (rustfs metrics, redpanda-connect traces).
+      # OTLP gRPC: 4317 (grafana-mcp traces, it exports nothing else).
       extraPorts:
         - name: syslog-tcp-5424
           port: 601
@@ -127,6 +128,10 @@ collectors:
         - name: otlp-http
           port: 4318
           targetPort: 4318
+          protocol: TCP
+        - name: otlp-grpc
+          port: 4317
+          targetPort: 4317
           protocol: TCP
     extraConfig: |
       discovery.relabel "syslog" {
@@ -227,14 +232,18 @@ collectors:
           forward_to = [loki.write.loki.receiver]
       }
 
-      // OTLP/HTTP receiver for external push sources (rustfs and PVE/PBS
-      // metrics, redpanda-connect traces). The chart renders
+      // OTLP receiver for external push sources (rustfs and PVE/PBS
+      // metrics, redpanda-connect traces over HTTP, grafana-mcp traces over
+      // gRPC). The chart renders
       // otelcol.exporter.prometheus.prometheus which translates OTel attributes
       // (service.name -> job, host.name -> instance) before forwarding to
       // remote-write.
       otelcol.receiver.otlp "ingress" {
           http {
               endpoint = "0.0.0.0:4318"
+          }
+          grpc {
+              endpoint = "0.0.0.0:4317"
           }
           output {
               metrics = [otelcol.processor.batch.ingress.input]

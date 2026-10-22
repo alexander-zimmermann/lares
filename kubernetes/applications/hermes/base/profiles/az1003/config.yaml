@@ -145,10 +145,14 @@ platform_toolsets:
     - lares
     - lares-runs
     - github
+    - grafana
+    - cloudflare
   api_server:
     - lares
     - lares-runs
     - github
+    - grafana
+    - cloudflare
 hooks:
   outbound:
     - name: lares-agent-trigger
@@ -205,5 +209,40 @@ mcp_servers:
         - search_*
         - issue_read
         - pull_request_read
+      resources: false
+      prompts: false
+  grafana:
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/grafana
+    headers:
+      Authorization: Bearer ${env:GRAFANA_GATEWAY_KEY}
+    timeout: 60
+    tools:
+      include:
+        - list_datasources
+        - query_prometheus
+        - list_prometheus_metric_names
+        - list_prometheus_label_values
+        - query_loki_logs
+        - query_loki_stats
+        - list_loki_label_values
+        - search_tempo_traces
+        - get_tempo_trace
+        - alerting_rules_read
+        - alerting_silences_read
+        - search_dashboards
+        - get_dashboard_panel_queries
+      resources: false
+      prompts: false
+  cloudflare:
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/cloudflare
+    headers:
+      Authorization: Bearer ${env:CLOUDFLARE_GATEWAY_KEY}
+    timeout: 60
+    tools:
+      include:
+        - search
+        - execute
+        - docs
+        - whoami
       resources: false
       prompts: false

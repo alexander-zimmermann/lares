@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: grafana
+
+# No namespace.yaml here: `grafana` is created and owned by the grafana
+# application, and two ArgoCD apps rendering one Namespace would fight over
+# its labels.
+resources:
+  # The Viewer service account it reads Grafana as, and its token
+  - service-account.yaml
+  # The key the gateway calls with
+  - sealed-secret.yaml
+  # The platform's sampling ratio, rendered from the trigger's use-case file.
+  - ../../lares-agent-trigger/base/tracing
+
+helmCharts:
+  - name: grafana-mcp
+    repo: oci://ghcr.io/grafana-community/helm-charts
+    releaseName: grafana-mcp
+    version: 0.28.1
+    valuesFile: values.yaml
+    namespace: grafana
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: grafana-mcp
+
+# Wave 12 = beside the gateway, its only caller; after grafana (9), whose
+# instance the service account is created in.
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "12"
