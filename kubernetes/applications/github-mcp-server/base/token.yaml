@@ -1,0 +1,41 @@
+# The read-only App's installation token, minted from the App's key. A token
+# lives 60 minutes; the ExternalSecret renews it every 30, and the gateway,
+# which attaches it on every call, reads the swapped file without a restart.
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: GithubAccessToken
+
+metadata:
+  name: github-mcp-server-token
+
+spec:
+  # lares-agent-reader, installed on the repositories the agents read
+  appID: "5176504"
+  installID: "167554581"
+  # What the read tools need, narrower than the App may grant
+  permissions:
+    metadata: read
+    contents: read
+    issues: read
+    pull_requests: read
+  auth:
+    privateKey:
+      secretRef:
+        name: lares-agent-github-reader
+        key: private-key
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+
+metadata:
+  name: github-mcp-server-token
+
+spec:
+  refreshInterval: 30m
+  target:
+    name: github-mcp-server-token
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: GithubAccessToken
+          name: github-mcp-server-token

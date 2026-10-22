@@ -406,6 +406,27 @@ spec:
             summary: "Reloader metrics absent"
             description: "reloader_reload_executed_total has not been scraped for more than 15m, so ReloaderReloadFailed is blind and a failed reload goes unnoticed."
 
+    - name: external-secrets-alerts
+      rules:
+        - alert: ExternalSecretNotReady
+          # A failed refresh keeps the Secret's last value, so nothing breaks until a minted token runs out.
+          expr: max by (namespace, name) (externalsecret_status_condition{condition="Ready", status="False"}) == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} not refreshed"
+            description: "The External Secrets Operator has failed to refresh {{ $labels.namespace }}/{{ $labels.name }} for 15m. Its Secret keeps the last value until that runs out: a GitHub installation token lives 60 minutes, then every GitHub read fails, and the gateway, which mounts the token, cannot start without it. The ExternalSecret's status names the generator's error."
+
+        - alert: ExternalSecretMetricsAbsent
+          expr: absent(externalsecret_status_condition)
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "External Secrets metrics absent"
+            description: "externalsecret_status_condition has not been scraped for more than 15m, so ExternalSecretNotReady is blind and a token that stops renewing goes unnoticed until it runs out."
+
     - name: authentik-alerts
       rules:
         - alert: AuthentikBlueprintError

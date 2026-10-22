@@ -1,0 +1,47 @@
+applicationName: github-mcp-server
+
+deployment:
+  image:
+    repository: ghcr.io/github/github-mcp-server
+    tag: v2.0.3
+
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium);
+  # network-policy.yaml admits the gateway only
+  podLabels:
+    role: agent
+
+  # Reads only, the toolsets the agents use; every call brings the token the gateway attaches
+  args: ["http", "--read-only", "--toolsets=repos,issues,pull_requests"]
+
+  ports:
+    - containerPort: 8082
+      name: mcp
+      protocol: TCP
+
+  # No health endpoint: the listening port is the signal
+  livenessProbe:
+    enabled: true
+    tcpSocket:
+      port: mcp
+    initialDelaySeconds: 5
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    tcpSocket:
+      port: mcp
+    initialDelaySeconds: 2
+
+  containerSecurityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+
+service:
+  ports:
+    - port: 8082
+      name: mcp
+      protocol: TCP
+      targetPort: mcp
