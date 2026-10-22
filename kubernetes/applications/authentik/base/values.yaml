@@ -172,6 +172,10 @@ server:
         release: prometheus
 
 worker:
+  # One worker at a time, so the start-up blueprint discovery runs in the pod that mounts the new blueprints
+  deploymentStrategy:
+    type: Recreate
+
   # Task counters (authentik_tasks_errors_total) exist only in the worker process
   metrics:
     enabled: true
