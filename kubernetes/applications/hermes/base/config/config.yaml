@@ -71,6 +71,8 @@ discord:
   # One private server, one user: answer everywhere, no threads per message
   require_mention: false
   auto_thread: false
+  # A DM from outside allow_from is ignored; no pairing code is ever handed out
+  dm_policy: allowlist
   # Rendered from persons.yaml: who may write to the bot, who runs every command,
   # and what everyone else may run.
   allow_from:
