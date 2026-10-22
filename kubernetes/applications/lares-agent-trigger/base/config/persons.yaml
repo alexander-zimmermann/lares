@@ -15,7 +15,7 @@
 # A source's `bound` caps what it may spend: `subscription` costs nothing per
 # call, `capped` is metered against a hard limit and names its list price in
 # USD per million tokens. A call no step here covers keeps a NULL cost and
-# raises AgentCallUnpriced.
+# is counted in agent_trigger_unpriced_calls_total.
 
 default_profile:
   model: owner-subscription

@@ -923,17 +923,6 @@ spec:
             summary: "Agent answers of {{ or $labels.enduser_id \"the default profile\" }} came from the fallback"
             description: "Answers of {{ or $labels.enduser_id \"the default profile\" }} in the last 24h came from the fallback of its model source: {{ $value | printf \"%.2f\" }} USD, and {{ with printf `sum((agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"} unless agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"} offset 7d) or increase(agent_trigger_cost_usd_total{step=\"fallback\",enduser_id=\"%[1]s\"}[7d]))` $labels.enduser_id | query }}{{ . | first | value | printf \"%.2f\" }}{{ end }} USD in the last 7 days, against the hard monthly limit of its OpenAI project. The source's window is spent, its model was refused, or its login failed, which AgentModelSourceFailing names. Once the project's limit is reached, the fallback fails too and AgentChatFailed fires."
 
-        - alert: AgentCallUnpriced
-          # The counter appears with its first unpriced call, which increase() misses
-          expr: |
-            sum by (use_case, provider, model, reason) (increase(agent_trigger_unpriced_calls_total[1h])) > 0
-            or sum by (use_case, provider, model, reason) (agent_trigger_unpriced_calls_total unless agent_trigger_unpriced_calls_total offset 1h)
-          labels:
-            severity: warning
-          annotations:
-            summary: "Agent model call without a cost ({{ $labels.reason }}: {{ $labels.provider }}/{{ $labels.model }})"
-            description: "{{ $value | printf \"%.0f\" }} call(s) of {{ $labels.use_case }} on {{ $labels.provider }}/{{ $labels.model }} in the last hour have no cost, and their rows in agent_runs carry none. undeclared: no step of the profile's model source in persons.yaml names that provider and model; declare it with its list price, or find out why Hermes ran on it. no_usage: a metered call reported no tokens. no_calls: the run's calls never came through the hook."
-
         - alert: AgentCallsOrphaned
           # The counter appears with its first orphaned call, which increase() misses
           expr: |
@@ -943,7 +932,7 @@ spec:
             severity: warning
           annotations:
             summary: "Agent model calls of {{ or $labels.enduser_id \"the default profile\" }} in no row"
-            description: "{{ $value | printf \"%.0f\" }} model call(s) of {{ or $labels.enduser_id \"the default profile\" }} in the last hour were spent and reached no row in agent_runs. A turn never reported its end within an hour: Hermes could not deliver its on_session_end (AgentHookLost fired then), or the turn hung; a turn whose last call failed is a failed row and AgentChatFailed, never this. Or a background review came in a session no row holds. The trigger's log names each turn (`never ended`, `which no row holds`). If every background review lands here after a Hermes bump, its calls no longer run under a task of their own and the trigger takes them for turns."
+            description: "{{ $value | printf \"%.0f\" }} model call(s) of {{ or $labels.enduser_id \"the default profile\" }} in the last hour were spent and reached no row in agent_runs: a turn never reported its end within an hour. Hermes could not deliver its on_session_end (AgentHookLost fired then), or the turn hung; a turn whose last call failed is a failed row and AgentChatFailed, never this. The trigger's log names each turn (`never ended`). If every background review lands here after a Hermes bump, its calls no longer run under a task of their own and the trigger takes them for turns."
 
         - alert: AgentChatFailed
           # The counter appears with its first failed turn, which increase() misses
@@ -955,36 +944,3 @@ spec:
           annotations:
             summary: "Agent chat of {{ or $labels.enduser_id \"the default profile\" }} failed ({{ $labels.error_type }})"
             description: "{{ $value | printf \"%.0f\" }} message(s) of {{ or $labels.enduser_id \"the default profile\" }} in the last hour got an error instead of an answer: the turn's last model call failed for good with Hermes' class {{ $labels.error_type }}, and no retry or fallback answered. Its row in agent_runs is failed and names the model source and the status it answered. auth, auth_permanent or model_entitlement: a login or key of that source is broken, renewed as the comment at its source in persons.yaml says; billing or rate_limit: its budget or window is spent; model_not_found: the source does not serve the declared model."
-
-        - alert: AgentTurnUndeclaredProfile
-          # The counter appears with its first odd turn, which increase() misses
-          expr: |
-            sum by (enduser_id) (increase(agent_trigger_odd_turns_total{kind="undeclared_profile"}[1h])) > 0
-            or sum by (enduser_id) (agent_trigger_odd_turns_total{kind="undeclared_profile"} unless agent_trigger_odd_turns_total{kind="undeclared_profile"} offset 1h)
-          labels:
-            severity: warning
-          annotations:
-            summary: "Agent turn from profile {{ $labels.enduser_id }}, which no person runs on"
-            description: "{{ $value | printf \"%.0f\" }} turn(s) in the last hour came from the Hermes profile {{ $labels.enduser_id }}, which persons.yaml does not declare or declares dormant. Its chat rows in agent_runs name the profile and keep the numbers only; a cron turn has none. A dormant person's profile still answers while its directory is on the volume. Declare or enable the person in persons.yaml, or remove `/opt/data/profiles/{{ $labels.enduser_id }}` in the hermes pod once its sessions show who wrote to it."
-
-        - alert: AgentTurnDiscordOnDefault
-          # The counter appears with its first odd turn, which increase() misses
-          expr: |
-            sum(increase(agent_trigger_odd_turns_total{kind="discord_on_default"}[1h])) > 0
-            or sum(agent_trigger_odd_turns_total{kind="discord_on_default"} unless agent_trigger_odd_turns_total{kind="discord_on_default"} offset 1h) > 0
-          labels:
-            severity: warning
-          annotations:
-            summary: "Agent Discord turn on the machines' profile"
-            description: "{{ $value | printf \"%.0f\" }} Discord turn(s) in the last hour ran on the default profile, past the routes that send every person's messages to their own profile. Their rows in agent_runs name nobody and keep the numbers only. The bot answered someone in allow_from whose route did not match: check that every DISCORD_USER_<HANDLE> in the default profile's .env is sealed and is that person's Discord id."
-
-        - alert: AgentTurnCronOnPerson
-          # The counter appears with its first odd turn, which increase() misses
-          expr: |
-            sum by (enduser_id) (increase(agent_trigger_odd_turns_total{kind="cron_on_person"}[1h])) > 0
-            or sum by (enduser_id) (agent_trigger_odd_turns_total{kind="cron_on_person"} unless agent_trigger_odd_turns_total{kind="cron_on_person"} offset 1h)
-          labels:
-            severity: warning
-          annotations:
-            summary: "Agent cron turn on the profile of {{ $labels.enduser_id }}"
-            description: "{{ $value | printf \"%.0f\" }} cron turn(s) in the last hour ran on the profile of {{ $labels.enduser_id }}. Only the default profile runs the declared jobs, so these have no row in agent_runs and no use case. A job was created in that profile: `hermes -p {{ $labels.enduser_id }} cron list` in the hermes pod names it, and `cron remove <id>` deletes it."
