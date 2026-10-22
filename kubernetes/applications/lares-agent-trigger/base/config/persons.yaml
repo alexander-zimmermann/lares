@@ -34,8 +34,11 @@ model_sources:
   # with `-p <handle>` before `auth` for a person's profile; as root, the login
   # would be root's file until Hermes restarts. Only `auth add` writes the
   # profile's own login; `hermes -p <handle> model` or a copied auth.json puts
-  # the person's token into the machines' login or is healed away. Its refresh
-  # token is single-use, so a volume restored from a backup may need a new login.
+  # the person's token into the machines' login or is healed away. Then
+  # `task agents:check-codex-login [<handle>]` must say `ok`; it fails when the
+  # profile still runs on the machines' login or its account breaks the
+  # source's `account` rule. A login's refresh token is single-use, so a volume
+  # restored from a backup may need a new login.
   - name: owner-subscription
     provider: openai-codex
     model: gpt-6-sol
