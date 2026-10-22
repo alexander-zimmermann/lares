@@ -92,3 +92,15 @@ patches:
             memory: 8Mi
           limits:
             memory: 32Mi
+      # Each person's agent-log, in the chart's order: by name, after the default's
+      - op: test
+        path: /spec/template/spec/containers/2/name
+        value: agent-log-az1003
+      - op: add
+        path: /spec/template/spec/containers/2/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi
