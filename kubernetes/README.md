@@ -33,6 +33,7 @@ kubernetes/
 │   ├── csi-block-storage-controller/
 │   ├── csi-nfs-controller/
 │   ├── external-dns/           # Syncs ingress hostnames → Cloudflare
+│   ├── external-secrets/       # Mints short-lived Secrets from generators (GitHub App tokens)
 │   ├── gitops-controller/      # Argo CD overlays
 │   ├── ingress-controller/     # Traefik + middleware chains (pre/post-auth)
 │   ├── metrics-server/
@@ -135,6 +136,7 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 |                                                                                                        | external-services                                                | Ingress routes to out-of-cluster endpoints (Proxmox, PBS, FRITZ!Box, KNX-IP, …) |
 |                                                                                                        | [Kyverno](https://kyverno.io/)                                   | Policy engine (secret replication, admission)                                   |
 |                                                                                                        | [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) | Git-safe, cluster-decryptable secrets                                           |
+|                                                                                                        | [External Secrets](https://external-secrets.io/)                 | Mints short-lived Secrets from generators (GitHub App installation tokens)      |
 |                                                                                                        | [Reloader](https://github.com/stakater/Reloader)                 | Rolls workloads when a Secret they read changes                                 |
 
 ### GitOps & Automation
