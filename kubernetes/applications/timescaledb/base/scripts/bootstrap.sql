@@ -177,7 +177,7 @@ FROM solaredge_battery GROUP BY bucket, inverter_id WITH NO DATA;
 -- =========================================================
 -- EMS-ESP (6 topics: boiler_data, boiler_data_dhw, thermostat_data,
 -- thermostat_data_hc1, thermostat_data_dhw, mixer_data_hc1)
--- Typed columns = 17 fields used in hvac-heating-unit dashboard.
+-- Typed columns = the fields dashboards and queries read; the full payload lives in the parquet archive.
 -- Per row only one topic is populated → most columns are NULL (cheap in column store).
 -- =========================================================
 CREATE TABLE ems_esp (
@@ -235,7 +235,26 @@ CREATE TABLE ems_esp (
     tapwateractive    SMALLINT,
     storagetemp1      DOUBLE PRECISION,
     -- Service
-    servicecodenumber DOUBLE PRECISION
+    servicecodenumber DOUBLE PRECISION,
+    -- Heating circuit settings and active mode (thermostat_data_hc1), damped outdoor temperature (thermostat_data)
+    mode              TEXT,
+    modetype          TEXT,
+    program           TEXT,
+    reducemode        TEXT,
+    controlmode       TEXT,
+    heatingtype       TEXT,
+    designtemp        DOUBLE PRECISION,
+    baseflowtemp      DOUBLE PRECISION,
+    maxflowtemp       DOUBLE PRECISION,
+    offsettemp        DOUBLE PRECISION,
+    summertemp        DOUBLE PRECISION,
+    dampedoutdoortemp DOUBLE PRECISION,
+    -- Boiler settings and pump modulation (boiler_data)
+    boilhyston        DOUBLE PRECISION,
+    boilhystoff       DOUBLE PRECISION,
+    burnminperiod     DOUBLE PRECISION,
+    heatingtemp       DOUBLE PRECISION,
+    heatingpumpmod    DOUBLE PRECISION
 );
 SELECT create_hypertable('ems_esp', 'time', chunk_time_interval => INTERVAL '1 day');
 CREATE INDEX ON ems_esp (topic, time DESC);

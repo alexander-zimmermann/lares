@@ -81,6 +81,23 @@ pipeline:
           "tapwateractive":    $evt.tapwateractive.or(null),
           "storagetemp1":      $evt.storagetemp1.or(null),
           "servicecodenumber": $evt.servicecodenumber.or(null),
+          "mode":              $evt.mode.or(null),
+          "modetype":          $evt.modetype.or(null),
+          "program":           $evt.program.or(null),
+          "reducemode":        $evt.reducemode.or(null),
+          "controlmode":       $evt.controlmode.or(null),
+          "heatingtype":       $evt.heatingtype.or(null),
+          "designtemp":        $evt.designtemp.or(null),
+          "baseflowtemp":      $evt.baseflowtemp.or(null),
+          "maxflowtemp":       $evt.maxflowtemp.or(null),
+          "offsettemp":        $evt.offsettemp.or(null),
+          "summertemp":        $evt.summertemp.or(null),
+          "dampedoutdoortemp": $evt.dampedoutdoortemp.or(null),
+          "boilhyston":        $evt.boilhyston.or(null),
+          "boilhystoff":       $evt.boilhystoff.or(null),
+          "burnminperiod":     $evt.burnminperiod.or(null),
+          "heatingtemp":       $evt.heatingtemp.or(null),
+          "heatingpumpmod":    $evt.heatingpumpmod.or(null),
           "raw":               $evt,
         }
 
@@ -107,7 +124,10 @@ output:
               burngas, burngas2, ignwork, fanwork,
               oilpreheat, threewayvalve, circ,
               disinfecting, activated, tapwateractive, storagetemp1,
-              servicecodenumber
+              servicecodenumber,
+              mode, modetype, program, reducemode, controlmode, heatingtype,
+              designtemp, baseflowtemp, maxflowtemp, offsettemp, summertemp, dampedoutdoortemp,
+              boilhyston, boilhystoff, burnminperiod, heatingtemp, heatingpumpmod
             )
             VALUES (
               $1, $2,
@@ -121,7 +141,10 @@ output:
               ($36::numeric)::smallint, ($37::numeric)::smallint, $38, $39,
               ($40::numeric)::smallint, ($41::numeric)::smallint, ($42::numeric)::smallint,
               ($43::numeric)::smallint, ($44::numeric)::smallint, ($45::numeric)::smallint, $46,
-              $47
+              $47,
+              $48, $49, $50, $51, $52, $53,
+              $54, $55, $56, $57, $58, $59,
+              $60, $61, $62, $63, $64
             )
             ON CONFLICT (time, topic) DO NOTHING
           args_mapping: |
@@ -173,6 +196,23 @@ output:
               this.tapwateractive,
               this.storagetemp1,
               this.servicecodenumber,
+              this.mode,
+              this.modetype,
+              this.program,
+              this.reducemode,
+              this.controlmode,
+              this.heatingtype,
+              this.designtemp,
+              this.baseflowtemp,
+              this.maxflowtemp,
+              this.offsettemp,
+              this.summertemp,
+              this.dampedoutdoortemp,
+              this.boilhyston,
+              this.boilhystoff,
+              this.burnminperiod,
+              this.heatingtemp,
+              this.heatingpumpmod,
             ]
       - aws_s3:
           bucket: nats-archive
