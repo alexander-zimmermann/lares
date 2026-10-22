@@ -1,0 +1,8 @@
+# Only its generators are used, each from an ExternalSecret beside the Secret's
+# consumer; no SecretStore reads an outside vault.
+
+# Prometheus Monitoring (opt-in label)
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus

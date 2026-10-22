@@ -1,0 +1,57 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+# A few ExternalSecrets, each refreshed every 30 minutes; the webhook checks them as
+# they are applied, the cert controller renews the webhook's certificate.
+patches:
+  - target:
+      kind: Deployment
+      name: external-secrets
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: external-secrets
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 192Mi
+  - target:
+      kind: Deployment
+      name: external-secrets-webhook
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: webhook
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 96Mi
+  - target:
+      kind: Deployment
+      name: external-secrets-cert-controller
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: cert-controller
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 48Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
