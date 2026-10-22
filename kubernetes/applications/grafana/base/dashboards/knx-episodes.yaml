@@ -2148,7 +2148,7 @@ spec:
               "editorMode": "code",
               "format": "time_series",
               "rawQuery": true,
-              "rawSql": "SELECT date_trunc('day', created_at)  AS time,\n       sum(cost)                       AS \"Kosten\",\n       sum(tokens_in + tokens_out)     AS \"Tokens\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1 ORDER BY 1;",
+              "rawSql": "SELECT date_trunc('day', created_at)             AS time,\n       sum(cost)                                  AS \"Kosten Läufe\",\n       sum(review_cost)                           AS \"Kosten Reviews\",\n       sum(tokens_in + tokens_out)                AS \"Tokens Läufe\",\n       sum(review_tokens_in + review_tokens_out)  AS \"Tokens Reviews\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1 ORDER BY 1;",
               "refId": "A"
             }
           ],
@@ -2207,12 +2207,19 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Kosten"
+                  "options": "Kosten Läufe"
                 },
                 "properties": [
                   {
                     "id": "unit",
                     "value": "currencyUSD"
+                  },
+                  {
+                    "id": "custom.stacking",
+                    "value": {
+                      "group": "Ausgaben",
+                      "mode": "normal"
+                    }
                   },
                   {
                     "id": "color",
@@ -2226,7 +2233,33 @@ spec:
               {
                 "matcher": {
                   "id": "byName",
-                  "options": "Tokens"
+                  "options": "Kosten Reviews"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "currencyUSD"
+                  },
+                  {
+                    "id": "custom.stacking",
+                    "value": {
+                      "group": "Ausgaben",
+                      "mode": "normal"
+                    }
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "yellow"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "^Tokens"
                 },
                 "properties": [
                   {
@@ -2244,12 +2277,35 @@ spec:
                   {
                     "id": "custom.pointSize",
                     "value": 7
-                  },
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Tokens Läufe"
+                },
+                "properties": [
                   {
                     "id": "color",
                     "value": {
                       "mode": "fixed",
                       "fixedColor": "blue"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Tokens Reviews"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "mode": "fixed",
+                      "fixedColor": "light-blue"
                     }
                   }
                 ]
@@ -2269,7 +2325,7 @@ spec:
               "sort": "desc"
             }
           },
-          "description": "Was die Läufe je Tag gekostet haben, in US-Dollar: Vorfälle, Zeitpläne und Chat. Jeder Modellaufruf kostet den Preis, den persons.yaml für die Modellquelle nennt, die ihn bedient hat. Über das ChatGPT-Abo kostet er 0, über den Ausweich-Zugang den Listenpreis. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced); die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
+          "description": "Was die Läufe je Tag gekostet haben, in US-Dollar: Vorfälle, Zeitpläne und Chat. Läufe und Reviews stapeln sich zu den Ausgaben. Ein Review ist die Hintergrundprüfung von Notizen und Skills, die Hermes nach einer Chat-Antwort startet; er steht auf der Zeile dieser Antwort. Jeder Modellaufruf kostet den Preis, den persons.yaml für die Modellquelle nennt, die ihn bedient hat. Über das ChatGPT-Abo kostet er 0, über den Ausweich-Zugang den Listenpreis. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced); die Tokens (rein und raus, rechte Achse) zeigen den Verbrauch auch dort."
         },
         {
           "id": 26,
@@ -2281,7 +2337,7 @@ spec:
           },
           "gridPos": {
             "h": 8,
-            "w": 24,
+            "w": 12,
             "x": 0,
             "y": 76
           },
@@ -2381,6 +2437,118 @@ spec:
             }
           },
           "description": "Jeder Lauf am Tag seines Beginns, nach der Person, der er geantwortet hat, und wo sie geschrieben hat: discord oder web, der Web-Chat. Maschinen sind die Läufe der Vorfälle und Zeitpläne, auch die per start_run erbetenen. „niemand · discord“ und ein Name, der in persons.yaml fehlt oder ruht, sind Chatläufe, die so nicht kommen sollten; ihre Zeilen tragen nur Zahlen."
+        },
+        {
+          "id": 27,
+          "type": "table",
+          "title": "Ausgaben je Person und Tag",
+          "datasource": {
+            "type": "postgres",
+            "uid": "timescaledb"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 76
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "postgres",
+                "uid": "timescaledb"
+              },
+              "editorMode": "code",
+              "format": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT date_trunc('day', created_at)               AS \"Tag\",\n       CASE WHEN enduser_id IS NULL AND surface IS NULL THEN 'Maschinen'\n            ELSE COALESCE(enduser_id, 'niemand') END    AS \"Person\",\n       sum(tokens_in + tokens_out)                AS \"Tokens Läufe\",\n       sum(review_tokens_in + review_tokens_out)  AS \"Tokens Reviews\",\n       sum(cost)                                  AS \"Kosten Läufe\",\n       sum(review_cost)                           AS \"Kosten Reviews\",\n       -- The spend: the runs and the reviews their answers set off.\n       sum(cost) + COALESCE(sum(review_cost), 0)  AS \"Ausgaben\"\nFROM agent_runs\nWHERE $__timeFilter(created_at)\nGROUP BY 1, 2 ORDER BY 1 DESC, 2;",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "filterable": true,
+                "inspect": false
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Tag"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "time:YYYY-MM-DD"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 110
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "^Tokens"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "short"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "^(Kosten|Ausgaben)"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "currencyUSD"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 4
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true
+          },
+          "description": "Tokens und Kosten je Person und Tag, Läufe und Reviews getrennt. Ein Review ist die Hintergrundprüfung von Notizen und Skills, die Hermes nach einer Chat-Antwort startet; er wird auf der Zeile dieser Antwort gebucht und zählt zu den Ausgaben der Person: Kosten Läufe plus Kosten Reviews. Maschinen sind die Läufe der Vorfälle und Zeitpläne. Ein Lauf mit einem Aufruf ohne Preis trägt keinen Betrag (Alarm AgentCallUnpriced)."
         },
         {
           "id": 25,

@@ -60,6 +60,8 @@ memory:
   user_profile_enabled: false
   memory_char_limit: 2200
   write_approval: false
+  # Profile notes: a background review every 5th message of a session.
+  nudge_interval: 5
 
 discord:
   # One private server, one user: answer everywhere, no threads per message
