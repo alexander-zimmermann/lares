@@ -4,6 +4,32 @@ kind: Kustomization
 resources:
   - ../../base
 
+replacements:
+  # The connectors' public hostname in the Certificate and the IngressRoute Host(...) match.
+  - sourceValue: mcp.zimmermann.phd
+    targets:
+      - select:
+          kind: Certificate
+          name: agentgateway-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: agentgateway
+        fieldPaths:
+          - spec.routes.0.match
+        options:
+          delimiter: "`"
+          index: 1
+
+  # Rewrite external-dns target annotation to the dev UDM Pro
+  - sourceValue: udm-pro.zimmermann.phd
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
 patches:
   # One Rust process proxying a few calls a minute, no session state.
   - target:
@@ -13,6 +39,12 @@ patches:
       - op: test
         path: /spec/template/spec/containers/0/name
         value: agentgateway
+      # The cluster's Authentik, which the connectors' issuer names
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: AUTHENTIK_URL
+          value: https://auth.zimmermann.phd
       - op: add
         path: /spec/template/spec/containers/0/resources
         value:

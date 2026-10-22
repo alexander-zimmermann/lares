@@ -1,7 +1,8 @@
 # The model sources of the agent platform, the one the default profile runs
 # on, and the persons. The default profile belongs to the machines: every event
 # and cron run. Each enabled person chats on a profile of their own, named by
-# the handle, which is also their bridge client and their Authentik username.
+# the handle, which is also their Authentik username and whom the gateway names
+# to the tool servers.
 #
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # beside use-cases.yaml and prices every model call by the source step that
@@ -54,6 +55,7 @@ persons:
   - name: az1003
     discord: admin
     tools: [lares, lares-runs, github]
+    connectors: [claude-ai]
     model: owner-subscription
     keep_answers: true
     enabled: true

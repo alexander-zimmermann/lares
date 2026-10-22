@@ -1,0 +1,12 @@
+# Puts back X-Forwarded-Proto, which chain-standard strips; the gateway's OAuth metadata needs https
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: forwarded-https
+  namespace: agents
+
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-Proto: https

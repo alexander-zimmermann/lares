@@ -149,22 +149,28 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   does not run yet stays in the file as dormant, with its reason.
 - **Tool server** (avoid: MCP server, toolset) — what a use case's tool
   list names: an endpoint behind a route of its own on the gateway,
-  either the MCP bridge under one machine client, with the allowlist the
-  bridge enforces for that client, or GitHub's own server, reading with
-  the token of a GitHub App that may only read. Each says where it may be
+  either the MCP bridge, under one route per server it serves, or
+  GitHub's own server, reading with the token of a GitHub App that may
+  only read. Each says where it may be
   granted: a read server to any run, a writing one only to the scheduled
   runs that name it, a request server (what a person asks for in
   conversation: a write request approved elsewhere, a run started now) only
   to the chat, a memory server only to the use cases that keep a memory —
   and, where the harness hands one list to all event runs or all cron jobs,
   only while every use case on that list keeps one.
-- **Gateway** — the one door between the harness and every tool server
+- **Gateway** — the one door between every caller, the harness and a
+  person's connector, and every tool server
   ([ADR 0006](docs/adr/0006-every-tool-server-is-an-http-endpoint-behind-one-gateway.md)).
-  It signs in each caller, serves each tool server's tool list and
-  attaches the credential the server expects. Hermes is the harness,
+  It signs in each caller, serves each route's tool list, names the
+  caller to the server (the route, and the person) and attaches the
+  credential the server expects. Hermes is the harness,
   never "the gateway"; Hermes's own identifiers (`hermes gateway run`,
   `gateway.*`, `hermes_gateway_up`) keep their names. The Cilium egress
   gateway is always called by that full name.
+- **Connector** (avoid: integration) — a person's own MCP client,
+  such as the claude.ai connector, signed in through Authentik on a public
+  route of the gateway. Declared in the use-case file with its path and
+  tool list; a person holds it by name.
 - **Trigger** — what turns an event, a schedule or a message into a run,
   and the service that does it (`lares-agent-trigger`). Three kinds, one
   per use case: an episode event off the bus, a cron expression the

@@ -70,8 +70,6 @@ spec:
                   value: nats://nats.nats.svc.cluster.local:4222
                 - name: MCP_NATS_NKEY_SEED_FILE
                   value: /etc/lares-diagnostics-engine/nats/nkey-seed
-                - name: MCP_AUTH_ENABLED
-                  value: "false"
                 # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
                 - name: MCP_TRACING_ENDPOINT
                   value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318

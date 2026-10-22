@@ -5,14 +5,8 @@ namespace: lares-mcp-bridge
 resources:
   - ./namespace.yaml
   - ./sealed-secret.yaml
-  - ./certificate.yaml
-  - ./ingress-route.yaml
   # The platform's sampling ratio, rendered from the trigger's use-case file.
   - ../../lares-agent-trigger/base/tracing
-
-# The clients' clients.json, a template of the sealed keys (task agents:create-harness-config)
-patches:
-  - path: ./clients-template.yaml
 
 helmCharts:
   - name: application
@@ -23,12 +17,6 @@ helmCharts:
     namespace: lares-mcp-bridge
     apiVersions:
       - monitoring.coreos.com/v1
-
-# Hash on: the allowlists are an environment variable, so the pod rolls when they change.
-configMapGenerator:
-  - name: lares-mcp-bridge-client-tools
-    envs:
-      - config/client-tools.env
 
 labels:
   - includeSelectors: false

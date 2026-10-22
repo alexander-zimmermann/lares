@@ -2,8 +2,8 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 
 metadata:
-  name: lares-mcp-bridge
-  namespace: lares-mcp-bridge
+  name: agentgateway
+  namespace: agents
   annotations:
     # ExternalDNS configuration for Cloudflare
     external-dns.alpha.kubernetes.io/target: PLACEHOLDER
@@ -13,17 +13,17 @@ spec:
   entryPoints:
     - websecure
   routes:
+    # The connectors only: claude-ai's path in use-cases.yaml and the OAuth metadata beside it
     - kind: Rule
-      match: Host(`PLACEHOLDER`)
+      match: Host(`PLACEHOLDER`) && (Path(`/mcp`) || PathPrefix(`/.well-known/oauth-protected-resource/mcp`) || PathPrefix(`/.well-known/oauth-authorization-server/mcp`))
       priority: 10
-      # No forward-auth — claude.ai cannot do interactive login; Bearer-token
-      # validation lives in the pod
       middlewares:
         - name: chain-standard
           namespace: ingress-controller
+        - name: forwarded-https
       services:
         - kind: Service
-          name: lares-mcp-bridge
+          name: agentgateway
           port: 8080
   tls:
-    secretName: lares-mcp-bridge-tls-cert
+    secretName: agentgateway-tls-cert

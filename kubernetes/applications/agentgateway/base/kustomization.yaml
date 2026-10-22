@@ -8,6 +8,9 @@ namespace: agents
 # fight over its labels.
 resources:
   - sealed-secret.yaml
+  - certificate.yaml
+  - middleware.yaml
+  - ingress-route.yaml
 
 helmCharts:
   - name: agentgateway-standalone
@@ -35,7 +38,7 @@ labels:
     pairs:
       homelab.app: agentgateway
 
-# Wave 12 = beside hermes, its only caller, which owns the namespace; after
-# lares-mcp-bridge (11), whose clients' keys it attaches.
+# Wave 12 = beside hermes, which owns the namespace; after lares-mcp-bridge (11),
+# whose key it attaches.
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "12"

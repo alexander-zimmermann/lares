@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-mcp-bridge
-    tag: 1.30.0
+    tag: 1.31.0
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
@@ -33,32 +33,9 @@ deployment:
       value: /etc/lares-mcp-bridge/db_write_username
     MCP_DB_WRITE_PASSWORD_FILE:
       value: /etc/lares-mcp-bridge/db_write_password
-    MCP_AUTH_ENABLED:
-      value: "true"
-    MCP_AUTH_JWKS_URL:
-      value: PLACEHOLDER_AUTH_JWKS_URL
-    MCP_AUTH_ISSUER:
-      value: PLACEHOLDER_AUTH_ISSUER
-    MCP_AUTH_AUDIENCE:
-      value: lares-mcp-bridge
-    MCP_AUTH_RESOURCE_URL:
-      value: PLACEHOLDER_AUTH_RESOURCE_URL
-    # Clients (the agents' machine clients and one per person) authenticate with a key from this file instead of a JWT
-    MCP_AUTH_CLIENTS_FILE:
-      value: /etc/lares-mcp-bridge/auth-clients.json
-    # What each client may see and call, rendered from use-cases.yaml and persons.yaml
-    MCP_AUTH_CLIENT_TOOLS:
-      valueFrom:
-        configMapKeyRef:
-          name: lares-mcp-bridge-client-tools
-          key: MCP_AUTH_CLIENT_TOOLS
-    # The clients that are persons, by handle, rendered from persons.yaml; a token's
-    # preferred_username in this list is that person too
-    MCP_AUTH_PERSONS:
-      valueFrom:
-        configMapKeyRef:
-          name: lares-mcp-bridge-client-tools
-          key: MCP_AUTH_PERSONS
+    # The key the gateway calls with, sealed for both namespaces
+    MCP_GATEWAY_KEY_FILE:
+      value: /etc/lares-mcp-bridge/gateway-key
     MCP_NATS_SERVERS:
       value: nats://nats.nats.svc:4222
     # NATS nkey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
@@ -167,12 +144,12 @@ deployment:
         items:
           - key: RUSTFS_SECRET_KEY
             path: secret-key
-    auth-clients:
+    gateway-key:
       secret:
-        secretName: lares-mcp-bridge-auth-clients
+        secretName: lares-mcp-bridge-gateway-key
         items:
-          - key: clients.json
-            path: clients.json
+          - key: key
+            path: key
     trigger-api-key:
       secret:
         secretName: lares-mcp-bridge-trigger-api-key
@@ -221,9 +198,9 @@ deployment:
       mountPath: /etc/lares-mcp-bridge/s3-secret-key
       subPath: secret-key
       readOnly: true
-    auth-clients:
-      mountPath: /etc/lares-mcp-bridge/auth-clients.json
-      subPath: clients.json
+    gateway-key:
+      mountPath: /etc/lares-mcp-bridge/gateway-key
+      subPath: key
       readOnly: true
     trigger-api-key:
       mountPath: /etc/lares-mcp-bridge/trigger-api-key

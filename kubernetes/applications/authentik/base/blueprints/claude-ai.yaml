@@ -1,22 +1,22 @@
 version: 1
 metadata:
-  name: lares-mcp-bridge-oidc
+  name: claude-ai-oidc
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # OAuth2/OIDC Provider for the lares-mcp-bridge MCP server.
-  # Used by claude.ai's custom-connector OAuth flow (oauth_anthropic_creds).
+  # OAuth2/OIDC Provider of the claude.ai connector, which signs in on the gateway's
+  # public route; the gateway checks the tokens and hands out this client.
   - model: authentik_providers_oauth2.oauth2provider
     state: present
     identifiers:
-      name: lares-mcp-bridge
+      name: claude-ai
     attrs:
-      name: lares-mcp-bridge
+      name: claude-ai
       authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-explicit-consent]]
       invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
       client_type: confidential
-      client_id: lares-mcp-bridge
-      client_secret: !Env LARES_MCP_BRIDGE_OIDC_CLIENT_SECRET
+      client_id: claude-ai
+      client_secret: !Env CLAUDE_AI_OIDC_CLIENT_SECRET
       # Explicit, because a provider created from a blueprint starts with an
       # empty grant list and then rejects the authorization code flow.
       grant_types:
@@ -27,7 +27,7 @@ entries:
       refresh_token_validity: days=30
       redirect_uris:
         - matching_mode: strict
-          url: !Env ANTHROPIC_OAUTH_REDIRECT_URI
+          url: !Env AUTHENTIK_CLAUDE_AI_REDIRECT_URI
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
@@ -39,19 +39,32 @@ entries:
   - model: authentik_core.application
     state: present
     identifiers:
-      slug: lares-mcp-bridge
+      slug: claude-ai
     attrs:
-      name: lares-mcp-bridge
-      slug: lares-mcp-bridge
-      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, lares-mcp-bridge]]
+      name: claude-ai
+      slug: claude-ai
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, claude-ai]]
       policy_engine_mode: any
 
   # Restrict token issuance for this audience to platform-admins
   - model: authentik_policies.policybinding
     state: present
     identifiers:
-      target: !Find [authentik_core.application, [slug, lares-mcp-bridge]]
+      target: !Find [authentik_core.application, [slug, claude-ai]]
       group: !Find [authentik_core.group, [name, platform-admins]]
       order: 0
     attrs:
       enabled: true
+
+  # The pre-rename objects. A changed identifier makes a blueprint create a
+  # second provider rather than rename the first, so the old pair is dropped
+  # here; the application takes its policy binding with it.
+  - model: authentik_core.application
+    state: absent
+    identifiers:
+      slug: lares-mcp-bridge
+
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers:
+      name: lares-mcp-bridge
