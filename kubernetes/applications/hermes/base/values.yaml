@@ -86,18 +86,14 @@ deployment:
         items:
           - key: .no-bundled-skills
             path: .no-bundled-skills
-    hermes-skill-explain:
+    hermes-skills:
       configMap:
         name: hermes-skills
         items:
           - key: lares-explain
-            path: SKILL.md
-    hermes-skill-propose:
-      configMap:
-        name: hermes-skills
-        items:
+            path: lares-explain/SKILL.md
           - key: lares-propose
-            path: SKILL.md
+            path: lares-propose/SKILL.md
     hermes-plugin-session-reset-policy:
       configMap:
         name: hermes-plugin-session-reset-policy
@@ -129,13 +125,9 @@ deployment:
       mountPath: /opt/data/.no-bundled-skills
       subPath: .no-bundled-skills
       readOnly: true
-    hermes-skill-explain:
-      mountPath: /opt/data/skills/lares-explain/SKILL.md
-      subPath: SKILL.md
-      readOnly: true
-    hermes-skill-propose:
-      mountPath: /opt/data/skills/lares-propose/SKILL.md
-      subPath: SKILL.md
+    # The repo skills, skills.external_dirs of every profile: outside the data volume and read-only
+    hermes-skills:
+      mountPath: /opt/skills
       readOnly: true
     # A plugin is its own directory under plugins/; Hermes finds the manifest there and looks no deeper
     hermes-plugin-session-reset-policy:

@@ -44,9 +44,10 @@ approvals:
   unattended_mode: deny
   cron_mode: deny
 
-# Skills are files in the repo; agent edits are staged and never approved.
+# Each profile learns into its own skills/; the repo's skills come read-only from hermes-skills.
 skills:
-  write_approval: true
+  external_dirs:
+    - /opt/skills
 
 # First-touch hints latch into config.yaml, which is read-only here: no profile
 # offer, and every hint pre-marked as seen, else the intro repeats on every message.

@@ -38,7 +38,7 @@ configMapGenerator:
     # Empty marker file: without it Hermes seeds its 58 bundled skills into the volume on every boot
     literals:
       - .no-bundled-skills=
-  # One key per skill: every skill file is called SKILL.md.
+  # One key per skill; values.yaml lays each out as <name>/SKILL.md under /opt/skills.
   - name: hermes-skills
     files:
       - lares-explain=skills/lares-explain/SKILL.md
