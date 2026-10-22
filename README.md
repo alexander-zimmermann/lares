@@ -118,7 +118,7 @@ flowchart TB
 
 ### Smart-Home data flow
 
-NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP. For "what's happening right now?" the MCP server reads the last retained message per subject straight from JetStream, so live answers don't wait on the ingest cycle. The diagnostics engine turns the archive into fault episodes and announces them on `episode.>`; lares-agent-trigger picks those up, has the [Hermes](https://github.com/NousResearch/hermes-agent) agent explain them through the same MCP tools, and delivers the answer to Discord and mail. On a schedule the agent also proposes changes to the fault list as GitHub pull requests.
+NATS is the universal event bus. Every external source publishes there, the bridge writes selected subjects back to KNX, and redpanda-connect ingests everything into TimescaleDB plus a cold parquet archive on rustfs for retrospective analysis by Claude via MCP. For "what's happening right now?" the MCP server reads the last retained message per subject straight from JetStream, so live answers don't wait on the ingest cycle. The diagnostics engine turns the archive into fault episodes and announces them on `episode.>`; lares-agent-trigger picks those up, has the [Hermes](https://github.com/NousResearch/hermes-agent) agent explain them through the same MCP tools, and delivers the answer to Discord and mail. Hermes and the Claude.ai connector both reach the MCP server through agentgateway, which signs every caller in. On a schedule the agent also proposes changes to the fault list as GitHub pull requests.
 
 ```mermaid
 ---
@@ -160,7 +160,7 @@ flowchart TB
         rustfs[(rustfs<br/>parquet)]
         tsdb[(TimescaleDB)]
         engine[diagnostics<br/>engine]
-        mcp[mcp-bridge<br/>→ Claude.ai]
+        mcp[mcp-bridge]
         ingest --> rustfs
         ingest --> tsdb
         tsdb <--> engine
@@ -170,10 +170,15 @@ flowchart TB
     subgraph AG[Agents]
         trigger[agent-trigger]
         hermes[Hermes<br/>MCP tools]
+        gw[agentgateway]
         out[Discord · Mail<br/>Wiki · GitHub]
         trigger --> hermes
         trigger --> out
+        hermes --> gw
     end
+
+    claude[Claude.ai] --> gw
+    gw --> mcp
 
     nats <-- knx.> --> bridge
     nats -- MQTT --> nodered
