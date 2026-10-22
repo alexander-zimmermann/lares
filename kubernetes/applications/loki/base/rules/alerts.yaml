@@ -54,11 +54,11 @@ groups:
       - alert: LogHttp5xxBurst
         # Server errors as the apps log them: common log format (nginx),
         # logfmt (Grafana, Loki) and JSON (Authentik). Traefik's are a
-        # Prometheus rule on its request counters; agent-log quotes a model
-        # source's status, not one it served.
+        # Prometheus rule on its request counters; the agent-log containers
+        # quote a model source's status, not one Hermes served.
         expr: |
           sum by (namespace, pod, container) (
-            count_over_time({namespace=~".+", container=~".+", container!~"loki|traefik|agent-log"}
+            count_over_time({namespace=~".+", container=~".+", container!~"loki|traefik|agent-log.*"}
               |~ `" 5[0-9]{2} |status=5[0-9]{2}\b|"status":\s?5[0-9]{2}\b` [5m])
           ) > 10
         for: 5m
@@ -85,29 +85,58 @@ groups:
           summary: "An IngressRoute points at a backend Traefik cannot resolve"
           description: "{{ $value }} Traefik line(s) in 12h naming a Service that is missing or has no servers. Query the traefik container for 'service not found', 'no servers found' or 'does not exist' to see which."
 
-  # Hermes logs to files only; the agent-log container streams agent.log
+  # Hermes logs to files only; agent-log streams the default profile's, agent-log-<handle> a person's
   - name: agent-alerts
     rules:
       - alert: AgentModelSourceFailing
-        # Hermes' line format, anchored: a bare 402 would hit the timestamp's
-        # milliseconds. What does not heal itself fires on its first line;
-        # fallbacks, 401/403 (refreshed) and rate limits on the third in an hour.
+        # Anchored: a bare 402 would hit the timestamp. Fires on the first line, 401/403 on the third
         expr: |
-          sum by (signal) (
-            count_over_time({namespace="agents", container="agent-log"}
+          sum by (enduser_id, signal) (
+            count_over_time({namespace="agents", container=~"agent-log.*"}
               |~ `Model entitlement rejection: | error_type=NotFoundError | summary=HTTP 402: |(?i:insufficient.credits)|refused for billing/credits|Codex token refresh failed|No Codex credentials stored|Codex auth is missing`
               | regexp `(?P<signal>Model entitlement rejection|NotFoundError|HTTP 402|(?i:insufficient.credits)|refused for billing/credits|Codex token refresh failed|No Codex credentials stored|Codex auth is missing)`
+              | label_format enduser_id=`{{ regexReplaceAll "^agent-log-?" .container "" }}`
               [1h])
           ) > 0
           or
-          sum by (signal) (
-            count_over_time({namespace="agents", container="agent-log"}
-              |~ `Fallback activated| error_type=(AuthenticationError|PermissionDeniedError|RateLimitError) `
-              | regexp `(?P<signal>Fallback activated|AuthenticationError|PermissionDeniedError|RateLimitError)`
+          sum by (enduser_id, signal) (
+            count_over_time({namespace="agents", container=~"agent-log.*"}
+              |~ ` error_type=(AuthenticationError|PermissionDeniedError) `
+              | regexp `(?P<signal>AuthenticationError|PermissionDeniedError)`
+              | label_format enduser_id=`{{ regexReplaceAll "^agent-log-?" .container "" }}`
               [1h])
           ) >= 3
         labels:
           severity: warning
         annotations:
-          summary: "Agent model source failing ({{ $labels.signal }})"
-          description: "{{ $value }} '{{ $labels.signal }}' line(s) in Hermes' agent.log in the last hour: the configured model source is failing, and runs fall back to the capped OpenAI project or fail. The signal names the cause; a lost Codex login is renewed as the comment at its source in persons.yaml says."
+          summary: "Agent model source of {{ or $labels.enduser_id \"the default profile\" }} failing ({{ $labels.signal }})"
+          description: "{{ $value }} '{{ $labels.signal }}' line(s) in the agent.log of {{ or $labels.enduser_id \"the default profile\" }} in the last hour: its model source is failing, and its turns fall back to its capped OpenAI project or fail. The signal names the cause; a lost Codex login is renewed as the comment at its source in persons.yaml says."
+
+      - alert: AgentChatFailed
+        # Fails before the first model call: no hook, no row; event runs (`for run=`) are AgentRunFailed's
+        expr: |
+          sum by (enduser_id) (
+            count_over_time({namespace="agents", container=~"agent-log.*"}
+              |~ `Model resolution failed for session |Provider resolution failed for session=`
+              | label_format enduser_id=`{{ regexReplaceAll "^agent-log-?" .container "" }}`
+              [10m])
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent chat of {{ or $labels.enduser_id \"the default profile\" }} failed before its model was called"
+          description: "{{ $value }} message(s) to the profile of {{ or $labels.enduser_id \"the default profile\" }} in the last 10 minutes got an error instead of an answer: Hermes found no model source with a usable login, and the message has no row in agent_runs. The line in its agent.log names the model source and why. A lost Codex login is renewed as the comment at its source in persons.yaml says; an empty key is one not sealed into the profile's .env."
+
+      - alert: AgentHookLost
+        # Each line is a delivery Hermes does not send again; the http:// warning at start is none
+        expr: |
+          sum(
+            count_over_time({namespace="agents", container=~"agent-log.*"}
+              |~ `outbound webhook (rejected|delivery failed|delivery crashed|queue full|target redirected|payload serialization failed)`
+              [10m])
+          ) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "Agent hook delivery lost"
+          description: "{{ $value }} outbound webhook line(s) in Hermes' agent.log in the last 10 minutes: a delivery to lares-agent-trigger was refused or failed and is not sent again, so a row in agent_runs is missing or incomplete. `rejected … HTTP 401` is a hook secret the two pods do not share; another 4xx is a body the trigger could not read, and its log says why; a failed delivery is a trigger that was down or slow."

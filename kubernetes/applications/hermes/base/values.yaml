@@ -19,7 +19,7 @@ deployment:
   # The image entrypoint (s6-overlay) stays; only the command changes.
   args: ["gateway", "run"]
 
-  # Registry authentication for the dhi.io image of agent-log
+  # Registry authentication for the dhi.io image of the agent-log containers
   imagePullSecrets:
     - name: dhi-registry-secret
 
@@ -175,10 +175,10 @@ deployment:
   securityContext:
     fsGroup: 10000
 
-  # Streams agent.log, which Hermes writes as a file only, from its end for Loki
+  # Streams the default profile's agent.log for Loki; each person's is rendered into profiles/
   additionalContainers:
     agent-log:
-      image: dhi.io/busybox:1-alpine3.23
+      image: agent-log
       command: ["tail", "-n", "0", "-F", "/opt/data/logs/agent.log"]
       volumeMounts:
         - name: hermes-data

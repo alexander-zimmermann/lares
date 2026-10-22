@@ -156,6 +156,7 @@ hooks:
       events:
         - post_api_request
         - post_tool_call
+        - api_request_error
         - on_session_end
       secret_env: LARES_AGENT_TRIGGER_HOOK_SECRET
       timeout: 10

@@ -44,6 +44,12 @@ configMapGenerator:
       - lares-explain=skills/lares-explain/SKILL.md
       - lares-propose=skills/lares-propose/SKILL.md
 
+# Every agent-log container, the default profile's and each person's, runs this one image.
+images:
+  - name: agent-log
+    newName: dhi.io/busybox
+    newTag: 1-alpine3.23
+
 labels:
   - includeSelectors: false
     pairs:
