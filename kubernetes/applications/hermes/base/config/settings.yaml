@@ -87,6 +87,17 @@ display:
 # Session isolation on every gateway platform
 group_sessions_per_user: true
 
+# Read by the session-reset plugin: a message after an hour of quiet, or the first after 04:00, starts a fresh conversation.
+session_reset:
+  mode: both
+  idle_minutes: 60
+  at_hour: 4
+
+# Third-party plugins load only when named here; their files are mounted from the repo.
+plugins:
+  enabled:
+    - hermes-session-reset-policy
+
 # One gateway on 8642 serves every profile, a person's under /p/<handle>/.
 # Hermes would write the switch into config.yaml at boot, which is read-only here.
 gateway:

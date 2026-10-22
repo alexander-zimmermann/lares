@@ -98,6 +98,9 @@ deployment:
         items:
           - key: lares-propose
             path: SKILL.md
+    hermes-plugin-session-reset-policy:
+      configMap:
+        name: hermes-plugin-session-reset-policy
 
   volumeMounts:
     # All Hermes state: sessions, memories, cron ledger, logs
@@ -133,6 +136,10 @@ deployment:
     hermes-skill-propose:
       mountPath: /opt/data/skills/lares-propose/SKILL.md
       subPath: SKILL.md
+      readOnly: true
+    # A plugin is its own directory under plugins/; Hermes finds the manifest there and looks no deeper
+    hermes-plugin-session-reset-policy:
+      mountPath: /opt/data/plugins/hermes-session-reset-policy
       readOnly: true
 
   ports:
