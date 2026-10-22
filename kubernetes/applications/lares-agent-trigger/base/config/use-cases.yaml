@@ -108,11 +108,11 @@ tool_servers:
 # address (agentgateway/base/ingress-route.yaml); persons.yaml says who holds one.
 connectors:
   # The claude.ai connector: every tool of the bridge. The gateway expands
-  # AUTHENTIK_URL, set per cluster; the client is the lares-mcp-bridge application's.
+  # AUTHENTIK_URL, set per cluster; the client is the claude-ai application's.
   - name: claude-ai
     path: /mcp
-    issuer: ${AUTHENTIK_URL}/application/o/lares-mcp-bridge/
-    client_id: lares-mcp-bridge
+    issuer: ${AUTHENTIK_URL}/application/o/claude-ai/
+    client_id: claude-ai
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
     tools: ["*"]

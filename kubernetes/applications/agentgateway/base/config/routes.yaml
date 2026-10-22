@@ -164,12 +164,12 @@ binds:
                   exact: /.well-known/oauth-authorization-server/mcp/client-registration
             policies:
               mcpAuthentication:
-                issuer: ${AUTHENTIK_URL}/application/o/lares-mcp-bridge/
+                issuer: ${AUTHENTIK_URL}/application/o/claude-ai/
                 audiences:
-                  - lares-mcp-bridge
+                  - claude-ai
                 provider:
                   authentik: {}
-                clientId: lares-mcp-bridge
+                clientId: claude-ai
                 resourceMetadata:
                   scopesSupported:
                     - openid
