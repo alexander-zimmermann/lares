@@ -18,11 +18,13 @@
       labels: ["type/digest"],
     },
     {
+      // OCI Helm charts also resolve through the docker datasource; they get the helm label below
       matchDatasources: ["docker"],
+      matchJsonata: ["$not(depType = 'HelmChart')"],
       addLabels: ["renovate/container"],
     },
     {
-      matchDatasources: ["helm"],
+      matchDepTypes: ["HelmChart"],
       addLabels: ["renovate/helm"],
     },
     {

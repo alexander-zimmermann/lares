@@ -29,7 +29,8 @@
       "commitMessageTopic": "image {{depName}}"
     },
     {
-      "matchDatasources": ["helm"],
+      // Every Helm chart, OCI ones included; overrides the docker rule above
+      "matchDepTypes": ["HelmChart"],
       "semanticCommitScope": "helm",
       "commitMessageTopic": "chart {{depName}}"
     },

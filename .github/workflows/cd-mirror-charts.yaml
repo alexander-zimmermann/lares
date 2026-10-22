@@ -12,6 +12,7 @@ env:
     dhi.io/metrics-server-chart
     dhi.io/external-dns-chart
     dhi.io/cloudnative-pg-chart
+    dhi.io/redis-chart
 
 jobs:
   discover-tags:
