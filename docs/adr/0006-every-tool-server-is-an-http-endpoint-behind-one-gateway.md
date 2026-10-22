@@ -10,6 +10,17 @@ server's route is its only way to the server, and no tool server runs as
 a process of the harness or of the gateway. Models are not behind the
 gateway: the harness calls them itself.
 
+A person's own MCP client, a connector such as the claude.ai connector,
+comes in through the gateway too: on a public route of its own, where the
+gateway signs the person in through Authentik and serves the connector's
+tool list to the persons the declaration names. Whichever way a call comes
+in, the gateway names the caller to the server in two headers it sets
+itself, the route (`X-Client-Id`) and the person (`X-Enduser-Id`), over
+whatever the caller sent. The MCP bridge takes a call only with the one
+key the gateway calls it with and keeps no sign-in of its own; what
+depends on the caller, a person's own runs and verdicts, it reads from
+those headers.
+
 Four reasons carry this:
 
 - **One kind of server, one way to run it.** A server the harness starts
@@ -22,6 +33,9 @@ Four reasons carry this:
   and call; the harness's own include list stays on top of it. A key
   opens its one route, so a use case holds exactly the servers it is
   granted.
+- **One sign-in for every caller.** Keys for the harness, Authentik for a
+  connector, and one place that says who a call is from: a server needs
+  no token check, no client list and no tool list of its own.
 - **A renewed credential needs no restart.** The gateway watches its
   routes file and every credential file, kubelet swaps a changed Secret
   in whole, and a route keeps no session with its server, so the next
@@ -42,6 +56,9 @@ cost.
   directly**: the harness would hold one credential per server and each
   server would enforce its own tool list. GitHub's own server
   authenticates nobody; it acts for whoever brings a token.
+- **The bridge signing in its own callers**: a token check against
+  Authentik for the connector and a key and tool list per client, kept
+  in step with the gateway's routes; two doors to one server.
 - **Several servers behind one route**: one failing server fails the
   handshake of every server behind it, and use cases are granted per
   tool server, not per route.
