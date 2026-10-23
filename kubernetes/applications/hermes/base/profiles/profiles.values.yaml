@@ -2,9 +2,13 @@
 # An additional values file of Hermes's chart: each person's config and .env, the
 # persons' SOUL.md, AGENTS.md and the marker that keeps the bundled skills out,
 # each mounted read-only into the person's profile, and the container that
-# streams the profile's agent.log for Loki.
+# streams the profile's agent.log for Loki. Every plugin settings.yaml enables is
+# the ConfigMap of its name, mounted read-only as its directory in every profile.
 deployment:
   volumes:
+    hermes-session-reset-policy:
+      configMap:
+        name: hermes-session-reset-policy
     hermes-az1003-env:
       secret:
         secretName: hermes-credentials
@@ -35,7 +39,13 @@ deployment:
         items:
           - key: .no-bundled-skills
             path: .no-bundled-skills
+    hermes-az1003-hermes-session-reset-policy:
+      configMap:
+        name: hermes-session-reset-policy
   volumeMounts:
+    hermes-session-reset-policy:
+      mountPath: /opt/data/plugins/hermes-session-reset-policy
+      readOnly: true
     hermes-az1003-env:
       mountPath: /opt/data/profiles/az1003/.env
       subPath: .env
@@ -55,6 +65,9 @@ deployment:
     hermes-az1003-no-bundled-skills:
       mountPath: /opt/data/profiles/az1003/.no-bundled-skills
       subPath: .no-bundled-skills
+      readOnly: true
+    hermes-az1003-hermes-session-reset-policy:
+      mountPath: /opt/data/profiles/az1003/plugins/hermes-session-reset-policy
       readOnly: true
   additionalContainers:
     agent-log-az1003:
