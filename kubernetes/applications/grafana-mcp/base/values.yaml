@@ -34,16 +34,18 @@ env:
   OTEL_TRACES_SAMPLER: parentbased_traceidratio
 
 envValueFrom:
-  # Every call must bring it as a bearer token: the key the gateway calls with
-  MCP_GRAFANA_SERVER_TOKEN:
-    secretKeyRef:
-      name: grafana-mcp-gateway-key
-      key: key
   # The platform's sampling ratio, rendered from use-cases.yaml
   OTEL_TRACES_SAMPLER_ARG:
     configMapKeyRef:
       name: agent-tracing
       key: TRACING_SAMPLING_RATIO
+
+# Every call must bring it as a bearer token: the key the gateway calls with. Named
+# here, else the chart mints a token of its own and the gateway's key is refused.
+serverAuth:
+  tokenSecret:
+    name: grafana-mcp-gateway-key
+    key: key
 
 # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
 podLabels:
