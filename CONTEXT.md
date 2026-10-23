@@ -221,9 +221,12 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   harness's own look back over a conversation after a chat answer: whether
   something belongs in the profile notes or in a skill. It runs in the
   answer's session and never ends as a turn, so it is no run of its own:
-  its calls are booked on the answer's row in the ledger's review columns,
-  and its spans join the answer's trace. A person's spend is the answer's
-  cost plus its review's.
+  its calls are in no row, and count in the person's spend only.
+- **Repo skill** — a skill kept in this repository and mounted read-only
+  into every profile, beside the skills a profile learns on its own. No
+  profile writes one: the owner's correction in chat comes back as a pull
+  request from the write App, and every refused write, the owner's
+  included, is a line in the weekly skill digest.
 - **Explain** — the agent role that takes one
   episode or one firing alert, gathers the evidence around it and attaches a
   grounded reason. Never runs without a subject: explaining is not

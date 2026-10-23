@@ -164,7 +164,8 @@ connectors:
     tools: ["*"]
 
 # The Sunday digest of what each profile learned: the skills created, changed and
-# archived in the week, names only, read from every profile's own skill ledger.
+# archived in the week, names only, read from every profile's own skill ledger,
+# and the repo skills a write was refused on, from every profile's own log.
 scripts:
   - name: skill-digest
     sentence: Posts the week's skill names per profile to #admin on Sunday evening.

@@ -9,7 +9,10 @@ to reading, and the gateway attaches it to every call. Every
 GitHub write — a pull request, an issue, a comment — is a delivery of the
 trigger: a run ends with one fenced block per thing it wants opened, and
 the trigger opens it as a second App, the write App, whose key lives in
-the trigger's pod and nowhere else. No surface of the harness holds a
+the trigger's pod and nowhere else. The owner's correction of a repo
+skill, which every profile reads from a read-only mount, is delivered the
+same way: the harness's hook reports the write the mount refused, and the
+trigger makes it a pull request. No surface of the harness holds a
 GitHub write tool, and every GitHub-touching use case shares the one code
 path.
 
@@ -22,6 +25,9 @@ Two reasons carry this:
   branch's head. A block that does not hold opens nothing: a diff that does
   not apply is a failed run with `AgentRunFailed`, never a broken pull
   request, and a label the repository lacks is never created on the fly.
+  A skill correction is applied exactly, to the file on the default branch
+  or on its open pull request's branch, and one that does not apply opens
+  nothing either.
 - **Reading and writing are two identities.** The harness reads issues,
   pull requests and files that anyone can write into; whatever such a text
   talks the model into, the harness holds no GitHub token, and the one
