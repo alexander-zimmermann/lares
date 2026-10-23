@@ -6,6 +6,8 @@
 # Compact at 256k tokens at the latest; the fallback's price doubles past 272k input tokens.
 compression:
   threshold_tokens: 256000
+  # The one-time banner on Codex's own compaction trigger stays out of the chat
+  codex_gpt55_autoraise_notice: false
 
 agent:
   # Unattended and read-only: everything the agent may read comes through the
@@ -65,8 +67,11 @@ memory:
   nudge_interval: 5
 
 discord:
-  # One private server, one user: answer everywhere, no threads per message
-  require_mention: false
+  # In a server channel only on @Lares, except in the owner's private #Allgemein
+  require_mention: true
+  free_response_channels:
+    - "1548229055348736034"
+  # No threads per message
   auto_thread: false
   # A DM from outside allow_from is ignored; no pairing code is ever handed out
   dm_policy: allowlist

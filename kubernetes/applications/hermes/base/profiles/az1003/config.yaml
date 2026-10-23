@@ -6,6 +6,7 @@
 # stay there.
 compression:
   threshold_tokens: 256000
+  codex_gpt55_autoraise_notice: false
 agent:
   disabled_toolsets:
     - terminal
@@ -47,7 +48,9 @@ memory:
   write_approval: false
   nudge_interval: 5
 discord:
-  require_mention: false
+  require_mention: true
+  free_response_channels:
+    - '1548229055348736034'
   auto_thread: false
   dm_policy: allowlist
 platforms:
