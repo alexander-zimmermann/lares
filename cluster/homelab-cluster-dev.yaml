@@ -10,6 +10,16 @@ talos:
 features:
   diskEncryption: true
 
+## Inherited by every machine set below (a set may override with its own list)
+systemExtensions:
+  - siderolabs/qemu-guest-agent
+  - siderolabs/util-linux-tools
+  - siderolabs/i915
+  - siderolabs/intel-ucode
+  - siderolabs/nvidia-open-gpu-kernel-modules-lts
+  - siderolabs/iscsi-tools
+  - siderolabs/zfs
+
 patches:
   - name: global-settings
     file: patches/global-settings.yaml
@@ -25,15 +35,6 @@ machineClass:
   name: control-plane-dev
   size: 3
 
-systemExtensions:
-  - siderolabs/qemu-guest-agent
-  - siderolabs/util-linux-tools
-  - siderolabs/i915
-  - siderolabs/intel-ucode
-  - siderolabs/nvidia-open-gpu-kernel-modules-lts
-  - siderolabs/iscsi-tools
-  - siderolabs/zfs
-
 patches:
   - name: control-plane-settings
     file: patches/control-plane-settings.yaml
@@ -48,19 +49,7 @@ machineClass:
   name: data-plane-dev
   size: 3
 
-systemExtensions:
-  - siderolabs/qemu-guest-agent
-  - siderolabs/util-linux-tools
-  - siderolabs/i915
-  - siderolabs/intel-ucode
-  - siderolabs/nvidia-open-gpu-kernel-modules-lts
-  - siderolabs/iscsi-tools
-  - siderolabs/zfs
-
-## Update Strategies: critical for storage nodes: Ensure only one node reboots at a time
-updateStrategy:
-  rolling:
-    maxParallelism: 1
+## Tear down one machine at a time (default would be all at once); updates roll one at a time by default
 deleteStrategy:
   type: Rolling
   rolling:

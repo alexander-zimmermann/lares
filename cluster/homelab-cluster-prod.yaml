@@ -10,6 +10,16 @@ talos:
 features:
   diskEncryption: true
 
+## Inherited by every machine set below (a set may override with its own list)
+systemExtensions:
+  - siderolabs/qemu-guest-agent
+  - siderolabs/util-linux-tools
+  - siderolabs/i915
+  - siderolabs/intel-ucode
+  - siderolabs/nvidia-open-gpu-kernel-modules-lts
+  - siderolabs/iscsi-tools
+  - siderolabs/zfs
+
 patches:
   - name: global-settings
     file: patches/global-settings.yaml
@@ -25,15 +35,6 @@ machineClass:
   name: control-plane-prod
   size: 3
 
-systemExtensions:
-  - siderolabs/qemu-guest-agent
-  - siderolabs/util-linux-tools
-  - siderolabs/i915
-  - siderolabs/intel-ucode
-  - siderolabs/nvidia-open-gpu-kernel-modules-lts
-  - siderolabs/iscsi-tools
-  - siderolabs/zfs
-
 patches:
   - name: control-plane-settings
     file: patches/control-plane-settings.yaml
@@ -42,25 +43,17 @@ patches:
 ###############################################################################
 ## Data plane definition
 ###############################################################################
+## Three workers of one machine class in three machine sets: the worker without an
+## egress role here, one set per egress gateway below. A set of size 1 is what binds an Omni patch
+## to exactly one worker and lets a rebuilt worker inherit it (docs/adr/0004, README).
 kind: Workers
 name: data-plane
 machineClass:
   name: data-plane-prod
-  size: 3
+  size: 1
 
-systemExtensions:
-  - siderolabs/qemu-guest-agent
-  - siderolabs/util-linux-tools
-  - siderolabs/i915
-  - siderolabs/intel-ucode
-  - siderolabs/nvidia-open-gpu-kernel-modules-lts
-  - siderolabs/iscsi-tools
-  - siderolabs/zfs
-
-## Update Strategies: critical for storage nodes: Ensure only one node reboots at a time
-updateStrategy:
-  rolling:
-    maxParallelism: 1
+## Tear down one machine at a time (default would be all at once); updates roll one at a time
+## by default. The gateway sets below are size 1 for good, so they need no strategy.
 deleteStrategy:
   type: Rolling
   rolling:
@@ -69,3 +62,35 @@ deleteStrategy:
 patches:
   - name: data-plane-settings
     file: patches/data-plane-settings.yaml
+
+---
+###############################################################################
+## Egress gateway a: one worker that owns the egress IP 192.168.10.2
+###############################################################################
+kind: Workers
+name: data-plane-egress-a
+machineClass:
+  name: data-plane-prod
+  size: 1
+
+patches:
+  - name: data-plane-settings
+    file: patches/data-plane-settings.yaml
+  - name: data-plane-egress-a
+    file: patches/data-plane-egress-a.yaml
+
+---
+###############################################################################
+## Egress gateway b: one worker that owns the egress IP 192.168.10.3
+###############################################################################
+kind: Workers
+name: data-plane-egress-b
+machineClass:
+  name: data-plane-prod
+  size: 1
+
+patches:
+  - name: data-plane-settings
+    file: patches/data-plane-settings.yaml
+  - name: data-plane-egress-b
+    file: patches/data-plane-egress-b.yaml
