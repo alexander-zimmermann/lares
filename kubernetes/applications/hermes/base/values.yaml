@@ -96,9 +96,6 @@ deployment:
             path: lares-explain/references/heating.md
           - key: lares-propose
             path: lares-propose/SKILL.md
-    hermes-plugin-session-reset-policy:
-      configMap:
-        name: hermes-plugin-session-reset-policy
     hermes-scripts:
       configMap:
         name: hermes-scripts
@@ -133,10 +130,6 @@ deployment:
     # The repo skills, skills.external_dirs of every profile: outside the data volume and read-only
     hermes-skills:
       mountPath: /opt/skills
-      readOnly: true
-    # A plugin is its own directory under plugins/; Hermes finds the manifest there and looks no deeper
-    hermes-plugin-session-reset-policy:
-      mountPath: /opt/data/plugins/hermes-session-reset-policy
       readOnly: true
     # Hermes runs a cron script only from under the profile's own scripts/, so the repo's
     # scripts are that directory of the default profile, read-only inside the data volume
