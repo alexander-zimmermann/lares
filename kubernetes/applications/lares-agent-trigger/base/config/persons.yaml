@@ -46,14 +46,35 @@ model_sources:
     account: shared-with-default
     bound: subscription
     fallback:
-      # Each profile's own OpenAI project, `machines` for the default and
-      # `owner` for the owner: 5 USD hard monthly limit, prepaid credit, auto
-      # recharge off. List price of 2026-10-20.
-      - provider: openai-api
+      # Each profile's own OpenAI project: `machines` for the default, `owner`
+      # for the owner, one per handle. Limits → monthly budget = 5 USD, enforce
+      # hard limit = on; prepaid credit, auto recharge off. List price of 2026-10-20.
+      - &own-project
+        provider: openai-api
         model: gpt-6-luna
         bound: capped
         price: {input: 0.10, cached_input: 0.01, output: 0.50}
 
+  # A person's own free ChatGPT account, logged in on their profile alone, the
+  # way owner-subscription's comment says. The free plan refuses gpt-6-sol with
+  # HTTP 400, and its window resets once every 30 days.
+  # Account settings, by hand, before the login: for a teen, Parental controls
+  # → linked account = the owner's, model training = off; for everyone, Data
+  # controls → Improve the model for everyone = off and Security → device code
+  # login for Codex = on.
+  - name: free-account
+    provider: openai-codex
+    model: gpt-6-luna
+    account: per-person
+    bound: subscription
+    fallback: [*own-project]
+
+# Adding a person: seal <handle>-discord-user and every key the rendered
+# env-template names, add their agent-log-<handle> patch to both Hermes
+# overlays, log their profile in after the sync, and see one test DM answered
+# before telling them. A valid but wrong Discord id drops their messages silently.
+# Locking one out: `dormant: <reason>` and a kick from the Discord server, never
+# a ban, which Discord sets by IP and so for the whole household.
 persons:
   # The owner, on the machines' subscription with a Codex login of their own.
   - name: az1003
@@ -62,4 +83,23 @@ persons:
     connectors: [claude-ai]
     model: owner-subscription
     keep_answers: true
+    enabled: true
+
+  # The rest of the household: the house only, each on their own free account.
+  - name: gz1410
+    discord: true
+    tools: [lares]
+    model: free-account
+    enabled: true
+
+  - name: lz1410
+    discord: true
+    tools: [lares]
+    model: free-account
+    enabled: true
+
+  - name: vz1604
+    discord: true
+    tools: [lares]
+    model: free-account
     enabled: true

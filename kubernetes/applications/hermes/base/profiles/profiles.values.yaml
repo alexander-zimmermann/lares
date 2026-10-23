@@ -42,6 +42,105 @@ deployment:
     hermes-az1003-hermes-session-reset-policy:
       configMap:
         name: hermes-session-reset-policy
+    hermes-gz1410-env:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: gz1410.env
+            path: .env
+    hermes-gz1410-config:
+      configMap:
+        name: hermes-profiles
+        items:
+          - key: gz1410
+            path: config.yaml
+    hermes-gz1410-soul:
+      configMap:
+        name: hermes-config
+        items:
+          - key: persons-SOUL.md
+            path: SOUL.md
+    hermes-gz1410-agents:
+      configMap:
+        name: hermes-config
+        items:
+          - key: AGENTS.md
+            path: AGENTS.md
+    hermes-gz1410-no-bundled-skills:
+      configMap:
+        name: hermes-config
+        items:
+          - key: .no-bundled-skills
+            path: .no-bundled-skills
+    hermes-gz1410-hermes-session-reset-policy:
+      configMap:
+        name: hermes-session-reset-policy
+    hermes-lz1410-env:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: lz1410.env
+            path: .env
+    hermes-lz1410-config:
+      configMap:
+        name: hermes-profiles
+        items:
+          - key: lz1410
+            path: config.yaml
+    hermes-lz1410-soul:
+      configMap:
+        name: hermes-config
+        items:
+          - key: persons-SOUL.md
+            path: SOUL.md
+    hermes-lz1410-agents:
+      configMap:
+        name: hermes-config
+        items:
+          - key: AGENTS.md
+            path: AGENTS.md
+    hermes-lz1410-no-bundled-skills:
+      configMap:
+        name: hermes-config
+        items:
+          - key: .no-bundled-skills
+            path: .no-bundled-skills
+    hermes-lz1410-hermes-session-reset-policy:
+      configMap:
+        name: hermes-session-reset-policy
+    hermes-vz1604-env:
+      secret:
+        secretName: hermes-credentials
+        items:
+          - key: vz1604.env
+            path: .env
+    hermes-vz1604-config:
+      configMap:
+        name: hermes-profiles
+        items:
+          - key: vz1604
+            path: config.yaml
+    hermes-vz1604-soul:
+      configMap:
+        name: hermes-config
+        items:
+          - key: persons-SOUL.md
+            path: SOUL.md
+    hermes-vz1604-agents:
+      configMap:
+        name: hermes-config
+        items:
+          - key: AGENTS.md
+            path: AGENTS.md
+    hermes-vz1604-no-bundled-skills:
+      configMap:
+        name: hermes-config
+        items:
+          - key: .no-bundled-skills
+            path: .no-bundled-skills
+    hermes-vz1604-hermes-session-reset-policy:
+      configMap:
+        name: hermes-session-reset-policy
   volumeMounts:
     hermes-session-reset-policy:
       mountPath: /opt/data/plugins/hermes-session-reset-policy
@@ -69,6 +168,75 @@ deployment:
     hermes-az1003-hermes-session-reset-policy:
       mountPath: /opt/data/profiles/az1003/plugins/hermes-session-reset-policy
       readOnly: true
+    hermes-gz1410-env:
+      mountPath: /opt/data/profiles/gz1410/.env
+      subPath: .env
+      readOnly: true
+    hermes-gz1410-config:
+      mountPath: /opt/data/profiles/gz1410/config.yaml
+      subPath: config.yaml
+      readOnly: true
+    hermes-gz1410-soul:
+      mountPath: /opt/data/profiles/gz1410/SOUL.md
+      subPath: SOUL.md
+      readOnly: true
+    hermes-gz1410-agents:
+      mountPath: /opt/data/profiles/gz1410/AGENTS.md
+      subPath: AGENTS.md
+      readOnly: true
+    hermes-gz1410-no-bundled-skills:
+      mountPath: /opt/data/profiles/gz1410/.no-bundled-skills
+      subPath: .no-bundled-skills
+      readOnly: true
+    hermes-gz1410-hermes-session-reset-policy:
+      mountPath: /opt/data/profiles/gz1410/plugins/hermes-session-reset-policy
+      readOnly: true
+    hermes-lz1410-env:
+      mountPath: /opt/data/profiles/lz1410/.env
+      subPath: .env
+      readOnly: true
+    hermes-lz1410-config:
+      mountPath: /opt/data/profiles/lz1410/config.yaml
+      subPath: config.yaml
+      readOnly: true
+    hermes-lz1410-soul:
+      mountPath: /opt/data/profiles/lz1410/SOUL.md
+      subPath: SOUL.md
+      readOnly: true
+    hermes-lz1410-agents:
+      mountPath: /opt/data/profiles/lz1410/AGENTS.md
+      subPath: AGENTS.md
+      readOnly: true
+    hermes-lz1410-no-bundled-skills:
+      mountPath: /opt/data/profiles/lz1410/.no-bundled-skills
+      subPath: .no-bundled-skills
+      readOnly: true
+    hermes-lz1410-hermes-session-reset-policy:
+      mountPath: /opt/data/profiles/lz1410/plugins/hermes-session-reset-policy
+      readOnly: true
+    hermes-vz1604-env:
+      mountPath: /opt/data/profiles/vz1604/.env
+      subPath: .env
+      readOnly: true
+    hermes-vz1604-config:
+      mountPath: /opt/data/profiles/vz1604/config.yaml
+      subPath: config.yaml
+      readOnly: true
+    hermes-vz1604-soul:
+      mountPath: /opt/data/profiles/vz1604/SOUL.md
+      subPath: SOUL.md
+      readOnly: true
+    hermes-vz1604-agents:
+      mountPath: /opt/data/profiles/vz1604/AGENTS.md
+      subPath: AGENTS.md
+      readOnly: true
+    hermes-vz1604-no-bundled-skills:
+      mountPath: /opt/data/profiles/vz1604/.no-bundled-skills
+      subPath: .no-bundled-skills
+      readOnly: true
+    hermes-vz1604-hermes-session-reset-policy:
+      mountPath: /opt/data/profiles/vz1604/plugins/hermes-session-reset-policy
+      readOnly: true
   additionalContainers:
     agent-log-az1003:
       image: agent-log
@@ -78,6 +246,69 @@ deployment:
         - '0'
         - -F
         - /opt/data/profiles/az1003/logs/agent.log
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+          readOnly: true
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+    agent-log-gz1410:
+      image: agent-log
+      command:
+        - tail
+        - -n
+        - '0'
+        - -F
+        - /opt/data/profiles/gz1410/logs/agent.log
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+          readOnly: true
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+    agent-log-lz1410:
+      image: agent-log
+      command:
+        - tail
+        - -n
+        - '0'
+        - -F
+        - /opt/data/profiles/lz1410/logs/agent.log
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+          readOnly: true
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+    agent-log-vz1604:
+      image: agent-log
+      command:
+        - tail
+        - -n
+        - '0'
+        - -F
+        - /opt/data/profiles/vz1604/logs/agent.log
       volumeMounts:
         - name: hermes-data
           mountPath: /opt/data

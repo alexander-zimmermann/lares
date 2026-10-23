@@ -167,7 +167,7 @@ connectors:
 # archived in the week, names only, read from every profile's own skill ledger.
 scripts:
   - name: skill-digest
-    sentence: Posts the week's skill names per profile to #Allgemein on Sunday evening.
+    sentence: Posts the week's skill names per profile to #admin on Sunday evening.
     trigger:
       kind: schedule
       cron: "0 18 * * 0"
@@ -208,22 +208,22 @@ use_cases:
 
   - name: messenger
     sentence: >-
-      Beantwortet eine Nachricht vom Handy in Discord, auf Deutsch, mit dem
-      Lesezugriff auf das Haus.
+      Beantwortet eine Nachricht aus dem Haushalt, in Discord oder im
+      Web-Chat, in ihrer Sprache, mit dem Lesezugriff auf das Haus.
     # Hermes runs the chat; the trigger writes its row from the outbound hook,
     # one per answered message. No skill: the message is the assignment.
     trigger:
       kind: message
     tools: [lares, lares-runs, github, grafana, cloudflare]
     output: [discord]
-    # Nothing here is enforced for a chat: the 201st message of a person is
-    # answered, and AgentMessengerBudget counts the day per person.
+    # Nothing here is enforced for a chat. runs_per_day counts per person: their
+    # 201st message in a day is answered, and AgentMessengerBudget fires.
     budget:
       tool_calls: 40
       minutes: 10
       runs_per_day: 200
     language: de
-    memory: true
+    memory: false
     enabled: true
 
   - name: propose-faults

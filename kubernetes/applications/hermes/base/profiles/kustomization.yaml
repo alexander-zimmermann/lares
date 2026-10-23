@@ -7,3 +7,6 @@ configMapGenerator:
   - name: hermes-profiles
     files:
       - az1003=az1003/config.yaml
+      - gz1410=gz1410/config.yaml
+      - lz1410=lz1410/config.yaml
+      - vz1604=vz1604/config.yaml

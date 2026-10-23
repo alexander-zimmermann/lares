@@ -23,6 +23,15 @@ binds:
                   - key: ${AZ1003_GATEWAY_KEY}
                     metadata:
                       enduser_id: az1003
+                  - key: ${GZ1410_GATEWAY_KEY}
+                    metadata:
+                      enduser_id: gz1410
+                  - key: ${LZ1410_GATEWAY_KEY}
+                    metadata:
+                      enduser_id: lz1410
+                  - key: ${VZ1604_GATEWAY_KEY}
+                    metadata:
+                      enduser_id: vz1604
               mcpAuthorization:
                 rules:
                   - mcp.tool.name.startsWith("list_")

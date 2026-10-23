@@ -6,6 +6,7 @@
 # stay there.
 compression:
   threshold_tokens: 256000
+  codex_gpt55_autoraise_notice: false
 agent:
   disabled_toolsets:
     - terminal
@@ -47,11 +48,16 @@ memory:
   write_approval: false
   nudge_interval: 5
 discord:
-  require_mention: false
+  require_mention: true
+  free_response_channels:
+    - '1548229055348736034'
   auto_thread: false
   dm_policy: allowlist
   allow_from:
     - ${env:DISCORD_USER_AZ1003}
+    - ${env:DISCORD_USER_GZ1410}
+    - ${env:DISCORD_USER_LZ1410}
+    - ${env:DISCORD_USER_VZ1604}
   allow_admin_from:
     - ${env:DISCORD_USER_AZ1003}
   group_allow_admin_from:
@@ -71,7 +77,7 @@ platforms:
     home_channel:
       platform: discord
       chat_id: '1548229055348736034'
-      name: '#Allgemein'
+      name: '#admin'
 display:
   platforms:
     discord:
@@ -91,6 +97,18 @@ gateway:
       platform: discord
       user_id: ${env:DISCORD_USER_AZ1003}
       profile: az1003
+    - name: gz1410
+      platform: discord
+      user_id: ${env:DISCORD_USER_GZ1410}
+      profile: gz1410
+    - name: lz1410
+      platform: discord
+      user_id: ${env:DISCORD_USER_LZ1410}
+      profile: lz1410
+    - name: vz1604
+      platform: discord
+      user_id: ${env:DISCORD_USER_VZ1604}
+      profile: vz1604
 monitoring:
   gateway_health_export:
     enabled: true
