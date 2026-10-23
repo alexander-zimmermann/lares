@@ -38,10 +38,12 @@ configMapGenerator:
     # Empty marker file: without it Hermes seeds its 58 bundled skills into the volume on every boot
     literals:
       - .no-bundled-skills=
-  # One key per skill; values.yaml lays each out as <name>/SKILL.md under /opt/skills.
+  # One key per skill file; values.yaml lays each out under /opt/skills as <name>/SKILL.md
+  # or <name>/references/<file>.
   - name: hermes-skills
     files:
       - lares-explain=skills/lares-explain/SKILL.md
+      - lares-explain-heating=skills/lares-explain/references/heating.md
       - lares-propose=skills/lares-propose/SKILL.md
   # fastfinge/hermes-session-reset-policy v0.3.0, unchanged at the catalog's pin 0f2ea5ad995f1e4ba7c92c2dbd21afa868b8ae21; Renovate does not track it
   - name: hermes-plugin-session-reset-policy

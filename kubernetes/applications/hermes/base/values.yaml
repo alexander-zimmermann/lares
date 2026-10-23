@@ -92,6 +92,8 @@ deployment:
         items:
           - key: lares-explain
             path: lares-explain/SKILL.md
+          - key: lares-explain-heating
+            path: lares-explain/references/heating.md
           - key: lares-propose
             path: lares-propose/SKILL.md
     hermes-plugin-session-reset-policy:
