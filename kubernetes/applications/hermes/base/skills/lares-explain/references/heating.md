@@ -6,8 +6,8 @@ and the gas boiler faults. These queries are the Surroundings step; the cap of
 ten tool calls still holds.
 
 1. **Burner.** `query_heating_cycles` over the episode window says when the
-   burner ran and when it stopped. Its `peak_power_kw` and `avg_power_kw` are
-   the burner's modulation in percent (`curburnpow`); report them as %.
+   burner ran and when it stopped, with its peak and average modulation in
+   percent.
 2. **Mixed circuit.** One `query_timeseries` on `ems_esp` with
    `filters: {"topic": "mixer_data_hc1"}`, `columns: ["flowsettemp",
    "flowtemphc"]` (set and measured mixed flow), `bucket: "15 minutes"`. The
