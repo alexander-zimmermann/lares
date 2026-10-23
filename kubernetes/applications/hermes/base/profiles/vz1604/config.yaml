@@ -58,7 +58,7 @@ platforms:
     home_channel:
       platform: discord
       chat_id: '1548229055348736034'
-      name: '#Allgemein'
+      name: '#admin'
 display:
   platforms:
     discord:

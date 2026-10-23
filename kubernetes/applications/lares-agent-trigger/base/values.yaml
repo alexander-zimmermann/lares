@@ -57,7 +57,7 @@ deployment:
     ALERTMANAGER_URL:
       value: http://prometheus-alertmanager.prometheus.svc.cluster.local:9093
     # Delivery to Discord: the bot token of the hermes SealedSecret and the
-    # harness's own home channel (#Allgemein, its settings.yaml)
+    # harness's own home channel (#admin, its settings.yaml)
     DISCORD_BOT_TOKEN_FILE:
       value: /etc/lares-agent-trigger/discord-bot-token
     DISCORD_HOME_CHANNEL:

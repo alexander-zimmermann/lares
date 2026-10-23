@@ -67,7 +67,7 @@ memory:
   nudge_interval: 5
 
 discord:
-  # In a server channel only on @Lares, except in the owner's private #Allgemein
+  # In a server channel only on @Lares, except in the owner's private #admin
   require_mention: true
   free_response_channels:
     - "1548229055348736034"
@@ -82,7 +82,7 @@ platforms:
     home_channel:
       platform: discord
       chat_id: "1548229055348736034"
-      name: "#Allgemein"
+      name: "#admin"
 
 display:
   platforms:

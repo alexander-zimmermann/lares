@@ -167,7 +167,7 @@ connectors:
 # archived in the week, names only, read from every profile's own skill ledger.
 scripts:
   - name: skill-digest
-    sentence: Posts the week's skill names per profile to #Allgemein on Sunday evening.
+    sentence: Posts the week's skill names per profile to #admin on Sunday evening.
     trigger:
       kind: schedule
       cron: "0 18 * * 0"
