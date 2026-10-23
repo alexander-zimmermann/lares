@@ -1,9 +1,7 @@
 # Hermes settings: everything use-cases.yaml and persons.yaml do not render.
-# Mounted read-only as /etc/hermes/config.yaml, Hermes's managed scope: every
-# profile reads these keys over its own config.yaml, leaf by leaf, and none can
-# change them. What runs is what is reviewed here. The model, its fallbacks and
-# the working directory come from persons.yaml, rendered into each profile; the
-# generator refuses a key here that it renders.
+# Copied whole into every profile's config.yaml, which is mounted read-only:
+# what runs is what is reviewed here. The model, its fallbacks and the working
+# directory come from persons.yaml.
 
 # Compact at 256k tokens at the latest; the fallback's price doubles past 272k input tokens.
 compression:
@@ -100,6 +98,11 @@ session_reset:
 plugins:
   enabled:
     - hermes-session-reset-policy
+
+# One gateway on 8642 serves every profile, a person's under /p/<handle>/.
+# Hermes would write the switch into config.yaml at boot, which is read-only here.
+gateway:
+  multiplex_profiles: true
 
 # Gateway and Discord liveness as metrics into the Alloy receiver; Kubernetes
 # cannot see a gateway crash under s6, the alert rules on hermes_gateway_up can.
