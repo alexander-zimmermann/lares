@@ -58,9 +58,10 @@ model_sources:
   # A person's own free ChatGPT account, logged in on their profile alone, the
   # way owner-subscription's comment says. The free plan refuses gpt-6-sol with
   # HTTP 400, and its window resets once every 30 days.
-  # Account settings, by hand, before the login: Parental controls → linked
-  # account = the owner's, model training = off; Data controls → Improve the
-  # model for everyone = off; Security → device code authorization = on.
+  # Account settings, by hand, before the login: for a teen, Parental controls
+  # → linked account = the owner's, model training = off; for everyone, Data
+  # controls → Improve the model for everyone = off and Security → device code
+  # login for Codex = on.
   - name: free-account
     provider: openai-codex
     model: gpt-6-luna
