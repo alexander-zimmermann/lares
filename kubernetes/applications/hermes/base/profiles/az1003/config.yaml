@@ -184,7 +184,7 @@ mcp_servers:
   lares:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares
     headers:
-      Authorization: Bearer ${env:LARES_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:
@@ -206,7 +206,7 @@ mcp_servers:
   lares-runs:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares-runs
     headers:
-      Authorization: Bearer ${env:LARES_RUNS_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 30
     tools:
       include:
@@ -216,7 +216,7 @@ mcp_servers:
   github:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/github
     headers:
-      Authorization: Bearer ${env:GITHUB_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:
@@ -230,7 +230,7 @@ mcp_servers:
   grafana:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/grafana
     headers:
-      Authorization: Bearer ${env:GRAFANA_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:
@@ -252,7 +252,7 @@ mcp_servers:
   cloudflare:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/cloudflare
     headers:
-      Authorization: Bearer ${env:CLOUDFLARE_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:

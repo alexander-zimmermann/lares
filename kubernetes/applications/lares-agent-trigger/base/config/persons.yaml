@@ -9,8 +9,9 @@
 # served it. `task agents:create-harness-config` renders every profile's
 # `model` and `fallback_providers` from it, and each person's profile.
 #
-# A person's identity never lands here: their Discord id is sealed in the
-# default profile's .env as DISCORD_USER_<HANDLE>, their keys in their own.
+# A person's identity never lands here: their Discord id is sealed in
+# hermes-credentials as <handle>-discord-user, which the default profile's .env
+# reads as DISCORD_USER_<HANDLE>; their keys as <handle>-<key>.
 #
 # A source's `bound` caps what it may spend: `subscription` costs nothing per
 # call, `capped` is metered against a hard limit and names its list price in

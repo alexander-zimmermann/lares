@@ -6,75 +6,59 @@ config:
   config:
     localXdsPath: /etc/agentgateway/routes/config.yaml
 podAnnotations:
-  secret.reloader.stakater.com/reload: agentgateway-keys
+  secret.reloader.stakater.com/reload: hermes-credentials
 extraEnv:
-  - name: LARES_GATEWAY_KEY
+  - name: GATEWAY_KEY
     valueFrom:
       secretKeyRef:
-        name: agentgateway-keys
-        key: lares-gateway-key
-  - name: AZ1003_LARES_GATEWAY_KEY
+        name: hermes-credentials
+        key: gateway-key
+  - name: AZ1003_GATEWAY_KEY
     valueFrom:
       secretKeyRef:
-        name: agentgateway-keys
-        key: az1003-lares-gateway-key
-  - name: AZ1003_LARES_RUNS_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: az1003-lares-runs-gateway-key
-  - name: LARES_MEMORY_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: lares-memory-gateway-key
-  - name: GITHUB_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: github-gateway-key
-  - name: AZ1003_GITHUB_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: az1003-github-gateway-key
-  - name: AZ1003_GRAFANA_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: az1003-grafana-gateway-key
-  - name: AZ1003_CLOUDFLARE_GATEWAY_KEY
-    valueFrom:
-      secretKeyRef:
-        name: agentgateway-keys
-        key: az1003-cloudflare-gateway-key
+        name: hermes-credentials
+        key: az1003-gateway-key
 extraVolumes:
   - name: routes
     configMap:
       name: agentgateway-routes
-  - name: agentgateway-keys
+  - name: lares-mcp-bridge-gateway-key
     secret:
-      secretName: agentgateway-keys
+      secretName: lares-mcp-bridge-gateway-key
       items:
-        - key: lares-mcp-bridge
-          path: lares-mcp-bridge
-        - key: grafana-mcp
-          path: grafana-mcp
-        - key: cloudflare-mcp-token
-          path: cloudflare-mcp-token
+        - key: key
+          path: key
   - name: github-mcp-server-token
     secret:
       secretName: github-mcp-server-token
       items:
         - key: token
           path: token
+  - name: grafana-mcp-gateway-key
+    secret:
+      secretName: grafana-mcp-gateway-key
+      items:
+        - key: key
+          path: key
+  - name: agentgateway-keys
+    secret:
+      secretName: agentgateway-keys
+      items:
+        - key: cloudflare-mcp-token
+          path: cloudflare-mcp-token
 extraVolumeMounts:
   - name: routes
     mountPath: /etc/agentgateway/routes
     readOnly: true
-  - name: agentgateway-keys
-    mountPath: /etc/agentgateway/credentials/agentgateway-keys
+  - name: lares-mcp-bridge-gateway-key
+    mountPath: /etc/agentgateway/credentials/lares-mcp-bridge-gateway-key
     readOnly: true
   - name: github-mcp-server-token
     mountPath: /etc/agentgateway/credentials/github-mcp-server-token
+    readOnly: true
+  - name: grafana-mcp-gateway-key
+    mountPath: /etc/agentgateway/credentials/grafana-mcp-gateway-key
+    readOnly: true
+  - name: agentgateway-keys
+    mountPath: /etc/agentgateway/credentials/agentgateway-keys
     readOnly: true
