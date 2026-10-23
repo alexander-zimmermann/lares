@@ -10,7 +10,7 @@ helmCharts:
   - name: redis-chart
     repo: oci://ghcr.io/alexander-zimmermann/charts
     releaseName: redis
-    version: 23.0.5
+    version: 23.0.7
     valuesFile: values.yaml
     namespace: redis
 
