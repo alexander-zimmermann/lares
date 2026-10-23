@@ -18,6 +18,21 @@ extraEnv:
       secretKeyRef:
         name: hermes-credentials
         key: az1003-gateway-key
+  - name: GZ1410_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: hermes-credentials
+        key: gz1410-gateway-key
+  - name: LZ1410_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: hermes-credentials
+        key: lz1410-gateway-key
+  - name: VZ1604_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: hermes-credentials
+        key: vz1604-gateway-key
 extraVolumes:
   - name: routes
     configMap:

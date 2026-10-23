@@ -55,6 +55,9 @@ discord:
   dm_policy: allowlist
   allow_from:
     - ${env:DISCORD_USER_AZ1003}
+    - ${env:DISCORD_USER_GZ1410}
+    - ${env:DISCORD_USER_LZ1410}
+    - ${env:DISCORD_USER_VZ1604}
   allow_admin_from:
     - ${env:DISCORD_USER_AZ1003}
   group_allow_admin_from:
@@ -94,6 +97,18 @@ gateway:
       platform: discord
       user_id: ${env:DISCORD_USER_AZ1003}
       profile: az1003
+    - name: gz1410
+      platform: discord
+      user_id: ${env:DISCORD_USER_GZ1410}
+      profile: gz1410
+    - name: lz1410
+      platform: discord
+      user_id: ${env:DISCORD_USER_LZ1410}
+      profile: lz1410
+    - name: vz1604
+      platform: discord
+      user_id: ${env:DISCORD_USER_VZ1604}
+      profile: vz1604
 monitoring:
   gateway_health_export:
     enabled: true

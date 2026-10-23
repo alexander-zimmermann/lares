@@ -104,3 +104,36 @@ patches:
             memory: 8Mi
           limits:
             memory: 32Mi
+      - op: test
+        path: /spec/template/spec/containers/3/name
+        value: agent-log-gz1410
+      - op: add
+        path: /spec/template/spec/containers/3/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi
+      - op: test
+        path: /spec/template/spec/containers/4/name
+        value: agent-log-lz1410
+      - op: add
+        path: /spec/template/spec/containers/4/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi
+      - op: test
+        path: /spec/template/spec/containers/5/name
+        value: agent-log-vz1604
+      - op: add
+        path: /spec/template/spec/containers/5/resources
+        value:
+          requests:
+            cpu: 5m
+            memory: 8Mi
+          limits:
+            memory: 32Mi

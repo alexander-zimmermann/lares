@@ -14,6 +14,9 @@ spec:
         API_SERVER_KEY='{{ index . "api-server-key" }}'
         DISCORD_BOT_TOKEN='{{ index . "discord-bot-token" }}'
         DISCORD_USER_AZ1003='{{ index . "az1003-discord-user" }}'
+        DISCORD_USER_GZ1410='{{ index . "gz1410-discord-user" }}'
+        DISCORD_USER_LZ1410='{{ index . "lz1410-discord-user" }}'
+        DISCORD_USER_VZ1604='{{ index . "vz1604-discord-user" }}'
         LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
         GATEWAY_KEY='{{ index . "gateway-key" }}'
         OPENAI_API_KEY='{{ index . "openai-api-key" }}'
@@ -22,3 +25,18 @@ spec:
         LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
         GATEWAY_KEY='{{ index . "az1003-gateway-key" }}'
         OPENAI_API_KEY='{{ index . "az1003-openai-api-key" }}'
+      gz1410.env: |
+        API_SERVER_KEY='{{ index . "gz1410-api-server-key" }}'
+        LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
+        GATEWAY_KEY='{{ index . "gz1410-gateway-key" }}'
+        OPENAI_API_KEY='{{ index . "gz1410-openai-api-key" }}'
+      lz1410.env: |
+        API_SERVER_KEY='{{ index . "lz1410-api-server-key" }}'
+        LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
+        GATEWAY_KEY='{{ index . "lz1410-gateway-key" }}'
+        OPENAI_API_KEY='{{ index . "lz1410-openai-api-key" }}'
+      vz1604.env: |
+        API_SERVER_KEY='{{ index . "vz1604-api-server-key" }}'
+        LARES_AGENT_TRIGGER_HOOK_SECRET='{{ index . "lares-agent-trigger-hook-secret" }}'
+        GATEWAY_KEY='{{ index . "vz1604-gateway-key" }}'
+        OPENAI_API_KEY='{{ index . "vz1604-openai-api-key" }}'
