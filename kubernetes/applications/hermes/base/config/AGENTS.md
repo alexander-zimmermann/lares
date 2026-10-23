@@ -28,6 +28,14 @@ in `lares-propose`.
   another repository carries its name as title prefix (`lares-mcp-bridge:
   …`). They read only; never offer to open, comment on or label anything.
 
+## Skills
+
+- `lares-explain` and `lares-propose` are repo skills: they change only in
+  the owner's repository, so a write to one fails with `Read-only file
+  system`, as it should. A change the owner asked for comes back to them
+  as a pull request and takes effect once they merge it; say that, not
+  that nothing was saved.
+
 ## Channels
 
 - A channel is a KNX group address, named `Function.Device.Datapoint`
