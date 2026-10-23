@@ -26,7 +26,7 @@ helmCharts:
       - profiles/profiles.values.yaml
     namespace: agents
 
-# Hash on: the Deployment mounts these, so the pod rolls when config or a skill changes.
+# Hash on: the Deployment mounts these, so the pod rolls when config, a skill or a script changes.
 configMapGenerator:
   - name: hermes-config
     files:
@@ -38,7 +38,7 @@ configMapGenerator:
     # Empty marker file: without it Hermes seeds its 58 bundled skills into the volume on every boot
     literals:
       - .no-bundled-skills=
-  # One key per skill: every skill file is called SKILL.md.
+  # One key per skill; values.yaml lays each out as <name>/SKILL.md under /opt/skills.
   - name: hermes-skills
     files:
       - lares-explain=skills/lares-explain/SKILL.md
@@ -48,6 +48,11 @@ configMapGenerator:
     files:
       - plugins/hermes-session-reset-policy/plugin.yaml
       - plugins/hermes-session-reset-policy/__init__.py
+  # The scripts Hermes's cron runs without a model; values.yaml mounts them as the default
+  # profile's scripts/ directory.
+  - name: hermes-scripts
+    files:
+      - scripts/skill-digest.py
 
 # Every agent-log container, the default profile's and each person's, runs this one image.
 images:

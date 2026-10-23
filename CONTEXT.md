@@ -147,6 +147,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   in a file in this repo, from which the harness's configuration is
   rendered; adding one is a pull request, never a rebuild. A use case that
   does not run yet stays in the file as dormant, with its reason.
+- **Script** — a job of the harness's cron that runs a file without a
+  model, the file's output being the job's, which the harness delivers
+  itself. Declared beside the use cases, runs or is dormant like one, and
+  shares their names; it has no tool list, no budget and no row in the
+  ledger.
 - **Tool server** (avoid: MCP server, toolset) — what a use case's tool
   list names: an endpoint behind a route of its own on the gateway,
   either the MCP bridge, under one route per server it serves, or a

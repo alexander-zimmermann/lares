@@ -44,9 +44,10 @@ approvals:
   unattended_mode: deny
   cron_mode: deny
 
-# Skills are files in the repo; agent edits are staged and never approved.
+# Each profile learns into its own skills/; the repo's skills come read-only from hermes-skills.
 skills:
-  write_approval: true
+  external_dirs:
+    - /opt/skills
 
 # First-touch hints latch into config.yaml, which is read-only here: no profile
 # offer, and every hint pre-marked as seen, else the intro repeats on every message.
@@ -151,7 +152,8 @@ terminal:
   cwd: /opt/data/profiles/az1003
 
 # Rendered from persons.yaml and use-cases.yaml: az1003's tool servers on
-# Discord and the API server, and the hook that reports every finished turn.
+# Discord and the API server, the web chat's skill tools, and the hook that
+# reports every finished turn.
 platform_toolsets:
   discord:
     - hermes-discord
@@ -161,6 +163,7 @@ platform_toolsets:
     - grafana
     - cloudflare
   api_server:
+    - skills
     - lares
     - lares-runs
     - github
