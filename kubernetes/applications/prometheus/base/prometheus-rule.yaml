@@ -944,3 +944,14 @@ spec:
           annotations:
             summary: "Agent chat of {{ or $labels.enduser_id \"the default profile\" }} failed ({{ $labels.error_type }})"
             description: "{{ $value | printf \"%.0f\" }} message(s) of {{ or $labels.enduser_id \"the default profile\" }} in the last hour got an error instead of an answer: the turn's last model call failed for good with Hermes' class {{ $labels.error_type }}, and no retry or fallback answered. Its row in agent_runs is failed and names the model source and the status it answered. auth, auth_permanent or model_entitlement: a login or key of that source is broken, renewed as the comment at its source in persons.yaml says; billing or rate_limit: its budget or window is spent; model_not_found: the source does not serve the declared model."
+
+        - alert: AgentSkillPullRequestFailed
+          # The counter appears with its first failure, which increase() misses
+          expr: |
+            sum(increase(agent_trigger_skill_pull_requests_total{outcome="failed"}[1h])) > 0
+            or sum(agent_trigger_skill_pull_requests_total{outcome="failed"} unless agent_trigger_skill_pull_requests_total{outcome="failed"} offset 1h) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Agent skill correction did not reach GitHub"
+            description: "{{ $value | printf \"%.0f\" }} correction(s) of a repo skill by the owner in the last hour did not become a pull request or a commit on one: GitHub refused the write App or did not answer. The correction is lost; the trigger's log names the skill and GitHub's answer (`did not reach GitHub`). Say it again in chat once GitHub takes the App's writes."

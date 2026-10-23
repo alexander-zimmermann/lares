@@ -8,6 +8,12 @@ each person's, keeps the seven days before now, and prints one block per
 profile with a link to its skills page on the dashboard. The ledger holds
 paths and hashes, never a skill's text, and neither does the digest.
 
+A write to a repo skill never reaches the ledger: the skills under /opt/skills
+are read-only to every profile, and Hermes logs the refused write in the
+profile's `logs/errors.log` instead. Those skills get a line of their own. The
+owner's became a pull request in lares unless it no longer applied to main,
+which the trigger's log says; anyone else's stays this line.
+
 Reads HERMES_HOME, the default profile's directory, which the image sets, and
 HERMES_DASHBOARD_PUBLIC_URL, which the pod sets; exits 1 without them, which
 Hermes reports as a failed job.
@@ -17,11 +23,22 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 LEDGER = Path("skills") / ".curator_ledger.jsonl"
+# Hermes's log of warnings and errors, and how many rotated ones it keeps beside it.
+ERRORS_LOG = Path("logs") / "errors.log"
+ROTATED = 2
+# How the read-only mount refuses a skill write, as Hermes logs it
+# (`%(asctime)s %(levelname)s%(session_tag)s %(name)s: %(message)s`, local time).
+REFUSED = re.compile(
+    r"^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ ERROR\b.*? tools\.registry: "
+    r"Tool skill_manage dispatch error: \[Errno 30\] Read-only file system: "
+    r"'/opt/skills/([^/']+)/"
+)
 WINDOW = timedelta(days=7)
 # The ledger's action and what it did to the skill; every other action is no lesson.
 CHANGES = {
@@ -39,6 +56,7 @@ LABELS = {
     "changed": "Geändert",
     "archived": "Archiviert",
     "deleted": "Gelöscht",
+    "refused": "Repo-Skill nicht geschrieben",
 }
 # Names per line; the rest is a count, and the dashboard has them all.
 NAMES_PER_LINE = 8
@@ -66,6 +84,20 @@ def changes(ledger: Path, since: datetime) -> dict[str, set[str]]:
     return {change: names for change, names in held.items() if names}
 
 
+def refused(errors_log: Path, since: datetime) -> set[str]:
+    """The repo skills a write of this profile was refused on since `since`, by Hermes's log."""
+    names: set[str] = set()
+    rotated = (errors_log.with_name(f"{errors_log.name}.{n}") for n in range(1, ROTATED + 1))
+    for log in (errors_log, *rotated):
+        if not log.is_file():
+            continue
+        for line in log.read_text(encoding="utf-8", errors="replace").splitlines():
+            found = REFUSED.match(line)
+            if found and datetime.fromisoformat(found.group(1)) >= since:
+                names.add(found.group(2))
+    return names
+
+
 def block(profile: str, held: dict[str, set[str]], dashboard: str) -> str:
     """One profile's lines: its skills page, then the names of each change it had."""
     lines = [f"**{profile}** · <{dashboard}/skills?profile={profile}>"]
@@ -91,6 +123,8 @@ def main() -> int:
     home = Path(os.environ["HERMES_HOME"])
     dashboard = os.environ["HERMES_DASHBOARD_PUBLIC_URL"].rstrip("/")
     since = datetime.now(UTC) - WINDOW
+    # Hermes logs in the pod's local time, without a zone.
+    since_local = datetime.now() - WINDOW
 
     profiles = {"default": home}
     profiles_dir = home / "profiles"
@@ -106,6 +140,8 @@ def main() -> int:
     blocks = []
     for profile, directory in profiles.items():
         held = changes(directory / LEDGER, since)
+        if names := refused(directory / ERRORS_LOG, since_local):
+            held["refused"] = names
         if held:
             blocks.append(block(profile, held, dashboard))
 
