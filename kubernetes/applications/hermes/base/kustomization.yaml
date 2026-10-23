@@ -31,6 +31,8 @@ configMapGenerator:
   - name: hermes-config
     files:
       - config/config.yaml
+      # The managed scope over every profile, mounted as /etc/hermes/config.yaml
+      - config/settings.yaml
       - config/SOUL.md
       # One persona for every person, beside the default profile's own
       - config/persons-SOUL.md
