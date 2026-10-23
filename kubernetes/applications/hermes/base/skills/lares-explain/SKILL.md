@@ -38,7 +38,7 @@ room or a plant, where steps 2 and 3 fall away (see step 1).
 2. **Channel.** `get_current_knx` with the `room` and `name` the bundle
    named: current value, age, unit — for the channel and for the siblings
    that matter. The bundle says which channels exist, this says what they
-   read now. No number in the answer without its unit.
+   read now. No number in the answer without its unit. Round to at most one decimal.
 3. **History.** One `query_timeseries` call, never a second one over part of
    the same window: `table: "knx_1h"`, `columns: ["avg_value", "min_value",
    "max_value", "sample_count"]`, `filters: {"ga": "<the channel's ga>"}`,
