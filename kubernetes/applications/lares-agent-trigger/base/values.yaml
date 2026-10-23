@@ -3,7 +3,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.25.0
+    tag: 0.27.0
     pullPolicy: IfNotPresent
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
@@ -166,12 +166,13 @@ deployment:
         items:
           - key: lares-agent-trigger-hook-secret
             path: lares-agent-trigger-hook-secret
+    # The key the trigger's API takes, its own Secret; Kyverno clones it to the bridge
     api-key:
       secret:
-        secretName: hermes-credentials
+        secretName: lares-agent-trigger-api-key
         items:
-          - key: trigger-api-key
-            path: trigger-api-key
+          - key: api-key
+            path: api-key
     github-app-private-key:
       secret:
         secretName: lares-agent-github-app
@@ -221,7 +222,7 @@ deployment:
       readOnly: true
     api-key:
       mountPath: /etc/lares-agent-trigger/api-key
-      subPath: trigger-api-key
+      subPath: api-key
       readOnly: true
     github-app-private-key:
       mountPath: /etc/lares-agent-trigger/github-app-private-key

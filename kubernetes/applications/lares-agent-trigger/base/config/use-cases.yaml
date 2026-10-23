@@ -8,11 +8,11 @@
 # the cron job set, the template of Hermes's .env and the gateway's routes;
 # pre-commit fails on a stale one.
 #
-# Every variable named here (`secret_env`, `key_env`) is sealed in
-# hermes-credentials under its name in lower case and dashed, a person's own
-# value under the handle and that name. Each `key_env` is sealed again in
-# agentgateway-keys, beside the key the gateway calls the bridge with, as
-# lares-mcp-bridge-gateway-key holds it; pre-commit fails on a template or a
+# Every variable named here (`secret_env`, `key_env`) is sealed once, in
+# hermes-credentials, under its name in lower case and dashed, a person's own
+# value under the handle and that name; the gateway reads every profile's key
+# there. A server's credential is sealed where the server lives and cloned
+# into agents by Kyverno (ADR 0007); pre-commit fails on a template or a
 # reference naming a key that is not sealed.
 # The trigger mounts the cron job set too and brings Hermes's jobs in line with
 # it at every start.
@@ -39,19 +39,20 @@ tracing:
 gateway:
   url: http://agentgateway.agents.svc.cluster.local:8080
   otlp_endpoint: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+  # One key per profile, which opens the routes of the servers it holds.
+  key_env: GATEWAY_KEY
 
 # What `tools` may name. Each is an HTTP endpoint behind a route of its own on
 # the gateway, which serves its `tools` only, attaches its credential and names
 # the caller to the server: the route, and the person behind the key. Hermes
-# holds a key for the route, never the server's. The bridge under three routes,
-# and the vendors' own servers.
+# holds its profile's gateway key, never a server's. The bridge under three
+# routes, and the vendors' own servers.
 tool_servers:
   # Reads the house: series, episodes, runs, catalog, wiki, backups.
   - name: lares
     kind: http
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
-    credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
-    key_env: LARES_GATEWAY_KEY
+    credential: {secret: lares-mcp-bridge-gateway-key, key: key, header: Authorization}
     timeout_seconds: 60
     access: read
     # The verdict, memory, run and NATS-subscribe tools stay out; the get_ tools
@@ -76,8 +77,7 @@ tool_servers:
   - name: lares-runs
     kind: http
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
-    credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
-    key_env: LARES_RUNS_GATEWAY_KEY
+    credential: {secret: lares-mcp-bridge-gateway-key, key: key, header: Authorization}
     timeout_seconds: 30
     access: request
     tools: [start_run]
@@ -87,8 +87,7 @@ tool_servers:
   - name: lares-memory
     kind: http
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
-    credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
-    key_env: LARES_MEMORY_GATEWAY_KEY
+    credential: {secret: lares-mcp-bridge-gateway-key, key: key, header: Authorization}
     timeout_seconds: 30
     access: memory
     tools: [get_memory, append_memory]
@@ -103,7 +102,6 @@ tool_servers:
       secret: github-mcp-server-token
       key: token
       header: Authorization
-    key_env: GITHUB_GATEWAY_KEY
     timeout_seconds: 60
     access: read
     tools: [get_*, list_*, search_*, issue_read, pull_request_read]
@@ -115,10 +113,9 @@ tool_servers:
     kind: http
     url: http://grafana-mcp.grafana.svc.cluster.local:8000/mcp
     credential:
-      secret: agentgateway-keys
-      key: grafana-mcp
+      secret: grafana-mcp-gateway-key
+      key: key
       header: Authorization
-    key_env: GRAFANA_GATEWAY_KEY
     timeout_seconds: 60
     access: read
     # Every tool definition sits in the prompt, so only the reads a question
@@ -149,7 +146,6 @@ tool_servers:
       secret: agentgateway-keys
       key: cloudflare-mcp-token
       header: Authorization
-    key_env: CLOUDFLARE_GATEWAY_KEY
     timeout_seconds: 60
     access: read
     tools: [search, execute, docs, whoami]
@@ -164,7 +160,7 @@ connectors:
     issuer: ${AUTHENTIK_URL}/application/o/claude-ai/
     client_id: claude-ai
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
-    credential: {secret: agentgateway-keys, key: lares-mcp-bridge, header: Authorization}
+    credential: {secret: lares-mcp-bridge-gateway-key, key: key, header: Authorization}
     tools: ["*"]
 
 # The Sunday digest of what each profile learned: the skills created, changed and

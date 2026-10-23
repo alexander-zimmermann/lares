@@ -33,7 +33,7 @@ deployment:
       value: /etc/lares-mcp-bridge/db_write_username
     MCP_DB_WRITE_PASSWORD_FILE:
       value: /etc/lares-mcp-bridge/db_write_password
-    # The key the gateway calls with, sealed for both namespaces
+    # The key the gateway calls with; Kyverno clones its Secret into agents
     MCP_GATEWAY_KEY_FILE:
       value: /etc/lares-mcp-bridge/gateway-key
     MCP_NATS_SERVERS:
@@ -150,9 +150,10 @@ deployment:
         items:
           - key: key
             path: key
+    # The trigger's API key, cloned by Kyverno from agents
     trigger-api-key:
       secret:
-        secretName: lares-mcp-bridge-trigger-api-key
+        secretName: lares-agent-trigger-api-key
         items:
           - key: api-key
             path: api-key

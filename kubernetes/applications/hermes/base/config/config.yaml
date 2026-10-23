@@ -203,7 +203,7 @@ mcp_servers:
   lares:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares
     headers:
-      Authorization: Bearer ${env:LARES_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:
@@ -225,7 +225,7 @@ mcp_servers:
   lares-memory:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/lares-memory
     headers:
-      Authorization: Bearer ${env:LARES_MEMORY_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 30
     tools:
       include:
@@ -236,7 +236,7 @@ mcp_servers:
   github:
     url: http://agentgateway.agents.svc.cluster.local:8080/mcp/github
     headers:
-      Authorization: Bearer ${env:GITHUB_GATEWAY_KEY}
+      Authorization: Bearer ${env:GATEWAY_KEY}
     timeout: 60
     tools:
       include:

@@ -1,6 +1,8 @@
 # One gateway in front of every tool server. Its routes come from the ConfigMap
-# agentgateway-routes, their keys from the SealedSecret agentgateway-keys
-# (config/routes.values.yaml); a renewed credential reloads without a restart.
+# agentgateway-routes, every profile's key from hermes-credentials, a server's
+# credential from that server's Secret cloned here by Kyverno, and a hosted
+# vendor's token from agentgateway-keys (config/routes.values.yaml); a renewed
+# credential reloads without a restart.
 nameOverride: agentgateway
 fullnameOverride: agentgateway
 
