@@ -902,13 +902,11 @@ LEFT JOIN episode_verdicts v ON v.episode_id = r.id;
 -- message has no state). `tool_trace` records which tools a run called,
 -- never what they returned. `verdict` is the person's judgement on the
 -- output, written by the MCP bridge and nothing else. `enduser_id` is the
--- handle of the person a chat turn answered (an undeclared profile's name
--- on a turn from one), named as OpenTelemetry's `enduser.id`, and
+-- handle of the person a chat turn answered, named as OpenTelemetry's
+-- `enduser.id`, and
 -- `surface` is `discord` or `web`, where the turn came in; a machine's
 -- run leaves both NULL. `trace_id` is set only when the run's trace was
--- sampled. The `review_*` columns sum a chat turn's background reviews on
--- its row and stay NULL without one; a person's spend is `cost` plus
--- `review_cost`.
+-- sampled.
 -- Written by lares_agent_trigger, read by the read-only roles.
 -- Plain table, no hypertable — run volume is a handful a day.
 -- =========================================================
@@ -936,10 +934,6 @@ CREATE TABLE IF NOT EXISTS agent_runs (
     tokens_in         INTEGER,
     tokens_out        INTEGER,
     cost              NUMERIC(10, 6),
-    review_tokens_in  INTEGER,
-    review_tokens_out INTEGER,
-    review_cost       NUMERIC(10, 6),
-    review_text       TEXT,
     duration          INTERVAL,
     tool_trace        JSONB,
     verdict           TEXT           CHECK (verdict IN ('helpful', 'useless')),

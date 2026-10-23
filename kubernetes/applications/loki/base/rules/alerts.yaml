@@ -112,8 +112,8 @@ groups:
           summary: "Agent model source of {{ or $labels.enduser_id \"the default profile\" }} failing ({{ $labels.signal }})"
           description: "{{ $value }} '{{ $labels.signal }}' line(s) in the agent.log of {{ or $labels.enduser_id \"the default profile\" }} in the last hour: its model source is failing, and its turns fall back to its capped OpenAI project or fail. The signal names the cause; a lost Codex login is renewed as the comment at its source in persons.yaml says."
 
-      - alert: AgentChatFailed
-        # Fails before the first model call: no hook, no row; event runs (`for run=`) are AgentRunFailed's
+      - alert: AgentChatFailedBeforeCall
+        # Fails before the first model call: no hook, no row, so AgentChatFailed cannot see it; event runs (`for run=`) are AgentRunFailed's
         expr: |
           sum by (enduser_id) (
             count_over_time({namespace="agents", container=~"agent-log.*"}
