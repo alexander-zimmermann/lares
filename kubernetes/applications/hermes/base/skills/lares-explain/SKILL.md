@@ -131,10 +131,12 @@ The "Open:" line is dropped when nothing was left open.
   `FBH.Stellwert-Status` (whether the valve was open),
   `Fenster.*.Geöffnet-Status` (whether the heat was being thrown away).
   Valve open, setpoint above actual, windows shut → the room did its part
-  and the burner is the suspect. Valve closed, or a window open → the cause
-  is in the room, and the burner is not to blame.
-- **heat_recovery_decay, gas boiler faults**: `query_heating_cycles` and
-  `query_room_climate` for the room, outdoor temperature via the weather.
+  and the burner is the suspect: trace it with
+  [references/heating.md](references/heating.md). Valve closed, or a window
+  open → the cause is in the room, and the burner is not to blame.
+- **heat_recovery_decay, gas boiler faults**: trace the burner and the
+  mixed circuit with [references/heating.md](references/heating.md); outdoor
+  temperature via the weather.
 - **pv_underperformance**: `query_energy_flow` and `get_pv_forecast` for the
   day, those two calls and nothing else — no `query_timeseries` on the
   solaredge tables; clouds are not a cause, deviation from the forecast is.
