@@ -26,7 +26,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: compactor
-              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.8.0
+              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.9.0
               securityContext:
                 allowPrivilegeEscalation: false
                 runAsNonRoot: true
