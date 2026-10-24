@@ -48,20 +48,21 @@ entries:
   # Source flow: every bound policy must pass, else the SSO check alone admits the sign-in
   - model: authentik_flows.flow
     state: present
+    id: source-authentication
     identifiers:
       slug: default-source-authentication
     attrs:
       policy_engine_mode: all
 
-  # Policy Binding: the 2FA policy runs when a GitHub sign-in plans the source flow
+  # Policy Binding: the 2FA policy runs when a GitHub sign-in plans the source flow; !KeyOf, as !Find yields a flow's own key, not its binding key
   - model: authentik_policies.policybinding
     state: present
     identifiers:
-      target: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+      target: !KeyOf source-authentication
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, github-require-2fa]]
       order: 10
     attrs:
-      target: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+      target: !KeyOf source-authentication
       policy: !Find [authentik_policies_expression.expressionpolicy, [name, github-require-2fa]]
       order: 10
       enabled: true
