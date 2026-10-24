@@ -10,7 +10,6 @@ resources:
   - ./initialize-buckets-job.yaml
   - ./initialize-rustfs-users.yaml
   - ./nats-archive-compaction-cronjob.yaml
-  - ./nightly-restart-cronjob.yaml
 
 helmCharts:
   - name: rustfs
