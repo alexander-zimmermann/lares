@@ -117,8 +117,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   handle, and so does the ledger's `enduser_id`.
 - **Handle** — a person's public name in Git and in the sign-in provider,
   chosen by the household; never a legal name.
-- **Household** — the group whose membership grants a person the chat
-  surfaces.
+- **Household** — the group of all persons, whose membership opens the
+  wiki to a person.
 - **Surface** — where a turn reaches the harness: Discord, the API server,
   cron, the web chat. The harness hands out tool servers per surface.
 - **Model source** (avoid: provider, backend, gateway) — where the model of

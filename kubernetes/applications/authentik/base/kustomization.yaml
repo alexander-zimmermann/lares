@@ -27,6 +27,13 @@ configMapGenerator:
   - name: authentik-blueprint-groups
     files:
       - blueprints/groups.yaml
+  - name: authentik-blueprint-household
+    files:
+      - blueprints/household.yaml
+  # Rendered from persons.yaml by the agents:create-harness-config hook
+  - name: authentik-blueprint-persons
+    files:
+      - blueprints/persons.yaml
   - name: authentik-blueprint-forward-auth
     files:
       - blueprints/forward-auth.yaml

@@ -4,7 +4,7 @@ metadata:
   labels:
     blueprints.goauthentik.io/instantiate: "true"
 entries:
-  # OAuth Source: redirects users to GitHub for authentication and maps the identity locally
+  # OAuth Source: redirects users to GitHub for authentication; household.yaml lists it on the login page
   - model: authentik_sources_oauth.oauthsource
     state: present
     identifiers:
@@ -36,15 +36,6 @@ entries:
             ak_message("GitHub 2FA must be enabled to log in.")
             return False
         return True
-
-  # Identification Stage: show GitHub as a login option on the login page
-  - model: authentik_stages_identification.identificationstage
-    state: present
-    identifiers:
-      name: default-authentication-identification
-    attrs:
-      sources:
-        - !Find [authentik_sources_oauth.oauthsource, [slug, github]]
 
   # Source bindings never run at sign-in, so the 2FA policy is not bound to the source
   - model: authentik_policies.policybinding

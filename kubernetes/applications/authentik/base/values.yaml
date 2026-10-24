@@ -33,6 +33,17 @@ global:
         secretKeyRef:
           name: authentik-github-source
           key: AUTHENTIK_GITHUB_CLIENT_SECRET
+    # Google OAuth client for the household blueprint; one client serves both clusters
+    - name: AUTHENTIK_GOOGLE_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: authentik-google-source
+          key: AUTHENTIK_GOOGLE_CLIENT_ID
+    - name: AUTHENTIK_GOOGLE_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: authentik-google-source
+          key: AUTHENTIK_GOOGLE_CLIENT_SECRET
     # ArgoCD OIDC client secret for the argocd-oidc blueprint
     - name: ARGOCD_OIDC_CLIENT_SECRET
       valueFrom:
@@ -142,6 +153,8 @@ blueprints:
   configMaps:
     - authentik-blueprint-sources
     - authentik-blueprint-groups
+    - authentik-blueprint-household
+    - authentik-blueprint-persons
     - authentik-blueprint-forward-auth
     - authentik-blueprint-argocd
     - authentik-blueprint-homepage
