@@ -72,13 +72,14 @@ extraEnv:
   # Redundant since rc.4 defaults it to true; kept explicit to pin the contract.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
-  # Resident memory follows the working set of a single scanner sweep, and on
-  # 1.0.2 the floor keeps the high-water mark of the largest one. Capping a
-  # cycle at a quarter of the ~33,000 directories it would otherwise walk bounds
-  # that working set, so the cadence no longer has to be throttled to keep it
-  # small (lares#2143, rustfs#8121). A full pass takes about five partial cycles.
-  - name: RUSTFS_SCANNER_CYCLE_MAX_DIRECTORIES
-    value: "8000"
+  # A cycle that hits cycle_max_directories reports partial and never clears the
+  # dirty-usage flags, so the next wakeup restarts it from the top: 32 capped
+  # cycles covered 260,087 directories of a ~33,000 namespace with zero passes
+  # completed and no usage ever published. Throttling the cadence is the tool
+  # that works here, because resident memory scales with the sweep rate
+  # (rustfs#8121). Six hours trades statistics freshness for headroom.
+  - name: RUSTFS_SCANNER_CYCLE
+    value: "21600"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
   # Host URLs are injected per environment via overlay replacements.
   - name: RUSTFS_BROWSER_REDIRECT_URL
