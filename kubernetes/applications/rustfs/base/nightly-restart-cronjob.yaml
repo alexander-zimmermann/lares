@@ -1,11 +1,10 @@
-# Restarts rustfs at 00:30, 02:30 and 05:30 UTC, through the 01:00-05:00 load
-# chain. Every window of concurrent LIST and scanner work lifts resident memory
-# by roughly 100 MiB and it does not come back, so the floor climbs until it
-# meets the 1 GiB limit. A restart puts the floor back to ~150 MiB. Bracketing
-# the chain is not enough, because the chain itself costs 580-690 MiB and the
-# night of 07 Oct peaked at 100.2 % of the limit between two slots. Three slots
-# cap each segment at ~470 MiB, measured against the worst night so far.
-# The cause sits in the scanner's cache copies, addressed upstream in rustfs#8346.
+# Restarts rustfs at 05:30 UTC, after the nightly load chain.
+# On 1.0.2 resident memory no longer climbs without bound, but it keeps the
+# high-water mark of scanner work: a day that fits an extra cycle lifts the
+# floor and later quiet periods reuse that memory instead of releasing it. Over
+# four uninterrupted days the floor settled into a band whose top reached 68 %
+# of the limit. One restart bounds the band by a single day's worst burst
+# instead of the pod's whole lifetime (lares#2143, rustfs#8121).
 apiVersion: v1
 kind: ServiceAccount
 
@@ -54,11 +53,9 @@ metadata:
   namespace: rustfs
 
 spec:
-  # 02:30 splits the chain, 05:30 is after its last job (snapshot-cleanup, 05:00).
-  schedule: "30 0,2,5 * * *"
-  # Suspended for the 1.0.2 soak: the slope has to be measured without a reset.
-  # RustfsMemoryClimbing at 75 % is the guard meanwhile (lares#2143).
-  suspend: true
+  # 05:30 is after the chain's last job (snapshot-cleanup, 05:00), so each day's
+  # bursts build the high-water mark from a low start.
+  schedule: "30 5 * * *"
   timeZone: "Etc/UTC"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
