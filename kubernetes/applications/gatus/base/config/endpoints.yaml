@@ -45,6 +45,16 @@ endpoints:
     conditions:
       - "[STATUS] == any(200, 404)"
 
+  # The household's Google sign-in: Google deletes a client unused for six months
+  # and answers a refused one with its error page. The client id is public.
+  - name: Google sign-in client
+    group: Security & Identity
+    url: "https://accounts.google.com/o/oauth2/v2/auth?client_id=586915964157-jlfgj7jsia3f0jrcunqu3u03n5f5mfvi.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fauth.zimmermann.sh%2Fsource%2Foauth%2Fcallback%2Fgoogle%2F&response_type=code&scope=email%20profile"
+    interval: 1h
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY] != pat(*signin/oauth/error*)"
+
   # The UniFi core. Probed directly on the LAN rather than through the
   # Cloudflare path the other device endpoints use, so the result says
   # whether the gateway itself answers, not whether the way in from outside

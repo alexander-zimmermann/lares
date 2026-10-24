@@ -1,0 +1,216 @@
+version: 1
+metadata:
+  name: household
+  labels:
+    blueprints.goauthentik.io/instantiate: "true"
+# How the household signs in and what that opens; who belongs to it is persons.yaml, rendered.
+entries:
+  # Group: opens the wiki; persons.yaml sets its members, either blueprint may apply first
+  - model: authentik_core.group
+    state: present
+    id: household
+    identifiers:
+      name: household
+
+  # Login Stage: every household way in ends here, for 30 days; GitHub's source flow has its own
+  - model: authentik_stages_user_login.userloginstage
+    state: present
+    id: login
+    identifiers:
+      name: default-authentication-login
+    attrs:
+      session_duration: days=30
+
+  # Authenticator Validation Stage: a passkey with user verification, two factors in one tap
+  - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+    state: present
+    id: passkey-validation
+    identifiers:
+      name: household-passkey-validation
+    attrs:
+      name: household-passkey-validation
+      device_classes:
+        - webauthn
+      webauthn_user_verification: required
+      not_configured_action: deny
+
+  # Flow behind "Use a security key": the passkey alone, for a browser that offers no autofill
+  - model: authentik_flows.flow
+    state: present
+    id: passkey-login
+    identifiers:
+      slug: household-passkey-login
+    attrs:
+      name: Passkey login
+      title: Sign in with your passkey
+      designation: authentication
+      authentication: require_unauthenticated
+
+  - model: authentik_flows.flowstagebinding
+    state: present
+    identifiers:
+      target: !KeyOf passkey-login
+      stage: !KeyOf passkey-validation
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    state: present
+    identifiers:
+      target: !KeyOf passkey-login
+      stage: !KeyOf login
+      order: 100
+
+  # Recovery Flow: an admin's setup link adds a passkey and signs in; a new person or a lost phone
+  - model: authentik_flows.flow
+    state: present
+    id: passkey-setup
+    identifiers:
+      slug: household-passkey-setup
+    attrs:
+      name: Passkey setup
+      title: Set up your passkey
+      designation: recovery
+      authentication: require_unauthenticated
+
+  # Expression Policy: the link plans the flow for its user; a direct visit, also the password page's "forgot" link, is told the way back
+  - model: authentik_policies_expression.expressionpolicy
+    state: present
+    id: link-only
+    identifiers:
+      name: household-passkey-setup-link-only
+    attrs:
+      name: household-passkey-setup-link-only
+      expression: |
+        if "pending_user" in context:
+            return True
+        ak_message("Sign in with Google and add a passkey under Settings, or ask for a new setup link.")
+        return False
+
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !KeyOf passkey-setup
+      policy: !KeyOf link-only
+      order: 0
+    attrs:
+      enabled: true
+
+  - model: authentik_flows.flowstagebinding
+    state: present
+    identifiers:
+      target: !KeyOf passkey-setup
+      stage: !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    state: present
+    identifiers:
+      target: !KeyOf passkey-setup
+      stage: !KeyOf login
+      order: 100
+
+  # Brand: "Create recovery link" hands out the passkey setup
+  - model: authentik_brands.brand
+    state: present
+    identifiers:
+      default: true
+    attrs:
+      flow_recovery: !KeyOf passkey-setup
+
+  # Expression Policy: anyone signed in can connect any Google account, so only the account's own address passes
+  - model: authentik_policies_expression.expressionpolicy
+    state: present
+    id: google-own-address
+    identifiers:
+      name: household-google-own-address
+    attrs:
+      name: household-google-own-address
+      # Passing runs land in the event log too, not only failures
+      execution_logging: true
+      expression: |
+        userinfo = context.get("oauth_userinfo", {})
+        google = (userinfo.get("email") or "").casefold()
+        own = (request.user.email or "").casefold()
+        if not userinfo.get("verified_email", False) or not google or google != own:
+            ak_message("This Google account is not the one this account signs in with.")
+            return False
+        return True
+
+  # Flow: Google's sign-in, kept apart from GitHub's 2FA rule; every bound policy must pass
+  - model: authentik_flows.flow
+    state: present
+    id: google-authentication
+    identifiers:
+      slug: household-google-authentication
+    attrs:
+      name: Google login
+      title: Sign in with Google
+      designation: authentication
+      authentication: require_unauthenticated
+      policy_engine_mode: all
+
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !KeyOf google-authentication
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, default-source-authentication-if-sso]]
+      order: 0
+    attrs:
+      enabled: true
+
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !KeyOf google-authentication
+      policy: !KeyOf google-own-address
+      order: 10
+    attrs:
+      enabled: true
+
+  - model: authentik_flows.flowstagebinding
+    state: present
+    identifiers:
+      target: !KeyOf google-authentication
+      stage: !KeyOf login
+      order: 100
+
+  # OAuth Source: the person's own Google account, connected under Settings → Connected services
+  - model: authentik_sources_oauth.oauthsource
+    state: present
+    id: google
+    identifiers:
+      slug: google
+    attrs:
+      name: Google
+      slug: google
+      provider_type: google
+      consumer_key: !Env AUTHENTIK_GOOGLE_CLIENT_ID
+      consumer_secret: !Env AUTHENTIK_GOOGLE_CLIENT_SECRET
+      authentication_flow: !KeyOf google-authentication
+      # Signs existing accounts in, never creates one; matches Google's id, never the e-mail
+      enrollment_flow: null
+      user_matching_mode: identifier
+      enabled: true
+
+  # Identification Stage: GitHub, Google, passkey autofill and "Use a security key"; no recovery link
+  - model: authentik_stages_identification.identificationstage
+    state: present
+    identifiers:
+      name: default-authentication-identification
+    attrs:
+      sources:
+        - !Find [authentik_sources_oauth.oauthsource, [slug, github]]
+        - !KeyOf google
+      webauthn_stage: !KeyOf passkey-validation
+      passwordless_flow: !KeyOf passkey-login
+      recovery_flow: null
+
+  # Policy Binding: household reads the wiki, beside platform-admins
+  - model: authentik_policies.policybinding
+    state: present
+    identifiers:
+      target: !Find [authentik_core.application, [slug, wikijs]]
+      group: !KeyOf household
+      order: 10
+    attrs:
+      enabled: true

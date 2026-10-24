@@ -40,6 +40,7 @@ vars:
   HERMES_PROFILES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/profiles"
   AGENT_GATEWAY_ROUTES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/agentgateway/base/config/routes.yaml"
   AGENT_GATEWAY_ROUTES_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/agentgateway/base/config/routes.values.yaml"
+  AUTHENTIK_PERSONS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/authentik/base/blueprints/persons.yaml"
 
 includes:
   infra:

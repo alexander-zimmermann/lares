@@ -7,7 +7,8 @@
 # The schema and the loader live in lares-agent-trigger, which mounts this file
 # beside use-cases.yaml and prices every model call by the source step that
 # served it. `task agents:create-harness-config` renders every profile's
-# `model` and `fallback_providers` from it, and each person's profile.
+# `model` and `fallback_providers` from it, each person's profile, and
+# Authentik's blueprint of every person's account and groups.
 #
 # A person's identity never lands here: their Discord id is sealed in
 # hermes-credentials as <handle>-discord-user, which the default profile's .env
@@ -73,7 +74,10 @@ model_sources:
 # env-template names, add their agent-log-<handle> patch to both Hermes
 # overlays, log their profile in after the sync, and see one test DM answered
 # before telling them. A valid but wrong Discord id drops their messages silently.
-# Locking one out: `dormant: <reason>` and a kick from the Discord server, never
+# Their Authentik account comes with the sync: set its Email to their Google
+# address and send them a setup link (Create recovery link, days=2).
+# Locking one out: `dormant: <reason>`, which also deactivates their Authentik
+# account, a deactivation in Wiki.js, and a kick from the Discord server, never
 # a ban, which Discord sets by IP and so for the whole household.
 persons:
   # The owner, on the machines' subscription with a Codex login of their own.

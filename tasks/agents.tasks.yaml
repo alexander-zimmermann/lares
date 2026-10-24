@@ -18,6 +18,8 @@ version: "3"
 #   AGENT_GATEWAY_ROUTES_VALUES_PATH
 #                                — rendered: the gateway's chart values that set those
 #                                  variables and mount the routes and each credential
+#   AUTHENTIK_PERSONS_PATH       — rendered: Authentik's blueprint of every person's
+#                                  account and groups
 
 tasks:
   create-harness-config:
@@ -32,15 +34,16 @@ tasks:
       values that mount it, the cron job set for the trigger, the sampling
       ratio the trigger, the bridge and the engine trace at, the template that
       composes every profile's .env from the keys sealed one by one beside it,
-      the gateway's routes, and the gateway's chart values that set their keys
-      and mount the routes and each credential they attach.
+      the gateway's routes, the gateway's chart values that set their keys
+      and mount the routes and each credential they attach, and Authentik's
+      blueprint of every person's account, household membership and group.
       The trigger's loaders refuse a declaration that breaks a rule and name
       the field. A commit whose rendered files this changed stops once: add
       them and commit again. A key a template names must be sealed too
       (task k8s:validate-sealed-templates).
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
       Writes: config.yaml, profiles/, cron-jobs.yaml, tracing.env, env-template.yaml,
-      config/routes.yaml and config/routes.values.yaml.
+      config/routes.yaml, config/routes.values.yaml and blueprints/persons.yaml.
       Needs network (the git tag) and a uv that knows Python 3.15.
     vars:
       AGENT_TRIGGER_TAG:
@@ -60,6 +63,7 @@ tasks:
         --routes "{{.AGENT_GATEWAY_ROUTES_PATH}}"
         --routes-values "{{.AGENT_GATEWAY_ROUTES_VALUES_PATH}}"
         --profiles "{{.HERMES_PROFILES_PATH}}"
+        --authentik-persons "{{.AUTHENTIK_PERSONS_PATH}}"
 
   check-codex-login:
     desc: "check a profile's Codex login against its source's account rule, after `auth add` [handle]"
