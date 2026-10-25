@@ -74,6 +74,12 @@ global:
         secretKeyRef:
           name: wikijs-oidc-secret
           key: WIKIJS_OIDC_CLIENT_SECRET
+    # Open WebUI OIDC client secret for the open-webui-oidc blueprint
+    - name: OPEN_WEBUI_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: open-webui-oidc-secret
+          key: OPEN_WEBUI_OIDC_CLIENT_SECRET
     # claude.ai connector OIDC client secret for the claude-ai-oidc blueprint
     - name: CLAUDE_AI_OIDC_CLIENT_SECRET
       valueFrom:
@@ -115,6 +121,8 @@ global:
       value: https://PLACEHOLDER_NODE_RED_HOST/auth/strategy/callback/
     - name: AUTHENTIK_WIKIJS_REDIRECT_URI
       value: https://PLACEHOLDER_WIKIJS_HOST/login/b7746d63-71b4-47c1-bd32-903833a0a8ca/callback
+    - name: AUTHENTIK_OPEN_WEBUI_REDIRECT_URI
+      value: https://PLACEHOLDER_OPEN_WEBUI_HOST/oauth/oidc/callback
     - name: AUTHENTIK_RUSTFS_REDIRECT_URI
       value: https://PLACEHOLDER_RUSTFS_HOST/rustfs/admin/v3/oidc/callback/default
     - name: AUTHENTIK_CLAUDE_AI_REDIRECT_URI
@@ -164,6 +172,7 @@ blueprints:
     - authentik-blueprint-grafana
     - authentik-blueprint-node-red
     - authentik-blueprint-wikijs
+    - authentik-blueprint-open-webui
     - authentik-blueprint-claude-ai
     - authentik-blueprint-rustfs
     - authentik-blueprint-hermes

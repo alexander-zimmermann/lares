@@ -93,6 +93,19 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=AUTHENTIK_WIKIJS_REDIRECT_URI].value
 
+  - sourceValue: https://chat.zimmermann.phd/oauth/oidc/callback
+    targets:
+      - select:
+          kind: Deployment
+          name: authentik-worker
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_OPEN_WEBUI_REDIRECT_URI].value
+      - select:
+          kind: Deployment
+          name: authentik-server
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_OPEN_WEBUI_REDIRECT_URI].value
+
   - sourceValue: https://hermes.zimmermann.phd/auth/callback
     targets:
       - select:

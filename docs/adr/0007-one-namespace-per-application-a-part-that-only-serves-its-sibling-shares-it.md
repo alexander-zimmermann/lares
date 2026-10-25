@@ -20,7 +20,10 @@ others render no Namespace of their own.
 A Secret is sealed once, in the namespace of the application that owns
 it. Another namespace that needs it gets a clone through the Kyverno
 policy `sync-cluster-secrets`, never a second SealedSecret with the same
-value. Inside a shared namespace a part reads its sibling's Secret
+value. A clone carries the whole Secret, so where another application
+needs a few keys of one that holds many, it seals those keys itself: Open
+WebUI's `open-webui-hermes-keys` holds each person's API server key, the
+only keys of `hermes-credentials` it reads. Inside a shared namespace a part reads its sibling's Secret
 directly: the gateway sets each profile's gateway key from
 `hermes-credentials`, the Secret the harness composes its `.env` files
 from, because the harness reads a profile's keys from that file alone.

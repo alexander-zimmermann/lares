@@ -216,7 +216,7 @@ use_cases:
     trigger:
       kind: message
     tools: [lares, lares-runs, github, grafana, cloudflare]
-    output: [discord]
+    output: [discord, web_chat]
     # Nothing here is enforced for a chat. runs_per_day counts per person: their
     # 201st message in a day is answered, and AgentMessengerBudget fires.
     budget:
