@@ -37,7 +37,7 @@ entries:
       name: authentik Embedded Outpost
       providers:
         - !Find [authentik_providers_proxy.proxyprovider, [name, forward-auth-proxy]]
-      _config:
+      config:
         authentik_host: !Env AUTHENTIK_HOST
         authentik_host_browser: !Env AUTHENTIK_HOST
 
