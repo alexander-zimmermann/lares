@@ -1,0 +1,45 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+
+metadata:
+  name: hermes-ingress
+
+spec:
+  # Who may reach the harness: its API server takes the trigger's runs and jobs and
+  # Open WebUI's chats, each under a key of its own, and nobody else; Traefik reaches
+  # the dashboard. Verdicts stay AUDIT while policyAuditMode is set.
+  endpointSelector:
+    matchLabels:
+      io.kubernetes.pod.namespace: agents
+      app.kubernetes.io/name: hermes
+
+  ingress:
+    # lares-agent-trigger: the Runs API and the Jobs API
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: lares-agent-trigger
+      toPorts:
+        - ports:
+            - port: "8642"
+              protocol: TCP
+
+    # Open WebUI: each person's profile under /p/<handle>/v1
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: open-webui
+            app.kubernetes.io/name: open-webui
+      toPorts:
+        - ports:
+            - port: "8642"
+              protocol: TCP
+
+    # Traefik: the dashboard, which signs in against Authentik itself
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: ingress-controller
+            app.kubernetes.io/name: traefik
+      toPorts:
+        - ports:
+            - port: "9119"
+              protocol: TCP

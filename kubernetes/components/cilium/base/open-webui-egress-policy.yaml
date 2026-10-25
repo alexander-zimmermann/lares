@@ -1,0 +1,56 @@
+apiVersion: cilium.io/v2
+kind: CiliumClusterwideNetworkPolicy
+
+metadata:
+  name: open-webui-egress
+
+spec:
+  # Open WebUI, the household's web chat, fenced on its own outside the agent cage: it
+  # reaches the harness's API server, Authentik for the sign-in and the receiver for its
+  # traces, nothing else. Verdicts stay AUDIT while policyAuditMode is set.
+  endpointSelector:
+    matchLabels:
+      io.kubernetes.pod.namespace: open-webui
+      app.kubernetes.io/name: open-webui
+
+  egress:
+    # DNS through the Cilium DNS proxy; the toFQDNs rule below is learned from these answers
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+
+    # Each person's profile on the harness's API server
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: hermes
+      toPorts:
+        - ports:
+            - port: "8642"
+              protocol: TCP
+
+    # OTLP/HTTP traces
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: alloy
+            app.kubernetes.io/name: alloy-receiver
+      toPorts:
+        - ports:
+            - port: "4318"
+              protocol: TCP
+
+    # Authentik behind Cloudflare: OIDC discovery, token, userinfo and JWKS at the sign-in
+    - toFQDNs:
+        - matchName: PLACEHOLDER_AUTH_HOST
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
