@@ -11,8 +11,6 @@ resources:
   - service-account.yaml
   # The key the gateway calls with
   - sealed-secret.yaml
-  # The platform's sampling ratio, rendered from the trigger's use-case file.
-  - ../../lares-agent-trigger/base/tracing
 
 helmCharts:
   - name: grafana-mcp

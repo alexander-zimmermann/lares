@@ -32,13 +32,8 @@ env:
   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://alloy-alloy-receiver.alloy.svc.cluster.local:4317
   OTEL_EXPORTER_OTLP_TRACES_INSECURE: "true"
   OTEL_TRACES_SAMPLER: parentbased_traceidratio
-
-envValueFrom:
-  # The platform's sampling ratio, rendered from use-cases.yaml
-  OTEL_TRACES_SAMPLER_ARG:
-    configMapKeyRef:
-      name: agent-tracing
-      key: TRACING_SAMPLING_RATIO
+  # The agent platform's sampling ratio
+  OTEL_TRACES_SAMPLER_ARG: "1.0"
 
 # Every call must bring it as a bearer token: the key the gateway calls with. Named
 # here, else the chart mints a token of its own and the gateway's key is refused.

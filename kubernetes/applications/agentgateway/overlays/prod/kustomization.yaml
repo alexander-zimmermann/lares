@@ -45,6 +45,12 @@ patches:
         value:
           name: AUTHENTIK_URL
           value: https://auth.zimmermann.sh
+      # The agent platform's sampling ratio, which the rendered routes name
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: TRACING_SAMPLING_RATIO
+          value: "1.0"
       - op: add
         path: /spec/template/spec/containers/0/resources
         value:

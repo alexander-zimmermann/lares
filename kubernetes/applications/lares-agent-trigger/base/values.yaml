@@ -3,7 +3,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/alexander-zimmermann/lares-agent-trigger
-    tag: 0.33.0
+    tag: 0.34.0
     pullPolicy: IfNotPresent
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
@@ -19,9 +19,6 @@ deployment:
     # The model sources and their prices, by which every model call is priced
     PERSONS_FILE:
       value: /etc/lares-agent-trigger/persons.yaml
-    # The cron job set rendered from it, reconciled into Hermes at every start
-    CRON_JOBS_FILE:
-      value: /etc/lares-agent-trigger/cron-jobs.yaml
     NATS_SERVERS:
       value: nats://nats.nats.svc.cluster.local:4222
     # NKey seed mounted as a file from the synced Secret (Kyverno clones from `nats` namespace)
@@ -107,14 +104,11 @@ deployment:
       value: json
     METRICS_PORT:
       value: "9090"
-    # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+    # OTLP/HTTP collector for traces, and the agent platform's sampling ratio
     TRACING_ENDPOINT:
       value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
     TRACING_SAMPLING_RATIO:
-      valueFrom:
-        configMapKeyRef:
-          name: agent-tracing
-          key: TRACING_SAMPLING_RATIO
+      value: "1.0"
     TZ:
       value: Europe/Berlin
   volumes:
@@ -124,9 +118,6 @@ deployment:
     persons:
       configMap:
         name: lares-agent-trigger-persons
-    cron-jobs:
-      configMap:
-        name: lares-agent-trigger-cron-jobs
     nats-credentials:
       secret:
         secretName: lares-agent-trigger-nats-credentials
@@ -187,10 +178,6 @@ deployment:
     persons:
       mountPath: /etc/lares-agent-trigger/persons.yaml
       subPath: persons.yaml
-      readOnly: true
-    cron-jobs:
-      mountPath: /etc/lares-agent-trigger/cron-jobs.yaml
-      subPath: cron-jobs.yaml
       readOnly: true
     nats-credentials:
       mountPath: /etc/lares-agent-trigger/nkey-seed

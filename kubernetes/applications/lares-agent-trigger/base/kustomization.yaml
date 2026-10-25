@@ -8,11 +8,10 @@ namespace: agents
 # fight over its labels.
 
 # The engine's fault list, rendered into this namespace: a mail names the
-# fault's sentence in its subject. The platform's sampling ratio. The sealed
-# key of the write App the GitHub deliveries are opened as.
+# fault's sentence in its subject. The sealed key of the write App the GitHub
+# deliveries are opened as.
 resources:
   - ../../lares-diagnostics-engine/base/config
-  - ./tracing
   - sealed-secret.yaml
 
 helmCharts:
@@ -25,9 +24,9 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-# Content-hash suffix: a change to the declared use cases, the model sources or
-# the cron job set rendered from them produces a new ConfigMap name, so the
-# Deployment reference updates and ArgoCD rolls the pod, whose start reconciles the jobs.
+# Content-hash suffix: a change to the declared use cases or the model sources
+# produces a new ConfigMap name, so the Deployment reference updates and ArgoCD
+# rolls the pod, whose start reconciles the cron jobs.
 configMapGenerator:
   - name: lares-agent-trigger-use-cases
     files:
@@ -35,9 +34,6 @@ configMapGenerator:
   - name: lares-agent-trigger-persons
     files:
       - persons.yaml=config/persons.yaml
-  - name: lares-agent-trigger-cron-jobs
-    files:
-      - cron-jobs.yaml=config/cron-jobs.yaml
 
 labels:
   - includeSelectors: false

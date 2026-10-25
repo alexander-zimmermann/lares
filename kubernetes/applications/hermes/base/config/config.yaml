@@ -63,12 +63,12 @@ discord:
   group_allow_admin_from:
     - ${env:DISCORD_USER_AZ1003}
   user_allowed_commands:
-    - reset
+    - new
     - stop
     - retry
     - undo
   group_user_allowed_commands:
-    - reset
+    - new
     - stop
     - retry
     - undo

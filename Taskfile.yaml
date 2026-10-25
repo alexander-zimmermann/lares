@@ -32,8 +32,6 @@ vars:
   AGENT_TRIGGER_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/values.yaml"
   AGENT_USE_CASES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/use-cases.yaml"
   AGENT_PERSONS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/persons.yaml"
-  AGENT_CRON_JOBS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/config/cron-jobs.yaml"
-  AGENT_TRACING_PATH: "{{.ROOT_DIR}}/kubernetes/applications/lares-agent-trigger/base/tracing/tracing.env"
   HERMES_SETTINGS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/settings.yaml"
   HERMES_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/config.yaml"
   HERMES_ENV_TEMPLATE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/env-template.yaml"
