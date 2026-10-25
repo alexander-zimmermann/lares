@@ -71,17 +71,17 @@ spec:
       - name: chain-post-auth
 
 ---
-# Former name of chain-admin-auth, kept until every route has moved.
+# Household Auth Chain: pre-auth + Authentik's household door + post-auth; household and platform-admins pass.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: chain-mfa-auth
+  name: chain-household-auth
 
 spec:
   chain:
     middlewares:
       - name: chain-pre-auth
-      - name: authentik
+      - name: authentik-household
       - name: chain-post-auth
 
 ---

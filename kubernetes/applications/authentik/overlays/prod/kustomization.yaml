@@ -145,6 +145,19 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=AUTHENTIK_PROXMOX_BACKUP_REDIRECT_URI].value
 
+  - sourceValue: https://wiki.zimmermann.sh
+    targets:
+      - select:
+          kind: Deployment
+          name: authentik-worker
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_HOUSEHOLD_HOST].value
+      - select:
+          kind: Deployment
+          name: authentik-server
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=AUTHENTIK_HOUSEHOLD_HOST].value
+
   - sourceValue: https://auth.zimmermann.sh
     targets:
       - select:

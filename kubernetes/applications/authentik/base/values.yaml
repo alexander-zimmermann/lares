@@ -108,6 +108,9 @@ global:
       value: PLACEHOLDER_COOKIE_DOMAIN
     - name: AUTHENTIK_HOST
       value: https://PLACEHOLDER_AUTH_HOST
+    # The household door's own address, where its sign-in returns: a site behind chain-household-auth
+    - name: AUTHENTIK_HOUSEHOLD_HOST
+      value: https://PLACEHOLDER_HOUSEHOLD_HOST
     - name: AUTHENTIK_NODE_RED_REDIRECT_URI
       value: https://PLACEHOLDER_NODE_RED_HOST/auth/strategy/callback/
     - name: AUTHENTIK_WIKIJS_REDIRECT_URI
