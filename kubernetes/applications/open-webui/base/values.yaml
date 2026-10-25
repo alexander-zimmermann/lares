@@ -83,6 +83,9 @@ extraEnvVars:
     value: PLACEHOLDER_WEBUI_URL
   - name: CORS_ALLOW_ORIGIN
     value: PLACEHOLDER_WEBUI_URL
+  # Traefik strips the X-Forwarded headers, so the sign-in's callback names the public URL itself
+  - name: OPENID_REDIRECT_URI
+    value: https://PLACEHOLDER/oauth/oidc/callback
   - name: WEBUI_SECRET_KEY
     valueFrom:
       secretKeyRef:

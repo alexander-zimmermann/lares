@@ -14,7 +14,7 @@ replacements:
         fieldPaths:
           - spec.resources.requests.storage
 
-  # Chat hostname into Certificate dnsNames, IngressRoute Host(...) match and Homepage href
+  # Chat hostname into Certificate dnsNames, IngressRoute Host(...) match, Homepage href and the sign-in's callback
   - sourceValue: chat.zimmermann.sh
     targets:
       - select:
@@ -38,6 +38,14 @@ replacements:
         options:
           delimiter: "//"
           index: 1
+      - select:
+          kind: Deployment
+          name: open-webui
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=OPENID_REDIRECT_URI].value
+        options:
+          delimiter: "/"
+          index: 2
 
   # The public URL the sign-in returns to, and the one origin a browser may call the API from
   - sourceValue: https://chat.zimmermann.sh
