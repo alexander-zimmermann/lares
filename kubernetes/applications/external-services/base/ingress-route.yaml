@@ -30,7 +30,7 @@ spec:
       match: Host(`PLACEHOLDER`)
       priority: 10
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - kind: Service
@@ -83,7 +83,7 @@ spec:
     - kind: Rule
       match: Host(`PLACEHOLDER`)
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - name: backup
@@ -340,7 +340,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
         # gateway drops fresh TLS handshakes under load; retry transparently before failing with 502
         - name: retry-transient
@@ -369,7 +369,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
         # gateway drops fresh TLS handshakes under load; retry transparently before failing with 502
         - name: retry-transient
@@ -411,7 +411,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - name: ems-esp
@@ -462,7 +462,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - name: fritzbox
@@ -511,7 +511,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
         - name: strip-cookies-all
       services:
@@ -550,7 +550,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - name: verso
@@ -578,7 +578,7 @@ spec:
     - match: Host(`PLACEHOLDER`)
       kind: Rule
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - name: warp
