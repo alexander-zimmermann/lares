@@ -181,16 +181,16 @@ spec:
     maxResponseBodySize: 1048576
 
 ---
-# Former name of authentik-admin, kept until chain-mfa-auth is gone.
+# Authentik's household door (ForwardAuth): the household outpost, which lets household and platform-admins pass
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 
 metadata:
-  name: authentik
+  name: authentik-household
 
 spec:
   forwardAuth:
-    address: "http://authentik-server.authentik.svc.cluster.local/outpost.goauthentik.io/auth/traefik"
+    address: "http://ak-outpost-household.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/traefik"
     trustForwardHeader: true
     # Bound auth-server response body; silences Traefik's unlimited-body DoS warning.
     maxResponseBodySize: 1048576
