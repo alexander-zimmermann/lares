@@ -5,8 +5,8 @@ metadata:
   name: proxmox
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -60,8 +60,8 @@ metadata:
   name: backup
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -111,8 +111,8 @@ metadata:
   name: omni
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -165,8 +165,8 @@ metadata:
   name: k8s
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -218,8 +218,8 @@ metadata:
   name: ai-pro-1
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -246,8 +246,8 @@ metadata:
   name: ai-pro-2
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -274,8 +274,8 @@ metadata:
   name: ai-pro-3
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -302,8 +302,8 @@ metadata:
   name: ai-pro-4
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -330,8 +330,8 @@ metadata:
   name: dali-1
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -360,8 +360,8 @@ metadata:
   name: dali-2
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 spec:
   entryPoints:
     - websecure
@@ -389,8 +389,8 @@ metadata:
   name: ems-esp
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -439,8 +439,8 @@ metadata:
   name: fritzbox
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -488,8 +488,8 @@ metadata:
   name: knx-ip
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
     # Gatus — automated status page discovery (probes via /_gatus path with CF Access Service Token)
     gatus.home-operations.com/enabled: "true"
     gatus.home-operations.com/endpoint: |
@@ -540,8 +540,8 @@ metadata:
   name: verso
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:
@@ -568,8 +568,8 @@ metadata:
   name: warp
   annotations:
     # ExternalDNS configuration for Cloudflare
-    external-dns.alpha.kubernetes.io/target: PLACEHOLDER
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
 
 spec:
   entryPoints:

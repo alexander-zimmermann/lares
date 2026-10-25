@@ -87,7 +87,7 @@ replacements:
       - select:
           kind: IngressRoute
         fieldPaths:
-          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+          - metadata.annotations.[external-dns.kubernetes.io/target]
 
 patches:
   # RustFS server manages distributed storage and API access

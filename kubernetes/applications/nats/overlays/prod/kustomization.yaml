@@ -42,7 +42,7 @@ replacements:
       - select:
           kind: IngressRouteTCP
         fieldPaths:
-          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+          - metadata.annotations.[external-dns.kubernetes.io/target]
 
 patches:
   # NATS container resource limits

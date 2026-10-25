@@ -28,7 +28,7 @@ replacements:
       - select:
           kind: IngressRoute
         fieldPaths:
-          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+          - metadata.annotations.[external-dns.kubernetes.io/target]
 
 patches:
   # One Rust process proxying a few calls a minute, no session state.
