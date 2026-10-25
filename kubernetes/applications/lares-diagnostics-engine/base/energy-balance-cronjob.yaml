@@ -53,14 +53,11 @@ spec:
                 # The site file — what the house is; read by every job.
                 - name: MCP_SITE_FILE
                   value: /etc/lares-diagnostics-engine/site.yaml
-                # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+                # OTLP/HTTP collector for traces, and the agent platform's sampling ratio
                 - name: MCP_TRACING_ENDPOINT
                   value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
                 - name: MCP_TRACING_SAMPLING_RATIO
-                  valueFrom:
-                    configMapKeyRef:
-                      name: agent-tracing
-                      key: TRACING_SAMPLING_RATIO
+                  value: "1.0"
                 - name: TZ
                   value: Europe/Berlin
               resources:

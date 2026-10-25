@@ -70,14 +70,11 @@ deployment:
       value: http://lares-agent-trigger.agents.svc.cluster.local:8080
     MCP_TRIGGER_KEY_FILE:
       value: /etc/lares-mcp-bridge/trigger-api-key
-    # OTLP/HTTP collector for traces, and the platform's sampling ratio rendered from use-cases.yaml
+    # OTLP/HTTP collector for traces, and the agent platform's sampling ratio
     MCP_TRACING_ENDPOINT:
       value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
     MCP_TRACING_SAMPLING_RATIO:
-      valueFrom:
-        configMapKeyRef:
-          name: agent-tracing
-          key: TRACING_SAMPLING_RATIO
+      value: "1.0"
     MCP_LOG_FORMAT:
       value: json
     TZ:

@@ -6,7 +6,7 @@ frontendPolicies:
   tracing:
     host: alloy-alloy-receiver.alloy.svc.cluster.local:4318
     protocol: http
-    randomSampling: '1.0'
+    randomSampling: ${TRACING_SAMPLING_RATIO}
 binds:
   - port: 8080
     listeners:
