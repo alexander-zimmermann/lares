@@ -162,7 +162,8 @@ spec:
     stripcookie:
       cookies:
         - authentik_device
-        - authentik_proxy_da05bc94
+        - authentik_proxy_da05bc94 # admin door
+        - authentik_proxy_7a0c2abb # household door
         - authentik_session
 
 ---
