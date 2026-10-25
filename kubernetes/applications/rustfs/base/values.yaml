@@ -80,6 +80,13 @@ extraEnv:
   # (rustfs#8121). Six hours trades statistics freshness for headroom.
   - name: RUSTFS_SCANNER_CYCLE
     value: "21600"
+  # An explicit cycle also governs the first attempt, so with a warm usage cache the
+  # scanner waits a full interval before its first sweep — six hours in which every
+  # cycle metric reads 0 and nothing is logged, indistinguishable from a dead
+  # scanner. A start delay of 1s asks for a prompt first sweep and leaves the
+  # recurring interval alone (rustfs#8888).
+  - name: RUSTFS_SCANNER_START_DELAY_SECS
+    value: "1"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
   # Host URLs are injected per environment via overlay replacements.
   - name: RUSTFS_BROWSER_REDIRECT_URL
