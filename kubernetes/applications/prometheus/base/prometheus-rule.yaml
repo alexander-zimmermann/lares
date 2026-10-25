@@ -249,6 +249,24 @@ spec:
             summary: "RustFS scanner has not saved a durable usage snapshot for two full cycles"
             description: "rustfs_scanner_usage_last_durable_success_unix_seconds stopped advancing for more than twice rustfs_scanner_cycle_interval_seconds — the scanner is not completing cycles."
 
+        # The rule above is blind to the worst case: its > 0 guard keeps a fresh pod
+        # quiet, so a scanner that never publishes at all stays silent. That happened
+        # twice on 24 Oct (rustfs#8888). A fixed hour is deliberate here — the
+        # configured cadence cannot be used, because cycle_interval_seconds itself
+        # reads 0 until the first attempt, which is exactly this situation.
+        # `on (instance)` because the uptime metric carries an extra `server`
+        # label; a bare `and` matches nothing and the rule would never fire.
+        - alert: RustfsScannerNeverPublished
+          expr: |
+            rustfs_scanner_usage_last_durable_success_unix_seconds == 0
+            and on (instance) rustfs_system_process_uptime_seconds > 3600
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RustFS scanner has published nothing since the process started"
+            description: "The process has been up for over an hour and rustfs_scanner_usage_last_durable_success_unix_seconds is still 0 — no scanner cycle has ever completed on this pod. Check rustfs_scanner_cycles_total and the pod's startup status."
+
         # Resident memory still ratchets per scanner sweep on 1.0.2, reduced but
         # not gone (lares#2143, rustfs#8121). 75 % rather than 85 % because the
         # notification router mutes during quiet hours: the threshold has to
