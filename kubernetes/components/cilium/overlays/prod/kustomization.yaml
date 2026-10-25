@@ -62,12 +62,17 @@ replacements:
         fieldPaths:
           - spec.blocks.0.stop
 
-  # Authentik host the caged agents may call for OIDC and JWKS
+  # Authentik host the caged agents and Open WebUI may call for OIDC and JWKS
   - sourceValue: auth.zimmermann.sh
     targets:
       - select:
           kind: CiliumClusterwideNetworkPolicy
           name: agent-cage
+        fieldPaths:
+          - spec.egress.*.toFQDNs.[matchName=PLACEHOLDER_AUTH_HOST].matchName
+      - select:
+          kind: CiliumClusterwideNetworkPolicy
+          name: open-webui-egress
         fieldPaths:
           - spec.egress.*.toFQDNs.[matchName=PLACEHOLDER_AUTH_HOST].matchName
 

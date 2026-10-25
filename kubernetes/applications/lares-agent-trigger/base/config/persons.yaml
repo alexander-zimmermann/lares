@@ -71,7 +71,8 @@ model_sources:
     fallback: [*own-project]
 
 # Adding a person: seal <handle>-discord-user and every key the rendered
-# env-template names, add their agent-log-<handle> patch to both Hermes
+# env-template names, their <handle>-api-server-key a second time into
+# open-webui-hermes-keys, add their agent-log-<handle> patch to both Hermes
 # overlays, log their profile in after the sync, and see one test DM answered
 # before telling them. A valid but wrong Discord id drops their messages silently.
 # Their Authentik account comes with the sync: set its Email to their Google

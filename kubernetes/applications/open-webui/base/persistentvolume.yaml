@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: open-webui-data
+  namespace: open-webui
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # Retained and backed up daily: the SQLite database with every chat, and the pasted images.
+  storageClassName: longhorn-backup
+  resources:
+    requests:
+      storage: PLACEHOLDER

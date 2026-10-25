@@ -97,7 +97,7 @@ repos:
         # Writes the rendered files; a commit whose files it changed stops once.
         # Runs on the declarations and the settings, the rendered files a hand
         # edit would change, and the tag the generator is installed at.
-        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|tracing/tracing\.env|values\.yaml)|hermes/base/(config/(settings|config)\.yaml|env-template\.yaml|profiles/.*)|agentgateway/base/config/routes(\.values)?\.yaml|authentik/base/blueprints/persons\.yaml)$
+        files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons|cron-jobs)\.yaml|tracing/tracing\.env|values\.yaml)|hermes/base/(config/(settings|config)\.yaml|env-template\.yaml|profiles/.*)|agentgateway/base/config/routes(\.values)?\.yaml|authentik/base/blueprints/persons\.yaml|open-webui/base/config/connections\.values\.yaml)$
       - id: k8s-validate-sealed-templates
         name: k8s:validate-sealed-templates
         entry: task k8s:validate-sealed-templates

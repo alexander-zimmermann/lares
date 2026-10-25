@@ -1,0 +1,147 @@
+# The chart's appVersion trails the app's releases, so the tag is set here, where Renovate tracks it.
+image:
+  repository: ghcr.io/open-webui/open-webui
+  tag: 0.12.4-slim
+
+# One pod on the one volume; a new version migrates the database at start, so never two at once.
+workload:
+  kind: Deployment
+strategy:
+  type: Recreate
+
+# Secrets are read only at start, so Reloader rolls the pod when one changes
+annotations:
+  reloader.stakater.com/auto: "true"
+
+# Hermes answers: no bundled model server, no pipelines, and no Redis for one replica
+ollama:
+  enabled: false
+pipelines:
+  enabled: false
+websocket:
+  manager: ""
+  redis:
+    enabled: false
+# The connections are config/connections.values.yaml, one per person; no default one
+openaiBaseApiUrl: ""
+openaiApiKey: ""
+
+# SQLite in the data directory, beside the uploads and pasted images
+persistence:
+  existingClaim: open-webui-data
+# The image's data directory is empty, and the chart's `data/*` finds nothing to copy and fails
+copyAppData:
+  command: ["sh", "-c", "cp -R -n /app/backend/data/. /tmp/app-data/"]
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 10
+  failureThreshold: 30
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 30
+  failureThreshold: 4
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  periodSeconds: 15
+
+# Authentik signs everyone in: household opens the chat, platform-admins administers it.
+# The first account signs up on its first sign-in.
+sso:
+  enabled: true
+  enableSignup: true
+  enableRoleManagement: true
+  roleManagement:
+    rolesClaim: groups
+    allowedRoles: household
+    adminRoles: platform-admins
+  oidc:
+    enabled: true
+    clientId: open-webui
+    # Sealed in authentik, cloned here by Kyverno
+    clientExistingSecret: open-webui-oidc-secret
+    clientExistingSecretKey: OPEN_WEBUI_OIDC_CLIENT_SECRET
+    providerUrl: PLACEHOLDER_OIDC_PROVIDER_URL
+    providerName: Authentik
+
+extraEnvVars:
+  # Every setting is read from here at each start; the admin UI changes nothing for good
+  - name: ENABLE_PERSISTENT_CONFIG
+    value: "false"
+  - name: WEBUI_URL
+    value: PLACEHOLDER_WEBUI_URL
+  - name: CORS_ALLOW_ORIGIN
+    value: PLACEHOLDER_WEBUI_URL
+  - name: WEBUI_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: open-webui-credentials
+        key: webui-secret-key
+  # No password form and no password sign-in: the sign-in page goes straight to Authentik
+  - name: ENABLE_LOGIN_FORM
+    value: "false"
+  - name: ENABLE_PASSWORD_AUTH
+    value: "false"
+  - name: OAUTH_AUTO_REDIRECT
+    value: "true"
+  # The sign-up fetches no picture URL
+  - name: OAUTH_PICTURE_CLAIM
+    value: ""
+  # No update check, model download or plugin install, and no tool or function code at all
+  - name: OFFLINE_MODE
+    value: "true"
+  - name: ENABLE_PLUGINS
+    value: "false"
+  # Every Hermes turn is a person's message: no title, tag or follow-up call, no built-in
+  # tool round, no scheduled chat and no code interpreter round
+  - name: ENABLE_TITLE_GENERATION
+    value: "false"
+  - name: ENABLE_TAGS_GENERATION
+    value: "false"
+  - name: ENABLE_FOLLOW_UP_GENERATION
+    value: "false"
+  - name: DEFAULT_MODEL_METADATA
+    value: '{"capabilities":{"builtin_tools":false}}'
+  - name: ENABLE_AUTOMATIONS
+    value: "false"
+  - name: ENABLE_CODE_INTERPRETER
+    value: "false"
+  # The house first: no memories, no document retrieval, no web pages, no community sharing;
+  # pasted images stay, they go to Hermes as uploads
+  - name: ENABLE_MEMORIES
+    value: "false"
+  - name: ENABLE_RETRIEVAL_QUERY_GENERATION
+    value: "false"
+  - name: USER_PERMISSIONS_CHAT_WEB_UPLOAD
+    value: "false"
+  - name: ENABLE_COMMUNITY_SHARING
+    value: "false"
+  # Traces over OTLP/HTTP, at the agent platform's sampling ratio; each model call keeps the
+  # session header, which the trace links of the "Läufe" table search by
+  - name: ENABLE_OTEL
+    value: "true"
+  - name: ENABLE_OTEL_TRACES
+    value: "true"
+  - name: OTEL_OTLP_SPAN_EXPORTER
+    value: http
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318/v1/traces
+  - name: OTEL_TRACES_SAMPLER
+    value: parentbased_traceidratio
+  - name: OTEL_TRACES_SAMPLER_ARG
+    value: "1.0"
+  - name: OTEL_INSTRUMENTATION_HTTP_CAPTURE_HEADERS_CLIENT_REQUEST
+    value: X-Hermes-Session-Id
+  - name: OTEL_PYTHON_FASTAPI_EXCLUDED_URLS
+    value: /health,/ready,/static/,/_app/

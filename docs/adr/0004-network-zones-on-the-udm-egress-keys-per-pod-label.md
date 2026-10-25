@@ -23,8 +23,10 @@ the pair and no knowledge of pods.
 
 A Cilium network policy exists only where the UDM is blind: the pods that
 run agents or act for them (`role=agent`) are caged inside the cluster
-and towards the internet by FQDN. No other namespace carries a network
-policy.
+and towards the internet by FQDN. Two policies sit beside the cage: the
+harness's API server takes only the trigger and the web chat, and the web
+chat, Open WebUI, is fenced on its own towards the harness, Authentik and
+the trace receiver. No other namespace carries a network policy.
 
 The LoadBalancer pool stays a BGP-routed prefix and every LAN client
 reaches every LB IP directly; `*.zimmermann.sh` keeps going through

@@ -5,7 +5,7 @@ metadata:
     blueprints.goauthentik.io/instantiate: "true"
 # How the household signs in and what that opens; who belongs to it is persons.yaml, rendered.
 entries:
-  # Group: opens the household door and the wiki; persons.yaml sets its members, either blueprint may apply first
+  # Group: opens the household door, the wiki and the web chat; persons.yaml sets its members, either blueprint may apply first
   - model: authentik_core.group
     state: present
     id: household

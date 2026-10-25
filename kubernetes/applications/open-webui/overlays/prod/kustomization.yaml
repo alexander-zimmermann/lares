@@ -1,0 +1,97 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+replacements:
+  # SQLite with every chat and the pasted images; a claim grows in place, it never shrinks
+  - sourceValue: 512Mi
+    targets:
+      - select:
+          kind: PersistentVolumeClaim
+          name: open-webui-data
+        fieldPaths:
+          - spec.resources.requests.storage
+
+  # Chat hostname into Certificate dnsNames, IngressRoute Host(...) match and Homepage href
+  - sourceValue: chat.zimmermann.sh
+    targets:
+      - select:
+          kind: Certificate
+          name: open-webui-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: open-webui
+        fieldPaths:
+          - spec.routes.0.match
+        options:
+          delimiter: "`"
+          index: 1
+      - select:
+          kind: IngressRoute
+          name: open-webui
+        fieldPaths:
+          - metadata.annotations.[gethomepage.dev/href]
+        options:
+          delimiter: "//"
+          index: 1
+
+  # The public URL the sign-in returns to, and the one origin a browser may call the API from
+  - sourceValue: https://chat.zimmermann.sh
+    targets:
+      - select:
+          kind: Deployment
+          name: open-webui
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=WEBUI_URL].value
+          - spec.template.spec.containers.0.env.[name=CORS_ALLOW_ORIGIN].value
+
+  # OIDC discovery of the Authentik application `open-webui`
+  - sourceValue: https://auth.zimmermann.sh/application/o/open-webui/.well-known/openid-configuration
+    targets:
+      - select:
+          kind: Deployment
+          name: open-webui
+        fieldPaths:
+          - spec.template.spec.containers.0.env.[name=OPENID_PROVIDER_URL].value
+
+  # Rewrite external-dns target annotation to the UDM Pro
+  - sourceValue: udm-pro.zimmermann.sh
+    targets:
+      - select:
+          kind: IngressRoute
+        fieldPaths:
+          - metadata.annotations.[external-dns.alpha.kubernetes.io/target]
+
+patches:
+  # Sized for one pod: about 300 MiB at rest, plus the streams of a few chats
+  - target:
+      kind: Deployment
+      name: open-webui
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: open-webui
+      - op: add
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 100m
+            memory: 384Mi
+          limits:
+            memory: 1Gi
+      # copy-app-data only seeds the volume from the image
+      - op: test
+        path: /spec/template/spec/initContainers/0/name
+        value: copy-app-data
+      - op: add
+        path: /spec/template/spec/initContainers/0/resources
+        value:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 64Mi

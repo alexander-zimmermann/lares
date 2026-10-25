@@ -52,6 +52,9 @@ configMapGenerator:
   - name: authentik-blueprint-wikijs
     files:
       - blueprints/wikijs.yaml
+  - name: authentik-blueprint-open-webui
+    files:
+      - blueprints/open-webui.yaml
   - name: authentik-blueprint-claude-ai
     files:
       - blueprints/claude-ai.yaml
