@@ -57,7 +57,21 @@ spec:
       - name: chain-post-auth
 
 ---
-# MFA Auth Chain: pre-auth + Authentik forwardAuth + post-auth.
+# Admin Auth Chain: pre-auth + Authentik's admin door + post-auth; only platform-admins pass.
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chain-admin-auth
+
+spec:
+  chain:
+    middlewares:
+      - name: chain-pre-auth
+      - name: authentik-admin
+      - name: chain-post-auth
+
+---
+# Former name of chain-admin-auth, kept until every route has moved.
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -82,4 +96,4 @@ metadata:
 spec:
   chain:
     middlewares:
-      - name: authentik
+      - name: authentik-admin

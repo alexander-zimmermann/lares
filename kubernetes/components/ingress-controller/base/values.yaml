@@ -71,7 +71,7 @@ ingressRoute:
     matchRule: Host(`PLACEHOLDER`)
     entryPoints: ["websecure"]
     middlewares:
-      - name: chain-mfa-auth
+      - name: chain-admin-auth
     tls:
       secretName: traefik-tls-cert
 

@@ -37,7 +37,7 @@ spec:
       match: Host(`PLACEHOLDER`)
       priority: 10
       middlewares:
-        - name: chain-mfa-auth
+        - name: chain-admin-auth
           namespace: ingress-controller
       services:
         - kind: Service
