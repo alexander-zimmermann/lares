@@ -311,7 +311,7 @@ spec:
           labels:
             severity: info
           annotations:
-            summary: "FRITZ!Box {{ $labels.modelname }} rebooted"
+            summary: "{{ $labels.friendly_name }} rebooted"
             description: "The box reported an uptime of {{ $value | humanizeDuration }} within the last hour — it restarted. Check its event log for the reason; the surrounding DNS and Pushover alerts are symptoms of this."
 
         # Set by the exporter itself: a TR-064 transport error marks the device
