@@ -25,6 +25,14 @@ destinations:
       enabled: false
     logs:
       enabled: false
+    # Open WebUI names the signed-in person by e-mail and account id on its spans; neither reaches Tempo
+    processors:
+      attributes:
+        actions:
+          - key: client.user.email
+            action: delete
+          - key: client.user.id
+            action: delete
 
 # Cluster metrics & events
 clusterMetrics:
