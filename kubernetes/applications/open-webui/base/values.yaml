@@ -57,7 +57,7 @@ readinessProbe:
   periodSeconds: 15
 
 # Authentik signs everyone in: household opens the chat, platform-admins administers it.
-# The first account signs up on its first sign-in.
+# Each account signs up at its first sign-in.
 sso:
   enabled: true
   enableSignup: true
