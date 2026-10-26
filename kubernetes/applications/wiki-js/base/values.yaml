@@ -1,3 +1,8 @@
+# Pinned, so Renovate bumps it; unset, the chart pulls the floating tag 2 from Docker Hub
+image:
+  repository: ghcr.io/requarks/wiki
+  tag: 2.5.317
+
 # Disable built-in PostgreSQL (using CloudNativePG instead)
 postgresql:
   enabled: false
