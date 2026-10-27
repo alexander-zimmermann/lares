@@ -250,3 +250,26 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   into the ledger.
 - **Answer** — a person asking about house or
   cluster data in conversation through the MCP bridge. Not an agent role.
+
+## Network
+
+- **Zone** (avoid: segment) — one VLAN on the UDM that holds one class of
+  devices and is firewalled at its border: Internal, Infrastructure,
+  IoT LAN, IoT Cloud, Outdoor, Kubernetes. The VLAN id equals the third
+  octet of its subnet.
+- **Egress IP** — one of the two addresses, `.2` and `.3` in the
+  Kubernetes zone, with which cluster traffic may cross into another zone.
+  A pod leaves with one only if it carries the matching egress label
+  (`egress-infra`, `egress-iot`, `egress-outdoor`) and heads for that
+  label's zone; everything else leaves with a node IP and is dropped at
+  the border.
+- **Dual-homed** — an app reachable two ways: from the LAN directly on its
+  own LB IP under `*.zimmermann.eu.com`, and through Cloudflare and
+  Traefik under `*.zimmermann.sh`. Intended, not an artefact.
+- **LB pool** (avoid: IP pool, LoadBalancer range) — the special-purpose
+  block of the Kubernetes zone from which Cilium hands out LoadBalancer
+  IPs, routed to the UDM by BGP. One pool for every Service.
+- **Address convention** — the split every zone's /24 follows: `.1`
+  gateway, `.2`–`.49` fixed addresses set on the device itself,
+  `.50`–`.199` DHCP including reservations, `.200`–`.254` special purpose
+  (in Kubernetes: the LB pool).
