@@ -7,7 +7,7 @@ metadata:
 spec:
   # Who may reach the harness: its API server takes the trigger's runs and jobs and
   # Open WebUI's chats, each under a key of its own, and nobody else; Traefik reaches
-  # the dashboard. Verdicts stay AUDIT while policyAuditMode is set.
+  # the dashboard.
   endpointSelector:
     matchLabels:
       io.kubernetes.pod.namespace: agents

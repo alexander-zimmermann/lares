@@ -7,7 +7,7 @@ metadata:
 spec:
   # Open WebUI, the household's web chat, fenced on its own outside the agent cage: it
   # reaches the harness's API server, Authentik for the sign-in and the receiver for its
-  # traces, nothing else. Verdicts stay AUDIT while policyAuditMode is set.
+  # traces, nothing else.
   endpointSelector:
     matchLabels:
       io.kubernetes.pod.namespace: open-webui

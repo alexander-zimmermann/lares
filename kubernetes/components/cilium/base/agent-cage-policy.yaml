@@ -10,7 +10,7 @@ spec:
   # the MCP bridge, the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
   # with the node IP, so their egress is fenced here, inside the cluster and towards
   # the internet by name. The cage touches no ingress. One policy for all of them, so the
-  # allow list is the union of what each needs. Verdicts stay AUDIT while policyAuditMode is set.
+  # allow list is the union of what each needs.
   endpointSelector:
     matchLabels:
       role: agent
