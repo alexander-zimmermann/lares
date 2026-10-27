@@ -156,6 +156,7 @@ connectors:
     client_id: claude-ai
     url: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
     credential: {secret: lares-mcp-bridge-gateway-key, key: key, header: Authorization}
+    timeout_seconds: 60
     tools: ["*"]
 
 # The Sunday digest of what each profile learned: the skills created, changed and
