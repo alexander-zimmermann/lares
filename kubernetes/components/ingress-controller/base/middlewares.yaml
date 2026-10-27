@@ -20,7 +20,10 @@ metadata:
   name: compress
 
 spec:
-  compress: {}
+  compress:
+    # A JSON request skips it: compress holds the headers until the first byte, so a streamed MCP answer would wait for its result
+    excludedContentTypes:
+      - application/json
 
 ---
 # Security Headers: Standard HTTP security hardening (HSTS, CSP, etc.)
