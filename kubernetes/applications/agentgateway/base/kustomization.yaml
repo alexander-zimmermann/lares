@@ -16,7 +16,7 @@ helmCharts:
   - name: agentgateway-standalone
     repo: oci://ghcr.io/agentgateway/charts
     releaseName: agentgateway
-    version: v1.6.0
+    version: v1.7.0
     valuesFile: values.yaml
     # The routes' keys as variables, the routes and each credential they attach,
     # mounted whole (task agents:create-harness-config)
