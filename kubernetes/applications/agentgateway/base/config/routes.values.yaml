@@ -6,7 +6,7 @@ config:
   config:
     localXdsPath: /etc/agentgateway/routes/config.yaml
 podAnnotations:
-  secret.reloader.stakater.com/reload: hermes-credentials
+  secret.reloader.stakater.com/reload: hermes-credentials,agentgateway-keys
 extraEnv:
   - name: GATEWAY_KEY
     valueFrom:
@@ -33,6 +33,11 @@ extraEnv:
       secretKeyRef:
         name: hermes-credentials
         key: vz1604-gateway-key
+  - name: OPEN_WEBUI_GATEWAY_KEY
+    valueFrom:
+      secretKeyRef:
+        name: agentgateway-keys
+        key: open-webui-gateway-key
 extraVolumes:
   - name: routes
     configMap:
@@ -61,6 +66,8 @@ extraVolumes:
       items:
         - key: cloudflare-mcp-token
           path: cloudflare-mcp-token
+        - key: openai-api-key
+          path: openai-api-key
 extraVolumeMounts:
   - name: routes
     mountPath: /etc/agentgateway/routes
