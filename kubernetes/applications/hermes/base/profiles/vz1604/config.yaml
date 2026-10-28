@@ -63,11 +63,15 @@ display:
   platforms:
     discord:
       tool_progress: 'off'
+stt:
+  language: de
 group_sessions_per_user: true
 session_reset:
   mode: both
   idle_minutes: 60
   at_hour: 4
+sessions:
+  auto_prune: true
 plugins:
   enabled:
     - hermes-session-reset-policy
