@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - ./nats-archive-dedupe-2026-05-job.yaml
 
 replacements:
   # Inject domain name into Certificate, IngressRoute, and Homepage href
