@@ -1,10 +1,10 @@
-# One-off: rewrites the May 2026 monthly files of the streams whose NATS
-# redeliveries are exact repeats. Each original stays as monthly.parquet.orig.
+# One-off: rewrites the April 2026 monthly files in the archive's column order
+# (payload, subject, time); April keeps every row. Each original stays as monthly.parquet.orig.
 apiVersion: batch/v1
 kind: Job
 
 metadata:
-  name: nats-archive-dedupe-2026-05
+  name: nats-archive-dedupe-2026-04
   namespace: rustfs
 
 spec:
@@ -46,12 +46,13 @@ spec:
                 secretKeyRef:
                   name: rustfs-admin-credentials
                   key: RUSTFS_SECRET_KEY
+            # Every stream with an April 2026 monthly file.
             - name: COMPACT_STREAMS
-              value: "knx,solaredge_inverter,solaredge_powerflow"
+              value: "ems_esp,knx,solaredge_inverter,solaredge_powerflow,warp_charge_manager,warp_charge_tracker,warp_evse,warp_meter,warp_system"
             - name: COMPACT_DEDUPE_MONTH
-              value: "2026/05"
+              value: "2026/04"
           volumeMounts:
-            # Holds the original and the rewrite, about 600 MB for knx.
+            # Holds the original and the rewrite, about 150 MB for knx.
             - name: tmp
               mountPath: /tmp
           resources:
