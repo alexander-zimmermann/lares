@@ -90,6 +90,10 @@ display:
       # No tool-call bubbles in the channel; the answer names its sources itself
       tool_progress: "off"
 
+# Voice messages are transcribed in the pod; the household speaks German, Hermes would force English.
+stt:
+  language: de
+
 # Session isolation on every gateway platform
 group_sessions_per_user: true
 
@@ -98,6 +102,10 @@ session_reset:
   mode: both
   idle_minutes: 60
   at_hour: 4
+
+# Ended sessions idle for 90 days are deleted daily; deciding here also ends Hermes' weekly low-disk prompt.
+sessions:
+  auto_prune: true
 
 # Third-party plugins load only when named here; their files are mounted from the repo.
 plugins:
