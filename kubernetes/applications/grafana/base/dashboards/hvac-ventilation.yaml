@@ -203,12 +203,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "green",
                       "index": 0,
                       "text": "Nein"
                     },
-                    "true": {
+                    "1": {
                       "color": "orange",
                       "index": 1,
                       "text": "Ja"
@@ -283,12 +283,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "green",
                       "index": 0,
                       "text": "Normalbetrieb"
                     },
-                    "true": {
+                    "1": {
                       "color": "orange",
                       "index": 1,
                       "text": "Wartungsmodus"
@@ -363,12 +363,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "green",
                       "index": 0,
                       "text": "OK"
                     },
-                    "true": {
+                    "1": {
                       "color": "red",
                       "index": 1,
                       "text": "Störung"

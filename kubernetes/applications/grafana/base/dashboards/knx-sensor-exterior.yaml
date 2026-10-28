@@ -671,12 +671,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "Kein Regen"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Regen"
@@ -761,12 +761,12 @@ spec:
               "mappings": [
                 {
                   "options": {
-                    "false": {
+                    "0": {
                       "color": "dark-green",
                       "index": 0,
                       "text": "Kein Frost"
                     },
-                    "true": {
+                    "1": {
                       "color": "dark-red",
                       "index": 1,
                       "text": "Frost"
