@@ -59,6 +59,8 @@ binds:
                       mcp:
                         host: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
                       policies:
+                        http:
+                          requestTimeout: 60s
                         transformations:
                           request:
                             set:
@@ -90,6 +92,8 @@ binds:
                       mcp:
                         host: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
                       policies:
+                        http:
+                          requestTimeout: 30s
                         transformations:
                           request:
                             set:
@@ -120,6 +124,8 @@ binds:
                       mcp:
                         host: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
                       policies:
+                        http:
+                          requestTimeout: 30s
                         transformations:
                           request:
                             set:
@@ -156,6 +162,8 @@ binds:
                       mcp:
                         host: http://github-mcp-server.agents.svc.cluster.local:8082/mcp
                       policies:
+                        http:
+                          requestTimeout: 60s
                         transformations:
                           request:
                             set:
@@ -199,6 +207,8 @@ binds:
                       mcp:
                         host: http://grafana-mcp.grafana.svc.cluster.local:8000/mcp
                       policies:
+                        http:
+                          requestTimeout: 60s
                         transformations:
                           request:
                             set:
@@ -232,6 +242,9 @@ binds:
                     - name: cloudflare
                       mcp:
                         host: https://mcp.cloudflare.com/mcp
+                      policies:
+                        http:
+                          requestTimeout: 60s
           - name: claude-ai
             matches:
               - path:
@@ -273,6 +286,8 @@ binds:
                       mcp:
                         host: http://lares-mcp-bridge.lares-mcp-bridge.svc.cluster.local:8080/mcp
                       policies:
+                        http:
+                          requestTimeout: 60s
                         transformations:
                           request:
                             set:
