@@ -43,6 +43,7 @@ spec:
           selfHeal: true
         retry:
           limit: 15
+          refresh: true
           backoff:
             duration: 15s
             factor: 2
