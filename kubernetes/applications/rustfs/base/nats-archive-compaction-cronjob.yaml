@@ -18,12 +18,14 @@ spec:
   startingDeadlineSeconds: 600
   jobTemplate:
     spec:
-      backoffLimit: 2
+      # One attempt per night: a retry would roll up extra months; the next night catches up.
+      backoffLimit: 0
       ttlSecondsAfterFinished: 86400
       template:
         spec:
           serviceAccountName: default
-          restartPolicy: OnFailure
+          # A failed pod stays until the TTL for its logs instead of restarting in place.
+          restartPolicy: Never
           containers:
             - name: compactor
               image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.11.0
