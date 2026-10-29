@@ -6,8 +6,8 @@ metadata:
 
 spec:
   # Open WebUI, the household's web chat, fenced on its own outside the agent cage: it
-  # reaches the harness's API server, Authentik for the sign-in and the receiver for its
-  # traces, nothing else.
+  # reaches the harness's API server, the gateway's speech route, Authentik for the sign-in
+  # and the receiver for its traces, nothing else.
   endpointSelector:
     matchLabels:
       io.kubernetes.pod.namespace: open-webui
@@ -35,6 +35,16 @@ spec:
       toPorts:
         - ports:
             - port: "8642"
+              protocol: TCP
+
+    # Speech to text through the gateway's speech route
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: agents
+            app.kubernetes.io/name: agentgateway
+      toPorts:
+        - ports:
+            - port: "8080"
               protocol: TCP
 
     # OTLP/HTTP traces
