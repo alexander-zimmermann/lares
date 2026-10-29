@@ -44,17 +44,23 @@ variable "client_id" {
 }
 
 variable "client_key" {
-  description = <<EOT
-    OpenID Connect client secret. Sensitive value; the provider keeps it in
-    state, so give the PBS client its own secret at the identity provider.
-  EOT
+  description = "OpenID Connect client secret. Sensitive value; sent write-only, never stored in state."
   type        = string
   sensitive   = true
 }
 
+variable "client_key_version" {
+  description = <<EOT
+    Rotation counter for `client_key`. Write-only values are invisible to the
+    plan, so increment this whenever the secret changes to force a re-send.
+  EOT
+  type        = number
+  default     = 1
+}
+
 variable "scopes" {
-  description = "Space-separated OpenID scopes to request. PBS default is `email profile`; `openid` is always added."
-  type        = string
+  description = "OpenID scopes to request. PBS default is `email` and `profile`; `openid` is always added."
+  type        = list(string)
   default     = null
 }
 

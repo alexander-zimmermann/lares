@@ -49,7 +49,7 @@ The part I'm most proud of is how the repo is **split into three independent lay
 [![OpenTofu](https://img.shields.io/badge/OpenTofu-1.11+-844FBA?style=flat-square&logo=opentofu&logoColor=white)](https://opentofu.org/)
 [![Proxmox](https://img.shields.io/badge/Proxmox%20VE-9.0-E57000?style=flat-square&logo=proxmox&logoColor=white)](https://www.proxmox.com/)
 
-[OpenTofu](https://opentofu.org/) with the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider, driven by split YAML manifests. Manages the Proxmox cluster settings, node config including VLANs, OS images, templates, and the entire VM/LXC fleet — including Windows 11 VMs with TPM/Secure Boot, a dedicated management VM that hosts Omni, and a [Proxmox Backup Server](https://www.proxmox.com/en/products/proxmox-backup-server/overview) VM that a second provider, [`jkossis/proxmox`](https://github.com/jkossis/terraform-provider-proxmox), configures through its API.
+[OpenTofu](https://opentofu.org/) with the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider, driven by split YAML manifests. Manages the Proxmox cluster settings, node config including VLANs, OS images, templates, and the entire VM/LXC fleet — including Windows 11 VMs with TPM/Secure Boot, a dedicated management VM that hosts Omni, and a [Proxmox Backup Server](https://www.proxmox.com/en/products/proxmox-backup-server/overview) VM that a second provider, [`rfdrew/pbs`](https://github.com/rfdrew/terraform-provider-pbs), configures through its API.
 
 **This layer has nothing to do with Kubernetes.** I could throw away everything above it and still have a clean, reproducible "Proxmox managed by code" setup.
 

@@ -15,22 +15,12 @@ variable "account_name" {
 variable "contact_email" {
   description = "Email address registered with the ACME account (expiry notices)."
   type        = string
-
-  validation {
-    condition     = can(regex("^[^'[:space:]]+@[^'[:space:]]+$", var.contact_email))
-    error_message = "contact_email must be an address without whitespace or quotes."
-  }
 }
 
 variable "acme_directory" {
   description = "ACME directory URL. Defaults to Let's Encrypt production."
   type        = string
   default     = "https://acme-v02.api.letsencrypt.org/directory"
-
-  validation {
-    condition     = !strcontains(var.acme_directory, "'")
-    error_message = "acme_directory must not contain a single quote."
-  }
 }
 
 
@@ -60,7 +50,7 @@ variable "dns_api" {
 }
 
 variable "cf_token" {
-  description = "Cloudflare API token for the DNS-01 challenge. Sensitive value; reaches the PBS on stdin, never in state."
+  description = "Cloudflare API token for the DNS-01 challenge. Sensitive value; stored in state with the plugin data."
   type        = string
   sensitive   = true
 }
@@ -99,53 +89,5 @@ variable "san_domains" {
   validation {
     condition     = length(var.san_domains) <= 4 && alltrue([for d in var.san_domains : can(regex("^[a-z0-9.-]+$", d))])
     error_message = "san_domains must be lowercase host names, at most four."
-  }
-}
-
-
-###############################################################################
-## SSH connection
-###############################################################################
-variable "ssh_hostname" {
-  description = <<EOT
-    Hostname or IP address of the PBS VM used for SSH access. This must be
-    reachable from the system executing the configuration.
-  EOT
-  type        = string
-
-  validation {
-    condition     = length(var.ssh_hostname) > 0
-    error_message = "ssh_hostname must be a non-empty string."
-  }
-}
-
-variable "ssh_username" {
-  description = <<EOT
-    SSH username with passwordless sudo on the PBS VM. Defaults to `root`.
-  EOT
-  type        = string
-  default     = "root"
-}
-
-variable "ssh_private_key" {
-  description = <<EOT
-    Path to the private key used for SSH authentication to the PBS VM.
-    This key must allow access to the specified user and host. Sensitive value.
-  EOT
-  type        = string
-  default     = null
-  sensitive   = true
-}
-
-variable "ssh_port" {
-  description = <<EOT
-    SSH port used to connect to the PBS VM. Defaults to `22`.
-  EOT
-  type        = number
-  default     = 22
-
-  validation {
-    condition     = var.ssh_port >= 1 && var.ssh_port <= 65535
-    error_message = "ssh_port must be a valid port number between 1 and 65535."
   }
 }

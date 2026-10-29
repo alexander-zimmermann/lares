@@ -8,7 +8,7 @@
 
 ## What this does
 
-I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them together, and [OpenTofu](https://opentofu.org/) plus the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider make it happen (the Backup Server side uses [`jkossis/proxmox`](https://github.com/jkossis/terraform-provider-proxmox), the one provider with PBS resources). That covers:
+I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them together, and [OpenTofu](https://opentofu.org/) plus the [`bpg/proxmox`](https://github.com/bpg/terraform-provider-proxmox) provider make it happen (the Backup Server side uses [`rfdrew/pbs`](https://github.com/rfdrew/terraform-provider-pbs)). That covers:
 
 - **Cluster-wide config** — ACME for PVE UI certs, backup jobs to PBS, hardware mappings (USB), users, OIDC realms (the default login goes through Layer-3 Authentik; the `pve` realm stays as break-glass).
 - **Per-node config** — repositories, network, optional subscription keys.
@@ -16,7 +16,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
-- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs and verify jobs through its API; repositories, the subscription nag, user passwords, prune and sync jobs and ACME over SSH. Cloud-init only installs the package, sets up disks and mounts, and sets the root password.
+- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs, verify, prune and sync jobs and ACME through its API; repositories and the subscription nag over SSH. Cloud-init only installs the package, sets up disks and mounts, and sets the root password.
 
 Specials worth calling out:
 
@@ -50,7 +50,7 @@ infrastructure/
 │   ├── 30-cloud-init
 │   ├── 40-template-{vm,lxc}
 │   ├── 50-fleet-{vm,lxc}
-│   └── 60-pbs-*            #   Backup Server scope (jkossis/proxmox, SSH)
+│   └── 60-pbs-*            #   Backup Server scope (rfdrew/pbs, SSH)
 └── templates/              # .tftpl files rendered into cloud-init (env files, scripts)
 ```
 

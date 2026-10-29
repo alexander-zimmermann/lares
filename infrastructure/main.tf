@@ -195,9 +195,10 @@ module "pbs_realm_openid" {
   default    = try(each.value.default, false)
 
   ## OIDC client
-  client_id  = each.value.client_id
-  client_key = var.pbs_realm_openid_client_keys[each.key]
-  scopes     = try(each.value.scopes, null)
+  client_id          = each.value.client_id
+  client_key         = var.pbs_realm_openid_client_keys[each.key]
+  client_key_version = try(each.value.client_key_version, 1)
+  scopes             = try(each.value.scopes, null)
 
   ## User mapping
   username_claim = try(each.value.username_claim, null)
@@ -255,12 +256,6 @@ module "pbs_user" {
 
   depends_on = [module.fleet_vm["backup_server_01"]]
 
-  ## SSH connection (required for the password until the provider carries it)
-  ssh_hostname    = local.pbs.ssh.address
-  ssh_port        = local.pbs.ssh.port
-  ssh_username    = local.pbs.ssh.username
-  ssh_private_key = local.pbs.ssh.private_key_path
-
   ## User identity and authentication
   username         = each.key
   realm            = try(each.value.realm, "pbs")
@@ -288,12 +283,6 @@ module "pbs_jobs" {
 
   depends_on = [module.pbs_datastore]
 
-  ## SSH connection (required for prune and sync jobs)
-  ssh_hostname    = local.pbs.ssh.address
-  ssh_port        = local.pbs.ssh.port
-  ssh_username    = local.pbs.ssh.username
-  ssh_private_key = local.pbs.ssh.private_key_path
-
   ## Jobs by type
   verify = try(local.manifest.pbs_jobs.verify, {})
   prune  = try(local.manifest.pbs_jobs.prune, {})
@@ -308,12 +297,6 @@ module "pbs_acme" {
   source = "./modules/60-pbs-acme"
 
   depends_on = [module.fleet_vm["backup_server_01"]]
-
-  ## SSH connection (required for acme changes)
-  ssh_hostname    = local.pbs.ssh.address
-  ssh_port        = local.pbs.ssh.port
-  ssh_username    = local.pbs.ssh.username
-  ssh_private_key = local.pbs.ssh.private_key_path
 
   ## ACME account
   account_name  = local.manifest.pbs_acme.account_name

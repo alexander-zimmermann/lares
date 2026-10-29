@@ -8,7 +8,12 @@ terraform {
       version = "0.119.0"
     }
     pbs = {
-      ## https://search.opentofu.org/provider/jkossis/proxmox/latest
+      ## https://search.opentofu.org/provider/rfdrew/pbs/latest
+      source  = "rfdrew/pbs"
+      version = "0.2.0"
+    }
+    ## Only to forget the jkossis/proxmox resources in state (imports.tf)
+    jkossis = {
       source  = "jkossis/proxmox"
       version = "1.1.1"
     }
