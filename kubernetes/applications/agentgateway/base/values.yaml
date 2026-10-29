@@ -20,6 +20,11 @@ gateway:
         port: 8080
         targetPort: 8080
         protocol: TCP
+      # The UI's listener (config.gateways.ui)
+      - name: ui
+        port: 4000
+        targetPort: 4000
+        protocol: TCP
 
 # Prometheus Monitoring (opt-in label)
 monitoring:
@@ -27,8 +32,15 @@ monitoring:
   extraLabels:
     release: prometheus
 
-# The settings it reads at start; the routes file brings the rest
+# The settings it reads at start, and the UI on a listener of its own, which
+# serves no route and no admin endpoint and changes nothing (UI_READ_ONLY in
+# kustomization.yaml); config/routes.values.yaml brings the routes
 config:
   config:
     logging:
       format: json
+  gateways:
+    ui:
+      port: 4000
+  ui:
+    gateways: ui

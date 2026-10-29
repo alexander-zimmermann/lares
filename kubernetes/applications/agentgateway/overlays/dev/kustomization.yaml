@@ -22,6 +22,31 @@ replacements:
           delimiter: "`"
           index: 1
 
+  # The UI's hostname in its Certificate, its IngressRoute Host(...) match and the Homepage href.
+  - sourceValue: ai.zimmermann.phd
+    targets:
+      - select:
+          kind: Certificate
+          name: agentgateway-ui-tls-cert
+        fieldPaths:
+          - spec.dnsNames.0
+      - select:
+          kind: IngressRoute
+          name: agentgateway-ui
+        fieldPaths:
+          - spec.routes.0.match
+        options:
+          delimiter: "`"
+          index: 1
+      - select:
+          kind: IngressRoute
+          name: agentgateway-ui
+        fieldPaths:
+          - metadata.annotations.[gethomepage.dev/href]
+        options:
+          delimiter: "//"
+          index: 1
+
   # Rewrite external-dns target annotation to the dev UDM Pro
   - sourceValue: udm-pro.zimmermann.phd
     targets:

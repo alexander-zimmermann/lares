@@ -26,6 +26,21 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
+# The UI shows the configuration and changes none; the chart has no value for it.
+patches:
+  - target:
+      kind: Deployment
+      name: agentgateway
+    patch: |-
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: agentgateway
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: UI_READ_ONLY
+          value: "true"
+
 labels:
   - includeSelectors: false
     pairs:
