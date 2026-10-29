@@ -36,7 +36,6 @@ vars:
   HERMES_CONFIG_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/config/config.yaml"
   HERMES_ENV_TEMPLATE_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/env-template.yaml"
   HERMES_PROFILES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/hermes/base/profiles"
-  AGENT_GATEWAY_ROUTES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/agentgateway/base/config/routes.yaml"
   AGENT_GATEWAY_ROUTES_VALUES_PATH: "{{.ROOT_DIR}}/kubernetes/applications/agentgateway/base/config/routes.values.yaml"
   AUTHENTIK_PERSONS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/authentik/base/blueprints/persons.yaml"
   OPEN_WEBUI_CONNECTIONS_PATH: "{{.ROOT_DIR}}/kubernetes/applications/open-webui/base/config/connections.values.yaml"

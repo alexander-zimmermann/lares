@@ -27,3 +27,41 @@ spec:
           port: 8080
   tls:
     secretName: agentgateway-tls-cert
+
+---
+# The gateway's read-only UI, for platform-admins only
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+
+metadata:
+  name: agentgateway-ui
+  namespace: agents
+  annotations:
+    # ExternalDNS configuration for Cloudflare
+    external-dns.kubernetes.io/target: PLACEHOLDER
+    external-dns.kubernetes.io/cloudflare-proxied: "true"
+    # Homepage Service Discovery
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: "Data & AI"
+    gethomepage.dev/name: "agentgateway"
+    gethomepage.dev/icon: "agentgateway.png"
+    gethomepage.dev/weight: "4"
+    gethomepage.dev/href: "https://PLACEHOLDER"
+    gethomepage.dev/pod-selector: "app.kubernetes.io/name=agentgateway"
+
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`PLACEHOLDER`)
+      priority: 10
+      middlewares:
+        - name: chain-admin-auth
+          namespace: ingress-controller
+      services:
+        - kind: Service
+          name: agentgateway
+          port: 4000
+  tls:
+    secretName: agentgateway-ui-tls-cert

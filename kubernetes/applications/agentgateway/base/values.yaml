@@ -1,10 +1,10 @@
 # One gateway in front of every tool server and of OpenAI's transcriptions. Its
-# routes come from the ConfigMap agentgateway-routes, every profile's key from
-# hermes-credentials, a server's credential from that server's Secret cloned here
-# by Kyverno, and a hosted vendor's token, OpenAI's key and Open WebUI's key from
-# agentgateway-keys (config/routes.values.yaml). A renewed credential reloads
-# without a restart; a resealed key rolls the gateway, as does any change to
-# agentgateway-keys.
+# routes are the chart's config from config/routes.values.yaml, joined to the
+# settings below; every profile's key comes from hermes-credentials, a server's
+# credential from that server's Secret cloned here by Kyverno, and a hosted
+# vendor's token, OpenAI's key and Open WebUI's key from agentgateway-keys. A
+# changed route or a renewed credential reloads without a restart; a resealed key
+# rolls the gateway, as does any change to agentgateway-keys.
 nameOverride: agentgateway
 fullnameOverride: agentgateway
 
@@ -20,6 +20,11 @@ gateway:
         port: 8080
         targetPort: 8080
         protocol: TCP
+      # The UI's listener (config.gateways.ui)
+      - name: ui
+        port: 4000
+        targetPort: 4000
+        protocol: TCP
 
 # Prometheus Monitoring (opt-in label)
 monitoring:
@@ -27,8 +32,15 @@ monitoring:
   extraLabels:
     release: prometheus
 
-# The settings it reads at start; the routes file brings the rest
+# The settings it reads at start, and the UI on a listener of its own, which
+# serves no route and no admin endpoint and changes nothing (UI_READ_ONLY in
+# kustomization.yaml); config/routes.values.yaml brings the routes
 config:
   config:
     logging:
       format: json
+  gateways:
+    ui:
+      port: 4000
+  ui:
+    gateways: ui
