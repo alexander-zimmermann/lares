@@ -12,11 +12,6 @@ terraform {
       source  = "rfdrew/pbs"
       version = "0.2.0"
     }
-    ## Only to forget the jkossis/proxmox resources in state (imports.tf)
-    jkossis = {
-      source  = "jkossis/proxmox"
-      version = "1.1.1"
-    }
     external = {
       ## https://search.opentofu.org/provider/hashicorp/external/latest
       source  = "hashicorp/external"
