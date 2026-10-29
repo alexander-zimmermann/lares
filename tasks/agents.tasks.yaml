@@ -11,11 +11,10 @@ version: "3"
 #                                  and the chart values that mount them
 #   HERMES_ENV_TEMPLATE_PATH     — rendered: every profile's .env, a template of
 #                                  the sealed keys beside Hermes's SealedSecret
-#   AGENT_GATEWAY_ROUTES_PATH    — rendered: the gateway's routes, which name every key
-#                                  as a variable and every credential as a file
 #   AGENT_GATEWAY_ROUTES_VALUES_PATH
-#                                — rendered: the gateway's chart values that set those
-#                                  variables and mount the routes and each credential
+#                                — rendered: the gateway's chart values: its routes,
+#                                  which name every key as a variable and every
+#                                  credential as a file, the variables and the mounts
 #   AUTHENTIK_PERSONS_PATH       — rendered: Authentik's blueprint of every person's
 #                                  account and groups
 #   OPEN_WEBUI_CONNECTIONS_PATH  — rendered: Open WebUI's chart values that connect it to
@@ -33,9 +32,9 @@ tasks:
       each enabled person's profile config with the ConfigMap and chart
       values that mount it, the template that composes every profile's .env
       from the keys sealed one by one beside it,
-      the gateway's routes, the gateway's chart values that set their keys
-      and mount the routes and each credential they attach, Authentik's
-      blueprint of every person's account, household membership and group,
+      the gateway's chart values with its routes, their keys and each
+      credential they attach, Authentik's blueprint of every person's
+      account, household membership and group,
       and Open WebUI's chart values that connect it to every person's profile.
       The trigger's loaders refuse a declaration that breaks a rule and name
       the field. A commit whose rendered files this changed stops once: add
@@ -43,7 +42,7 @@ tasks:
       (task k8s:validate-sealed-templates).
       Reads: use-cases.yaml, persons.yaml, settings.yaml, the trigger's values.yaml (tag).
       Writes: config.yaml, profiles/, env-template.yaml,
-      config/routes.yaml, config/routes.values.yaml, blueprints/persons.yaml and
+      config/routes.values.yaml, blueprints/persons.yaml and
       config/connections.values.yaml.
       Needs network (the git tag) and a uv that knows Python 3.15.
     vars:
@@ -59,7 +58,6 @@ tasks:
         --settings "{{.HERMES_SETTINGS_PATH}}"
         --hermes-config "{{.HERMES_CONFIG_PATH}}"
         --env-template "{{.HERMES_ENV_TEMPLATE_PATH}}"
-        --routes "{{.AGENT_GATEWAY_ROUTES_PATH}}"
         --routes-values "{{.AGENT_GATEWAY_ROUTES_VALUES_PATH}}"
         --profiles "{{.HERMES_PROFILES_PATH}}"
         --authentik-persons "{{.AUTHENTIK_PERSONS_PATH}}"

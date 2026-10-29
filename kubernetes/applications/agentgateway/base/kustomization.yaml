@@ -18,20 +18,13 @@ helmCharts:
     releaseName: agentgateway
     version: v1.7.0
     valuesFile: values.yaml
-    # The routes' keys as variables, the routes and each credential they attach,
-    # mounted whole (task agents:create-harness-config)
+    # The routes as the chart's config, their keys as variables and each
+    # credential they attach, mounted whole (task agents:create-harness-config)
     additionalValuesFiles:
       - config/routes.values.yaml
     namespace: agents
     apiVersions:
       - monitoring.coreos.com/v1
-
-# The routes, rendered by task agents:create-harness-config; the content hash
-# rolls the gateway when they change.
-configMapGenerator:
-  - name: agentgateway-routes
-    files:
-      - config.yaml=config/routes.yaml
 
 labels:
   - includeSelectors: false
