@@ -1,7 +1,7 @@
 # The chart's appVersion trails the app's releases, so the tag is set here, where Renovate tracks it.
 image:
   repository: ghcr.io/open-webui/open-webui
-  tag: 0.12.4-slim
+  tag: v0.12.5-slim
 
 # One pod on the one volume; a new version migrates the database at start, so never two at once.
 workload:
