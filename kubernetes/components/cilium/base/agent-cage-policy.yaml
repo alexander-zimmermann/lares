@@ -6,8 +6,8 @@ metadata:
 
 spec:
   # The pods that run agents or act on their behalf (the hermes harness, the
-  # gateway in front of its tool servers, GitHub's and Grafana's own servers,
-  # the MCP bridge, the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
+  # gateway in front of its tool servers, GitHub's, Grafana's and UniFi's own
+  # servers, the MCP bridge, the agent trigger, Node-RED) are the one place the UDM cannot see: pods leave
   # with the node IP, so their egress is fenced here, inside the cluster and towards
   # the internet by name. The cage touches no ingress. One policy for all of them, so the
   # allow list is the union of what each needs.
@@ -68,6 +68,15 @@ spec:
       toPorts:
         - ports:
             - port: "8000"
+              protocol: TCP
+
+    # The gateway calling UniFi's own servers behind the unifi-network and unifi-protect routes
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: unifi-mcp
+      toPorts:
+        - ports:
+            - port: "3000"
               protocol: TCP
 
     # grafana-mcp reading Grafana, which queries the data sources itself (Service port 80)
@@ -165,8 +174,8 @@ spec:
             - port: "3000"
               protocol: TCP
 
-    # hermes: OTLP traces and its process metrics; the trigger, the bridge and the gateway: OTLP traces;
-    # grafana-mcp: OTLP traces over gRPC, the only protocol it exports
+    # hermes: OTLP traces and its process metrics; the trigger, the bridge, the gateway and
+    # the UniFi servers: OTLP traces; grafana-mcp: OTLP traces over gRPC, the only protocol it exports
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: alloy
@@ -207,6 +216,14 @@ spec:
       toPorts:
         - ports:
             - port: "8007"
+              protocol: TCP
+
+    # unifi-network-mcp and unifi-protect-mcp: UniFi OS on the UDM Pro, its API and event websockets
+    - toFQDNs:
+        - matchName: udm-pro.zimmermann.eu.com
+      toPorts:
+        - ports:
+            - port: "443"
               protocol: TCP
 
     # node-red: UniFi mails via iCloud IMAP

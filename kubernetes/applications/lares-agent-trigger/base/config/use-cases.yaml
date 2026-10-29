@@ -145,6 +145,68 @@ tool_servers:
     access: read
     tools: [search, execute, docs, whoami]
 
+  # Reads the UniFi network: clients and the access point each is on, devices,
+  # events, networks, traffic. UniFi's own server (unifi-mcp), as the local View
+  # Only user lares-agent-reader, refusing every write; the gateway attaches the
+  # key it admits. The server registers exactly these (UNIFI_ENABLED_TOOLS).
+  - name: unifi-network
+    kind: http
+    url: http://unifi-network-mcp.unifi-mcp.svc.cluster.local:3000/mcp
+    credential:
+      secret: unifi-mcp-gateway-key
+      key: key
+      header: Authorization
+    timeout_seconds: 60
+    access: read
+    # Every tool definition sits in the prompt, so only what a question about
+    # who is on the network, what dropped off and how much went where needs.
+    tools:
+      - unifi_list_clients
+      - unifi_get_client_details
+      - unifi_get_client_wifi_details
+      - unifi_list_devices
+      - unifi_get_device_details
+      - unifi_list_events
+      - unifi_get_event_types
+      - unifi_list_alarms
+      - unifi_list_networks
+      - unifi_list_wlans
+      - unifi_get_network_health
+      - unifi_get_system_info
+      - unifi_get_device_stats
+      - unifi_get_client_stats
+      - unifi_get_top_clients
+      - unifi_get_gateway_stats
+      - unifi_get_ips_events
+
+  # Reads UniFi Protect: camera state, events and smart detections, the other
+  # Protect devices, the NVR's health. No snapshot, stream, thumbnail or clip.
+  # Same server, user and key as unifi-network; it registers its meta tools
+  # regardless, which this list holds back.
+  - name: unifi-protect
+    kind: http
+    url: http://unifi-protect-mcp.unifi-mcp.svc.cluster.local:3000/mcp
+    credential:
+      secret: unifi-mcp-gateway-key
+      key: key
+      header: Authorization
+    timeout_seconds: 60
+    access: read
+    tools:
+      - protect_list_cameras
+      - protect_get_camera
+      - protect_get_camera_analytics
+      - protect_list_events
+      - protect_get_event
+      - protect_list_smart_detections
+      - protect_list_sensors
+      - protect_list_lights
+      - protect_list_chimes
+      - protect_get_system_info
+      - protect_get_health
+      - protect_get_firmware_status
+      - protect_list_viewers
+
 # A person's own MCP client, signed in through Authentik on the gateway's public
 # address (agentgateway/base/ingress-route.yaml); persons.yaml says who holds one.
 connectors:
@@ -223,7 +285,7 @@ use_cases:
     # one per answered message. No skill: the message is the assignment.
     trigger:
       kind: message
-    tools: [lares, lares-runs, github, grafana, cloudflare]
+    tools: [lares, lares-runs, github, grafana, cloudflare, unifi-network, unifi-protect]
     output: [discord, web_chat]
     # Nothing here is enforced for a chat. runs_per_day counts per person: their
     # 201st message in a day is answered, and AgentMessengerBudget fires.

@@ -1,0 +1,88 @@
+# UniFi's own tool servers behind the gateway's unifi-network and unifi-protect
+# routes, their only caller. Both sign in to the UDM Pro as the local View Only
+# user lares-agent-reader and refuse every write.
+deployment:
+  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  podLabels:
+    role: agent
+
+  env:
+    # Self-signed certificate, so the default of no verification stays
+    UNIFI_HOST:
+      value: udm-pro.zimmermann.eu.com
+    UNIFI_USERNAME:
+      value: lares-agent-reader
+    UNIFI_PASSWORD_FILE:
+      value: /etc/unifi-mcp/credentials/password
+    # Every create, update and delete is refused at call time
+    UNIFI_READ_ONLY:
+      value: "true"
+    # The route's tools registered directly, each named in its own span
+    UNIFI_TOOL_REGISTRATION_MODE:
+      value: eager
+    UNIFI_MCP_HTTP_ENABLED:
+      value: "true"
+    UNIFI_MCP_HOST:
+      value: 0.0.0.0
+    UNIFI_MCP_PORT:
+      value: "3000"
+    # Every call must bring it as a bearer token: the key the gateway calls with
+    UNIFI_MCP_HTTP_AUTH_TOKEN_FILE:
+      value: /etc/unifi-mcp/gateway-key/key
+    # OTLP over HTTP; a call from the gateway continues the gateway's trace
+    OTEL_EXPORTER_OTLP_ENDPOINT:
+      value: http://alloy-alloy-receiver.alloy.svc.cluster.local:4318
+    OTEL_TRACES_SAMPLER:
+      value: parentbased_traceidratio
+    # The agent platform's sampling ratio
+    OTEL_TRACES_SAMPLER_ARG:
+      value: "1.0"
+
+  volumes:
+    credentials:
+      secret:
+        secretName: unifi-mcp-credentials
+    gateway-key:
+      secret:
+        secretName: unifi-mcp-gateway-key
+
+  volumeMounts:
+    credentials:
+      mountPath: /etc/unifi-mcp/credentials
+      readOnly: true
+    gateway-key:
+      mountPath: /etc/unifi-mcp/gateway-key
+      readOnly: true
+
+  ports:
+    - containerPort: 3000
+      name: mcp
+      protocol: TCP
+
+  # No health endpoint: the listening port is the signal
+  livenessProbe:
+    enabled: true
+    tcpSocket:
+      port: mcp
+    initialDelaySeconds: 5
+    periodSeconds: 30
+
+  readinessProbe:
+    enabled: true
+    tcpSocket:
+      port: mcp
+    initialDelaySeconds: 2
+
+  containerSecurityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+
+service:
+  ports:
+    - port: 3000
+      name: mcp
+      protocol: TCP
+      targetPort: mcp
