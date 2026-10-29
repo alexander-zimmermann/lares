@@ -48,12 +48,3 @@ provider "pbs" {
   password             = var.ci_secrets.pbs_bootstrap_conf.pbs_root_password
   insecure_skip_verify = local.pbs.api.insecure
 }
-
-## jkossis/proxmox: configured only so the `removed` blocks in imports.tf can
-## forget its resources
-provider "jkossis" {
-  endpoint     = local.pbs.api.api_url
-  username     = local.pbs.api.username
-  password     = var.ci_secrets.pbs_bootstrap_conf.pbs_root_password
-  insecure_tls = local.pbs.api.insecure
-}
