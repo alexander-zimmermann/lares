@@ -130,6 +130,21 @@ extraEnvVars:
     value: "false"
   - name: ENABLE_COMMUNITY_SHARING
     value: "false"
+  # The microphone goes to OpenAI through the gateway's speech route, under Open WebUI's
+  # own gateway key; the slim image has no local Whisper, and the household speaks German
+  - name: AUDIO_STT_ENGINE
+    value: openai
+  - name: AUDIO_STT_OPENAI_API_BASE_URL
+    value: http://agentgateway.agents.svc.cluster.local:8080/v1
+  - name: AUDIO_STT_OPENAI_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: open-webui-credentials
+        key: gateway-key
+  - name: AUDIO_STT_MODEL
+    value: whisper-1
+  - name: WHISPER_LANGUAGE
+    value: de
   # Traces over OTLP/HTTP, at the agent platform's sampling ratio; each model call keeps the
   # session header, which the trace links of the "Läufe" table search by
   - name: ENABLE_OTEL
