@@ -64,7 +64,11 @@ display:
     discord:
       tool_progress: 'off'
 stt:
+  provider: openai
   language: de
+  openai:
+    base_url: http://agentgateway.agents.svc.cluster.local:8080/v1
+    api_key: ${env:GATEWAY_KEY}
 group_sessions_per_user: true
 session_reset:
   mode: both

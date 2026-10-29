@@ -90,9 +90,14 @@ display:
       # No tool-call bubbles in the channel; the answer names its sources itself
       tool_progress: "off"
 
-# Voice messages are transcribed in the pod; the household speaks German, Hermes would force English.
+# Voice messages go to OpenAI through the gateway's speech route, under each profile's own
+# gateway key; the household speaks German, Hermes would force English.
 stt:
+  provider: openai
   language: de
+  openai:
+    base_url: http://agentgateway.agents.svc.cluster.local:8080/v1
+    api_key: ${env:GATEWAY_KEY}
 
 # Session isolation on every gateway platform
 group_sessions_per_user: true
