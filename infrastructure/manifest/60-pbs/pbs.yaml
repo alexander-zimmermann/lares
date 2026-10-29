@@ -5,7 +5,7 @@
 pbs:
   api_connection:
     api_url: "https://backup-01.zimmermann.eu.com:8007"
-    ## Password ticket: the provider has no API-token path. The password is
+    ## Password ticket as root; the password is
     ## `ci_secrets.pbs_bootstrap_conf.pbs_root_password`, set at first boot.
     username: "root@pam"
     ## A fresh VM serves a self-signed certificate until its ACME order has run

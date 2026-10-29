@@ -1,8 +1,5 @@
 ## Verify, prune and sync jobs on the PBS (Datastore -> Verify/Prune & GC
-## and Sync Jobs in the PBS UI). Verify jobs are provider resources; prune
-## and sync jobs are applied over SSH until the provider carries them, so a
-## change shows up as a re-run, not as a diff, and a job dropped from the
-## manifest stays on PBS until removed by hand.
+## and Sync Jobs in the PBS UI).
 pbs_jobs:
   verify:
     verify-datastore-primary:

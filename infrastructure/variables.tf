@@ -114,7 +114,7 @@ variable "pbs_user_passwords" {
   description = <<EOT
     Map of username => password for the PBS users defined in
     manifest/60-pbs/pbs-user.yaml. Users absent from the map get no password
-    (token-only). Sent over SSH, never stored in state; the PVE storage in
+    (token-only). Sent write-only, never stored in state; the PVE storage in
     manifest/00-cluster/pve-cluster-pbs-storage.yaml reads its user's entry
     from here too. Sensitive value.
   EOT
@@ -130,8 +130,8 @@ variable "pbs_user_passwords" {
 variable "pbs_realm_openid_client_keys" {
   description = <<EOT
     Map of realm => OIDC client secret for the realms defined in
-    manifest/60-pbs/pbs-realm-openid.yaml. Unlike the PVE realm the PBS
-    provider keeps the secret in state. Sensitive value.
+    manifest/60-pbs/pbs-realm-openid.yaml. Sent write-only, never stored in
+    state. Sensitive value.
   EOT
   type        = map(string)
   sensitive   = true
