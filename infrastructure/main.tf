@@ -215,7 +215,7 @@ module "pbs_core" {
 
   depends_on = [module.fleet_vm["backup_server_01"]]
 
-  ## SSH connection (required for repository and nag changes)
+  ## SSH connection (the subscription nag has no API)
   ssh_hostname    = local.pbs.ssh.address
   ssh_port        = local.pbs.ssh.port
   ssh_username    = local.pbs.ssh.username

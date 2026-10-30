@@ -16,7 +16,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
-- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs, verify, prune and sync jobs and ACME through its API; repositories and the subscription nag over SSH. Cloud-init only installs the package, sets up disks and mounts, and sets the root password.
+- **Backup Server** — configuration of the running PBS (one of the fleet VMs): OIDC realm, datastores, users, tokens, ACLs, verify, prune and sync jobs, ACME and the APT repositories through its API; the subscription nag over SSH. Cloud-init only installs the package, sets up disks and mounts, and sets the root password.
 
 Specials worth calling out:
 
