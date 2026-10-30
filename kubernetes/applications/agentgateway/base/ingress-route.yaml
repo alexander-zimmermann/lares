@@ -43,9 +43,9 @@ metadata:
     # Homepage Service Discovery
     gethomepage.dev/enabled: "true"
     gethomepage.dev/group: "Data & AI"
-    gethomepage.dev/name: "agentgateway"
+    gethomepage.dev/name: "Agentgateway"
     gethomepage.dev/icon: "agentgateway.png"
-    gethomepage.dev/weight: "4"
+    gethomepage.dev/weight: "3"
     gethomepage.dev/href: "https://PLACEHOLDER"
     gethomepage.dev/pod-selector: "app.kubernetes.io/name=agentgateway"
 
