@@ -64,12 +64,18 @@ patches:
       - op: test
         path: /spec/template/spec/containers/0/name
         value: agentgateway
-      # The cluster's Authentik, which the connectors' issuer names
+      # The cluster's Authentik, which the connectors' and the UI's issuers name
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:
           name: AUTHENTIK_URL
           value: https://auth.zimmermann.sh
+      # The UI's address, where its sign-in returns
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: UI_URL
+          value: https://ai.zimmermann.sh
       # The agent platform's sampling ratio, which the rendered routes name
       - op: add
         path: /spec/template/spec/containers/0/env/-

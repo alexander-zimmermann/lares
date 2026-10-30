@@ -70,6 +70,9 @@ configMapGenerator:
   - name: authentik-blueprint-proxmox-backup
     files:
       - blueprints/proxmox-backup.yaml
+  - name: authentik-blueprint-agentgateway
+    files:
+      - blueprints/agentgateway.yaml
 
 labels:
   - includeSelectors: false
