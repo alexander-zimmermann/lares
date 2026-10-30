@@ -6,6 +6,7 @@ resources:
   - ./nats-archive-dedupe-2026-05-warp-charge-tracker-job.yaml
   - ./nats-archive-dedupe-2026-05-warp-meter-job.yaml
   - ./nats-archive-dedupe-2026-05-warp-system-job.yaml
+  - ./nats-archive-dedupe-2026-05-warp-evse-job.yaml
 
 replacements:
   # Inject domain name into Certificate, IngressRoute, and Homepage href
