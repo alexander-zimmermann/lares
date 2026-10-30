@@ -26,7 +26,9 @@ helmCharts:
     apiVersions:
       - monitoring.coreos.com/v1
 
-# The UI shows the configuration and changes none; the chart has no value for it.
+# Two variables the chart has no value for (its extraEnv is config/routes.values.yaml's):
+# the UI shows the configuration and changes none, and its sign-in's client secret
+# is the one Kyverno clones from authentik.
 patches:
   - target:
       kind: Deployment
@@ -40,6 +42,14 @@ patches:
         value:
           name: UI_READ_ONLY
           value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: AGENTGATEWAY_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: agentgateway-oidc-secret
+              key: AGENTGATEWAY_OIDC_CLIENT_SECRET
 
 labels:
   - includeSelectors: false

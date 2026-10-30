@@ -104,6 +104,12 @@ global:
         secretKeyRef:
           name: proxmox-backup-oidc-secret
           key: PROXMOX_BACKUP_OIDC_CLIENT_SECRET
+    # agentgateway UI OIDC client secret for the agentgateway-oidc blueprint
+    - name: AGENTGATEWAY_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: agentgateway-oidc-secret
+          key: AGENTGATEWAY_OIDC_CLIENT_SECRET
 
     # Blueprint variables — injected per environment via overlay replacements
     - name: AUTHENTIK_ARGOCD_REDIRECT_URI
@@ -133,6 +139,8 @@ global:
       value: https://PLACEHOLDER_PROXMOX_HOST
     - name: AUTHENTIK_PROXMOX_BACKUP_REDIRECT_URI
       value: https://PLACEHOLDER_PROXMOX_BACKUP_HOST
+    - name: AUTHENTIK_AGENTGATEWAY_REDIRECT_URI
+      value: https://PLACEHOLDER_AGENTGATEWAY_HOST/oauth/callback
 
     # Optimization: Fewer workers and no preloading saves RAM in small setups
     - name: AUTHENTIK_WEB__WORKERS
@@ -178,6 +186,7 @@ blueprints:
     - authentik-blueprint-hermes
     - authentik-blueprint-proxmox
     - authentik-blueprint-proxmox-backup
+    - authentik-blueprint-agentgateway
 
 server:
   # Expose Authentik service via Cilium/BGP-announced LoadBalancer

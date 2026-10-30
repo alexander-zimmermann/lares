@@ -4,13 +4,24 @@
 # credential from that server's Secret cloned here by Kyverno, and a hosted
 # vendor's token, OpenAI's key and Open WebUI's key from agentgateway-keys. A
 # changed route or a renewed credential reloads without a restart; a resealed key
-# rolls the gateway, as does any change to agentgateway-keys.
+# rolls the gateway, as does any change to agentgateway-keys or to the UI's two
+# sign-in secrets.
 nameOverride: agentgateway
 fullnameOverride: agentgateway
 
 # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
 podLabels:
   role: agent
+
+# The UI's sign-in secrets are read at start: each carries reloader.stakater.com/match,
+# so a change rolls the gateway. The routes' keys are reloaded by name, through the
+# annotation config/routes.values.yaml sets beside this one.
+podAnnotations:
+  reloader.stakater.com/search: "true"
+
+# The key that encrypts the UI's session cookie, OIDC_COOKIE_SECRET from agentgateway-oidc
+oidc:
+  enabled: true
 
 gateway:
   service:
@@ -34,7 +45,8 @@ monitoring:
 
 # The settings it reads at start, and the UI on a listener of its own, which
 # serves no route and no admin endpoint and changes nothing (UI_READ_ONLY in
-# kustomization.yaml); config/routes.values.yaml brings the routes
+# kustomization.yaml); config/routes.values.yaml brings the routes. The UI signs
+# in through Authentik, which admits platform-admins only (blueprints/agentgateway.yaml).
 config:
   config:
     logging:
@@ -44,3 +56,12 @@ config:
       port: 4000
   ui:
     gateways: ui
+    policies:
+      oidc:
+        issuer: ${AUTHENTIK_URL}/application/o/agentgateway/
+        clientId: agentgateway
+        clientSecret: ${AGENTGATEWAY_OIDC_CLIENT_SECRET}
+        redirectURI: ${UI_URL}/oauth/callback
+        scopes:
+          - profile
+          - email
