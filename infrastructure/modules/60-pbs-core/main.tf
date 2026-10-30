@@ -3,6 +3,10 @@
 ###############################################################################
 terraform {
   required_providers {
+    pbs = {
+      source  = "rfdrew/pbs"
+      version = "~> 0.3.0"
+    }
     external = {
       source  = "hashicorp/external"
       version = "~> 2.4.0"
@@ -12,19 +16,39 @@ terraform {
 
 
 ###############################################################################
-## APT repositories & subscription nag
+## APT repositories
 ###############################################################################
-## PBS exposes neither through proxmox-backup-manager, so both are applied
-## over SSH: the enterprise stanza gets an `Enabled:` line (absent by default),
-## the nag is patched out of proxmoxlib.js by an APT hook after every
-## proxmox-widget-toolkit install or upgrade.
+## PBS installs the enterprise repository enabled and cannot remove it, so the
+## resource takes over its entry and switches it. `pbs-no-subscription` stays
+## in cloud-init, which needs it to install PBS in the first place.
+data "pbs_apt_repositories" "this" {}
+
+locals {
+  enterprise = one([
+    for r in data.pbs_apt_repositories.this.standard_repositories : r
+    if r.handle == "enterprise"
+  ])
+}
+
+resource "pbs_apt_repository" "enterprise" {
+  file_path = local.enterprise.file_path
+  index     = local.enterprise.index
+  enabled   = var.enable_enterprise_repository
+}
+
+
+###############################################################################
+## Subscription nag
+###############################################################################
+## PBS has no API for it, so it is applied over SSH: the nag is patched out of
+## proxmoxlib.js by an APT hook after every proxmox-widget-toolkit install or
+## upgrade.
 locals {
   script_path = "/tmp/pbs_core.sh"
   log_output  = "/tmp/pbs_core.log"
 
-  enterprise_sources = "/etc/apt/sources.list.d/pbs-enterprise.sources"
-  nag_hook           = "/etc/apt/apt.conf.d/no-nag-script"
-  toolkit_js         = "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js"
+  nag_hook   = "/etc/apt/apt.conf.d/no-nag-script"
+  toolkit_js = "/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js"
 
   ## No `~` in the template directives: it would keep the heredoc indentation
   pbs_core_script = <<-BASH
@@ -36,13 +60,6 @@ locals {
 
     # Log every command executed, with timestamp and source info
     trap 'printf "+ [%(%F %T)T] %s:%d: %s\n" -1 "$(basename -- "$BASH_SOURCE")" "$LINENO" "$BASH_COMMAND" >&2' DEBUG
-
-    # Enterprise repository: deb822 stanza, `Enabled:` is absent until set once
-    if grep -q '^Enabled:' ${local.enterprise_sources}; then
-      sudo sed -i 's/^Enabled:.*/Enabled: ${var.enable_enterprise_repository}/' ${local.enterprise_sources}
-    else
-      sudo sed -i '/^Types:/a Enabled: ${var.enable_enterprise_repository}' ${local.enterprise_sources}
-    fi
 
     # Subscription nag
     %{if var.disable_subscription_nag}
@@ -59,9 +76,8 @@ locals {
 }
 
 resource "terraform_data" "pbs_core" {
-  ## Re-execute if any attribute changes
+  ## Re-execute if the attribute changes
   triggers_replace = [
-    var.enable_enterprise_repository,
     var.disable_subscription_nag
   ]
 
