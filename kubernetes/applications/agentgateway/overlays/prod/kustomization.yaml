@@ -23,7 +23,7 @@ replacements:
           index: 1
 
   # The UI's hostname in its Certificate, its IngressRoute Host(...) match and the Homepage href.
-  - sourceValue: ai.zimmermann.sh
+  - sourceValue: agentgateway.zimmermann.sh
     targets:
       - select:
           kind: Certificate
@@ -75,7 +75,7 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: UI_URL
-          value: https://ai.zimmermann.sh
+          value: https://agentgateway.zimmermann.sh
       # The agent platform's sampling ratio, which the rendered routes name
       - op: add
         path: /spec/template/spec/containers/0/env/-
