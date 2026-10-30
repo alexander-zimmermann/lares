@@ -37,8 +37,9 @@ groups:
           description: "{{ $value }} fatal line(s) in the last 10m — the process gave up on something; if it exited, PodCrashLooping follows."
 
       - alert: LogStackTrace
-        # Python tracebacks, the sidecar bridges' exc_info; reconnect backoff
-        # logs about ten in the first quarter hour of an outage
+        # Python tracebacks, the sidecar bridges' exc_info. nats.py's default
+        # error callback logs one per reconnect attempt, two seconds apart;
+        # every client of ours logs a warning line there instead
         expr: |
           sum by (namespace, pod, container) (
             count_over_time({namespace=~".+", container=~".+", container!="loki"}
