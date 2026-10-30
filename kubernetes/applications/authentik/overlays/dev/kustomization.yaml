@@ -119,7 +119,7 @@ replacements:
         fieldPaths:
           - spec.template.spec.containers.0.env.[name=AUTHENTIK_HERMES_REDIRECT_URI].value
 
-  - sourceValue: https://ai.zimmermann.phd/oauth/callback
+  - sourceValue: https://agentgateway.zimmermann.phd/oauth/callback
     targets:
       - select:
           kind: Deployment
