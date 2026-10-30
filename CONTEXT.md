@@ -158,7 +158,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   vendor's own server that only reads: GitHub's, with the token of a
   GitHub App that may only read; Grafana's, the cluster's metrics, logs,
   traces and alerts as a Viewer service account; Cloudflare's hosted
-  one, the edge with an API token that holds read permissions only.
+  one, the edge with an API token that holds read permissions only;
+  UniFi's two, Network and Protect, as a local View Only user.
   Each says where it may be
   granted: a read server to any run, a writing one only to the scheduled
   runs that name it, a request server (what a person asks for in

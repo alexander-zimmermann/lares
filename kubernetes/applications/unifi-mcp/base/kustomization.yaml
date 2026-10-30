@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: unifi-mcp
+
+resources:
+  - namespace.yaml
+  # The UniFi user's password and the key the gateway calls with
+  - sealed-secret.yaml
+
+# One release per server: values.yaml holds what both share, network.values.yaml
+# and protect.values.yaml the name, the Host and the route's tools of each.
+helmCharts:
+  - name: application
+    repo: oci://ghcr.io/stakater/charts
+    releaseName: unifi-network-mcp
+    version: 9.3.2
+    valuesFile: values.yaml
+    additionalValuesFiles:
+      - network.values.yaml
+    namespace: unifi-mcp
+
+  - name: application
+    repo: oci://ghcr.io/stakater/charts
+    releaseName: unifi-protect-mcp
+    version: 9.3.2
+    valuesFile: values.yaml
+    additionalValuesFiles:
+      - protect.values.yaml
+    namespace: unifi-mcp
+
+# The image behind each server's placeholder; Renovate reads the tags here
+images:
+  - name: unifi-network-mcp
+    newName: ghcr.io/sirkirby/unifi-network-mcp
+    newTag: 0.41.0
+  - name: unifi-protect-mcp
+    newName: ghcr.io/sirkirby/unifi-protect-mcp
+    newTag: 0.10.0
+
+labels:
+  - includeSelectors: false
+    pairs:
+      homelab.app: unifi-mcp
+
+# Wave 12 = beside the gateway, its only caller.
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "12"

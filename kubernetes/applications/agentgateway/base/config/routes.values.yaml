@@ -251,6 +251,100 @@ config:
                 policies:
                   http:
                     requestTimeout: 60s
+    - name: unifi-network
+      matches:
+        - path:
+            exact: /mcp/unifi-network
+      policies:
+        apiKey:
+          mode: strict
+          keys:
+            - key: ${AZ1003_GATEWAY_KEY}
+              metadata:
+                enduser_id: az1003
+        mcpAuthorization:
+          rules:
+            - mcp.tool.name == "unifi_list_clients"
+            - mcp.tool.name == "unifi_get_client_details"
+            - mcp.tool.name == "unifi_get_client_wifi_details"
+            - mcp.tool.name == "unifi_list_devices"
+            - mcp.tool.name == "unifi_get_device_details"
+            - mcp.tool.name == "unifi_list_events"
+            - mcp.tool.name == "unifi_get_event_types"
+            - mcp.tool.name == "unifi_list_alarms"
+            - mcp.tool.name == "unifi_list_networks"
+            - mcp.tool.name == "unifi_list_wlans"
+            - mcp.tool.name == "unifi_get_network_health"
+            - mcp.tool.name == "unifi_get_system_info"
+            - mcp.tool.name == "unifi_get_device_stats"
+            - mcp.tool.name == "unifi_get_client_stats"
+            - mcp.tool.name == "unifi_get_top_clients"
+            - mcp.tool.name == "unifi_get_gateway_stats"
+            - mcp.tool.name == "unifi_get_ips_events"
+        backendAuth:
+          key:
+            value:
+              file: /etc/agentgateway/credentials/unifi-mcp-gateway-key/key
+      backends:
+        - mcp:
+            statefulMode: stateless
+            targets:
+              - name: unifi-network
+                mcp:
+                  host: http://unifi-network-mcp.unifi-mcp.svc.cluster.local:3000/mcp
+                policies:
+                  http:
+                    requestTimeout: 60s
+                  transformations:
+                    request:
+                      set:
+                        X-Client-Id: '"unifi-network"'
+                        X-Enduser-Id: apiKey.enduser_id
+    - name: unifi-protect
+      matches:
+        - path:
+            exact: /mcp/unifi-protect
+      policies:
+        apiKey:
+          mode: strict
+          keys:
+            - key: ${AZ1003_GATEWAY_KEY}
+              metadata:
+                enduser_id: az1003
+        mcpAuthorization:
+          rules:
+            - mcp.tool.name == "protect_list_cameras"
+            - mcp.tool.name == "protect_get_camera"
+            - mcp.tool.name == "protect_get_camera_analytics"
+            - mcp.tool.name == "protect_list_events"
+            - mcp.tool.name == "protect_get_event"
+            - mcp.tool.name == "protect_list_smart_detections"
+            - mcp.tool.name == "protect_list_sensors"
+            - mcp.tool.name == "protect_list_lights"
+            - mcp.tool.name == "protect_list_chimes"
+            - mcp.tool.name == "protect_get_system_info"
+            - mcp.tool.name == "protect_get_health"
+            - mcp.tool.name == "protect_get_firmware_status"
+            - mcp.tool.name == "protect_list_viewers"
+        backendAuth:
+          key:
+            value:
+              file: /etc/agentgateway/credentials/unifi-mcp-gateway-key/key
+      backends:
+        - mcp:
+            statefulMode: stateless
+            targets:
+              - name: unifi-protect
+                mcp:
+                  host: http://unifi-protect-mcp.unifi-mcp.svc.cluster.local:3000/mcp
+                policies:
+                  http:
+                    requestTimeout: 60s
+                  transformations:
+                    request:
+                      set:
+                        X-Client-Id: '"unifi-protect"'
+                        X-Enduser-Id: apiKey.enduser_id
     - name: claude-ai
       matches:
         - path:
@@ -404,6 +498,12 @@ extraVolumes:
           path: cloudflare-mcp-token
         - key: openai-api-key
           path: openai-api-key
+  - name: unifi-mcp-gateway-key
+    secret:
+      secretName: unifi-mcp-gateway-key
+      items:
+        - key: key
+          path: key
 extraVolumeMounts:
   - name: lares-mcp-bridge-gateway-key
     mountPath: /etc/agentgateway/credentials/lares-mcp-bridge-gateway-key
@@ -416,4 +516,7 @@ extraVolumeMounts:
     readOnly: true
   - name: agentgateway-keys
     mountPath: /etc/agentgateway/credentials/agentgateway-keys
+    readOnly: true
+  - name: unifi-mcp-gateway-key
+    mountPath: /etc/agentgateway/credentials/unifi-mcp-gateway-key
     readOnly: true

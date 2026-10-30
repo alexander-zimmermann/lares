@@ -120,6 +120,8 @@ platform_toolsets:
     - github
     - grafana
     - cloudflare
+    - unifi-network
+    - unifi-protect
   api_server:
     - skills
     - lares
@@ -127,6 +129,8 @@ platform_toolsets:
     - github
     - grafana
     - cloudflare
+    - unifi-network
+    - unifi-protect
 hooks:
   outbound:
     - name: lares-agent-trigger
@@ -218,5 +222,53 @@ mcp_servers:
         - execute
         - docs
         - whoami
+      resources: false
+      prompts: false
+  unifi-network:
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/unifi-network
+    headers:
+      Authorization: Bearer ${env:GATEWAY_KEY}
+    timeout: 60
+    tools:
+      include:
+        - unifi_list_clients
+        - unifi_get_client_details
+        - unifi_get_client_wifi_details
+        - unifi_list_devices
+        - unifi_get_device_details
+        - unifi_list_events
+        - unifi_get_event_types
+        - unifi_list_alarms
+        - unifi_list_networks
+        - unifi_list_wlans
+        - unifi_get_network_health
+        - unifi_get_system_info
+        - unifi_get_device_stats
+        - unifi_get_client_stats
+        - unifi_get_top_clients
+        - unifi_get_gateway_stats
+        - unifi_get_ips_events
+      resources: false
+      prompts: false
+  unifi-protect:
+    url: http://agentgateway.agents.svc.cluster.local:8080/mcp/unifi-protect
+    headers:
+      Authorization: Bearer ${env:GATEWAY_KEY}
+    timeout: 60
+    tools:
+      include:
+        - protect_list_cameras
+        - protect_get_camera
+        - protect_get_camera_analytics
+        - protect_list_events
+        - protect_get_event
+        - protect_list_smart_detections
+        - protect_list_sensors
+        - protect_list_lights
+        - protect_list_chimes
+        - protect_get_system_info
+        - protect_get_health
+        - protect_get_firmware_status
+        - protect_list_viewers
       resources: false
       prompts: false

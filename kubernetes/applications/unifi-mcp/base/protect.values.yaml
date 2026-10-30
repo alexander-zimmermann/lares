@@ -1,0 +1,40 @@
+# UniFi Protect: cameras, their detections, the other Protect devices, the NVR.
+applicationName: unifi-protect-mcp
+
+deployment:
+  # A placeholder: the image and its tag are in kustomization.yaml (images:)
+  image:
+    repository: unifi-protect-mcp
+
+  env:
+    # The gateway sends the Service name as Host, without the port; any other Host is refused
+    UNIFI_MCP_ALLOWED_HOSTS:
+      value: unifi-protect-mcp.unifi-mcp.svc.cluster.local
+    # The unifi-protect route's tools (use-cases.yaml). Protect registers its
+    # meta tools regardless; the route holds them back.
+    UNIFI_ENABLED_TOOLS:
+      value: >-
+        protect_list_cameras,
+        protect_get_camera,
+        protect_get_camera_analytics,
+        protect_list_events,
+        protect_get_event,
+        protect_list_smart_detections,
+        protect_list_sensors,
+        protect_list_lights,
+        protect_list_chimes,
+        protect_get_system_info,
+        protect_get_health,
+        protect_get_firmware_status,
+        protect_list_viewers
+    # uiprotect writes its session cookie under $HOME/.config
+    HOME:
+      value: /home/unifi
+
+  volumes:
+    home:
+      emptyDir: {}
+
+  volumeMounts:
+    home:
+      mountPath: /home/unifi

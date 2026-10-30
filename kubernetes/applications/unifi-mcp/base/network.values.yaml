@@ -1,0 +1,34 @@
+# UniFi Network: clients, devices, events, networks, traffic.
+applicationName: unifi-network-mcp
+
+deployment:
+  # A placeholder: the image and its tag are in kustomization.yaml (images:)
+  image:
+    repository: unifi-network-mcp
+
+  env:
+    # The gateway sends the Service name as Host, without the port; any other Host is refused
+    UNIFI_MCP_ALLOWED_HOSTS:
+      value: unifi-network-mcp.unifi-mcp.svc.cluster.local
+    UNIFI_META_TOOLS_ENABLED:
+      value: "false"
+    # The unifi-network route's tools (use-cases.yaml)
+    UNIFI_ENABLED_TOOLS:
+      value: >-
+        unifi_list_clients,
+        unifi_get_client_details,
+        unifi_get_client_wifi_details,
+        unifi_list_devices,
+        unifi_get_device_details,
+        unifi_list_events,
+        unifi_get_event_types,
+        unifi_list_alarms,
+        unifi_list_networks,
+        unifi_list_wlans,
+        unifi_get_network_health,
+        unifi_get_system_info,
+        unifi_get_device_stats,
+        unifi_get_client_stats,
+        unifi_get_top_clients,
+        unifi_get_gateway_stats,
+        unifi_get_ips_events
