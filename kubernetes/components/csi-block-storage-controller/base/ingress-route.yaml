@@ -13,7 +13,7 @@ metadata:
     gethomepage.dev/group: "Data & AI"
     gethomepage.dev/name: "Longhorn"
     gethomepage.dev/icon: "longhorn.png"
-    gethomepage.dev/weight: "2"
+    gethomepage.dev/weight: "4"
     gethomepage.dev/href: "https://PLACEHOLDER"
     gethomepage.dev/pod-selector: "app=longhorn-ui"
 
