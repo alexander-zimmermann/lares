@@ -13,7 +13,7 @@ helmCharts:
   - name: open-webui
     repo: oci://ghcr.io/open-webui/helm-charts
     releaseName: open-webui
-    version: 17.4.0
+    version: 17.5.0
     valuesFile: values.yaml
     # One connection per person to their profile (task agents:create-harness-config)
     additionalValuesFiles:
