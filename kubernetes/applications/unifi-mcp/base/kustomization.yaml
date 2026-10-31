@@ -33,7 +33,7 @@ helmCharts:
 images:
   - name: unifi-network-mcp
     newName: ghcr.io/sirkirby/unifi-network-mcp
-    newTag: 0.41.0
+    newTag: 0.43.1
   - name: unifi-protect-mcp
     newName: ghcr.io/sirkirby/unifi-protect-mcp
     newTag: 0.11.0
