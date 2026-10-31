@@ -28,7 +28,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: compactor
-              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.15.0
+              image: ghcr.io/alexander-zimmermann/nats-archive-compactor:0.16.0
               securityContext:
                 allowPrivilegeEscalation: false
                 runAsNonRoot: true
