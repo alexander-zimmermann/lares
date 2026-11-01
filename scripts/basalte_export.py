@@ -94,7 +94,9 @@ def parse(buf: bytes, depth: int = 0) -> list[tuple[int, str, object]]:
                 except (ValueError, IndexError):
                     nested = None
             text = as_text(payload)
-            if nested is not None and (text is None or len(nested) > 1):
+            # Plain text stays text even when its bytes also parse ("Ausschaltautomatik" reads as two fixed fields).
+            plain = text is not None and not any(c in "\n\t" for c in text)
+            if nested is not None and not plain and (text is None or len(nested) > 1):
                 out.append((field, "msg", nested))
             elif text is not None:
                 out.append((field, "str", text))
