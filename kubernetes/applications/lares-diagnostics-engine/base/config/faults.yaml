@@ -478,6 +478,46 @@ faults:
       # KWL's Wärmerückgewinnung address.
       ga: "15/3/34"
 
+  - name: rain_without_weather
+    sentence: "Der Regensensor meldet über den Tag mehr als 10 Prozentpunkte
+      der Stunden Regen, in denen das Wetter keinen Niederschlag kennt — Tau
+      auf einem Sensor, dessen Heizung nicht mehr heizt, oder Schmutz."
+    unit: "× der erlaubten Erhöhung"
+    kind: drift
+    # The share of measured hours the sensor reads rain while the Open-Meteo
+    # weather knows none — the one drift series with a second source.
+    signal: unexplained_rain
+    parameters:
+      # A floor, not a noise band: a shower the weather model missed is an
+      # hour or two of the day, well under 10 points.
+      rise_pct: 10
+      # How long a larger rise must stand: a share of 30 % fills this in ten
+      # hours; replayed over the dew since 17.08.2026 it fires on 18.08.
+      budget_pct_h: 200
+      # Dew follows the day: a 24-hour window always holds one night and one
+      # day, so the share does not swing with the clock.
+      window_hours: 24
+      min_window_fraction: 0.8
+      # An hour is wet when the sensor reads rain for at least half of it.
+      wet_hour_fraction: 0.5
+      # The weather is dry only when the hour and the one either side carry
+      # no precipitation: the model's showers are off by an hour.
+      dry_margin_hours: 1
+    scope:
+      dpt: "1.001"
+      include: "Sensorik.%.Regen"
+    references:
+      # A heated sensor reads no dew: the healthy share is zero, written here
+      # so a failed heating never becomes the new normal.
+      A.Dach.Wetterstation:
+        healthy_pct: 0
+    target:
+      # One severity address per device: the writer rules carry
+      # fault.rain_without_weather.<ga-slug> to the station's Regen-Anomalie
+      # address, generated from this template (task knx:create-ga-mappings).
+      per_device: true
+      name: "Sensorik.{entity}.Regen-Anomalie"
+
   - name: pv_underperformance
     sentence: "Die Anlage hat an einem Tag mehr als 35 % weniger erzeugt, als
       die wetterbereinigte Prognose für diesen Tag erwartet hat — Verschmutzung,

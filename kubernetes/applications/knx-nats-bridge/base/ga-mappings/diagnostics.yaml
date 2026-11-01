@@ -362,3 +362,10 @@ mappings:
     description: "Versorgungstechnik.KWL.Wärmerückgewinnung-Anomalie"
     min_delta: 0
     seed_on_start: true
+  - subject: "fault.rain_without_weather.8-5-53"
+    ga: "8/5/55"
+    dpt: "5.010"
+    payload_path: "$.severity_level"
+    description: "Sensorik.A.Dach.Wetterstation.Regen-Anomalie"
+    min_delta: 0
+    seed_on_start: true
