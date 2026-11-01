@@ -481,7 +481,8 @@ faults:
   - name: rain_without_weather
     sentence: "Der Regensensor meldet über den Tag mehr als 10 Prozentpunkte
       der Stunden Regen, in denen das Wetter keinen Niederschlag kennt — Tau
-      auf einem Sensor, dessen Heizung nicht mehr heizt, oder Schmutz."
+      auf einem Sensor, dessen Heizung nicht mehr heizt, Schmutz oder ein
+      defekter Sensor, der dauernd Regen meldet."
     unit: "× der erlaubten Erhöhung"
     kind: drift
     # The share of measured hours the sensor reads rain while the Open-Meteo
