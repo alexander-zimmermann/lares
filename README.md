@@ -261,7 +261,7 @@ First-time setup: `task initialize` installs the whole toolchain via Homebrew (k
 
 ### Tasks and hooks
 
-`task` lists what you run yourself: tasks that turn an export from outside (ETS, Basalte Studio) into files, and tasks that work on the cluster. Every check is a pre-commit hook, also when it reads such an export; without the export it skips. A hook's task has no `desc`, so `task` leaves it out (`task --list-all` shows it).
+`task` lists what you run yourself: tasks that turn an export from outside (ETS, Basalte Studio) into files, and tasks that work on the cluster, checks of its live state included. Every check of the repo or of an export is a pre-commit hook; without the export it skips. A hook's task has no `desc`, so `task` leaves it out (`task --list-all` shows it).
 
 ### Rendered files
 
