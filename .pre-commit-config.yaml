@@ -98,6 +98,20 @@ repos:
         # Runs on the declarations and the settings, the rendered files a hand
         # edit would change, and the tag the generator is installed at.
         files: ^kubernetes/applications/(lares-agent-trigger/base/(config/(use-cases|persons)\.yaml|values\.yaml)|hermes/base/(config/(settings|config)\.yaml|env-template\.yaml|profiles/.*)|agentgateway/base/config/routes\.values\.yaml|authentik/base/blueprints/persons\.yaml|open-webui/base/config/connections\.values\.yaml)$
+      # The Studio export is not in git, so no changed file can trigger these:
+      # they read the local export on every commit and skip without one.
+      - id: basalte-validate-bindings
+        name: basalte:validate-bindings
+        entry: task basalte:validate-bindings
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: basalte-validate-wiring
+        name: basalte:validate-wiring
+        entry: task basalte:validate-wiring
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: k8s-validate-sealed-templates
         name: k8s:validate-sealed-templates
         entry: task k8s:validate-sealed-templates

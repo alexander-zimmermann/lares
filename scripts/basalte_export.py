@@ -1,7 +1,7 @@
 """Read a Basalte Studio export (.bcfg) — shared by the basalte and knx scripts.
 
-Not a task: `basalte_create_inventory.py`, `basalte_validate_bindings.py` and
-`knx_extract_footprints.py` import from here.
+Not a task: `basalte_create_inventory.py`, `basalte_validate_bindings.py`,
+`basalte_validate_wiring.py` and `knx_extract_footprints.py` import from here.
 
 The export is Protocol Buffers with no schema shipped, so the wire format is
 read generically. Decoded so far:

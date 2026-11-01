@@ -22,23 +22,45 @@ tasks:
         silent: true
 
   validate-bindings:
-    desc: "check the Studio export's bindings against the GA catalog [path/to/export.bcfg]"
     summary: |
-      Studio holds the bus twice: the imported ETS project, and a copy of the
-      address name in every device and logic block wired with it — a move or
-      rename in ETS leaves the copies behind. Reports moved bindings (fails the
-      run), stale labels and addresses the catalog lacks. Reads: the Studio
-      export, ga-catalog.yaml; refuses while the .knxproj is newer than the catalog.
+      The pre-commit hook basalte:validate-bindings. Studio holds the bus
+      twice: the imported ETS project, and a copy of the address name in every
+      device and logic block wired with it — a move or rename in ETS leaves the
+      copies behind. Reports moved bindings (fails the run), stale labels and
+      addresses the catalog lacks. Fails while the .knxproj is newer than the
+      catalog: run `task knx:create-ga-catalog` first. Skips without an export.
+      Reads: the Studio export, ga-catalog.yaml. Writes: nothing.
       Arguments: [path/to/export.bcfg, default BASALTE_EXPORT_PATH]
     vars:
       EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
-    preconditions:
-      - sh: test -f "{{.EXPORT}}"
-        msg: "Basalte Studio export not found at '{{.EXPORT}}' — set BASALTE_EXPORT_PATH in .env (see .env.example) or pass a path"
-      # Absent .knxproj: nothing to be stale against, so the check runs.
-      - sh: '! test "{{.KNX_PROJECT_PATH}}" -nt "{{.KNX_CATALOG_PATH}}"'
-        msg: "the ETS project is newer than ga-catalog.yaml — run `task knx:create-ga-catalog` first"
     cmds:
-      - >
-        uv run --no-project --with pyyaml python scripts/basalte_validate_bindings.py "{{.EXPORT}}"
-        "{{.KNX_CATALOG_PATH}}"
+      - |
+        if [ ! -f "{{.EXPORT}}" ]; then
+          echo "{{if .EXPORT}}no Basalte export at '{{.EXPORT}}'{{else}}BASALTE_EXPORT_PATH not set{{end}}, skipped"
+          exit 0
+        fi
+        # Absent .knxproj: nothing to be stale against, so the check runs.
+        if [ -n "{{.KNX_PROJECT_PATH}}" ] && [ "{{.KNX_PROJECT_PATH}}" -nt "{{.KNX_CATALOG_PATH}}" ]; then
+          echo "the ETS project is newer than ga-catalog.yaml — run \`task knx:create-ga-catalog\` first"
+          exit 1
+        fi
+        uv run --no-project --with pyyaml python scripts/basalte_validate_bindings.py "{{.EXPORT}}" \
+          "{{.KNX_CATALOG_PATH}}"
+
+  validate-wiring:
+    summary: |
+      The pre-commit hook basalte:validate-wiring. A node whose output is
+      wired but whose input is not stays silent, and Studio draws it like any
+      other: a Nummer einstellen without a trigger, a Tor with nothing on in 1.
+      Lists every such node by block and fails. Skips without an export.
+      Reads: the Studio export. Writes: nothing.
+      Arguments: [path/to/export.bcfg, default BASALTE_EXPORT_PATH]
+    vars:
+      EXPORT: '{{.CLI_ARGS | default .BASALTE_EXPORT_PATH}}'
+    cmds:
+      - |
+        if [ ! -f "{{.EXPORT}}" ]; then
+          echo "{{if .EXPORT}}no Basalte export at '{{.EXPORT}}'{{else}}BASALTE_EXPORT_PATH not set{{end}}, skipped"
+          exit 0
+        fi
+        uv run --no-project python scripts/basalte_validate_wiring.py "{{.EXPORT}}"
