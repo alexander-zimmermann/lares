@@ -3,8 +3,9 @@ applicationName: hermes
 deployment:
   enabled: true
   image:
-    repository: nousresearch/hermes-agent
-    tag: v0.22.6
+    # Upstream Hermes plus our open upstream PRs (github.com/alexander-zimmermann/hermes-agent-patched)
+    repository: ghcr.io/alexander-zimmermann/hermes-agent-patched
+    tag: v0.22.6-lares.1
     pullPolicy: IfNotPresent
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
