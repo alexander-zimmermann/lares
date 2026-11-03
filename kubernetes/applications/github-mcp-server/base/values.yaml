@@ -3,7 +3,7 @@ applicationName: github-mcp-server
 deployment:
   image:
     repository: ghcr.io/github/github-mcp-server
-    tag: v2.0.3
+    tag: v2.1.0
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
