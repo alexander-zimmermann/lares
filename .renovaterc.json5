@@ -33,10 +33,10 @@
   "packageRules": [
     {
       // Hermes churns weekly, its config schema with it; every bump is reviewed against the generated config.
-      // Its old date tags (v2026.x) sort above the SemVer line and are never offered.
+      // Tags are the Hermes release plus a build count for our patch set, e.g. v0.22.6-lares.2.
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["nousresearch/hermes-agent"],
-      "allowedVersions": "!/^v20\\d{2}\\./",
+      "matchPackageNames": ["ghcr.io/alexander-zimmermann/hermes-agent-patched"],
+      "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-lares\\.(?<build>\\d+)$",
       "automerge": false
     }
   ]
