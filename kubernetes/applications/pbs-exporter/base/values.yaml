@@ -4,7 +4,7 @@ deployment:
   enabled: true
   image:
     repository: ghcr.io/natrontech/pbs-exporter
-    tag: v0.9.4
+    tag: v0.10.0
     pullPolicy: IfNotPresent
 
   env:
