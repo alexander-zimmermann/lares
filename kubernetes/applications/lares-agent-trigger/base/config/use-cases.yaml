@@ -244,7 +244,7 @@ scripts:
       cron: "0 18 * * 0"
     script: skill-digest.py
     deliver: discord
-    dormant: Waits for a Hermes release whose Jobs API takes script jobs (NousResearch/hermes-agent#143213).
+    enabled: true
 
 use_cases:
   - name: explain-episode
