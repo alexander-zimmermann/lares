@@ -56,6 +56,11 @@ configMapGenerator:
   - name: hermes-scripts
     files:
       - scripts/skill-digest.py
+  # Temporary: the capture hook for the "is not set" warnings, a .pth file plus the module it imports
+  - name: hermes-miss-hook
+    files:
+      - debug/miss_hook.py
+      - debug/zz-miss-hook.pth
 
 # Every agent-log container, the default profile's and each person's, runs this one image.
 images:
