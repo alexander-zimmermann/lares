@@ -100,6 +100,19 @@ deployment:
     hermes-scripts:
       configMap:
         name: hermes-scripts
+    # Temporary: the capture hook, one volume per file because each mount takes one subPath
+    hermes-miss-hook:
+      configMap:
+        name: hermes-miss-hook
+        items:
+          - key: miss_hook.py
+            path: miss_hook.py
+    hermes-miss-hook-pth:
+      configMap:
+        name: hermes-miss-hook
+        items:
+          - key: zz-miss-hook.pth
+            path: zz-miss-hook.pth
 
   volumeMounts:
     # All Hermes state: sessions, memories, cron ledger, logs
@@ -136,6 +149,15 @@ deployment:
     # scripts are that directory of the default profile, read-only inside the data volume
     hermes-scripts:
       mountPath: /opt/data/scripts
+      readOnly: true
+    # Temporary: the launcher's site.addsitedir() runs this .pth, a sitecustomize.py would not load
+    hermes-miss-hook:
+      mountPath: /opt/hermes/.venv/lib/python3.14/site-packages/miss_hook.py
+      subPath: miss_hook.py
+      readOnly: true
+    hermes-miss-hook-pth:
+      mountPath: /opt/hermes/.venv/lib/python3.14/site-packages/zz-miss-hook.pth
+      subPath: zz-miss-hook.pth
       readOnly: true
 
   ports:
