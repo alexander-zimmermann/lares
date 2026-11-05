@@ -75,6 +75,8 @@ discord:
   auto_thread: false
   # A DM from outside allow_from is ignored; no pairing code is ever handed out
   dm_policy: allowlist
+  # An approval card's buttons admit only the person whose message asked (hermes-agent#148934)
+  require_requester_for_exec_approval: true
 
 platforms:
   discord:
