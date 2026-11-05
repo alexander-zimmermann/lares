@@ -6,6 +6,7 @@ name: homelab-dev
 kubernetes:
   version: v1.34.6
 talos:
+  # renovate: datasource=github-releases depName=siderolabs/talos
   version: v1.12.6
 features:
   diskEncryption: true

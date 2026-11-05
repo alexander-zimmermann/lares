@@ -34,17 +34,6 @@
         "[^=]+=\"(?<currentValue>[^\"]+)\"\\s*#\\s*datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
-    },
-    {
-      "customType": "regex",
-      "description": "Process Talos factory images",
-      "managerFilePatterns": ["infrastructure/manifest/20-image/image.yaml"],
-      "matchStrings": [
-        "image_url: https://factory\\.talos\\.dev/image/(?<schematic>[a-f0-9]+)/(?<currentValue>[\\d\\.]+)/nocloud-amd64\\.raw"
-      ],
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "siderolabs/talos",
-      "versioningTemplate": "semver"
     }
   ]
 }
