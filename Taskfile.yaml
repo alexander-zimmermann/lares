@@ -82,6 +82,7 @@ tasks:
         argocd
         opentofu
         cilium-cli
+        kubectl-cnpg
         siderolabs/tap/sidero-tools
         nats-io/nats-tools/nats
         nats-io/nats-tools/nsc
