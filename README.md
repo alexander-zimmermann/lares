@@ -224,7 +224,7 @@ All-Ubiquiti stack — one uplink per tier, 10 GbE between switches, PoE on the 
 | [USW Pro Max 48](https://ui.com/switching/usw-pro-max-48) | Aggregation switch (10 GbE uplink to USW Pro HD 24)  |
 | [USW Pro 48 PoE](https://ui.com/switching/usw-pro-48-poe) | Access switch (10 GbE uplink, PoE for APs & cameras) |
 | [USP-RPS](https://ui.com/power-backup/usp-rps)            | Redundant power supply for the rack                  |
-| [U7 Pro](https://ui.com/wifi/flagship/u7-pro) (4x)        | Wi-Fi 7 APs                                          |
+| [U7 Pro](https://ui.com/wifi/flagship/u7-pro) (5x)        | Wi-Fi 7 APs                                          |
 
 ### Storage (shared)
 
