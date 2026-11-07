@@ -51,7 +51,6 @@ service:
       annotations:
         coredns.io/hostname: PLACEHOLDER
       labels:
-        bgp.cilium.io/ip-pool: default
         bgp.cilium.io/advertise-service: default
 
 # Prometheus metrics exporter sidecar
