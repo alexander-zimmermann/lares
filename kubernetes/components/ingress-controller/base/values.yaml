@@ -230,8 +230,8 @@ tlsOptions:
 
 service:
   # Expose Traefik via Cilium/BGP-announced LoadBalancer with source IP preservation
-  type: LoadBalancer
   spec:
+    type: LoadBalancer
     externalTrafficPolicy: Local
   labels:
     bgp.cilium.io/ip-pool: default
@@ -239,7 +239,8 @@ service:
   # Internal ClusterIP service for homepage widget (dashboard/API port only)
   additionalServices:
     internal:
-      type: ClusterIP
+      spec:
+        type: ClusterIP
 
 affinity:
   # Pod anti-affinity forces scheduler to put Traefik pods on nodes where no other Traefik are
