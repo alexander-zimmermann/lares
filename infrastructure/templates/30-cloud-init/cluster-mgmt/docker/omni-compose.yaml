@@ -143,7 +143,12 @@ services:
     restart: unless-stopped
 
     volumes:
-      - ${DOCKER_VOLUME_BACKUP_DIR}:/archive
+      ## rslave on the parent, so a remounted NFS share reaches the container
+      - type: bind
+        source: /mnt
+        target: /mnt
+        bind:
+          propagation: rslave
       - ${OMNI_DATA_DIR}:/backup/data:ro
       - ${OMNI_CERT_DIR}:/backup/certificates:ro
       - ${OMNI_KEY_DIR}:/backup/keys:ro
@@ -154,6 +159,7 @@ services:
 
     environment:
       <<: *default-environment
+      BACKUP_ARCHIVE: "${DOCKER_VOLUME_BACKUP_DIR}"
       BACKUP_CRON_EXPRESSION: "${BACKUP_CRON_EXPRESSION}"
       BACKUP_RETENTION_DAYS: "${BACKUP_RETENTION_DAYS}"
       BACKUP_FILENAME: "omni-backup-%Y-%m-%dT%H-%M-%S.tar.gz"
