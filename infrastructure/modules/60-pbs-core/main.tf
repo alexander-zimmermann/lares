@@ -5,7 +5,7 @@ terraform {
   required_providers {
     pbs = {
       source  = "rfdrew/pbs"
-      version = "~> 0.3.0"
+      version = "~> 0.4.0"
     }
     external = {
       source  = "hashicorp/external"
