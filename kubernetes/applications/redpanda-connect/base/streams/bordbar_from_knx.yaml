@@ -1,11 +1,13 @@
 # Bordbar LED control: Basalte command GAs -> bordbar-nats-bridge.
 #
 #   knx.4.2.61 Ein/Aus                 -> bordbar.command.power      {"value": bool}
-#   knx.4.2.63 Helligkeit-Schritt      -> bordbar.command.brightness {"value": 1|-1}
-#   knx.4.2.64 Farbe-Schritt           -> bordbar.command.color      {"value": 1|-1}
-#   knx.4.2.65 Modus-Schritt           -> bordbar.command.mode       {"value": 1|-1}
-#   knx.4.2.66 Geschwindigkeit-Schritt -> bordbar.command.speed      {"value": 1|-1}
+#   knx.4.2.63 Helligkeit-Schritt      -> bordbar.command.brightness {"value": 1}
+#   knx.4.2.64 Farbe-Schritt           -> bordbar.command.color      {"value": 1}
+#   knx.4.2.65 Modus-Schritt           -> bordbar.command.mode       {"value": 1}
+#   knx.4.2.66 Geschwindigkeit-Schritt -> bordbar.command.speed      {"value": 1}
 #   knx.4.2.67 Reset                   -> bordbar.command.reset      {}
+#
+# Basalte binds the step GAs as 1.017 buttons (a 1 per press, a 0 on release), so each press steps forward.
 #
 # Core NATS only; the ESP32 subscribes through the MQTT gateway and nothing
 # archives commands.
@@ -26,9 +28,8 @@ input:
 pipeline:
   processors:
     - mapping: |
-        # DPT 1.015 defines 0 as "no action" — only a 1 triggers the reset.
-        # Dropping it here keeps the reset branch below free of the special case.
-        root = if meta("nats_subject") == "knx.4.2.67" && !(this.value == true || this.value == 1) {
+        # Only Ein/Aus uses the 0; reset and the step buttons act on the 1 alone.
+        root = if meta("nats_subject") != "knx.4.2.61" && !(this.value == true || this.value == 1) {
           deleted()
         } else {
           this
@@ -42,7 +43,7 @@ pipeline:
         } else if $subj == "knx.4.2.67" {
           {}
         } else {
-          {"value": if $on { 1 } else { -1 }}
+          {"value": 1}
         }
         meta bordbar_subject = "bordbar.command." + (
           if $subj == "knx.4.2.61" { "power" }
