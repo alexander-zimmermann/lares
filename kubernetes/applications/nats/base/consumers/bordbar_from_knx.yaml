@@ -1,10 +1,10 @@
 # Durable consumer for the redpanda-connect bordbar_from_knx pipeline.
 #
 #   knx.4.2.61 Ein/Aus                 (1.001)
-#   knx.4.2.63 Helligkeit-Schritt      (1.007, true = heller)
-#   knx.4.2.64 Farbe-Schritt           (1.007)
-#   knx.4.2.65 Modus-Schritt           (1.007)
-#   knx.4.2.66 Geschwindigkeit-Schritt (1.007)
+#   knx.4.2.63 Helligkeit-Schritt      (Basalte button 1.017, only 1 acts)
+#   knx.4.2.64 Farbe-Schritt           (Basalte button 1.017, only 1 acts)
+#   knx.4.2.65 Modus-Schritt           (Basalte button 1.017, only 1 acts)
+#   knx.4.2.66 Geschwindigkeit-Schritt (Basalte button 1.017, only 1 acts)
 #   knx.4.2.67 Reset                   (1.015, only 1 acts)
 #
 # The Bordbar command GAs, written by Basalte. 4/2/62 and 4/2/68 are status GAs
