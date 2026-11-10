@@ -41,6 +41,8 @@ approvals:
   # Nobody answers approval prompts on a chat platform at 03:00: deny, never wait.
   unattended_mode: deny
   cron_mode: deny
+  # A chat approval answers only its requester and the chat's admins (allow_admin_from, group_allow_admin_from)
+  approvers: []
 
 # Each profile learns into its own skills/; the repo's skills come read-only from hermes-skills.
 skills:
@@ -75,8 +77,6 @@ discord:
   auto_thread: false
   # A DM from outside allow_from is ignored; no pairing code is ever handed out
   dm_policy: allowlist
-  # An approval card's buttons admit only the person whose message asked (hermes-agent#148934)
-  require_requester_for_exec_approval: true
 
 platforms:
   discord:
