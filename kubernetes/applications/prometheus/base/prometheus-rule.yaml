@@ -795,24 +795,32 @@ spec:
             summary: "Bridge watchdog blind for {{ $labels.stream_name }}"
             description: "nats_stream_last_seq for {{ $labels.stream_name }} has not been scraped for 15m — check the nats pod, its PodMonitor and the Stream CRD. The delivery watchdog for this bridge is blind until this clears."
 
-    # A consumer that holds unacked messages but acks none is stuck downstream
+    # A consumer that makes no progress while messages wait is stuck
     - name: nats-consumer-alerts
       rules:
         - alert: NatsConsumerStalled
           expr: |
-            # Unacked messages throughout the last 30m (archive batches flush at least every 15m)
-            min by (stream_name, consumer_name) (min_over_time(nats_consumer_num_ack_pending[30m])) > 0
+            (
+              # Unacked messages throughout the last 30m (archive batches flush at least every 15m), and no ack in the window
+              (
+                min by (stream_name, consumer_name) (min_over_time(nats_consumer_num_ack_pending[30m])) > 0
+                unless on (stream_name, consumer_name) min_over_time(nats_consumer_last_ack_seconds[30m]) < 300
+              )
+              # Or undelivered messages throughout the last 30m, and no delivery in the window
+              or (
+                min by (stream_name, consumer_name) (min_over_time(nats_consumer_num_pending[30m])) > 0
+                unless on (stream_name, consumer_name) min_over_time(nats_consumer_last_delivery_seconds[30m]) < 300
+              )
+            )
             # Reported now and 30m ago, so neither a scrape gap nor a new consumer's first batch fires it
-            and on (stream_name, consumer_name) nats_consumer_num_ack_pending
-            and on (stream_name, consumer_name) nats_consumer_num_ack_pending offset 30m
-            # No ack in the window, across NATS restarts too; a consumer that never acked has no last_ack series and stays in
-            unless on (stream_name, consumer_name) min_over_time(nats_consumer_last_ack_seconds[30m]) < 300
+            and on (stream_name, consumer_name) nats_consumer_num_pending
+            and on (stream_name, consumer_name) nats_consumer_num_pending offset 30m
           for: 5m
           labels:
             severity: critical
           annotations:
             summary: "NATS consumer {{ $labels.consumer_name }} stalled"
-            description: "{{ $labels.consumer_name }} on {{ $labels.stream_name }} has held unacknowledged messages for 30m without acking any. An output behind it fails or hangs, and nothing from this stream reaches TimescaleDB. For redpanda-connect, output_error by stream and path names the failing output (outputs.1 is the parquet archive on RustFS)."
+            description: "{{ $labels.consumer_name }} on {{ $labels.stream_name }} has made no progress for 30m while messages wait: it acks none of the messages it holds, or it fetches none of the messages queued for it. Either an output behind it fails or hangs, or the client stopped fetching (a redpanda-connect pull input that lost its subscription stays so until the pod restarts). For redpanda-connect, output_error by stream and path names a failing output (outputs.1 is the parquet archive on RustFS)."
 
     # The log-content alerts live in the Loki ruler, which fails an
     # evaluation silently; these two watch the path, not the content.
