@@ -31,6 +31,7 @@ agent:
 approvals:
   unattended_mode: deny
   cron_mode: deny
+  approvers: []
 skills:
   external_dirs:
     - /opt/skills
@@ -53,7 +54,6 @@ discord:
     - '1548229055348736034'
   auto_thread: false
   dm_policy: allowlist
-  require_requester_for_exec_approval: true
   allow_from:
     - ${env:DISCORD_USER_AZ1003}
     - ${env:DISCORD_USER_GZ1410}
