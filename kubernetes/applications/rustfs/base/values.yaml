@@ -83,6 +83,9 @@ extraEnv:
   # The 1.0.5 disk I/O budget paces a full sweep on NFS to ~33 min, past the 1800s default cap.
   - name: RUSTFS_SCANNER_CYCLE_MAX_DURATION_SECS
     value: "3600"
+  # Overrides log_level; the scanner logs why a cycle ends partial only at warn.
+  - name: RUST_LOG
+    value: "error,rustfs::scanner=warn"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
   # Host URLs are injected per environment via overlay replacements.
   - name: RUSTFS_BROWSER_REDIRECT_URL
