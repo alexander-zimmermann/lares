@@ -80,6 +80,9 @@ extraEnv:
   # (rustfs#8121). Six hours trades statistics freshness for headroom.
   - name: RUSTFS_SCANNER_CYCLE
     value: "21600"
+  # The 1.0.5 disk I/O budget paces a full sweep on NFS to ~33 min, past the 1800s default cap.
+  - name: RUSTFS_SCANNER_CYCLE_MAX_DURATION_SECS
+    value: "3600"
   # Console SSO via Authentik — replaces typing the admin access/secret key.
   # Host URLs are injected per environment via overlay replacements.
   - name: RUSTFS_BROWSER_REDIRECT_URL
