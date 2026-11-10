@@ -19,8 +19,8 @@ config:
   rustfs:
     # Service DNS used for internal access.
     server_domains: rustfs-svc.rustfs.svc.cluster.local
-    # Keep at error: rustfs at info floods the Loki PVC.
-    log_level: "error"
+    # Error by default (info floods the Loki PVC); the scanner at warn logs why a cycle ends partial.
+    log_level: "error,rustfs::scanner=warn"
     # OTLP push to Alloy. metrics.endpoint must be set explicitly — the chart
     # does not derive it from base_endpoint.
     obs_endpoint:
