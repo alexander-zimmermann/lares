@@ -72,14 +72,9 @@ extraEnv:
   # Redundant since rc.4 defaults it to true; kept explicit to pin the contract.
   - name: RUSTFS_ALLOCATOR_RECLAIM_ENABLED
     value: "true"
-  # A cycle that hits cycle_max_directories reports partial and never clears the
-  # dirty-usage flags, so the next wakeup restarts it from the top: 32 capped
-  # cycles covered 260,087 directories of a ~33,000 namespace with zero passes
-  # completed and no usage ever published. Throttling the cadence is the tool
-  # that works here, because resident memory scales with the sweep rate
-  # (rustfs#8121). Six hours trades statistics freshness for headroom.
-  - name: RUSTFS_SCANNER_CYCLE
-    value: "21600"
+  # Temporary retest (lares#2534 step 3, rustfs/backlog#2879): does 1.0.5 carry capped-cycle checkpoints forward? Revert to RUSTFS_SCANNER_CYCLE=21600 afterwards.
+  - name: RUSTFS_SCANNER_CYCLE_MAX_DIRECTORIES
+    value: "8000"
   # The 1.0.5 disk I/O budget paces a full sweep on NFS to ~33 min, past the 1800s default cap.
   - name: RUSTFS_SCANNER_CYCLE_MAX_DURATION_SECS
     value: "3600"
