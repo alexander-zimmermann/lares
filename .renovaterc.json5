@@ -38,6 +38,18 @@
       "matchPackageNames": ["ghcr.io/alexander-zimmermann/hermes-agent-patched"],
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-lares\\.(?<build>\\d+)$",
       "automerge": false
+    },
+    {
+      // Kyverno 1.20 no longer executes kyverno.io ClusterPolicy; hold until sync-cluster-secrets is a GeneratingPolicy.
+      "matchDepTypes": ["HelmChart"],
+      "matchDepNames": ["kyverno"],
+      "allowedVersions": "<3.10.0"
+    },
+    {
+      // The kyverno CLI in ci-validate tests the same policies, so it stays on the cluster's release.
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["kyverno/kyverno"],
+      "allowedVersions": "<1.20.0"
     }
   ]
 }
