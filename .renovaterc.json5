@@ -9,6 +9,7 @@
     "github>alexander-zimmermann/lares//.renovate/grafanaDashboards.json5",
     "github>alexander-zimmermann/lares//.renovate/groups.json5",
     "github>alexander-zimmermann/lares//.renovate/labels.json5",
+    "github>alexander-zimmermann/lares//.renovate/releaseNotes.json5",
     "github>alexander-zimmermann/lares//.renovate/semanticCommits.json5",
     ":dependencyDashboard",
     ":disableRateLimiting",
@@ -40,18 +41,11 @@
       "automerge": false
     },
     {
-      // The unifi-mcp release images carry no source label, and the monorepo tags its releases network/vX.Y.Z.
+      // Tags are PostgreSQL plus TimescaleDB, e.g. 18.6-ts2.26-tk; docker versioning would drop the TimescaleDB part.
+      // With the whole tag as the version, TimescaleDB bumps show up and match the release tags.
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/sirkirby/unifi-network-mcp"],
-      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
-      "extractVersion": "^(?:network/)?v?(?<version>.+)$"
-    },
-    {
-      // Same repo as unifi-network-mcp; releases are tagged protect/vX.Y.Z.
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/sirkirby/unifi-protect-mcp"],
-      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
-      "extractVersion": "^(?:protect/)?v?(?<version>.+)$"
+      "matchPackageNames": ["ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)-ts(?<patch>\\d+)\\.(?<build>\\d+)-tk$"
     }
   ]
 }

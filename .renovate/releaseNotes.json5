@@ -1,0 +1,93 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  // Renovate needs a GitHub source and a release tag it can match to the version.
+  // These packages lack one or the other; each rule names the repo and, where the tags carry a prefix, strips it.
+  "packageRules": [
+    {
+      "description": "argo-cd chart: metadata points at the app repo, chart releases live in argo-helm",
+      "matchPackageNames": ["ghcr.io/argoproj/argo-helm/argo-cd"],
+      "sourceUrl": "https://github.com/argoproj/argo-helm"
+    },
+    {
+      "description": "authentik chart: chart and app share the version, app releases are tagged version/X.Y.Z",
+      "matchPackageNames": ["ghcr.io/goauthentik/helm-charts/authentik"],
+      "sourceUrl": "https://github.com/goauthentik/authentik",
+      "extractVersion": "^(?:version/)?(?<version>\\d.+)$"
+    },
+    {
+      "description": "crowdsec chart: no source metadata",
+      "matchPackageNames": ["ghcr.io/crowdsecurity/helm-charts/crowdsec"],
+      "sourceUrl": "https://github.com/crowdsecurity/helm-charts"
+    },
+    {
+      "description": "csi-driver-nfs chart: no source metadata",
+      "matchDatasources": ["helm"],
+      "matchPackageNames": ["csi-driver-nfs"],
+      "sourceUrl": "https://github.com/kubernetes-csi/csi-driver-nfs"
+    },
+    {
+      "description": "grafana-community charts: metadata points at the app repos",
+      "matchPackageNames": [
+        "ghcr.io/grafana-community/helm-charts/grafana-mcp",
+        "ghcr.io/grafana-community/helm-charts/tempo"
+      ],
+      "sourceUrl": "https://github.com/grafana-community/helm-charts"
+    },
+    {
+      "description": "grafana-operator chart: no source metadata",
+      "matchPackageNames": ["ghcr.io/grafana/helm-charts/grafana-operator"],
+      "sourceUrl": "https://github.com/grafana/grafana-operator"
+    },
+    {
+      "description": "reloader chart: releases are tagged chart-vX.Y.Z; the app's vX.Y.Z tags stay out",
+      "matchPackageNames": ["ghcr.io/stakater/charts/reloader"],
+      "sourceUrl": "https://github.com/stakater/Reloader",
+      "extractVersion": "^(?:chart-v)?(?<version>\\d.+)$"
+    },
+    {
+      "description": "argocd-diff-preview: no source label",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["dagandersen/argocd-diff-preview"],
+      "sourceUrl": "https://github.com/dag-andersen/argocd-diff-preview"
+    },
+    {
+      "description": "devolutions-gateway: no source label",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/devolutions/devolutions-gateway"],
+      "sourceUrl": "https://github.com/Devolutions/devolutions-gateway"
+    },
+    {
+      "description": "fritz_exporter: no source label, releases are tagged fritzexporter-vX.Y.Z",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/pdreker/fritz_exporter"],
+      "sourceUrl": "https://github.com/pdreker/fritz_exporter",
+      "extractVersion": "^(?:fritzexporter-v)?(?<version>\\d.+)$"
+    },
+    {
+      "description": "rustfs/rc: no source label",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["rustfs/rc"],
+      "sourceUrl": "https://github.com/rustfs/cli"
+    },
+    {
+      "description": "unifi-network-mcp: no source label, the monorepo tags network/vX.Y.Z",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/sirkirby/unifi-network-mcp"],
+      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
+      "extractVersion": "^(?:network/v)?(?<version>\\d.+)$"
+    },
+    {
+      "description": "unifi-protect-mcp: no source label, the monorepo tags protect/vX.Y.Z",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/sirkirby/unifi-protect-mcp"],
+      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
+      "extractVersion": "^(?:protect/v)?(?<version>\\d.+)$"
+    },
+    {
+      "description": "wiki: Renovate reads labels from the latest tag, which is a 2.x image without them",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/requarks/wiki"],
+      "sourceUrl": "https://github.com/requarks/wiki"
+    }
+  ]
+}
