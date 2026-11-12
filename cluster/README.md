@@ -14,12 +14,12 @@ The whole cluster state lives in three YAML files, reconciled into Omni with `om
 
 ## Files
 
-| File                                                           | Purpose                                                                                     |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml)       | Production Omni Cluster Template — Talos/k8s versions, 3× CP + 3× Worker, system extensions |
-| [`homelab-cluster-dev.yaml`](homelab-cluster-dev.yaml)         | Dev-cluster variant (smaller footprint, same shape)                                         |
-| [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml) | Auto-provisioning shapes — what a "control plane" or "worker" VM looks like on Proxmox      |
-| [`patches/`](patches/)                                         | Omni patches (global settings, CP/DP tuning, extra manifests)                               |
+| File                                                           | Purpose                                                                                        |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml)       | Production Omni Cluster Template — Talos/k8s versions, 3× CP + 3× Worker, system extensions    |
+| [`homelab-cluster-dev.yaml`](homelab-cluster-dev.yaml)         | Dev-cluster variant (smaller footprint, same shape)                                            |
+| [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml) | Auto-provisioning shapes — what a "control plane" or "worker" VM looks like on Proxmox         |
+| [`patches/`](patches/)                                         | Omni patches (global settings, CP/DP tuning, egress-gateway address + labels, extra manifests) |
 
 ### Cluster shape (prod)
 
@@ -27,7 +27,7 @@ Defined in [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml):
 
 - **Talos** v1.12.6, **Kubernetes** v1.34.6
 - **Disk encryption** enabled (LUKS)
-- **3× control plane**, **3× worker** — all auto-provisioned via machine classes
+- **3× control plane**, **3× worker** — all auto-provisioned via machine classes; the workers sit in three machine sets of size 1 (`data-plane`, `data-plane-egress-a`, `data-plane-egress-b`), see [Network](#network)
 - **System extensions**: `qemu-guest-agent`, `util-linux-tools`, `i915` (Intel iGPU), `intel-ucode`, `nvidia-open-gpu-kernel-modules-lts`, `iscsi-tools`, `zfs`
 
 ### Machine classes
@@ -42,6 +42,32 @@ Defined in [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml). Each 
 | `data-plane-dev`     | 4    | 4 GB  | 64 GB | 64 GB (storage) + 4 GB (swap)  |
 
 All go to `local-zfs` on my Proxmox host; NUMA, `host` CPU type, `q35` machine, `io_uring` async I/O.
+
+## Network
+
+The nodes live in VLAN 10 "Kubernetes", `192.168.10.0/24`, one of the zones of [ADR 0004](../docs/adr/0004-network-zones-on-the-udm-egress-keys-per-pod-label.md). Every VLAN in the house follows the same address convention — `.1` gateway, `.2`–`.49` fixed addresses configured on the device itself, `.50`–`.199` DHCP (reservations live inside this range), `.200`–`.254` special purpose — and VLAN 10 fills it like this:
+
+| Range         | Use                                                                                                                                                                                                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.1`          | UDM gateway `192.168.10.1`, BGP peer (AS 65100); `peerAddress` in [`bgp-cluster-config.yaml`](../kubernetes/components/cilium/base/bgp-cluster-config.yaml)                                                                                                                                                   |
+| `.2`, `.3`    | Egress IPs, static on the two gateway workers (set by the Omni patch, not by DHCP)                                                                                                                                                                                                                            |
+| `.4`–`.49`    | Free; static addresses only, nothing here takes a lease                                                                                                                                                                                                                                                       |
+| `.50`–`.199`  | DHCP, the same range as in every other VLAN. The Talos nodes take their address here and keep it by a UniFi "Fixed IP" reservation on the MAC. The scope must stay on: a VM the Omni provider creates finds Omni through its first lease; a rebuilt VM (new MAC) pulls a new lease and gets a new reservation |
+| `.200`–`.254` | One `CiliumLoadBalancerIPPool` without service selector, so every LoadBalancer Service draws from it; the prod overlays pin each Service's IP (`io.cilium/lb-ipam-ips`)                                                                                                                                       |
+
+The machine classes carry `vlan: 10`, so every VM the Proxmox provider creates from now on is tagged into the VLAN. The provider does not touch a VM that already runs; those get their tag by hand in Proxmox.
+
+### Egress gateways
+
+Two workers own the egress IPs `.2` and `.3` that Cilium's egress gateway uses as source address towards the other zones (which pods get one is decided per label in the Cilium component, not here). The binding is the machine set: [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml) splits the three workers into `data-plane` (1), `data-plane-egress-a` (1) and `data-plane-egress-b` (1), all of the same machine class, and only the two gateway sets carry [`patches/data-plane-egress-a.yaml`](patches/data-plane-egress-a.yaml) / [`-b.yaml`](patches/data-plane-egress-b.yaml). Omni applies a machine set's patches to whatever machine fills the set, so a rebuilt gateway worker comes back with its address and labels — nothing in the template names a machine UUID or a hostname.
+
+What the patch does on the worker:
+
+- adds the egress IP as a `/32` on the virtio NIC next to DHCP. A `/32` creates no connected route, so the node's own traffic (Omni, NFS, Longhorn) keeps leaving with the DHCP address; only Cilium SNATs to the egress IP.
+- excludes the egress IP from `machine.kubelet.nodeIP.validSubnets`. Talos takes the lowest routed IPv4 as kubelet node IP, which would be the egress IP itself.
+- sets the node labels `egress-gateway=true` (the pair) and `egress-ip=<address>` (this node alone), which a `CiliumEgressGatewayPolicy` selects per `egressGateways` entry.
+
+Trade-offs of three machine sets: a Talos upgrade still rolls one node at a time cluster-wide (Omni subtracts every not-ready machine from each set's quota), but a config change shared by all three sets — an edit to `data-plane-settings.yaml` — can reach one machine per set at once. Stage a change that needs a reboot by touching one set at a time if that matters. Rebuilding a gateway worker also means Longhorn rebuilds its replicas, as with any worker.
 
 ## Swapping the infra provider
 
@@ -60,12 +86,12 @@ Each provider has its own `providerdata` schema (see their docs). The rest of th
 
 From the repo root (uses [go-task](https://taskfile.dev)):
 
-| Task                              | What it does                                                          |
-| --------------------------------- | --------------------------------------------------------------------- |
-| `task cluster:init`               | Register machine classes in Omni (run once, or after editing classes) |
-| `task cluster:create -- [dev\|prod]` | Sync the cluster template to Omni (default: `prod`)                |
-| `task cluster:status -- [dev\|prod]` | Print current cluster status from Omni                             |
-| `task cluster:show -- [dev\|prod]`   | Download `kubeconfig` + `talosconfig` for the cluster              |
+| Task                           | What it does                                                          |                                                       |
+| ------------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------- |
+| `task cluster:init`            | Register machine classes in Omni (run once, or after editing classes) |                                                       |
+| `task cluster:create -- [dev\  | prod]`                                                                | Sync the cluster template to Omni (default: `prod`)   |
+| `task cluster:status -- [dev\  | prod]`                                                                | Print current cluster status from Omni                |
+| `task cluster:show -- [dev\    | prod]`                                                                | Download `kubeconfig` + `talosconfig` for the cluster |
 
 Underlying command for `create` is `omnictl cluster template sync --file homelab-cluster-prod.yaml`.
 

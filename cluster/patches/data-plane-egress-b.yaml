@@ -1,0 +1,31 @@
+###############################################################################
+## Egress gateway b: owns the egress IP 192.168.10.3 (docs/adr/0004)
+###############################################################################
+## Bound to the worker machine set `data-plane-egress-b` (size 1), so a rebuilt
+## worker in that set comes back with the same address and labels, no hand edit.
+machine:
+  network:
+    interfaces:
+      ## The single virtio NIC, selected by driver so the patch never names an interface.
+      ## DHCP stays the node address; the egress IP is a /32 on top of it: it creates no
+      ## connected route, so the kernel never uses it as source for the node's own traffic
+      ## (Omni, NFS, Longhorn) — only Cilium's egress gateway SNATs to it.
+      - deviceSelector:
+          driver: virtio_net
+        dhcp: true
+        addresses:
+          - 192.168.10.3/32
+
+  kubelet:
+    ## Talos picks the lowest routed IPv4 as kubelet node IP, which would be the egress
+    ## IP itself. Keep the node IP on the DHCP lease; negative match must come last.
+    nodeIP:
+      validSubnets:
+        - 192.168.10.0/24
+        - "!192.168.10.3/32"
+
+  ## `egress-gateway` marks the pair, `egress-ip` selects this node alone in a
+  ## CiliumEgressGatewayPolicy `egressGateways` entry.
+  nodeLabels:
+    egress-gateway: "true"
+    egress-ip: 192.168.10.3
