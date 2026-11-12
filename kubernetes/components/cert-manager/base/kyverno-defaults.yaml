@@ -1,5 +1,5 @@
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
 
 metadata:
   name: mutate-certificates
@@ -14,44 +14,27 @@ metadata:
 spec:
   # Non-blocking to prevent outages if webhook fails
   failurePolicy: Ignore
-  rules:
-    # Set a sane default for the history field if not already present
-    - name: set-revisionHistoryLimit
-      match:
-        any:
-          - resources:
-              kinds:
-                - Certificate
-      mutate:
-        patchStrategicMerge:
-          spec:
-            # +(...) This is the clever syntax for if not already set
-            +(revisionHistoryLimit): 2
-
-    # Set rotation to always if not already set
-    - name: set-privateKey-rotationPolicy
-      match:
-        any:
-          - resources:
-              kinds:
-                - Certificate
-      mutate:
-        patchStrategicMerge:
-          spec:
-            privateKey:
-              +(rotationPolicy): Always
-
-    # Set private key details for algorithm and size
-    - name: set-privateKey-details
-      match:
-        any:
-          - resources:
-              kinds:
-                - Certificate
-      mutate:
-        patchStrategicMerge:
-          spec:
-            privateKey:
-              +(algorithm): ECDSA
-              +(size): 256
-              +(encoding): PKCS1
+  evaluation:
+    # Admission only, no reports on existing Certificates
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["cert-manager.io"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["certificates"]
+  variables:
+    - name: key
+      expression: object.spec.?privateKey.orValue({})
+  mutations:
+    # Each field is added only when the Certificate leaves it out; the key size only for an ECDSA key
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: >-
+          (has(object.spec.revisionHistoryLimit) ? [] : [JSONPatch{op: "add", path: "/spec/revisionHistoryLimit", value: 2}]) +
+          (has(object.spec.privateKey) ? [] : [JSONPatch{op: "add", path: "/spec/privateKey", value: {}}]) +
+          (has(variables.key.algorithm) ? [] : [JSONPatch{op: "add", path: "/spec/privateKey/algorithm", value: "ECDSA"}]) +
+          (has(variables.key.size) || variables.key.?algorithm.orValue("ECDSA") != "ECDSA" ? [] : [JSONPatch{op: "add", path: "/spec/privateKey/size", value: 256}]) +
+          (has(variables.key.encoding) ? [] : [JSONPatch{op: "add", path: "/spec/privateKey/encoding", value: "PKCS1"}]) +
+          (has(variables.key.rotationPolicy) ? [] : [JSONPatch{op: "add", path: "/spec/privateKey/rotationPolicy", value: "Always"}])
