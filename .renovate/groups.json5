@@ -38,8 +38,7 @@
       "matchPackageNames": ["/cilium/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "minimumGroupSize": 2
+      }
     },
     {
       "description": "ArgoCD components grouping",
@@ -47,8 +46,7 @@
       "matchPackageNames": ["/argocd/", "/argo-cd/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "minimumGroupSize": 2
+      }
     }
   ]
 }
