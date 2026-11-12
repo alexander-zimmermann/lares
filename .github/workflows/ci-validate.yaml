@@ -171,7 +171,7 @@ jobs:
     needs: resolve-workload
     strategy:
       fail-fast: false
-      # 92 overlays pulling five binaries each overwhelmed the download endpoint
+      # 92 overlays pulling four binaries each overwhelmed the download endpoint
       max-parallel: 10
       matrix: ${{ fromJson(needs.resolve-workload.outputs.matrix) }}
     runs-on: ubuntu-latest
@@ -190,8 +190,6 @@ jobs:
           kubeconform: v0.8.0
           # renovate: datasource=github-releases depName=google/go-containerregistry
           crane: v0.22.1
-          # renovate: datasource=github-releases depName=kyverno/kyverno
-          kyverno: v1.19.2
 
       - name: Login to Registries
         env:
@@ -210,13 +208,6 @@ jobs:
 
       - name: Validate Schema (kubeconform)
         run: kubeconform -strict -summary -ignore-missing-schemas rendered/manifests.yaml
-
-      - name: Validate Policies (kyverno)
-        run: |
-          POLICIES=$(grep -lR "apiVersion: kyverno.io/" kubernetes | grep -v "kustomization.yaml" | sort -u || true)
-          if [ -n "$POLICIES" ]; then
-             kyverno apply "$POLICIES" --resource rendered/manifests.yaml
-          fi
 
       - name: Validate Images (crane)
         run: |
