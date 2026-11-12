@@ -38,6 +38,20 @@
       "matchPackageNames": ["ghcr.io/alexander-zimmermann/hermes-agent-patched"],
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-lares\\.(?<build>\\d+)$",
       "automerge": false
+    },
+    {
+      // The unifi-mcp release images carry no source label, and the monorepo tags its releases network/vX.Y.Z.
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/sirkirby/unifi-network-mcp"],
+      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
+      "extractVersion": "^(?:network/)?v?(?<version>.+)$"
+    },
+    {
+      // Same repo as unifi-network-mcp; releases are tagged protect/vX.Y.Z.
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/sirkirby/unifi-protect-mcp"],
+      "sourceUrl": "https://github.com/sirkirby/unifi-mcp",
+      "extractVersion": "^(?:protect/)?v?(?<version>.+)$"
     }
   ]
 }
