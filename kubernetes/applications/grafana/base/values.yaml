@@ -42,8 +42,8 @@ extraSecretMounts:
     mountPath: /etc/grafana/secrets
     readOnly: true
   # Mount the OIDC client secret for generic_oauth authentication
-  - name: grafana-oidc-credentials
-    secretName: grafana-oidc-credentials
+  - name: grafana-oidc-secret
+    secretName: grafana-oidc-secret
     defaultMode: 0440
     mountPath: /etc/grafana/secrets-oidc
     readOnly: true

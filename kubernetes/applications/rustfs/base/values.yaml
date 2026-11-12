@@ -92,7 +92,7 @@ extraEnv:
   - name: RUSTFS_IDENTITY_OPENID_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
-        name: rustfs-oidc-credentials
+        name: rustfs-oidc-secret
         key: RUSTFS_OIDC_CLIENT_SECRET
   - name: RUSTFS_IDENTITY_OPENID_SCOPES
     value: "openid,profile,email,groups"

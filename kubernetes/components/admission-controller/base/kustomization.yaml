@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: admission-controller
 resources:
   - ./namespace.yaml
-  - ./clusterpolicy-secrets.yaml
+  - ./generatingpolicy-secrets.yaml
   - ./rbac.yaml
 
 helmCharts:
