@@ -28,37 +28,41 @@ jobs:
       - name: Refresh Claude login
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          REFRESH_TOKEN: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-          # Claude Code's own token endpoint and public OAuth client, as the CLI calls them.
-          TOKEN_URL: https://platform.claude.com/v1/oauth/token
-          CLIENT_ID: 9d1c250a-e61b-44d9-88ed-5944d1962f5e
+          # `claude auth login` exchanges this refresh token instead of opening a browser.
+          CLAUDE_CODE_OAUTH_REFRESH_TOKEN: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          # The scopes a claude.ai login asks for, which the refresh token was issued with.
+          CLAUDE_CODE_OAUTH_SCOPES: user:profile user:inference user:sessions:claude_code user:mcp_servers user:file_upload
+          # renovate: datasource=npm depName=@anthropic-ai/claude-code
+          CLAUDE_CODE_VERSION: 2.1.308
         run: |
-          request=$(jq -n --arg token "$REFRESH_TOKEN" --arg client "$CLIENT_ID" \
-            '{grant_type: "refresh_token", refresh_token: $token, client_id: $client}')
-          if ! response=$(curl -sS --fail-with-body -H 'Content-Type: application/json' --data "$request" "$TOKEN_URL"); then
-            echo "::error::Refresh failed: $response"
+          if ! npx -y "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" auth login; then
+            echo "::error::claude auth login rejected the stored refresh token."
             exit 1
           fi
-          access=$(jq -er .access_token <<< "$response")
-          refresh=$(jq -r '.refresh_token // empty' <<< "$response")
-          expires_in=$(jq -er .expires_in <<< "$response")
+          credentials="$HOME/.claude/.credentials.json"
+          access=$(jq -er .claudeAiOauth.accessToken "$credentials")
+          refresh=$(jq -er .claudeAiOauth.refreshToken "$credentials")
+          expires_at=$(jq -er .claudeAiOauth.expiresAt "$credentials")
+          refresh_expires_at=$(jq -r '.claudeAiOauth.refreshTokenExpiresAt // empty' "$credentials")
           echo "::add-mask::$access"
-          [ -n "$refresh" ] && echo "::add-mask::$refresh"
+          echo "::add-mask::$refresh"
 
-          # The old refresh token is spent once a new one comes back, so the new one is stored first.
-          if [ -n "$refresh" ]; then
-            for attempt in 1 2 3; do
-              printf '%s' "$refresh" | gh secret set CLAUDE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY" && break
-              if [ "$attempt" = 3 ]; then
-                echo "::error::The new refresh token was not stored; the login has to be renewed by hand."
-                exit 1
-              fi
-              sleep 10
-            done
-          fi
+          # The old refresh token is spent once the login succeeds, so the new one is stored first.
+          for attempt in 1 2 3; do
+            printf '%s' "$refresh" | gh secret set CLAUDE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY" && break
+            if [ "$attempt" = 3 ]; then
+              echo "::error::The new refresh token was not stored; the login has to be renewed by hand."
+              exit 1
+            fi
+            sleep 10
+          done
           printf '%s' "$access" | gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo "$GITHUB_REPOSITORY"
 
+          expires_in=$((expires_at / 1000 - $(date +%s)))
           echo "Access token valid for $((expires_in / 3600)) h." >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$refresh_expires_at" ]; then
+            echo "Refresh token valid for $(((refresh_expires_at / 1000 - $(date +%s)) / 86400)) d." >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ "$expires_in" -lt 10800 ]; then
             echo "::error::The access token lives under 3 h, so the two-hour schedule no longer covers it."
             exit 1
