@@ -21,8 +21,8 @@ Adapted from the review prompt in [billimek/k8s-gitops](https://github.com/billi
 
 ## Steps
 
-1. **Read the PR.** `pr-context.md` in the working directory holds the title, labels, body (Renovate's release notes), the git diff and the rendered Argo CD diff for `overlays/prod`. Without that file (a local run), fetch the same with `gh pr view <PR> --json title,labels,body` and `gh pr diff <PR>`. Name each component, its old and new version, and whether it wraps an inner component (an image or chart around upstream software); give the inner component's old → new as well. Done when old → new is known for every component, inner ones included.
-2. **Research the whole range.** Read the release notes of every release from old to new, intermediate releases included: migration notes often sit in a release in the middle. Read the wrapper's notes and the inner component's. Where a project has no GitHub releases, try its `CHANGELOG`/`UPGRADING` file, then its docs. Then search the upstream issues for open bugs reported against the new version. Done when every release in the range is read or listed under Unknowns.
+1. **Read the PR.** `pr-context.md` in the working directory holds the title, labels, body (Renovate's release notes), the link base for our files, the git diff and the rendered Argo CD diff for `overlays/prod`. Without that file (a local run), fetch the same with `gh pr view <PR> --json title,labels,body,headRefOid` and `gh pr diff <PR>`; the link base is `https://github.com/<repo>/blob/<headRefOid>/`. Name each component, its old and new version, and whether it wraps an inner component (an image or chart around upstream software); give the inner component's old → new as well. Done when old → new is known for every component, inner ones included.
+2. **Research the whole range.** Read the release notes of every release from old to new, intermediate releases included: migration notes often sit in a release in the middle. Read the wrapper's notes and the inner component's. Where a project has no GitHub releases, try its `CHANGELOG`/`UPGRADING` file, then its docs. Then list the open upstream bugs created since the first release after old, by date rather than by version text (an issue says "since 3.6" as often as "3.6.1"), and read every title against what lares uses. Done when every release in the range is read and every listed bug title is checked; only what the turn budget leaves unread goes under Unknowns.
 3. **Diff the chart values.** For a Helm chart, diff the chart's `values.yaml` between the old and the new tag, then check every key in our `base/values.yaml` against that diff: renamed, moved, removed, changed default, new required key. Done when every key we set is accounted for.
 4. **Assess against lares.** Read every file that consumes the component: base, `overlays/prod`, custom resources of its CRDs, configs that reference it. Map each finding to what lares actually uses; a change to a feature lares leaves unused goes under Not applicable. The rendered diff shows what the bump changes in the cluster: check each changed resource there against the findings.
 5. **Write the review and the verdict** (formats below).
@@ -33,38 +33,55 @@ Adapted from the review prompt in [billimek/k8s-gitops](https://github.com/billi
 - `COMMENT`: none of those, but Worth adopting, Known issues or Unknowns has an entry.
 - `APPROVED`: every one of those sections is empty.
 
-Anything you could not verify goes under **Unknowns**, so an unverified point never passes as `APPROVED`.
+Anything you could not verify goes under **Unknowns**, so an unverified point never passes as `APPROVED`. Unknowns is for what the sources could not settle or the turn budget left unread: while turns remain, read the missing notes or files instead of listing them.
 
 ## Review format
 
-Keep only the sections with entries. Point at our files as `path:LINE`, repo-relative (`kubernetes/bootstrap/cilium/base/values.yaml:42`).
+The box on top carries the verdict and the bottom line; what asks for action stays visible; Not applicable and Sources fold away. Keep only the sections with entries.
 
 ```markdown
-### <component>: <old> → <new>
+> [!WARNING]
+> **Claude review: READ FIRST** · <component> <old> → <new> (<inner component> <old> → <new>)
+> <what merging means for lares, one sentence>
 
 **Breaking changes**
-- <what changed>, since <version>. Affects `path:LINE`. Fix: <one line>.
+- <what changed>, since <version>. Affects [`<path>:LINE`](<link>). Fix: <one line>.
 
 **Deprecations**
 - <same detail as a breaking change>
 
 **Worth adopting**
-- <feature>: <benefit>. Would change `path:LINE`.
+- <feature>: <benefit>. Would change [`<path>:LINE`](<link>).
 
 **Known issues**
-- <issue URL>: <how it could hit lares>.
+- [<project> issue <number>](<issue URL>): <how it could hit lares>.
 
-**Not applicable**
-- <finding>: <why lares is unaffected>.
+**After merge**
+- <what the sync does in the cluster: restarts, new or removed resources, migrations>.
 
 **Unknowns**
 - <what you could not verify, and where you looked>.
 
-**Sources**
-- <URLs>
+<details><summary>Not applicable (<count>)</summary>
+
+- <finding> (<version>): <why lares is unaffected>.
+
+</details>
+
+<details><summary>Sources (<count>)</summary>
+
+- [<release, compare or doc name>](<URL>)
+
+</details>
 ```
 
-One `###` block per component in a group PR. Cite issues, PRs and releases as full URLs; the workflow turns them into redirect links so the upstream timelines stay quiet, which bare `#123` or `owner/repo#123` references would not.
+- **Box:** a traffic light for the verdict in `verdict.txt`: `APPROVED` → `[!TIP]` and `SAFE TO MERGE`, `COMMENT` → `[!WARNING]` and `READ FIRST`, `REQUEST_CHANGES` → `[!CAUTION]` and `DO NOT MERGE`. Drop the parentheses when there is no inner component. The last line says what merging changes for lares, not why the verdict is what it is.
+- **Group PR:** the box names the group; below it, one `#### <component>: <old> → <new>` block per component with the sections above.
+- **Our files:** link the line, `<link base><repo path>#L<LINE>`, and show the path from the app's folder (`gitops-controller/base/values.yaml:51`).
+- **Short bullets:** at most two sentences each, one under Not applicable.
+- **Known issues:** only issues that could hit lares; a search without such a hit goes under Sources.
+- **After merge:** read it off the rendered diff. A plain restart is worth a line only for a high-blast-radius component.
+- **Upstream links:** one per source, full URLs with names as link text, never `#123` or `owner/repo#123`; the workflow turns them into redirect links so the upstream timelines stay quiet.
 
 **Output.** When the caller names output files, write the review there and the verdict, one word, to its own file. Otherwise print `Verdict: <verdict>` followed by the review.
 
@@ -82,6 +99,7 @@ In CI, Bash runs `gh api`, `gh release view`, `git log`, `git show` and the read
 - Filter API output with `--jq` on the command itself.
 - Issue independent lookups (one release per version, several repo files) as parallel calls in one turn.
 - Release notes: `gh release view <tag> --repo <owner>/<repo> --json body --jq .body`.
+- Open bugs since a release: its date from `gh release view <tag> --repo <owner>/<repo> --json publishedAt --jq .publishedAt`, then `gh api -X GET search/issues -f q='repo:<owner>/<repo> is:issue is:open label:bug created:>=<date>' -f per_page=100 --jq '.items[] | "\(.number) \(.title)"'`. Without a `bug` label in that repo, drop `label:bug`.
 - Chart values between two tags: `gh api "repos/<owner>/<repo>/compare/<old>...<new>" --jq '.files[] | select(.filename | endswith("values.yaml")) | .patch'`. When the patch is missing (large file), fetch both versions raw: `gh api -H "Accept: application/vnd.github.raw" "repos/<owner>/<repo>/contents/<path>?ref=<tag>"`.
 - A file's path in an upstream repo: one `gh api "repos/<owner>/<repo>/git/trees/<tag>?recursive=1" --jq '.tree[].path | select(endswith("values.yaml"))'` call.
 - Repo files: `Glob`, `Grep` and `Read`; earlier bumps and workarounds: `git log --oneline -n 10 -- <path>`.

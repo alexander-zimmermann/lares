@@ -138,6 +138,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           DIFF_FILE: ${{ runner.temp }}/argocd-diff/diff.md
         run: |
           # Labels are read now, not from the event: Renovate labels a PR after opening it.
@@ -171,6 +172,9 @@ jobs:
             echo
             echo "## Body (Renovate's release notes)"
             jq -r .body <<< "$pr"
+            echo
+            echo "## Link base for our files"
+            echo "https://github.com/$GITHUB_REPOSITORY/blob/$HEAD_SHA/"
             echo
             echo "## Git diff"
             echo '```diff'
@@ -220,7 +224,6 @@ jobs:
                 # Redirect links keep the review out of the upstream issue timelines.
                 {
                   echo "$MARKER"
-                  echo "**Claude review:** \`$verdict\`"
                   echo
                   sed 's#https://github\.com/#https://redirect.github.com/#g' review.md
                 } > comment.md
