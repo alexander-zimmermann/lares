@@ -75,7 +75,7 @@ jobs:
           # The scopes a claude.ai login asks for, which the refresh token was issued with.
           CLAUDE_CODE_OAUTH_SCOPES: user:profile user:inference user:sessions:claude_code user:mcp_servers user:file_upload
           # renovate: datasource=npm depName=@anthropic-ai/claude-code
-          CLAUDE_CODE_VERSION: 2.1.323
+          CLAUDE_CODE_VERSION: 2.1.325
         run: |
           if ! npx -y "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" auth login; then
             echo "::error::claude auth login rejected the stored refresh token."
