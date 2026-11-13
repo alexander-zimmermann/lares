@@ -11,7 +11,7 @@ on:
 
 permissions: {}
 
-# The refresh token is single-use: two runs at once would spend the same one.
+# The refresh token is single-use: one run at a time, each reading the token the previous run stored.
 concurrency:
   group: claude-token-refresh
   cancel-in-progress: false
@@ -20,6 +20,12 @@ jobs:
   refresh:
     name: Refresh Claude Token
     runs-on: ubuntu-latest
+    # Environment secrets are read when the job starts, repository secrets already when the run is queued.
+    environment:
+      name: claude
+      deployment: false
+    permissions:
+      actions: read
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
@@ -28,8 +34,40 @@ jobs:
           app-id: ${{ secrets.SECRETS_WRITER_APP_ID }}
           private-key: ${{ secrets.SECRETS_WRITER_PRIVATE_KEY }}
           permission-secrets: write
+          permission-environments: write
+
+      - name: Check whether a refresh is due
+        id: due
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          # The access token lives 8 h; renewing after 4 h covers reviews without rotating at every Renovate start.
+          updated=$(GH_TOKEN="$APP_TOKEN" gh api "repos/$GITHUB_REPOSITORY/environments/claude/secrets" \
+            --jq '.secrets[] | select(.name == "CLAUDE_CODE_OAUTH_TOKEN") | .updated_at')
+          if [ "$EVENT" != workflow_dispatch ] && [ -n "$updated" ]; then
+            age=$(($(date +%s) - $(date -d "$updated" +%s)))
+            if [ "$age" -lt 14400 ]; then
+              echo "Access token renewed $((age / 60)) min ago, no refresh." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+          # A refresh revokes the access token a running review holds, so it waits until no diff run is active.
+          for attempt in $(seq 1 60); do
+            active=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci-diff.yaml --limit 20 --json status \
+              --jq '[.[] | select(.status != "completed")] | length')
+            [ "$active" = 0 ] && break
+            if [ "$attempt" = 60 ]; then
+              echo "::warning::Diff runs stayed active for 20 min; the next trigger refreshes."
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "due=true" >> "$GITHUB_OUTPUT"
 
       - name: Refresh Claude login
+        if: steps.due.outputs.due == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           # `claude auth login` exchanges this refresh token instead of opening a browser.
@@ -53,14 +91,14 @@ jobs:
 
           # The old refresh token is spent once the login succeeds, so the new one is stored first.
           for attempt in 1 2 3; do
-            printf '%s' "$refresh" | gh secret set CLAUDE_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY" && break
+            printf '%s' "$refresh" | gh secret set CLAUDE_REFRESH_TOKEN --env claude --repo "$GITHUB_REPOSITORY" && break
             if [ "$attempt" = 3 ]; then
               echo "::error::The new refresh token was not stored; the login has to be renewed by hand."
               exit 1
             fi
             sleep 10
           done
-          printf '%s' "$access" | gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo "$GITHUB_REPOSITORY"
+          printf '%s' "$access" | gh secret set CLAUDE_CODE_OAUTH_TOKEN --env claude --repo "$GITHUB_REPOSITORY"
 
           expires_in=$((expires_at / 1000 - $(date +%s)))
           echo "Access token valid for $((expires_in / 3600)) h." >> "$GITHUB_STEP_SUMMARY"
