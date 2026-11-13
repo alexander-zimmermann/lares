@@ -1,6 +1,10 @@
 name: "Maintenance: Claude Token Refresh"
 
 on:
+  # Reviews only follow Renovate pushes, so a refresh at each Renovate start covers them; GitHub drops many scheduled runs.
+  workflow_run:
+    workflows: ["Maintenance: Renovate"]
+    types: [requested]
   schedule:
     - cron: "23 */2 * * *" # Every two hours
   workflow_dispatch:
