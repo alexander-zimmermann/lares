@@ -61,7 +61,12 @@ jobs:
           expires_in=$((expires_at / 1000 - $(date +%s)))
           echo "Access token valid for $((expires_in / 3600)) h." >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$refresh_expires_at" ]; then
-            echo "Refresh token valid for $(((refresh_expires_at / 1000 - $(date +%s)) / 86400)) d." >> "$GITHUB_STEP_SUMMARY"
+            refresh_days=$(((refresh_expires_at / 1000 - $(date +%s)) / 86400))
+            echo "Refresh token valid for $refresh_days d." | tee -a "$GITHUB_STEP_SUMMARY"
+            if [ "$refresh_days" -lt 7 ]; then
+              echo "::error::The refresh token expires in $refresh_days d; renew the login by hand (setup page, step 4)."
+              exit 1
+            fi
           fi
           if [ "$expires_in" -lt 10800 ]; then
             echo "::error::The access token lives under 3 h, so the two-hour schedule no longer covers it."
