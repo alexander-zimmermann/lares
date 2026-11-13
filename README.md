@@ -283,6 +283,7 @@ Each of the three layer directories has its own detailed README:
 Standing on the shoulders of giants. This setup borrows patterns and inspiration from:
 
 - [buroa/k8s-gitops](https://github.com/buroa/k8s-gitops) — the kromgo badge idea and a lot of stylistic cues.
+- [billimek/k8s-gitops](https://github.com/billimek/k8s-gitops) — the Renovate review prompt in `.claude/skills/review-renovate/`.
 - The [home-operations](https://github.com/home-operations) community.
 
 ## License
