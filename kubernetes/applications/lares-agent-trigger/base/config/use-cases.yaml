@@ -249,8 +249,8 @@ scripts:
 use_cases:
   - name: explain-episode
     sentence: >-
-      Erklärt eine neu aufgetretene oder eskalierte Episode von selbst, mit der
-      Ursache im ersten Satz und einer Beleg-Zeile je Befund.
+      Explains a new or escalated episode on its own, with the cause in the
+      first sentence and one proof line per finding.
     trigger:
       kind: event
       source: episode
@@ -279,8 +279,8 @@ use_cases:
 
   - name: messenger
     sentence: >-
-      Beantwortet eine Nachricht aus dem Haushalt, in Discord oder im
-      Web-Chat, in ihrer Sprache, mit dem Lesezugriff auf das Haus.
+      Answers a message from the household, in Discord or the web chat, in
+      its language, with read access to the house.
     # Hermes runs the chat; the trigger writes its row from the outbound hook,
     # one per answered message. No skill: the message is the assignment.
     trigger:
@@ -299,8 +299,8 @@ use_cases:
 
   - name: propose-faults
     sentence: >-
-      Schlägt jede Woche Änderungen an der Fehlerliste als Pull Request vor,
-      mit Belegen und einem Back-Test über die letzten acht Wochen.
+      Proposes changes to the fault list as pull requests every week, with
+      evidence and a back-test over the last eight weeks.
     # Sunday 03:00 house time; the chat starts it now through start_run.
     trigger:
       kind: schedule
@@ -327,8 +327,8 @@ use_cases:
 
   - name: explain-window
     sentence: >-
-      Erzählt als Zeitleiste, was in einem Zeitfenster los war, Haus und
-      Cluster zusammen, nach einem Vorfall.
+      Tells as a timeline what happened in a window, house and cluster
+      together, after an incident.
     trigger:
       kind: event
       source: alert
@@ -347,9 +347,9 @@ use_cases:
 
   - name: catalog-hygiene
     sentence: >-
-      Findet im GA-Katalog unbenannte Adressen, DPT-Widersprüche, Verstöße
-      gegen die Namenskonvention und verwaiste Adressen und schlägt die
-      Korrektur als Pull Request vor.
+      Finds unnamed addresses, DPT contradictions, naming-convention
+      violations and orphaned addresses in the GA catalogue, and proposes
+      the fix as a pull request.
     trigger:
       kind: schedule
       cron: "0 4 * * 0"
@@ -366,8 +366,8 @@ use_cases:
 
   - name: new-device-rules
     sentence: >-
-      Schlägt für ein neues Gerät Writer-Regeln und Dashboard-Panels als Pull
-      Request vor.
+      Proposes writer rules and dashboard panels for a new device as a pull
+      request.
     trigger:
       kind: event
       source: new_device
@@ -402,8 +402,8 @@ use_cases:
 
   - name: incident-fix
     sentence: >-
-      Schlägt nach einem Cluster-Vorfall die Korrektur als Pull Request vor,
-      den ein Mensch mergt.
+      Proposes the fix after a cluster incident as a pull request that a
+      human merges.
     trigger:
       kind: event
       source: alert
@@ -420,7 +420,7 @@ use_cases:
 
   - name: claude-chat
     sentence: >-
-      Beantwortet Fragen im Claude-Chat über den Connector der MCP-Bridge.
+      Answers questions in the Claude chat through the MCP bridge's connector.
     trigger:
       kind: message
     tools: [lares]
@@ -438,8 +438,8 @@ use_cases:
 
   - name: ets-diff
     sentence: >-
-      Beschreibt nach jedem ETS-Export in Klartext, was dazukam, was wegfiel
-      und wo das Risiko liegt.
+      Describes in plain words, after every ETS export, what came, what went
+      and where the risk lies.
     trigger:
       kind: event
       source: ets_export
@@ -456,7 +456,8 @@ use_cases:
 
   - name: basalte-prose
     sentence: >-
-      Schreibt die Prosa zu den Basalte-Logikblöcken aus dem Inventar ins Wiki.
+      Writes the prose for the Basalte logic blocks from the inventory into the
+      wiki.
     trigger:
       kind: schedule
       cron: "0 5 * * 6"
@@ -473,8 +474,8 @@ use_cases:
 
   - name: wiki-drift
     sentence: >-
-      Findet Wiki-Seiten, die hinter der Konfiguration zurückliegen, und
-      bringt sie nach.
+      Finds wiki pages that lag behind the configuration and brings them up
+      to date.
     trigger:
       kind: schedule
       cron: "0 5 * * 0"
@@ -491,8 +492,8 @@ use_cases:
 
   - name: data-quality
     sentence: >-
-      Prüft jede Woche Sensoren mit unplausiblen Werten und Kanäle, die
-      schweigen, ohne als schweigend deklariert zu sein.
+      Checks every week for sensors with implausible values and for channels
+      that are silent without being declared silent.
     trigger:
       kind: schedule
       cron: "0 6 * * 1"
@@ -509,8 +510,8 @@ use_cases:
 
   - name: maintenance-plan
     sentence: >-
-      Leitet aus den Gerätesignalen einen Wartungsplan ab: Filter, Verschleiß,
-      fällige Prüfungen.
+      Derives a maintenance plan from the device signals: filters, wear,
+      checks due.
     trigger:
       kind: schedule
       cron: "0 6 1 * *"
@@ -527,8 +528,7 @@ use_cases:
 
   - name: energy-report
     sentence: >-
-      Schickt jeden Monat einen Bericht über Energie und Kosten des Hauses per
-      Mail.
+      Mails a report on the house's energy and cost every month.
     trigger:
       kind: schedule
       cron: "0 7 1 * *"
@@ -545,8 +545,8 @@ use_cases:
 
   - name: restore-probe
     sentence: >-
-      Berichtet, ob die Sicherungen im PBS und im Objektspeicher sich
-      wiederherstellen ließen.
+      Reports whether the backups in PBS and in object storage could be
+      restored.
     trigger:
       kind: schedule
       cron: "0 8 * * 1"
