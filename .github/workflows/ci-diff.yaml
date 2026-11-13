@@ -228,6 +228,7 @@ jobs:
                 # Redirect links keep the review out of the upstream issue timelines.
                 {
                   echo "$MARKER"
+                  echo "## Claude Review"
                   echo
                   sed 's#https://github\.com/#https://redirect.github.com/#g' review.md
                 } > comment.md
