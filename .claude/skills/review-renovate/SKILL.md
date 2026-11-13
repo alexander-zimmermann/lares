@@ -37,11 +37,11 @@ Anything you could not verify goes under **Unknowns**, so an unverified point ne
 
 ## Review format
 
-The box on top carries the verdict and the bottom line; what asks for action stays visible; Not applicable and Sources fold away. Keep only the sections with entries.
+The workflow puts a `## Claude Review` heading above the review. The box on top carries the verdict and the bottom line; what asks for action stays visible; Not applicable and Sources fold away. Keep only the sections with entries.
 
 ```markdown
 > [!WARNING]
-> **Claude review: READ FIRST** · <component> <old> → <new> (<inner component> <old> → <new>)
+> **READ FIRST** · <component> <old> → <new> (<inner component> <old> → <new>)
 > <what merging means for lares, one sentence>
 
 **Breaking changes**
