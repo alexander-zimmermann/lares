@@ -382,24 +382,6 @@ use_cases:
     memory: false
     dormant: Waits for its own spec and an event that announces a new device.
 
-  - name: renovate-triage
-    sentence: >-
-      Liest zu einem Renovate-Pull-Request das Changelog, bewertet das Risiko
-      und schlägt die Merge-Reihenfolge vor.
-    trigger:
-      kind: event
-      source: pull_request
-    skill: lares-renovate-triage
-    tools: [github]
-    output: [github_comment]
-    budget:
-      tool_calls: 30
-      minutes: 10
-      runs_per_day: 20
-    language: en
-    memory: false
-    dormant: Waits for its own spec and a pull-request event.
-
   - name: incident-fix
     sentence: >-
       Schlägt nach einem Cluster-Vorfall die Korrektur als Pull Request vor,
