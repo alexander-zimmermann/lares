@@ -72,6 +72,7 @@ jobs:
         run: |
           # Run the diff against the Argo CD chart the cluster runs, not the tool's default 'latest'.
           ARGOCD_CHART_VERSION=$(yq '.helmCharts[] | select(.name == "argo-cd") | .version' main/kubernetes/bootstrap/gitops-controller/base/kustomization.yaml)
+          # MAX_DIFF_LENGTH stays below GitHub's 65536-character comment limit to leave room for the sticky comment's marker.
           docker run \
             --network=host \
             -v /var/run/docker.sock:/var/run/docker.sock \
@@ -83,6 +84,7 @@ jobs:
             -e REPO=${{ github.repository }} \
             -e ARGOCD_CHART_VERSION="${ARGOCD_CHART_VERSION}" \
             -e TIMEOUT=300 \
+            -e MAX_DIFF_LENGTH=65000 \
             -e DEBUG=true \
             -e GIT_CONFIG_COUNT=1 \
             -e GIT_CONFIG_KEY_0=safe.directory \
@@ -90,14 +92,8 @@ jobs:
             dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
 
       - name: Post diff as comment
-        run: |
-          # If output/diff.md exists, post it. The image might fail if diff fails generation?
-          # The tool guarantees output/diff.md usually.
-          if [ -f output/diff.md ]; then
-            gh pr comment ${{ github.event.number }} --repo ${{ github.repository }} --body-file output/diff.md --edit-last || \
-            gh pr comment ${{ github.event.number }} --repo ${{ github.repository }} --body-file output/diff.md
-          else
-            echo "::warning::No diff.md generated."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: argocd-diff-preview
+          path: output/diff.md
+          ignore_empty: true
