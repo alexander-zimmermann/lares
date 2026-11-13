@@ -48,6 +48,9 @@
     "bootstrap": "seeders",
     "components": "core",
 
+    // App folders with a built-in icon, reset to the default folder
+    "redis": "",
+
     // Kustomize Structure
     "base": "container",
     "overlays": "changesets",
