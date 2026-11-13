@@ -50,7 +50,8 @@ build/
 *.code-workspace
 
 # --- KI ---
-.claude/
+.claude/*
+!.claude/skills/
 
 # --- Exports of foreign systems, should they live under the repo root (binaries, tokens, server details) ---
 exports/

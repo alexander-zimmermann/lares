@@ -91,9 +91,186 @@ jobs:
             -e GIT_CONFIG_VALUE_0=* \
             dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
 
+      - name: Upload diff for the Renovate review
+        if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: argocd-diff
+          path: output/diff.md
+          retention-days: 1
+
       - name: Post diff as comment
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
         with:
           header: argocd-diff-preview
           path: output/diff.md
           ignore_empty: true
+
+  renovate-review:
+    name: Renovate Review
+    needs: generate-diff
+    if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      MODEL: claude-sonnet-5-5
+      MAX_TURNS: 25
+    outputs:
+      ready: ${{ steps.result.outputs.ready }}
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Download diff
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: argocd-diff
+          path: ${{ runner.temp }}/argocd-diff
+
+      - name: Gather PR context
+        id: context
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.number }}
+          DIFF_FILE: ${{ runner.temp }}/argocd-diff/diff.md
+        run: |
+          # Labels are read now, not from the event: Renovate labels a PR after opening it.
+          pr=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json title,labels,body,files)
+          if jq -e '[.labels[].name] | any(. == "type/digest" or . == "renovate/grafana-dashboard")' <<< "$pr" > /dev/null; then
+            echo "::notice::Digest or dashboard update, no review."
+            exit 0
+          fi
+          # The path filter also lets through bumps of the pins in this workflow file.
+          if ! jq -e 'any(.files[].path; startswith("kubernetes/"))' <<< "$pr" > /dev/null; then
+            echo "::notice::No change under kubernetes/, no review."
+            exit 0
+          fi
+          title=$(jq -r .title <<< "$pr")
+          # The title carries old → new, so a rebase keeps the marker and a new version changes it.
+          export MARKER="<!-- renovate-review: $title -->"
+          reviewed=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith(env.MARKER + "\n"))) | .id')
+          if [ -n "$reviewed" ]; then
+            echo "::notice::This version already has a review."
+            exit 0
+          fi
+          {
+            echo "# PR context"
+            echo
+            echo "## Title"
+            echo "$title"
+            echo
+            echo "## Labels"
+            jq -r '[.labels[].name] | join(", ")' <<< "$pr"
+            echo
+            echo "## Body (Renovate's release notes)"
+            jq -r .body <<< "$pr"
+            echo
+            echo "## Git diff"
+            echo '```diff'
+            gh pr diff "$PR" --repo "$GITHUB_REPOSITORY"
+            echo '```'
+            echo
+            echo "## Rendered Argo CD diff (overlays/prod)"
+            if [ -f "$DIFF_FILE" ]; then cat "$DIFF_FILE"; else echo "Not available."; fi
+          } > pr-context.md
+          echo "marker=$MARKER" >> "$GITHUB_OUTPUT"
+          echo "due=true" >> "$GITHUB_OUTPUT"
+
+      - name: Review
+        id: claude
+        if: steps.context.outputs.due == 'true'
+        # Quota, agent errors or a timeout leave the PR without a review instead of blocking its merge.
+        continue-on-error: true
+        timeout-minutes: 15
+        uses: anthropics/claude-code-action@4d75e5f390ee76b2e09c1980ecc99ff3a2e088c8 # v1.0.275
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          allowed_bots: "lares-renovate-bot[bot]"
+          prompt: |
+            Review Renovate PR #${{ github.event.number }} in ${{ github.repository }} by following `.claude/skills/review-renovate/SKILL.md`.
+            `pr-context.md` in the working directory holds the PR data. Your turn budget is ${{ env.MAX_TURNS }} turns.
+            Write the review to `review.md` and the verdict, one word, to `verdict.txt`, both in the working directory.
+          claude_args: |
+            --model ${{ env.MODEL }}
+            --max-turns ${{ env.MAX_TURNS }}
+            --allowedTools "Read,Glob,Grep,Write,Bash(gh api:*),Bash(gh release view:*),Bash(git log:*),Bash(git show:*),WebFetch,WebSearch"
+            --disallowedTools "Task,Agent"
+
+      - name: Check review
+        id: result
+        if: steps.context.outputs.due == 'true'
+        env:
+          EXECUTION_FILE: ${{ steps.claude.outputs.execution_file }}
+          OUTCOME: ${{ steps.claude.outcome }}
+          MARKER: ${{ steps.context.outputs.marker }}
+        run: |
+          verdict=none
+          [ -f verdict.txt ] && verdict=$(tr -d '[:space:]' < verdict.txt)
+          case "$verdict" in
+            APPROVED | COMMENT | REQUEST_CHANGES)
+              if [ -s review.md ]; then
+                # Redirect links keep the review out of the upstream issue timelines.
+                {
+                  echo "$MARKER"
+                  echo "**Claude review:** \`$verdict\`"
+                  echo
+                  sed 's#https://github\.com/#https://redirect.github.com/#g' review.md
+                } > comment.md
+                echo "ready=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "::warning::review.md is missing, nothing to post."
+              fi
+              ;;
+            *) echo "::warning::verdict.txt is missing or invalid ('$verdict'), nothing to post." ;;
+          esac
+          result='{}'
+          if [ -f "$EXECUTION_FILE" ]; then
+            result=$(jq -c 'map(select(.type == "result")) | last // {}' "$EXECUTION_FILE")
+          fi
+          jq -r --arg verdict "$verdict" --arg outcome "$OUTCOME" '
+            "### Renovate review",
+            "",
+            "| Metric | Value |",
+            "|---|---|",
+            "| Verdict | `\($verdict)` |",
+            "| Agent step | \($outcome) |",
+            "| Model | `\(env.MODEL)` |",
+            "| Turns | \(.num_turns // "n/a") |",
+            "| Duration | \(if .duration_ms then "\(.duration_ms / 1000 | floor) s" else "n/a" end) |",
+            "| Cost | \(if .total_cost_usd then "$\(.total_cost_usd * 100 | round / 100)" else "n/a" end) |"
+          ' <<< "$result" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload review
+        if: steps.result.outputs.ready == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: renovate-review
+          path: comment.md
+          retention-days: 1
+
+  renovate-review-post:
+    name: Post Renovate Review
+    needs: renovate-review
+    if: needs.renovate-review.outputs.ready == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download review
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: renovate-review
+
+      - name: Post review as comment
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: renovate-review
+          path: comment.md
