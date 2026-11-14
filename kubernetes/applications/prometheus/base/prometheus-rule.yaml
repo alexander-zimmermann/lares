@@ -127,6 +127,74 @@ spec:
             summary: "PBS verify failed for {{ $labels.vm_name }}"
             description: "The last verify of VM {{ $labels.vm_name }} (id {{ $labels.vm_id }}) in datastore {{ $labels.datastore }} did not pass."
 
+    - name: smart-alerts
+      rules:
+        # smartctl_exporter on the Proxmox host; InstanceDown covers the exporter itself.
+        - alert: SmartDeviceHealthFailed
+          expr: 'smartctl_device_smart_status != 1'
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Disk {{ $labels.device }} failed its SMART health check"
+            description: "SMART reports {{ $labels.device }} on {{ $labels.instance }} as failing. Back up what lives on it and plan the replacement."
+
+        - alert: SmartDeviceCriticalWarning
+          # NVMe critical warning bits: spare low, temperature, reliability degraded, read-only, backup failed.
+          expr: 'smartctl_device_critical_warning != 0'
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Disk {{ $labels.device }} raised an NVMe critical warning"
+            description: "{{ $labels.device }} on {{ $labels.instance }} reports critical warning bits {{ $value }}; see smartctl -a for which one."
+
+        - alert: SmartDeviceSpareBelowThreshold
+          expr: 'smartctl_device_available_spare < smartctl_device_available_spare_threshold'
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Disk {{ $labels.device }} is out of spare blocks"
+            description: "Available spare on {{ $labels.device }} ({{ $labels.instance }}) fell below the vendor threshold. The drive is near the end of its life."
+
+        - alert: SmartDeviceMediaErrors
+          # The counter never resets, so alert on new errors rather than on a non-zero total.
+          expr: '(smartctl_device_media_errors - smartctl_device_media_errors offset 1h) > 0'
+          labels:
+            severity: warning
+          annotations:
+            summary: "Disk {{ $labels.device }} logged new media errors"
+            description: "{{ $labels.device }} on {{ $labels.instance }} counted {{ $value }} new unrecovered data integrity errors in the last hour."
+
+        - alert: SmartDeviceWearHigh
+          expr: 'smartctl_device_percentage_used >= 80'
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Disk {{ $labels.device }} is {{ $value }}% worn"
+            description: "{{ $labels.device }} on {{ $labels.instance }} has used {{ $value }}% of its rated write endurance. Plan the replacement."
+
+        - alert: SmartDeviceHighTemperature
+          # Early warning below the drive's own limit, which SmartDeviceCriticalWarning reports; the NVMe idles near 58 °C.
+          expr: 'smartctl_device_temperature{temperature_type="current"} > 70'
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Disk {{ $labels.device }} runs at {{ $value }}°C"
+            description: "{{ $labels.device }} on {{ $labels.instance }} has been above 70 °C for 15 minutes. Check airflow in the rack."
+
+        - alert: SmartDeviceInterfaceSlow
+          expr: 'smartctl_device_interface_speed{speed_type="current"} != ignoring(speed_type) smartctl_device_interface_speed{speed_type="max"}'
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Disk {{ $labels.device }} links below its maximum speed"
+            description: "{{ $labels.device }} on {{ $labels.instance }} negotiated a slower link than it supports, often a cable or port problem."
+
     - name: cnpg-backup-alerts
       rules:
         # barman-cloud plugin metrics exist only for clusters with a backup; every
