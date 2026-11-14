@@ -47,6 +47,11 @@ clusterMetrics:
         - kube_endpointslice_info
         - kube_endpointslice_endpoints
         - kube_persistentvolumeclaim_created
+  # Dropped by the default allow list: kubelet start time (kromgo uptime badge)
+  kubelet:
+    metricsTuning:
+      includeMetrics:
+        - process_start_time_seconds
 
 clusterEvents:
   enabled: true
