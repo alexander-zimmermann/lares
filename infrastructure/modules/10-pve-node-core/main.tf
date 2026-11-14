@@ -156,3 +156,53 @@ data "external" "local_content_type_output" {
   depends_on = [terraform_data.local_content_types]
   program    = ["bash", "-c", "cat ${local.log_output}| jq -R -s '{output: .}'"]
 }
+
+
+###############################################################################
+## SMART exporter
+###############################################################################
+## Disk health for Prometheus: the Talos VMs see no physical disks, so the exporter runs on the host.
+## Debian ships it in backports only; apt takes nothing else from there unless asked with -t.
+locals {
+  smartctl_exporter_script_path = "/tmp/smartctl_exporter.sh"
+  smartctl_exporter_script      = <<-BASH
+    #!/usr/bin/env bash
+    set -euo pipefail
+    codename="$(awk -F= '$1 == "VERSION_CODENAME" { print $2 }' /etc/os-release)"
+    printf 'Types: deb\nURIs: http://deb.debian.org/debian\nSuites: %s-backports\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' "$codename" \
+      | sudo tee /etc/apt/sources.list.d/debian-backports.sources >/dev/null
+    sudo apt-get update -qq
+    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -t "$codename-backports" prometheus-smartctl-exporter
+    sudo systemctl enable --now smartctl_exporter.service
+  BASH
+}
+
+resource "terraform_data" "smartctl_exporter" {
+  triggers_replace = [sha256(local.smartctl_exporter_script)]
+
+  ## apt-get update reads every source, so the repositories and the subscription must be settled first
+  depends_on = [
+    proxmox_apt_repository.enable_no_subscription,
+    proxmox_apt_repository.enable_enterprise,
+    proxmox_apt_repository.enable_ceph,
+    terraform_data.set_subscription,
+  ]
+
+  connection {
+    type        = "ssh"
+    host        = var.ssh_hostname
+    user        = var.ssh_username
+    port        = var.ssh_port
+    private_key = file(pathexpand(var.ssh_private_key))
+    timeout     = "60s"
+  }
+
+  provisioner "file" {
+    content     = local.smartctl_exporter_script
+    destination = local.smartctl_exporter_script_path
+  }
+
+  provisioner "remote-exec" {
+    inline = ["/usr/bin/env bash ${local.smartctl_exporter_script_path}"]
+  }
+}
