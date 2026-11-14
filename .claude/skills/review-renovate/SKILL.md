@@ -15,7 +15,7 @@ Adapted from the review prompt in [billimek/k8s-gitops](https://github.com/billi
 
 - Argo CD syncs `kubernetes/`. Each app is `<group>/<app>/base` plus overlays, and only `overlays/prod` runs: there is no dev cluster, so `overlays/dev` changes nothing.
 - Helm charts come in through kustomize `helmCharts` in `base/kustomization.yaml`, with our overrides in `base/values.yaml`. Overlays patch the rendered resources (JSON patches for resources and env, `replacements` for domains and sizes).
-- Directory names are roles, not products (`ingress-controller` is traefik, `admission-controller` is kyverno). Find the consumers of a component by grepping its chart or image name.
+- A directory names the role where the product name does not say the job (`ingress-controller` is traefik, `admission-controller` is kyverno, `gitops-controller` is argo-cd, `csi-block-storage-controller` is longhorn), and the product where it does (`cert-manager`, `external-dns`, `reloader`). Find the consumers of a component by grepping its chart or image name.
 - Charts under `oci://ghcr.io/alexander-zimmermann/charts/*-chart` are mirrors of Docker Hardened Images charts (`dhi.io`), each wrapping an upstream chart.
 - High blast radius, research these deepest: cilium, traefik, longhorn, cnpg, kyverno, cert-manager, sealed-secrets, argo-cd, nats, rustfs.
 
