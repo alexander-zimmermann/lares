@@ -22,6 +22,10 @@ _Roman household guardians — a homelab stack across three independent layers: 
 [![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fkubernetes_version&style=flat-square&logo=kubernetes&logoColor=white&color=blue&label=Kubernetes)](https://kubernetes.io)
 [![Nodes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_node_count&style=flat-square&logo=kubernetes&logoColor=white&label=Nodes)](https://github.com/kashalls/kromgo)
 [![Pods](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_pod_count&style=flat-square&logo=kubernetes&logoColor=white&label=Pods)](https://github.com/kashalls/kromgo)
+[![CPU](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_cpu_usage&style=flat-square&logo=kubernetes&logoColor=white&label=CPU)](https://github.com/kashalls/kromgo)
+[![Memory](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_memory_usage&style=flat-square&logo=kubernetes&logoColor=white&label=Memory)](https://github.com/kashalls/kromgo)
+[![Uptime](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_uptime_days&style=flat-square&logo=kubernetes&logoColor=white&label=Uptime)](https://github.com/kashalls/kromgo)
+[![Age](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_age_days&style=flat-square&logo=kubernetes&logoColor=white&label=Age)](https://github.com/kashalls/kromgo)
 [![Alerts](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.zimmermann.sh%2Fcluster_alert_count&style=flat-square&logo=prometheus&logoColor=white&label=Alerts)](https://github.com/kashalls/kromgo)
 
 [![License](https://img.shields.io/github/license/alexander-zimmermann/lares?style=flat-square&color=blue)](./LICENSE)
