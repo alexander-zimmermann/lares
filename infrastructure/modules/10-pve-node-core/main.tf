@@ -163,6 +163,7 @@ data "external" "local_content_type_output" {
 ###############################################################################
 ## Disk health for Prometheus: the Talos VMs see no physical disks, so the exporter runs on the host.
 ## Debian ships it in backports only; apt takes nothing else from there unless asked with -t.
+## Each sudo call must match a line in /etc/sudoers.d/opentofu word for word (see the README); -n fails instead of prompting.
 locals {
   smartctl_exporter_script_path = "/tmp/smartctl_exporter.sh"
   smartctl_exporter_script      = <<-BASH
@@ -170,10 +171,10 @@ locals {
     set -euo pipefail
     codename="$(awk -F= '$1 == "VERSION_CODENAME" { print $2 }' /etc/os-release)"
     printf 'Types: deb\nURIs: http://deb.debian.org/debian\nSuites: %s-backports\nComponents: main\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg\n' "$codename" \
-      | sudo tee /etc/apt/sources.list.d/debian-backports.sources >/dev/null
-    sudo apt-get update -qq
-    sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq -t "$codename-backports" prometheus-smartctl-exporter
-    sudo systemctl enable --now smartctl_exporter.service
+      | sudo -n tee /etc/apt/sources.list.d/debian-backports.sources >/dev/null
+    sudo -n apt-get update -qq
+    sudo -n apt-get install -y -qq -t "$codename-backports" prometheus-smartctl-exporter
+    sudo -n systemctl enable --now smartctl_exporter.service
   BASH
 }
 

@@ -101,6 +101,20 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 
   See [`terraform.tfvars.example`](terraform.tfvars.example) for the full shape.
 
+- **SSH user `opentofu` on each PVE node**, with the public half of `~/.ssh/proxmox_opentofu` in its `authorized_keys` and these sudo rules in `/etc/sudoers.d/opentofu` (edit with `visudo -f`). Each rule names one exact command, so a step whose command is not listed fails at `sudo -n` instead of waiting for a password. The `trixie-backports` line follows the Debian release; change it when PVE moves to the next release.
+
+  ```
+  opentofu ALL=(root) NOPASSWD: /usr/sbin/pvesm
+  opentofu ALL=(root) NOPASSWD: /usr/sbin/qm
+  opentofu ALL=(root) NOPASSWD: /usr/bin/pvenode
+  opentofu ALL=(root) NOPASSWD: /usr/bin/pvesubscription
+  opentofu ALL=(root) NOPASSWD: /usr/bin/tee /var/lib/vz/*
+  opentofu ALL=(root) NOPASSWD: /usr/bin/tee /etc/apt/sources.list.d/debian-backports.sources
+  opentofu ALL=(root) NOPASSWD: /usr/bin/apt-get update -qq
+  opentofu ALL=(root) NOPASSWD: /usr/bin/apt-get install -y -qq -t trixie-backports prometheus-smartctl-exporter
+  opentofu ALL=(root) NOPASSWD: /usr/bin/systemctl enable --now smartctl_exporter.service
+  ```
+
 ## Swapping the hypervisor
 
 The Proxmox-specific bits are confined to the `bpg/proxmox` provider and the `pve_*` module namespaces. Everything else (cloud-init generation, image catalog, manifest merging, the `60-pbs` layer — PBS is a guest, not the hypervisor) is generic Terraform/OpenTofu. Swapping to another hypervisor means:
