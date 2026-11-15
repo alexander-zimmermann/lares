@@ -1,0 +1,23 @@
+###############################################################################
+## Data plane volumes
+###############################################################################
+## Longhorn data on the dedicated disk (scsi1), mounted at /var/mnt/longhorn-data
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn-data
+provisioning:
+  diskSelector:
+    match: "'/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1' in disk.symlinks"
+  minSize: 10GiB
+  grow: true # Follow the disk if the machine class makes it larger
+filesystem:
+  type: ext4
+encryption:
+  provider: luks2
+  allowDiscards: true # Pass discards through LUKS so ZFS on Proxmox gets freed blocks back
+  keys:
+    - slot: 0
+      kms:
+        endpoint: https://omni.zimmermann.eu.com:8090/ # Omni KMS, as Omni uses for STATE/EPHEMERAL
+trim:
+  interval: 168h # Without a global FilesystemTrimConfig, per-volume trim needs its own interval
