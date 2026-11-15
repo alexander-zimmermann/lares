@@ -12,7 +12,7 @@ I describe my Proxmox setup in YAML manifests, `locals.tf` stitches them togethe
 
 - **Cluster-wide config** — ACME for PVE UI certs, backup jobs to PBS, hardware mappings (USB), users, OIDC realms (the default login goes through Layer-3 Authentik; the `pve` realm stays as break-glass).
 - **Per-node config** — repositories, network, optional subscription keys, and the SMART exporter for Prometheus (Debian backports, installed over SSH).
-- **OS images** — declarative download + SHA-512 verification (Debian Trixie, Ubuntu Noble/Plucky, Windows 11 25H2 + virtio).
+- **OS images** — declarative download + SHA-256/SHA-512 checksum verification (Debian Trixie, Ubuntu Noble/Plucky, Windows 11 25H2 + virtio).
 - **Cloud-init modules** — reusable blocks for users, vendor bootstrap, network.
 - **Templates** — VM and LXC templates (hardware shapes, OS type).
 - **Fleet** — actual VMs and containers instantiated from templates.
