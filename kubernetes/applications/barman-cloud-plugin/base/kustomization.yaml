@@ -8,6 +8,7 @@ helmCharts:
     repo: oci://ghcr.io/cloudnative-pg/charts
     releaseName: barman-cloud-plugin
     version: 0.9.0
+    valuesFile: values.yaml
     namespace: cloudnative-pg
 
 labels:
