@@ -9,9 +9,9 @@ image:
 
   vm_ubuntu_noble:
     image_type: import
-    image_url: https://cloud-images.ubuntu.com/noble/20260911/noble-server-cloudimg-amd64.img
+    image_url: https://cloud-images.ubuntu.com/noble/20261017/noble-server-cloudimg-amd64.img
     image_filename: ubuntu-noble-server-cloudimg-amd64.qcow2
-    image_checksum: 612b2c0cc1bc413a6cb8c38fd611794caf0f2b436c50013d8b3794db12ad7354
+    image_checksum: 04e8f2461a16a44e78a370284471f29616cdd9baf1893df25807b71f985b6c94
 
   ## Ubuntu LXC images
   lxc_ubuntu_noble:
