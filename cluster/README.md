@@ -19,14 +19,15 @@ The whole cluster state lives in three YAML files, reconciled into Omni with `om
 | [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml)       | Production Omni Cluster Template — Talos/k8s versions, 3× CP + 3× Worker, system extensions |
 | [`homelab-cluster-dev.yaml`](homelab-cluster-dev.yaml)         | Dev-cluster variant (smaller footprint, same shape)                                         |
 | [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml) | Auto-provisioning shapes — what a "control plane" or "worker" VM looks like on Proxmox      |
-| [`patches/`](patches/)                                         | Omni patches (global settings, CP/DP tuning, extra manifests)                               |
+| [`patches/`](patches/)                                         | Omni patches (global settings, CP/DP tuning, worker volumes, extra manifests)               |
 
 ### Cluster shape (prod)
 
 Defined in [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml):
 
-- **Talos** v1.12.6, **Kubernetes** v1.34.6
-- **Disk encryption** enabled (LUKS)
+- **Talos** and **Kubernetes** versions are pinned in the template (Renovate bumps Talos); the badges above show what the cluster runs
+- **Disk encryption** (LUKS2, Omni as KMS) for STATE, EPHEMERAL and the Longhorn volume on each worker
+- **Worker storage**: Longhorn on its own encrypted user volume (`/var/mnt/longhorn-data`) on the 128 GB disk, defined in [`patches/data-plane-volumes.yaml`](patches/data-plane-volumes.yaml)
 - **3× control plane**, **3× worker** — all auto-provisioned via machine classes
 - **System extensions**: `qemu-guest-agent`, `util-linux-tools`, `i915` (Intel iGPU), `intel-ucode`, `nvidia-open-gpu-kernel-modules-lts`, `iscsi-tools`, `zfs`
 
@@ -34,12 +35,12 @@ Defined in [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml):
 
 Defined in [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml). Each class tells Omni's infra provider how to spin up a VM.
 
-| Role                 | vCPU | RAM   | Root  | Extra disks                    |
-| -------------------- | ---- | ----- | ----- | ------------------------------ |
-| `control-plane-prod` | 4    | 4 GB  | 32 GB | —                              |
-| `data-plane-prod`    | 6    | 10 GB | 64 GB | 128 GB (storage) + 4 GB (swap) |
-| `control-plane-dev`  | 2    | 2 GB  | 32 GB | —                              |
-| `data-plane-dev`     | 4    | 4 GB  | 64 GB | 64 GB (storage) + 4 GB (swap)  |
+| Role                 | vCPU | RAM   | Root  | Extra disks                     |
+| -------------------- | ---- | ----- | ----- | ------------------------------- |
+| `control-plane-prod` | 4    | 5 GB  | 32 GB | —                               |
+| `data-plane-prod`    | 6    | 10 GB | 64 GB | 128 GB (Longhorn) + 4 GB (swap) |
+| `control-plane-dev`  | 2    | 2 GB  | 32 GB | —                               |
+| `data-plane-dev`     | 4    | 4 GB  | 64 GB | 64 GB (Longhorn) + 4 GB (swap)  |
 
 All go to `local-zfs` on my Proxmox host; NUMA, `host` CPU type, `q35` machine, `io_uring` async I/O.
 
