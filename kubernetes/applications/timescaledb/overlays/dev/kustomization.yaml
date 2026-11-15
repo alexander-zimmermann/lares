@@ -32,6 +32,15 @@ replacements:
         fieldPaths:
           - spec.postgresql.parameters.max_wal_size
 
+  # max_slot_wal_keep_size — with max_wal_size stays under the 1Gi PVC
+  - sourceValue: "128MB"
+    targets:
+      - select:
+          kind: Cluster
+          name: timescaledb-db
+        fieldPaths:
+          - spec.postgresql.parameters.max_slot_wal_keep_size
+
   # Barman serverName — env-specific so prod and dev never share a WAL archive
   - sourceValue: timescaledb-db-dev
     targets:
@@ -48,7 +57,7 @@ patches:
     patch: |-
       - op: test
         path: /spec/instances
-        value: 1
+        value: 2
       - op: add
         path: /spec/resources
         value:
