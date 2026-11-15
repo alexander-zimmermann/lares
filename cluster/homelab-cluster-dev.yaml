@@ -70,3 +70,5 @@ deleteStrategy:
 patches:
   - name: data-plane-settings
     file: patches/data-plane-settings.yaml
+  - name: data-plane-volumes
+    file: patches/data-plane-volumes.yaml

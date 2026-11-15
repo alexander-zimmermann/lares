@@ -1,36 +1,6 @@
 ###############################################################################
 ## Data plane patches
 ###############################################################################
-cluster:
-  ## Talos Machine Config Patches
-  inlineManifests:
-    ## Inject UserVolumeConfig for Longhorn Disk Partitioning
-    ## This creates the partition on the extra disk and mounts it to /var/mnt/longhorn on the host.
-    - name: longhorn-vol-config
-      contents: |
-        apiVersion: v1alpha1
-        kind: UserVolumeConfig
-        name: longhorn
-        provisioning:
-          diskSelector:
-            match: "'/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1' in disk.symlinks"
-          minSize: 10G
-        filesystem:
-          type: ext4
-
-    # Small swap device on a dedicated disk to reduce OOM probability.
-    # Note: unencrypted by default; enable disk encryption/vTPM later if desired.
-    - name: swap-vol-config
-      contents: |
-        apiVersion: v1alpha1
-        kind: SwapVolumeConfig
-        name: swap
-        provisioning:
-          diskSelector:
-            match: "'/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2' in disk.symlinks"
-          minSize: 4GiB
-          maxSize: 4GiB
-
 ## Data plane specific machine config
 machine:
   ## Kubernetes Node Role Label
@@ -43,7 +13,7 @@ machine:
       cloud-provider: external
 
     ## Mounts for Longhorn Storage
-    ## Binds the physical mount point into the Kubelet container
+    ## Binds the current Longhorn data path, a plain directory on EPHEMERAL, into the Kubelet container
     extraMounts:
       - destination: /var/mnt/longhorn
         type: bind
