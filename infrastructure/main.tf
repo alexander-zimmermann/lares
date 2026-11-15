@@ -621,9 +621,10 @@ module "template_vm" {
   memory       = each.value.memory
 
   ## Disk and image configuration
-  image_id  = try(module.image[each.value.image_id].image_id, null)
-  os_type   = each.value.os_type
-  disk_size = each.value.disk_size
+  image_id   = try(module.image[each.value.image_id].image_id, null)
+  image_type = try(module.image[each.value.image_id].image_type, null)
+  os_type    = each.value.os_type
+  disk_size  = each.value.disk_size
 
   ## Cloud-init configuration
   enable_cloud_init = lookup(each.value, "enable_cloud_init", true)

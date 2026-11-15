@@ -242,6 +242,22 @@ variable "image_id" {
   }
 }
 
+variable "image_type" {
+  description = <<EOT
+    Content type of the image behind image_id: `import` becomes the boot disk,
+    `iso` a CD-ROM next to a blank disk, null leaves a blank disk only. It is
+    known at plan time even when image_id is not (e.g. after an image bump),
+    so the disk layout never changes between plan and apply.
+  EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.image_type == null || contains(["import", "iso"], var.image_type)
+    error_message = "image_type must be null, import or iso."
+  }
+}
+
 variable "os_type" {
   description = <<EOT
     Guest operating system type for the VM. This influences default hardware
