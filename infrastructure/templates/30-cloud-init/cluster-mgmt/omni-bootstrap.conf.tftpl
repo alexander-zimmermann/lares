@@ -61,9 +61,13 @@ OMNI_DATA_DIR="$${OMNI_PERSISTENCE_DATA_DIR}/data"
 OMNI_CERT_DIR="$${OMNI_PERSISTENCE_DATA_DIR}/certificates"
 OMNI_KEY_DIR="$${OMNI_PERSISTENCE_DATA_DIR}/keys"
 
-# Omni configuration
+## Omni configuration
 OMNI_ACCOUNT_UUID="${omni_account_uuid}"
 OMNI_INITIAL_USERS="${omni_initial_users}"
+
+## Omni EULA acceptance (Omni refuses a fresh start without it)
+OMNI_EULA_ACCEPT_NAME="Alexander Zimmermann"
+OMNI_EULA_ACCEPT_EMAIL="alexander@zimmermann.eu.com"
 
 ## Omni endpoint (machine-facing, LAN only: SideroLink, infra provider, on-VM omnictl)
 OMNI_DOMAIN_NAME="omni.zimmermann.eu.com"

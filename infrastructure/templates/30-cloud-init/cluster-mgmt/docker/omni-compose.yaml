@@ -68,6 +68,9 @@ services:
       - --name=omni
       - --account-id=${OMNI_ACCOUNT_UUID}
       - --initial-users=${OMNI_INITIAL_USERS}
+      ## EULA acceptance
+      - --eula-accept-name=${OMNI_EULA_ACCEPT_NAME}
+      - --eula-accept-email=${OMNI_EULA_ACCEPT_EMAIL}
       ## Persistence data
       - --sqlite-storage-path=/data/omni.db
       - --etcd-embedded-db-path=/data/etcd
