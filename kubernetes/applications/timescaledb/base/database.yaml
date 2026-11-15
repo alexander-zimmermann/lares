@@ -6,7 +6,7 @@ metadata:
   namespace: timescaledb
 
 spec:
-  instances: 1
+  instances: 2
 
   imageName: ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb:18.6-ts2.26-tk
 
@@ -72,10 +72,6 @@ spec:
         comment: "Grafana — SELECT only on hypertables and CAGGs"
         passwordSecret:
           name: timescaledb-db-grafana-ro-secret
-    # Single-instance cluster has no replicas — drop the never-routable read-only (-ro) Service
-    services:
-      disabledDefaultServices:
-        - ro
   postgresql:
     # Load TimescaleDB extension at server start
     shared_preload_libraries:
@@ -94,6 +90,7 @@ spec:
       max_wal_size: PLACEHOLDER
       min_wal_size: "80MB"
       wal_keep_size: "128MB"
+      max_slot_wal_keep_size: PLACEHOLDER
       wal_compression: "on"
 
       # TimescaleDB worker settings
