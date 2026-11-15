@@ -21,3 +21,19 @@ encryption:
         endpoint: https://omni.zimmermann.eu.com:8090/ # Omni KMS, as Omni uses for STATE/EPHEMERAL
 trim:
   interval: 168h # Without a global FilesystemTrimConfig, per-volume trim needs its own interval
+
+---
+## Swap on the dedicated disk (scsi2); global-settings.yaml sets the kubelet to LimitedSwap and enables zswap
+apiVersion: v1alpha1
+kind: SwapVolumeConfig
+name: swap
+provisioning:
+  diskSelector:
+    match: "'/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi2' in disk.symlinks"
+  minSize: 3GiB # The disk is exactly 4 GiB, and the partition table takes a little of it
+encryption:
+  provider: luks2
+  keys:
+    - slot: 0
+      kms:
+        endpoint: https://omni.zimmermann.eu.com:8090/ # Swap holds memory pages; Omni KMS as for the other volumes
