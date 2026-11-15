@@ -11,14 +11,3 @@ machine:
     ## Configure the kubelet to look for an external cloud provider (Talos CCM)
     extraArgs:
       cloud-provider: external
-
-    ## Mounts for Longhorn Storage
-    ## Binds the current Longhorn data path, a plain directory on EPHEMERAL, into the Kubelet container
-    extraMounts:
-      - destination: /var/mnt/longhorn
-        type: bind
-        source: /var/mnt/longhorn
-        options:
-          - bind
-          - rshared
-          - rw
