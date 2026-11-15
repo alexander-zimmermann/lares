@@ -10,7 +10,7 @@ terraform {
     pbs = {
       ## https://search.opentofu.org/provider/rfdrew/pbs/latest
       source  = "rfdrew/pbs"
-      version = "0.4.0"
+      version = "1.0.0"
     }
     external = {
       ## https://search.opentofu.org/provider/hashicorp/external/latest
