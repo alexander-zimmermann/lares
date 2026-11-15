@@ -9,3 +9,8 @@ output "image_id" {
   EOT
   value       = length(proxmox_download_file.image) > 0 ? proxmox_download_file.image[0].id : "${var.datastore}:${var.image_type}/${var.image_filename}"
 }
+
+output "image_type" {
+  description = "Content type of the image (iso, import or vztmpl), known at plan time unlike image_id."
+  value       = var.image_type
+}

@@ -35,7 +35,7 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
   ## Boot order: Priority for primary disk, followed by the CD-ROM and Network if they exist.
   boot_order = var.boot_order != null ? var.boot_order : concat(
     [var.disk_interface],
-    (var.image_id != null && strcontains(var.image_id, ":iso/")) ? [var.cdrom_interface] : [],
+    var.image_type == "iso" ? [var.cdrom_interface] : [],
     (var.vnic_bridge != null) ? ["net0"] : []
   )
 
@@ -85,7 +85,7 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
 
   ## Disk: import from non-ISO images (qcow2, raw.xz, etc.)
   dynamic "disk" {
-    for_each = (var.image_id != null && !strcontains(var.image_id, ":iso/")) ? [1] : []
+    for_each = var.image_type == "import" ? [1] : []
     content {
       datastore_id = var.disk_datastore
       interface    = var.disk_interface
@@ -101,7 +101,7 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
 
   ## For ISO images or when no image provided: create blank disk
   dynamic "disk" {
-    for_each = (var.image_id == null || strcontains(var.image_id, ":iso/")) ? [1] : []
+    for_each = var.image_type == "import" ? [] : [1]
     content {
       datastore_id = var.disk_datastore
       interface    = var.disk_interface
@@ -116,7 +116,7 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
 
   ## CD-ROM drive for OS installation ISO
   dynamic "cdrom" {
-    for_each = (var.image_id != null && strcontains(var.image_id, ":iso/")) ? [1] : []
+    for_each = var.image_type == "iso" ? [1] : []
     content {
       file_id   = var.image_id
       interface = var.cdrom_interface
