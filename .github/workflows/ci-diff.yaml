@@ -4,10 +4,11 @@ on:
   pull_request:
     branches:
       - main
-    # Argo CD only reads kubernetes/; auto-merged workflow-only PRs lose their merge ref before the diff runs.
+    # Argo CD only reads kubernetes/, infrastructure/ gets only the Renovate review; auto-merged workflow-only PRs lose their merge ref before the diff runs.
     paths:
       - kubernetes/**
       - "!kubernetes/**/README.md"
+      - infrastructure/**
       - .github/workflows/ci-diff.yaml
 
 permissions:
@@ -15,8 +16,26 @@ permissions:
   pull-requests: write
 
 jobs:
+  changes:
+    name: "Plan: Diff Stages"
+    runs-on: ubuntu-latest
+    outputs:
+      k8s: ${{ steps.filter.outputs.k8s }}
+    steps:
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
+        id: filter
+        with:
+          predicate-quantifier: some-with-excludes
+          filters: |
+            k8s:
+              - 'kubernetes/**'
+              - '!kubernetes/**/README.md'
+              - '.github/workflows/ci-diff.yaml'
+
   generate-diff:
     name: Generate Diff
+    needs: changes
+    if: needs.changes.outputs.k8s == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
@@ -108,8 +127,13 @@ jobs:
 
   renovate-review:
     name: Renovate Review
-    needs: generate-diff
-    if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
+    needs: [changes, generate-diff]
+    # A PR with only infrastructure/ changes skips the diff and is still reviewed.
+    if: >-
+      !cancelled()
+      && needs.changes.result == 'success'
+      && contains(fromJSON('["success", "skipped"]'), needs.generate-diff.result)
+      && github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
     runs-on: ubuntu-latest
     # The environment hands over the access token when this job starts, not when the run was queued; a refresh in between revokes the old one.
     environment:
@@ -152,8 +176,8 @@ jobs:
             exit 0
           fi
           # The path filter also lets through bumps of the pins in this workflow file.
-          if ! jq -e 'any(.files[].path; startswith("kubernetes/"))' <<< "$pr" > /dev/null; then
-            echo "::notice::No change under kubernetes/, no review."
+          if ! jq -e 'any(.files[].path; startswith("kubernetes/") or startswith("infrastructure/"))' <<< "$pr" > /dev/null; then
+            echo "::notice::No change under kubernetes/ or infrastructure/, no review."
             exit 0
           fi
           title=$(jq -r .title <<< "$pr")
@@ -267,7 +291,8 @@ jobs:
   renovate-review-post:
     name: Post Renovate Review
     needs: renovate-review
-    if: needs.renovate-review.outputs.ready == 'true'
+    # Without !cancelled(), the skipped diff of an infrastructure/ PR would skip this job too.
+    if: ${{ !cancelled() && needs.renovate-review.outputs.ready == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
