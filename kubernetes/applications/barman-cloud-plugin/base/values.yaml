@@ -1,0 +1,11 @@
+# Every replica serves gRPC since plugin v0.16.0; the ObjectStore controller stays leader-elected
+replicaCount: 2
+
+affinity:
+  # One replica per node, so draining a worker never takes the plugin away
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: plugin-barman-cloud
+        topologyKey: kubernetes.io/hostname
