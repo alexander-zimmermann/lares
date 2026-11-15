@@ -27,8 +27,8 @@ defaultSettings:
   # Gate default-disk creation on the CCM-applied label
   createDefaultDiskLabeledNodes: true
 
-  # Store Longhorn data on the dedicated mount path on the nodes
-  defaultDataPath: /var/mnt/longhorn
+  # Store Longhorn data on the encrypted user volume on the dedicated disk (cluster/patches/data-plane-volumes.yaml)
+  defaultDataPath: /var/mnt/longhorn-data
 
   # Prefer local replicas when possible
   defaultDataLocality: best-effort
@@ -42,8 +42,8 @@ defaultSettings:
   # Keep at least 15% free disk space on each Longhorn disk
   storageMinimalAvailablePercentage: 15
 
-  # Reserve disk space on the default disk (headroom for CoW/fragmentation/ops)
-  storageReservedPercentageForDefaultDisk: 25
+  # Reserve disk space on the default disk (headroom for CoW/fragmentation/ops); the disk holds only Longhorn data
+  storageReservedPercentageForDefaultDisk: 20
 
   # Default number of replicas for volumes created via the UI
   defaultReplicaCount: 2
