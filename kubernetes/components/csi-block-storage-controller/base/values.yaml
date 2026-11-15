@@ -28,7 +28,7 @@ defaultSettings:
   createDefaultDiskLabeledNodes: true
 
   # Store Longhorn data on the encrypted user volume on the dedicated disk (cluster/patches/data-plane-volumes.yaml)
-  defaultDataPath: /var/mnt/longhorn-data
+  defaultDataPath: /var/mnt/longhorn
 
   # Prefer local replicas when possible
   defaultDataLocality: best-effort

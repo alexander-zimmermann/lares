@@ -27,7 +27,7 @@ Defined in [`homelab-cluster-prod.yaml`](homelab-cluster-prod.yaml):
 
 - **Talos** and **Kubernetes** versions are pinned in the template (Renovate bumps Talos); the badges above show what the cluster runs
 - **Disk encryption** (LUKS2, Omni as KMS) for STATE, EPHEMERAL and the Longhorn volume on each worker
-- **Worker storage**: Longhorn on its own encrypted user volume (`/var/mnt/longhorn-data`) on the 128 GB disk, defined in [`patches/data-plane-volumes.yaml`](patches/data-plane-volumes.yaml)
+- **Worker storage**: Longhorn on its own encrypted user volume (`/var/mnt/longhorn`) on the 128 GB disk, defined in [`patches/data-plane-volumes.yaml`](patches/data-plane-volumes.yaml)
 - **3× control plane**, **3× worker** — all auto-provisioned via machine classes
 - **System extensions**: `qemu-guest-agent`, `util-linux-tools`, `i915` (Intel iGPU), `intel-ucode`, `nvidia-open-gpu-kernel-modules-lts`, `iscsi-tools`, `zfs`
 
