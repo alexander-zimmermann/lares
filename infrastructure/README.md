@@ -113,6 +113,7 @@ From the repo root (uses [go-task](https://taskfile.dev)):
   opentofu ALL=(root) NOPASSWD: /usr/bin/apt-get update -qq
   opentofu ALL=(root) NOPASSWD: /usr/bin/apt-get install -y -qq -t trixie-backports prometheus-smartctl-exporter
   opentofu ALL=(root) NOPASSWD: /usr/bin/systemctl enable --now smartctl_exporter.service
+  opentofu ALL=(root) NOPASSWD: /usr/bin/tee /etc/network/interfaces.new
   ```
 
 ## Swapping the hypervisor

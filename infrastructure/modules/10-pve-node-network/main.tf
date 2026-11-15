@@ -178,5 +178,78 @@ resource "proxmox_network_linux_bridge" "bridges" {
   reload     = var.reload
   vids       = var.vids
   vlan_aware = var.vlan_aware
-  ports      = var.ports != null ? sort(var.ports) : []
+  ports      = local.bridge_ports
+
+  lifecycle {
+    precondition {
+      condition     = var.vlan_aware || (var.vids == null && var.pvid == null)
+      error_message = "vids and pvid need vlan_aware = true."
+    }
+  }
+}
+
+## The Proxmox network API has no PVID field, so the line goes into each port's stanza over SSH
+locals {
+  bridge_ports     = var.ports != null ? sort(var.ports) : []
+  pvid_script_path = "/tmp/bridge_pvid_${var.name}.sh"
+  pvid_script      = <<-BASH
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pvid=${coalesce(var.pvid, 0)}
+    ports="${join(" ", local.bridge_ports)}"
+
+    # Build on a change that is already waiting, so nothing staged gets lost
+    src=/etc/network/interfaces
+    [ -f /etc/network/interfaces.new ] && src=/etc/network/interfaces.new
+
+    for port in $ports; do
+      grep -Eq "^iface[[:space:]]+$port[[:space:]]+inet[[:space:]]" "$src" \
+        || { echo "no 'iface $port inet' stanza in $src" >&2; exit 1; }
+    done
+
+    # Right under the iface line: Proxmox ends a stanza at the first blank line
+    out="$(mktemp)"
+    awk -v ports="$ports" -v pvid="$pvid" '
+      BEGIN { n = split(ports, p, " "); for (i = 1; i <= n; i++) want[p[i]] = 1 }
+      /^iface[ \t]/ { inport = ($2 in want) && $3 == "inet"; print; if (inport) print "\tbridge-pvid " pvid; next }
+      /^[^ \t]/ || /^[ \t]*$/ { inport = 0 }
+      inport && /^[ \t]+bridge-pvid[ \t]/ { next }
+      { print }
+    ' "$src" > "$out"
+
+    if cmp -s "$out" "$src"; then
+      echo "bridge-pvid $pvid already in $src"
+    else
+      sudo -n tee /etc/network/interfaces.new < "$out" > /dev/null
+      echo "bridge-pvid $pvid staged in /etc/network/interfaces.new"
+    fi
+    rm -f "$out"
+  BASH
+}
+
+resource "terraform_data" "bridge_pvid" {
+  count = var.create_bridge && var.pvid != null ? 1 : 0
+
+  triggers_replace = [var.node, sha256(local.pvid_script)]
+
+  ## A bridge change staged by the provider goes first; the script builds on it
+  depends_on = [proxmox_network_linux_bridge.bridges]
+
+  connection {
+    type        = "ssh"
+    host        = var.ssh_hostname
+    user        = var.ssh_username
+    port        = var.ssh_port
+    private_key = file(pathexpand(var.ssh_private_key))
+    timeout     = "60s"
+  }
+
+  provisioner "file" {
+    content     = local.pvid_script
+    destination = local.pvid_script_path
+  }
+
+  provisioner "remote-exec" {
+    inline = ["/usr/bin/env bash ${local.pvid_script_path}"]
+  }
 }
