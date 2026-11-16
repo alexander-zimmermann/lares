@@ -111,6 +111,13 @@ jobs:
             -e GIT_CONFIG_VALUE_0=* \
             dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
 
+      - name: Post diff as comment
+        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: argocd-diff-preview
+          path: output/diff.md
+          ignore_empty: true
+
       - name: Write whole diff
         # The comment's diff stops at MAX_DIFF_LENGTH; git diff answers a missing folder with 1, like a difference.
         run: |
@@ -127,13 +134,6 @@ jobs:
             output/diff.md
             rendered.diff
           retention-days: 1
-
-      - name: Post diff as comment
-        uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
-        with:
-          header: argocd-diff-preview
-          path: output/diff.md
-          ignore_empty: true
 
   renovate-review:
     name: Renovate Review
