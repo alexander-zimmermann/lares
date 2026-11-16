@@ -9413,27 +9413,27 @@
   room: Wohnzimmer (E4)
   writable: false
 4/2/63:
-  dpt: '1.007'
+  dpt: '1.017'
   function: Beleuchtung
-  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Helligkeit-Schritt
+  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Helligkeit
   room: Wohnzimmer (E4)
   writable: true
 4/2/64:
-  dpt: '1.007'
+  dpt: '1.017'
   function: Beleuchtung
-  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Farbe-Schritt
+  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Farbe
   room: Wohnzimmer (E4)
   writable: true
 4/2/65:
-  dpt: '1.007'
+  dpt: '1.017'
   function: Beleuchtung
-  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Modus-Schritt
+  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Modus
   room: Wohnzimmer (E4)
   writable: true
 4/2/66:
-  dpt: '1.007'
+  dpt: '1.017'
   function: Beleuchtung
-  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Geschwindigkeit-Schritt
+  name: Beleuchtung.Einrichtung.EG.Wohnzimmer.Bordbar.Geschwindigkeit
   room: Wohnzimmer (E4)
   writable: true
 4/2/67:
