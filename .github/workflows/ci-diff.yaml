@@ -104,19 +104,12 @@ jobs:
             -e ARGOCD_CHART_VERSION="${ARGOCD_CHART_VERSION}" \
             -e TIMEOUT=300 \
             -e MAX_DIFF_LENGTH=65000 \
+            -e OUTPUT_APP_MANIFESTS=true \
             -e DEBUG=true \
             -e GIT_CONFIG_COUNT=1 \
             -e GIT_CONFIG_KEY_0=safe.directory \
             -e GIT_CONFIG_VALUE_0=* \
             dagandersen/argocd-diff-preview:"${DIFF_PREVIEW_VERSION}"
-
-      - name: Upload diff for the Renovate review
-        if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: argocd-diff
-          path: output/diff.md
-          retention-days: 1
 
       - name: Post diff as comment
         uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
@@ -124,6 +117,21 @@ jobs:
           header: argocd-diff-preview
           path: output/diff.md
           ignore_empty: true
+
+      - name: Write whole diff
+        # The comment's diff stops at MAX_DIFF_LENGTH; a PR that selects no application gets no manifest folders.
+        if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]' && hashFiles('output/target/*.yaml') != ''
+        run: git diff --no-index --no-color output/base output/target > rendered.diff || [ $? -eq 1 ]
+
+      - name: Upload diff for the Renovate review
+        if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: argocd-diff
+          path: |
+            output/diff.md
+            rendered.diff
+          retention-days: 1
 
   renovate-review:
     name: Renovate Review
@@ -167,7 +175,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          DIFF_FILE: ${{ runner.temp }}/argocd-diff/diff.md
+          DIFF_FILE: ${{ runner.temp }}/argocd-diff/output/diff.md
+          RENDERED_DIFF: ${{ runner.temp }}/argocd-diff/rendered.diff
         run: |
           # Labels are read now, not from the event: Renovate labels a PR after opening it.
           pr=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json title,labels,body,files)
@@ -212,6 +221,7 @@ jobs:
             echo "## Rendered Argo CD diff (overlays/prod)"
             if [ -f "$DIFF_FILE" ]; then cat "$DIFF_FILE"; else echo "Not available."; fi
           } > pr-context.md
+          if [ -f "$RENDERED_DIFF" ]; then cp "$RENDERED_DIFF" rendered.diff; fi
           echo "marker=$MARKER" >> "$GITHUB_OUTPUT"
           echo "due=true" >> "$GITHUB_OUTPUT"
 
