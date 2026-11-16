@@ -1,13 +1,13 @@
 # Bordbar LED control: Basalte command GAs -> bordbar-nats-bridge.
 #
-#   knx.4.2.61 Ein/Aus                 -> bordbar.command.power      {"value": bool}
-#   knx.4.2.63 Helligkeit-Schritt      -> bordbar.command.brightness {"value": 1}
-#   knx.4.2.64 Farbe-Schritt           -> bordbar.command.color      {"value": 1}
-#   knx.4.2.65 Modus-Schritt           -> bordbar.command.mode       {"value": 1}
-#   knx.4.2.66 Geschwindigkeit-Schritt -> bordbar.command.speed      {"value": 1}
-#   knx.4.2.67 Reset                   -> bordbar.command.reset      {}
+#   knx.4.2.61 Ein/Aus         -> bordbar.command.power      {"value": bool}
+#   knx.4.2.63 Helligkeit      -> bordbar.command.brightness {"value": 1}
+#   knx.4.2.64 Farbe           -> bordbar.command.color      {"value": 1}
+#   knx.4.2.65 Modus           -> bordbar.command.mode       {"value": 1}
+#   knx.4.2.66 Geschwindigkeit -> bordbar.command.speed      {"value": 1}
+#   knx.4.2.67 Reset           -> bordbar.command.reset      {}
 #
-# Basalte binds the step GAs as 1.017 buttons (a 1 per press, a 0 on release), so each press steps forward.
+# 4/2/63-66 are 1.017 buttons: Basalte writes a 1 per press and a 0 on release, so each press steps forward.
 #
 # Core NATS only; the ESP32 subscribes through the MQTT gateway and nothing
 # archives commands.
