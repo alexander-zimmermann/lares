@@ -119,11 +119,9 @@ jobs:
           ignore_empty: true
 
       - name: Write whole diff
-        # The comment's diff stops at MAX_DIFF_LENGTH; git diff answers a missing folder with 1, like a difference.
-        run: |
-          test -d output/base
-          test -d output/target
-          git diff --no-index --no-color output/base output/target > rendered.diff || [ $? -eq 1 ]
+        # The comment's diff stops at MAX_DIFF_LENGTH; a PR that selects no application gets no manifest folders.
+        if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]' && hashFiles('output/target/*.yaml') != ''
+        run: git diff --no-index --no-color output/base output/target > rendered.diff || [ $? -eq 1 ]
 
       - name: Upload diff for the Renovate review
         if: github.event.pull_request.user.login == 'lares-renovate-bot[bot]'
