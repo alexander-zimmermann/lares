@@ -27,3 +27,17 @@ spec:
         matchLabels:
           app.kubernetes.io/part-of: alloy
           app.kubernetes.io/managed-by: Helm
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+
+metadata:
+  name: pod-cidrs
+  labels:
+    bgp.cilium.io/advertise: pod-cidrs
+
+spec:
+  advertisements:
+    # Lets the gateway route pods between nodes in different subnets
+    - advertisementType: PodCIDR
