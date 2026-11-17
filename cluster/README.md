@@ -61,12 +61,12 @@ Each provider has its own `providerdata` schema (see their docs). The rest of th
 
 From the repo root (uses [go-task](https://taskfile.dev)):
 
-| Task                              | What it does                                                          |
-| --------------------------------- | --------------------------------------------------------------------- |
-| `task cluster:init`               | Register machine classes in Omni (run once, or after editing classes) |
-| `task cluster:create -- [dev\|prod]` | Sync the cluster template to Omni (default: `prod`)                |
-| `task cluster:status -- [dev\|prod]` | Print current cluster status from Omni                             |
-| `task cluster:show -- [dev\|prod]`   | Download `kubeconfig` + `talosconfig` for the cluster              |
+| Task                                 | What it does                                                          |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| `task cluster:init`                  | Register machine classes in Omni (run once, or after editing classes) |
+| `task cluster:create -- [dev\|prod]` | Sync the cluster template to Omni (default: `prod`)                   |
+| `task cluster:status -- [dev\|prod]` | Print current cluster status from Omni                                |
+| `task cluster:show -- [dev\|prod]`   | Download `kubeconfig` + `talosconfig` for the cluster                 |
 
 Underlying command for `create` is `omnictl cluster template sync --file homelab-cluster-prod.yaml`.
 
