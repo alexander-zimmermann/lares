@@ -25,10 +25,12 @@ groups:
         # level is the line's own, i.e. first or right after the timestamp
         # (logrus quotes it, slog does not): longhorn-manager quotes a child
         # process's stderr, level=fatal included, inside its own error lines.
+        # cilium-operator logs losing the lead as fatal on every graceful shutdown too.
         expr: |
           sum by (namespace, pod, container) (
             count_over_time({namespace=~".+", container=~".+", container!="loki"}
-              |~ `^fatal error: |^(\w+=(\S+|"[^"]*") )?level=fatal |"level":"(fatal|FATAL|CRITICAL)"` [10m])
+              |~ `^fatal error: |^(\w+=(\S+|"[^"]*") )?level=fatal |"level":"(fatal|FATAL|CRITICAL)"`
+              != `msg="Leader election lost, shutting down."` [10m])
           ) > 0
         labels:
           severity: warning
