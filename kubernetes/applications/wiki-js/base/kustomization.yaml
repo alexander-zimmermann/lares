@@ -17,14 +17,11 @@ helmCharts:
     namespace: wiki-js
 
 patches:
-  # Add Cilium BGP labels to the Helm-generated Service (chart doesn't support custom service labels)
+  # Add the Cilium BGP label to the Helm-generated Service (chart doesn't support custom service labels)
   - target:
       kind: Service
       name: wiki-js
     patch: |-
-      - op: add
-        path: /metadata/labels/bgp.cilium.io~1ip-pool
-        value: default
       - op: add
         path: /metadata/labels/bgp.cilium.io~1advertise-service
         value: default

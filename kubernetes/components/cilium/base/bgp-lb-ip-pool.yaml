@@ -1,6 +1,8 @@
 apiVersion: cilium.io/v2
 kind: CiliumLoadBalancerIPPool
 
+# One pool for every LoadBalancer Service (no serviceSelector). Each overlay injects
+# the `.200`-`.254` block of its /24: VLAN 10 for prod, dev's own routed prefix.
 metadata:
   name: default-bgp-ip-pool
 
@@ -8,27 +10,3 @@ spec:
   blocks:
     - start: PLACEHOLDER
       stop: PLACEHOLDER
-  serviceSelector:
-    matchLabels:
-      bgp.cilium.io/ip-pool: default
-
----
-apiVersion: cilium.io/v2
-kind: CiliumLoadBalancerIPPool
-
-# The alloy-operator-rendered Service does not honour custom labels (chart
-# limitation), so the standard `bgp.cilium.io/ip-pool: default` selector cannot
-# match it. This dedicated pool selects on labels the operator-managed Service
-# already carries; ranges are kept disjoint from default-bgp-ip-pool because
-# Cilium rejects pools with overlapping CIDRs even if the selectors disjoint.
-metadata:
-  name: alloy-bgp-ip-pool
-
-spec:
-  blocks:
-    - start: PLACEHOLDER
-      stop: PLACEHOLDER
-  serviceSelector:
-    matchLabels:
-      app.kubernetes.io/part-of: alloy
-      app.kubernetes.io/managed-by: Helm

@@ -5,6 +5,18 @@ resources:
   - ../../base
 
 patches:
+  # Redpanda Connect service with static IP and BGP advertisement
+  - target:
+      kind: Service
+      name: redpanda-connect
+    patch: |-
+      - op: test
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations/io.cilium~1lb-ipam-ips
+        value: "192.168.10.221"
+
   - target:
       kind: Deployment
       name: redpanda-connect
