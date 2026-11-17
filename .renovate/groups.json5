@@ -7,22 +7,6 @@
       "groupName": "pre-commit"
     },
     {
-      "description": "Kubernetes components grouping",
-      "groupName": "kubernetes",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "/kube-apiserver/",
-        "/kube-controller-manager/",
-        "/kube-proxy/",
-        "/kube-scheduler/",
-        "/kubelet/"
-      ],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "minimumGroupSize": 5
-    },
-    {
       "description": "Talos Linux components grouping",
       "groupName": "talos",
       "matchDatasources": ["docker", "github-releases"],
