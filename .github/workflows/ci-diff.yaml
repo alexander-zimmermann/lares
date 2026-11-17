@@ -4,11 +4,12 @@ on:
   pull_request:
     branches:
       - main
-    # Argo CD only reads kubernetes/, infrastructure/ gets only the Renovate review; auto-merged workflow-only PRs lose their merge ref before the diff runs.
+    # Argo CD only reads kubernetes/, infrastructure/ and cluster/ get only the Renovate review; auto-merged workflow-only PRs lose their merge ref before the diff runs.
     paths:
       - kubernetes/**
       - "!kubernetes/**/README.md"
       - infrastructure/**
+      - cluster/**
       - .github/workflows/ci-diff.yaml
 
 permissions:
@@ -185,8 +186,8 @@ jobs:
             exit 0
           fi
           # The path filter also lets through bumps of the pins in this workflow file.
-          if ! jq -e 'any(.files[].path; startswith("kubernetes/") or startswith("infrastructure/"))' <<< "$pr" > /dev/null; then
-            echo "::notice::No change under kubernetes/ or infrastructure/, no review."
+          if ! jq -e 'any(.files[].path; startswith("kubernetes/") or startswith("infrastructure/") or startswith("cluster/"))' <<< "$pr" > /dev/null; then
+            echo "::notice::No change under kubernetes/, infrastructure/ or cluster/, no review."
             exit 0
           fi
           title=$(jq -r .title <<< "$pr")
