@@ -80,7 +80,7 @@ The workflow puts a `## Claude Review` heading above the review. Keep only the s
 - **Short bullets:** at most two sentences each, one under Not applicable.
 - **Worth adopting:** only a change that helps lares as it runs today, shown by an upstream line (PR description, doc or test), and that lares has to switch on at the line the entry names. A gain that needs no change in lares goes in the box's last line; a feature lares might use some day goes under Not applicable.
 - **Fix:** name one only when the new key or value is confirmed in the upstream diff or in the upstream file at the new tag. An unconfirmed fix goes under After merge as something to check: a wrong fix that gets applied does more harm than none.
-- **Known issues:** only issues that could hit lares; a search without such a hit goes under Sources.
+- **Known issues:** only issues the new version has and the old one did not, and that could hit lares. A bug the old version already has goes under Not applicable, with the version it dates back to; a search without such a hit goes under Sources.
 - **After merge:** a rollout to the new version is worth a line only for a high-blast-radius component.
 - **Upstream links:** one per source, full URLs with names as link text, never `#123` or `owner/repo#123`; the workflow turns them into redirect links so the upstream timelines stay quiet.
 
