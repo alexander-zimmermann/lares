@@ -44,6 +44,20 @@ Defined in [`homelab-machine-classes.yaml`](homelab-machine-classes.yaml). Each 
 
 All go to `local-zfs` on my Proxmox host; NUMA, `host` CPU type, `q35` machine, `io_uring` async I/O.
 
+## Network
+
+The nodes live in VLAN 10 "Kubernetes", `192.168.10.0/24`, one of the zones of [ADR 0004](../docs/adr/0004-network-zones-on-the-udm-egress-keys-per-pod-label.md). Every VLAN in the house follows the same address convention — `.1` gateway, `.2`–`.49` fixed addresses configured on the device itself, `.50`–`.199` DHCP (reservations live inside this range), `.200`–`.254` special purpose — and VLAN 10 fills it like this:
+
+| Range         | Use                                                                                                                                                                                                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.1`          | UDM gateway `192.168.10.1`, BGP peer (AS 65100); `peerAddress` in [`bgp-cluster-config.yaml`](../kubernetes/components/cilium/base/bgp-cluster-config.yaml)                                                                                                                                                   |
+| `.2`, `.3`    | Reserved for the egress IPs of two workers ([ADR 0004](../docs/adr/0004-network-zones-on-the-udm-egress-keys-per-pod-label.md)); not assigned yet                                                                                                                                                             |
+| `.4`–`.49`    | Free; static addresses only, nothing here takes a lease                                                                                                                                                                                                                                                       |
+| `.50`–`.199`  | DHCP, the same range as in every other VLAN. The Talos nodes take their address here and keep it by a UniFi "Fixed IP" reservation on the MAC. The scope must stay on: a VM the Omni provider creates finds Omni through its first lease; a rebuilt VM (new MAC) pulls a new lease and gets a new reservation |
+| `.200`–`.254` | One `CiliumLoadBalancerIPPool` without service selector, so every LoadBalancer Service draws from it; the prod overlays pin each Service's IP (`io.cilium/lb-ipam-ips`)                                                                                                                                       |
+
+The machine classes carry `vlan: 10`, so the Proxmox provider tags every VM it creates into the VLAN.
+
 ## Swapping the infra provider
 
 The interesting bit: **this layer has one line of Proxmox-specific config**. In every machine class, `spec.autoprovision.providerid: proxmox-infra` pins it. Change that (and the `providerdata` block) and you're on a different hypervisor without touching anything else.
