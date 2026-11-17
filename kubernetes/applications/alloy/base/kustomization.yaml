@@ -16,6 +16,16 @@ helmCharts:
     namespace: alloy
     includeCRDs: true
 
+patches:
+  # Add the Cilium BGP label to the chart-rendered receiver Service (chart doesn't support custom service labels)
+  - target:
+      kind: Service
+      name: alloy-alloy-receiver
+    patch: |-
+      - op: add
+        path: /metadata/labels/bgp.cilium.io~1advertise-service
+        value: default
+
 labels:
   - includeSelectors: false
     pairs:

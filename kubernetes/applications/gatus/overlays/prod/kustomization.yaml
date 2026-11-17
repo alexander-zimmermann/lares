@@ -78,7 +78,7 @@ patches:
         value: LoadBalancer
       - op: add
         path: /metadata/annotations/io.cilium~1lb-ipam-ips
-        value: "192.168.10.35"
+        value: "192.168.10.235"
 
   # PostgreSQL Cluster resources
   - target:
