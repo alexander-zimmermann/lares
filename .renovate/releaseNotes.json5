@@ -64,6 +64,12 @@
       "extractVersion": "^(?:fritzexporter-v)?(?<version>\\d.+)$"
     },
     {
+      "description": "kubelet: the source label points at the image build, Kubernetes releases live in kubernetes/kubernetes",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/siderolabs/kubelet"],
+      "sourceUrl": "https://github.com/kubernetes/kubernetes"
+    },
+    {
       "description": "rustfs/rc: no source label",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["rustfs/rc"],
