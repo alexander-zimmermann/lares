@@ -36,7 +36,7 @@ images:
     newTag: 0.46.0
   - name: unifi-protect-mcp
     newName: ghcr.io/sirkirby/unifi-protect-mcp
-    newTag: 0.13.1
+    newTag: 0.13.2
 
 labels:
   - includeSelectors: false
