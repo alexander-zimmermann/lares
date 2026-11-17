@@ -12,6 +12,12 @@ on:
   issues:
     types:
       - edited
+  # The PR's rebase checkbox; base context, so the workflow and checkout stay main's and the PR's code never runs.
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - edited
   workflow_dispatch:
     inputs:
       dryRun:
@@ -33,6 +39,8 @@ permissions:
 jobs:
   renovate:
     name: Renovate
+    # Only a person's edit of a Renovate PR; Renovate's own PR edits would each start another run.
+    if: github.event_name != 'pull_request_target' || (startsWith(github.head_ref, 'renovate/') && github.event.sender.type != 'Bot')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
