@@ -48,7 +48,7 @@ kind: Workers
 name: data-plane
 machineClass:
   name: data-plane-prod
-  size: 3
+  size: 2
 
 systemExtensions:
   - siderolabs/qemu-guest-agent
