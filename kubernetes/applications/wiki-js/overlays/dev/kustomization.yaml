@@ -109,7 +109,7 @@ patches:
     patch: |-
       - op: test
         path: /spec/instances
-        value: 1
+        value: 2
       - op: add
         path: /spec/resources
         value:
