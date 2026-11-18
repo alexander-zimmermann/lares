@@ -6,7 +6,7 @@ metadata:
   namespace: wiki-js
 
 spec:
-  instances: 1
+  instances: 2
 
   # Registry authentication for dhi.io images
   imagePullSecrets:

@@ -109,10 +109,6 @@ patches:
     patch: |-
       - op: test
         path: /spec/instances
-        value: 1
-      # Second instance while the worker holding the only one is replaced
-      - op: replace
-        path: /spec/instances
         value: 2
       - op: add
         path: /spec/resources
