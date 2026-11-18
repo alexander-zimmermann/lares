@@ -15,6 +15,10 @@ directRoutingSkipUnreachable: true
 # Efficiency: complete replacement of legacy kube-proxy with BPF logic
 kubeProxyReplacement: true
 
+# Pods use the tc LB: socket-LB leaves connected UDP sockets on deleted backends once reverse_sk is full
+socketLB:
+  hostNamespaceOnly: true
+
 # Performance: use native BPF-based masquerading instead of iptables
 bpf:
   masquerade: true
