@@ -7,7 +7,29 @@ machine:
   nodeLabels:
     node-role.kubernetes.io/worker: ""
 
+  ## Egress IPs .2/.3 as /32 on top of the DHCP lease, bound to the gateway workers' MACs (docs/adr/0004)
+  network:
+    interfaces:
+      # talos-dp-01
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:f2:2f:f1"
+        dhcp: true
+        addresses:
+          - 192.168.10.2/32
+      # talos-dp-02
+      - deviceSelector:
+          hardwareAddr: "bc:24:11:af:85:ad"
+        dhcp: true
+        addresses:
+          - 192.168.10.3/32
+
   kubelet:
     ## Configure the kubelet to look for an external cloud provider (Talos CCM)
     extraArgs:
       cloud-provider: external
+    ## Keep the node IP on the DHCP lease, never an egress IP; negative matches come last
+    nodeIP:
+      validSubnets:
+        - 192.168.10.0/24
+        - "!192.168.10.2/32"
+        - "!192.168.10.3/32"
