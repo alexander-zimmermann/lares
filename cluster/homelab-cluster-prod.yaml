@@ -25,7 +25,7 @@ patches:
 kind: ControlPlane
 machineClass:
   name: control-plane-prod
-  size: 3
+  size: 4
 
 systemExtensions:
   - siderolabs/qemu-guest-agent
