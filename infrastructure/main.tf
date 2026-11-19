@@ -435,6 +435,7 @@ module "pve_node_network_bridge" {
   ports      = each.value.ports
   vlan_aware = each.value.vlan_aware
   vids       = try(each.value.vids, null)
+  pvid       = try(each.value.pvid, null)
 
   ## Network configuration
   address  = try(each.value.address, null)

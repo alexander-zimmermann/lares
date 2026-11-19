@@ -9,11 +9,13 @@
 pve_node_network:
   pve-1:
     bridges:
-      ## Trunk. Guests pick their VLAN by vNIC tag, untagged ones stay in VLAN 1.
+      ## Trunk. Guests pick their VLAN by vNIC tag; an untagged guest stays inside the host in VLAN 1.
       vmbr0:
         ports: ["enp128s31f6"]
         vlan_aware: true
         vids: "2-4094"
+        ## Native VLAN of the uplink and of AMT on the same NIC; apply together with the switch port's native VLAN
+        pvid: 5
         autostart: true
         reload: false
         comment: "VLAN trunk, host and guests"

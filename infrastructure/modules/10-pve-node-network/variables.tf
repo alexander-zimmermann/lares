@@ -418,3 +418,21 @@ variable "vlan_aware" {
   type        = bool
   default     = false
 }
+
+variable "pvid" {
+  description = <<EOT
+    Native VLAN of the bridge's ports (`bridge-pvid` in each port's stanza):
+    untagged frames arriving on a port join this VLAN, and its frames leave the
+    port untagged. Requires `vlan_aware = true`. The Proxmox API has no field
+    for it, so the line goes in over SSH and is always staged in
+    `/etc/network/interfaces.new`; it takes effect with Apply Configuration, as
+    with `reload = false`. Setting it back to `null` leaves the line in place.
+  EOT
+  type        = number
+  default     = null
+
+  validation {
+    condition     = var.pvid == null || (var.pvid >= 1 && var.pvid <= 4094)
+    error_message = "pvid must be between 1 and 4094 (IEEE 802.1Q standard range) or null."
+  }
+}
