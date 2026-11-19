@@ -12,7 +12,5 @@ spec:
     - afi: ipv4
       safi: unicast
       advertisements:
-        matchExpressions:
-          - key: bgp.cilium.io/advertise
-            operator: In
-            values: [loadbalancer-services, pod-cidrs]
+        matchLabels:
+          bgp.cilium.io/advertise: loadbalancer-services
