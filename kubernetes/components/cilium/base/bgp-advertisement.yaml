@@ -15,17 +15,3 @@ spec:
       selector:
         matchLabels:
           bgp.cilium.io/advertise-service: default
-
----
-apiVersion: cilium.io/v2
-kind: CiliumBGPAdvertisement
-
-metadata:
-  name: pod-cidrs
-  labels:
-    bgp.cilium.io/advertise: pod-cidrs
-
-spec:
-  advertisements:
-    # Lets the gateway route pods between nodes in different subnets
-    - advertisementType: PodCIDR

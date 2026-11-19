@@ -9,8 +9,6 @@ routingMode: native
 
 # Performance: optimize routing between nodes sharing a common L2 segment
 autoDirectNodeRoutes: true
-# Nodes in another subnet are reached through the gateway, which learns PodCIDRs over BGP
-directRoutingSkipUnreachable: true
 
 # Efficiency: complete replacement of legacy kube-proxy with BPF logic
 kubeProxyReplacement: true
