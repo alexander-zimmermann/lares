@@ -56,6 +56,7 @@ spec:
       max_wal_size: PLACEHOLDER
       min_wal_size: "80MB"
       wal_keep_size: "64MB"
+      max_slot_wal_keep_size: PLACEHOLDER
       wal_compression: "on"
 
   plugins:
