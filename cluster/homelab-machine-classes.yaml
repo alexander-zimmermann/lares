@@ -9,7 +9,8 @@ spec:
   matchlabels: []
   autoprovision:
     providerid: proxmox-infra
-    kernelargs: []
+    # Drop the nocloud default net.ifnames=0 and request slot names explicitly (ens18, ens19)
+    kernelargs: ["-net.ifnames=0", "net.ifnames=1"]
     metavalues: []
     providerdata: |
       # Resource allocation
@@ -45,7 +46,8 @@ spec:
   matchlabels: []
   autoprovision:
     providerid: proxmox-infra
-    kernelargs: []
+    # Drop the nocloud default net.ifnames=0 and request slot names explicitly (ens18, ens19)
+    kernelargs: ["-net.ifnames=0", "net.ifnames=1"]
     metavalues: []
     providerdata: |
       # Resource allocation
