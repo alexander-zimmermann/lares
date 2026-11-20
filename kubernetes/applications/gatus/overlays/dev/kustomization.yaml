@@ -51,7 +51,9 @@ replacements:
           name: gatus-db
         fieldPaths:
           - spec.walStorage.size
-  - sourceValue: 256MB
+
+  # max_wal_size — 50% of WAL PVC, leaves room for max_slot_wal_keep_size
+  - sourceValue: 128MB
     targets:
       - select:
           kind: Cluster
