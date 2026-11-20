@@ -24,6 +24,9 @@ spec:
 
   template:
     spec:
+      # Registry authentication for dhi.io images (the operator's bootstrap-controller)
+      imagePullSecrets:
+        - name: dhi-registry-secret
       containers:
         - name: pgbouncer
           resources:
