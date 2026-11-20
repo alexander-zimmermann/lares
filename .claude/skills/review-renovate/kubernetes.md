@@ -27,4 +27,4 @@ Done when every changed resource of the whole rendered diff is checked.
 
 ## After merge
 
-Argo CD syncs on merge: read After merge off the rendered diff.
+Argo CD syncs on merge: read After merge off the rendered diff. A cnpg operator bump also rolls every CNPG Cluster, one primary switchover each; `authentik-server` restarts once during its switchover, so Authentik is down for about a minute.
