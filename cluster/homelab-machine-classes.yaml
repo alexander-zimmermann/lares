@@ -89,6 +89,11 @@ spec:
       network_bridge: vmbr0
       vlan: 10
 
+      # Storage NIC: VLAN 8 "Storage", NFS only
+      additional_nics:
+        - bridge: vmbr0
+          vlan: 8
+
 ---
 ###############################################################################
 ## Development machine classes
