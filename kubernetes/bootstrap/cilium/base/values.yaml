@@ -13,6 +13,9 @@ autoDirectNodeRoutes: true
 # Efficiency: complete replacement of legacy kube-proxy with BPF logic
 kubeProxyReplacement: true
 
+# Pin the datapath to the primary NIC (eth0 legacy, ens18 slot name) so the storage NIC never joins it
+devices: [eth0, ens18, siderolink]
+
 # Pods use the tc LB: socket-LB leaves connected UDP sockets on deleted backends once reverse_sk is full
 socketLB:
   hostNamespaceOnly: true
