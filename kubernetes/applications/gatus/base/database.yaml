@@ -8,6 +8,10 @@ metadata:
 spec:
   instances: 2
 
+  # Registry authentication for dhi.io images (the operator's bootstrap-controller)
+  imagePullSecrets:
+    - name: dhi-registry-secret
+
   # PostgreSQL version and configuration
   imageName: ghcr.io/cloudnative-pg/postgresql:18.6
 
@@ -46,6 +50,7 @@ spec:
       max_wal_size: PLACEHOLDER
       min_wal_size: "80MB"
       wal_keep_size: "128MB"
+      max_slot_wal_keep_size: PLACEHOLDER
       wal_compression: "on"
 
   # No Barman backup: Gatus data is re-generatable (long-term SLO history lives in Prometheus)
