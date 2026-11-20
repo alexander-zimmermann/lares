@@ -228,14 +228,23 @@ replacements:
         fieldPaths:
           - spec.walStorage.size
 
-  # Inject safe max_wal_size based on WAL PVC (80% rule)
-  - sourceValue: "400MB"
+  # max_wal_size — 60% of WAL PVC, leaves room for max_slot_wal_keep_size
+  - sourceValue: "300MB"
     targets:
       - select:
           kind: Cluster
           name: authentik-db
         fieldPaths:
           - spec.postgresql.parameters.max_wal_size
+
+  # max_slot_wal_keep_size — WAL a missing replica may hold; with max_wal_size under the 512Mi PVC
+  - sourceValue: "128MB"
+    targets:
+      - select:
+          kind: Cluster
+          name: authentik-db
+        fieldPaths:
+          - spec.postgresql.parameters.max_slot_wal_keep_size
 
   # Inject WAL archive server name to be unique per environment
   - sourceValue: authentik-db-dev

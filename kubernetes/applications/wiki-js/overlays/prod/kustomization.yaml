@@ -57,14 +57,23 @@ replacements:
         fieldPaths:
           - spec.walStorage.size
 
-  # Inject safe max_wal_size based on WAL PVC (80% rule)
-  - sourceValue: "200MB"
+  # max_wal_size — 50% of WAL PVC, leaves room for max_slot_wal_keep_size
+  - sourceValue: "128MB"
     targets:
       - select:
           kind: Cluster
           name: wiki-js-db
         fieldPaths:
           - spec.postgresql.parameters.max_wal_size
+
+  # max_slot_wal_keep_size — WAL a missing replica may hold; with max_wal_size under the 256Mi PVC
+  - sourceValue: "64MB"
+    targets:
+      - select:
+          kind: Cluster
+          name: wiki-js-db
+        fieldPaths:
+          - spec.postgresql.parameters.max_slot_wal_keep_size
 
   # Inject WAL archive server name to be unique per environment
   - sourceValue: wiki-js-db-prod
