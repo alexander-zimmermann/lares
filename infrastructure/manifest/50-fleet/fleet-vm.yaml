@@ -45,8 +45,10 @@ fleet_vm:
     wait_for_agent: false
     ## IoT LAN
     vlan_tag: 6
-    ## Storage NIC: VLAN 8 "Storage", SMB to the UNAS
+    ## Storage NIC: VLAN 8 "Storage", SMB to the UNAS. Windows keeps the DHCP
+    ## router despite option 121, so the NIC gets a high IPv4 metric
     additional_nics:
       - vlan_tag: 8
+        ipv4_metric: 9000
     usb_devices:
       - mapping: "knx-license"
