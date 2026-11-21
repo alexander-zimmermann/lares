@@ -49,12 +49,12 @@
           key: "{{HOMEPAGE_VAR_UNIFI_KEY}}"
     - Unifi Drive:
         icon: unifi.png
-        href: https://unas-pro-4.zimmermann.eu.com
-        siteMonitor: https://unas-pro-4.zimmermann.eu.com
+        href: https://unas-pro.zimmermann.eu.com
+        siteMonitor: https://unas-pro.zimmermann.eu.com
         weight: 2
         widget:
           type: unifi_drive
-          url: https://unas-pro-4.zimmermann.eu.com
+          url: https://unas-pro.zimmermann.eu.com
           username: "{{HOMEPAGE_VAR_UNIFI_DRIVE_USERNAME}}"
           password: "{{HOMEPAGE_VAR_UNIFI_DRIVE_PASSWORD}}"
     - FritzBox:
