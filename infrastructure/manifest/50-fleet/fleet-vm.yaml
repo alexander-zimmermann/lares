@@ -45,5 +45,8 @@ fleet_vm:
     wait_for_agent: false
     ## IoT LAN
     vlan_tag: 6
+    ## Storage NIC: VLAN 8 "Storage", SMB to the UNAS
+    additional_nics:
+      - vlan_tag: 8
     usb_devices:
       - mapping: "knx-license"
