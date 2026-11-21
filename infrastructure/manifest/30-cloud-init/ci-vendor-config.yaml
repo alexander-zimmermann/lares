@@ -67,6 +67,8 @@ ci_vendor_config:
       - ["mkdir", "-p", "/mnt/backup"]
 
     runcmd:
+      ## Apply the networkd drop-in from write_files
+      - ["networkctl", "reload"]
       ## Set locale (after locales package is installed); omni-bootstrap.conf sets LC_ALL=de_DE.UTF-8
       - ["locale-gen", "de_DE.UTF-8"]
       - ["localectl", "set-locale", "LANG=de_DE.UTF-8"]
@@ -91,6 +93,10 @@ ci_vendor_config:
       - ["systemctl", "enable", "--now", "omni-rotate-ip-key.timer"]
 
     write_files:
+      ## IPv6 default route by RA preference, so the storage NIC never shares it (netplan sets one metric for all)
+      - path: /etc/systemd/network/10-netplan-match-all.network.d/ra-route-metric.conf
+        template_file: templates/30-cloud-init/common/ra-route-metric.conf.tftpl
+
       ## Omni configuration
       - path: /etc/omni/omni-bootstrap.conf
         template_file: templates/30-cloud-init/cluster-mgmt/omni-bootstrap.conf.tftpl
@@ -264,6 +270,8 @@ ci_vendor_config:
       - ["mkdir", "-p", "/mnt/datastore-secondary"]
 
     runcmd:
+      ## Apply the networkd drop-in from write_files
+      - ["networkctl", "reload"]
       ## Set locale (after locales package is installed)
       - ["locale-gen", "de_DE.UTF-8"]
       - ["localectl", "set-locale", "LANG=de_DE.UTF-8"]
@@ -282,6 +290,10 @@ ci_vendor_config:
       - ["systemctl", "enable", "--now", "qemu-guest-agent"]
 
     write_files:
+      ## IPv6 default route by RA preference, so the storage NIC never shares it (netplan sets one metric for all)
+      - path: /etc/systemd/network/10-netplan-match-all.network.d/ra-route-metric.conf
+        template_file: templates/30-cloud-init/common/ra-route-metric.conf.tftpl
+
       ## Root password for chpasswd (see runcmd)
       - path: /run/pbs-root-password
         template_file: templates/30-cloud-init/proxmox-backup-server/root-password.tftpl
