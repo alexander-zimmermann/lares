@@ -22,6 +22,12 @@ machine:
         dhcp: true
         addresses:
           - 192.168.10.3/32
+      # Storage NIC (net1) in VLAN 8: address only, the DHCP there sends no default route
+      - deviceSelector:
+          busPath: "0000:06:13.0"
+        dhcp: true
+        dhcpOptions:
+          routeMetric: 2048
 
   kubelet:
     ## Configure the kubelet to look for an external cloud provider (Talos CCM)
