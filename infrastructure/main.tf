@@ -717,10 +717,11 @@ module "fleet_vm" {
   ## USB device passthrough
   usb_devices = try(each.value.usb_devices, [])
 
-  ## Network configuration
-  network_interfaces = [{
-    vlan_tag = each.value.vlan_tag
-  }]
+  ## Network configuration: primary NIC, then any additional NICs from the manifest
+  network_interfaces = concat(
+    [{ vlan_tag = each.value.vlan_tag }],
+    [for nic in each.value.additional_nics : { vlan_tag = try(nic.vlan_tag, null) }]
+  )
 }
 
 module "fleet_lxc" {

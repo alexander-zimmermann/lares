@@ -5,6 +5,9 @@ fleet_vm:
     vm_id: 1002
     ## Infrastructure
     vlan_tag: 5
+    ## Storage NIC: VLAN 8 "Storage", NFS to the UNAS
+    additional_nics:
+      - vlan_tag: 8
     disks:
       - disk_interface: scsi1
         disk_size: 16
@@ -17,6 +20,9 @@ fleet_vm:
     vm_id: 1003
     ## Infrastructure
     vlan_tag: 5
+    ## Storage NIC: VLAN 8 "Storage", NFS to the UNAS
+    additional_nics:
+      - vlan_tag: 8
     disks:
       - disk_interface: scsi1
         disk_size: 256
