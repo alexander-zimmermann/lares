@@ -49,7 +49,7 @@ kind: Workers
 name: data-plane
 machineClass:
   name: data-plane-prod
-  size: 2
+  size: 3
 
 ## Update Strategies: critical for storage nodes: Ensure only one node reboots at a time
 updateStrategy:
