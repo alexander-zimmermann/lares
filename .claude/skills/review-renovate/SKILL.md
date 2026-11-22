@@ -78,7 +78,7 @@ The workflow puts a `## Claude Review` heading above the review. Keep only the s
 - **Group PR:** the box names the group; below it, one `#### <component>: <old> → <new>` block per component with the sections above.
 - **Our files:** link the line, `<link base><repo path>#L<LINE>`, and show the path from the app's or module's folder (`gitops-controller/base/values.yaml:51`), else from the repo root.
 - **Short bullets:** at most two sentences each, one under Not applicable.
-- **Worth adopting:** only a change that helps lares as it runs today, shown by an upstream line (PR description, doc or test), and that lares has to switch on at the line the entry names. A gain that needs no change in lares goes in the box's last line; a feature lares might use some day goes under Not applicable.
+- **Worth adopting:** only a change that helps lares as it runs today, shown by an upstream line (PR description, doc or test), and that lares has to switch on at the line the entry names. A gain that needs no change in lares goes in the box's last line, such as a new argument of a tool lares already allows; a feature lares might use some day goes under Not applicable.
 - **Fix:** name one only when the new key or value is confirmed in the upstream diff or in the upstream file at the new tag. An unconfirmed fix goes under After merge as something to check: a wrong fix that gets applied does more harm than none.
 - **Known issues:** only issues the new version has and the old one did not, and that could hit lares. A bug the old version already has goes under Not applicable, with the version it dates back to; a search without such a hit goes under Sources.
 - **After merge:** a rollout to the new version is worth a line only for a high-blast-radius component.

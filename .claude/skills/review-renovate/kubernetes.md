@@ -20,6 +20,7 @@ Done when every key we set is accounted for and every moved default image is nam
 
 - A label value or resource name can change under an unchanged key, so grep for what selects on or refers to the value: monitor and network-policy selectors, PodDisruptionBudgets, PromQL in rules, dashboards and Gatus endpoints, `<name>.<namespace>.svc` addresses.
 - Check a new minimum version of Talos, Kubernetes or the kernel against what the nodes run, at `https://kromgo.zimmermann.sh/talos_version` and `https://kromgo.zimmermann.sh/kubernetes_version`. `cluster/homelab-cluster-prod.yaml` holds the target, and the nodes run behind it until the next template sync.
+- An MCP server's tools are allowed by name in its route in `agentgateway/base/config/routes.values.yaml`, in `lares-agent-trigger/base/config/use-cases.yaml` and in `hermes/base/profiles/*/config.yaml`. The agent takes the arguments from the server's schema, so check renamed and removed tools against these lists; arguments are set nowhere in lares.
 - Config kept on an app's volume (Node-RED flows, Open WebUI and Wiki.js settings) is out of reach of a repo search: a change that could hit it goes under Unknowns.
 - The rendered diff shows what the bump changes in the cluster: check each changed resource there against the findings. When the one in `pr-context.md` is cut off, read `rendered.diff`.
 
