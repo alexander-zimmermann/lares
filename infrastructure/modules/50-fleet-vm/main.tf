@@ -186,9 +186,11 @@ locals {
   }
 
   ## PowerShell per NIC that sets an IPv4 metric, keyed by index; the adapter is found by MAC
+  ## Without a console PowerShell writes progress records as CLIXML to stderr, so they are off
   nic_ipv4_metric_scripts = {
     for idx, nic in var.network_interfaces : idx => <<-POWERSHELL
       $ErrorActionPreference = 'Stop'
+      $ProgressPreference = 'SilentlyContinue'
       $nic = Get-NetAdapter | Where-Object MacAddress -eq '${local.nic_windows_macs[idx]}'
       Set-NetIPInterface -InterfaceIndex $nic.ifIndex -AddressFamily IPv4 -InterfaceMetric ${nic.ipv4_metric}
     POWERSHELL
