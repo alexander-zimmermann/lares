@@ -173,3 +173,48 @@ resource "proxmox_virtual_environment_vm" "vm" {
     ignore_changes = [initialization, description]
   }
 }
+
+
+###############################################################################
+## Windows NIC metrics through the guest agent
+###############################################################################
+## bpg can't run commands in a guest (bpg/terraform-provider-proxmox#1576), so qm guest exec runs over SSH
+locals {
+  ## Windows shows MAC addresses upper case with dashes
+  nic_windows_macs = {
+    for idx, mac in local.generated_mac_addresses : idx => upper(replace(mac, ":", "-"))
+  }
+
+  ## PowerShell per NIC that sets an IPv4 metric, keyed by index; the adapter is found by MAC
+  nic_ipv4_metric_scripts = {
+    for idx, nic in var.network_interfaces : idx => <<-POWERSHELL
+      $ErrorActionPreference = 'Stop'
+      $nic = Get-NetAdapter | Where-Object MacAddress -eq '${local.nic_windows_macs[idx]}'
+      Set-NetIPInterface -InterfaceIndex $nic.ifIndex -AddressFamily IPv4 -InterfaceMetric ${nic.ipv4_metric}
+    POWERSHELL
+    if nic.ipv4_metric != null
+  }
+}
+
+resource "terraform_data" "nic_ipv4_metric" {
+  for_each = local.nic_ipv4_metric_scripts
+
+  ## Re-run for a new VM or a changed script (MAC, metric)
+  triggers_replace = [proxmox_virtual_environment_vm.vm.id, sha256(each.value)]
+
+  connection {
+    type        = "ssh"
+    host        = var.ssh_hostname
+    user        = var.ssh_username
+    port        = var.ssh_port
+    private_key = file(pathexpand(var.ssh_private_key))
+    timeout     = "60s"
+  }
+
+  ## -EncodedCommand keeps the script clear of shell quoting; qm always exits 0, so python3 returns the guest exit code
+  provisioner "remote-exec" {
+    inline = [
+      "sudo -n qm guest exec ${var.vm_id} --timeout 60 -- powershell.exe -NoProfile -NonInteractive -EncodedCommand ${textencodebase64(each.value, "UTF-16LE")} | python3 -c 'import json,sys; r=json.load(sys.stdin); sys.stderr.write(r.get(\"err-data\", \"\")); sys.exit(r.get(\"exitcode\", 1))'"
+    ]
+  }
+}

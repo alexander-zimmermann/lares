@@ -720,8 +720,16 @@ module "fleet_vm" {
   ## Network configuration: primary NIC, then any additional NICs from the manifest
   network_interfaces = concat(
     [{ vlan_tag = each.value.vlan_tag }],
-    [for nic in each.value.additional_nics : { vlan_tag = try(nic.vlan_tag, null) }]
+    [for nic in each.value.additional_nics : {
+      vlan_tag    = try(nic.vlan_tag, null)
+      ipv4_metric = try(nic.ipv4_metric, null)
+    }]
   )
+
+  ## SSH to the node, for guest agent commands (ipv4_metric)
+  ssh_hostname    = local.pve_cluster.nodes[each.value.target_node].address
+  ssh_username    = local.pve_cluster.ssh.username
+  ssh_private_key = local.pve_cluster.ssh.private_key_path
 }
 
 module "fleet_lxc" {

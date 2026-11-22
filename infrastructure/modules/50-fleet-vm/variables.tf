@@ -472,6 +472,10 @@ variable "network_interfaces" {
                       If null, a MAC is auto-generated using the format:
                       "02:01:XX:XX:XX:YY" where XX:XX:XX is the VM_ID (3 bytes)
                       and YY is the interface index (0, 1, 2, ...).
+      - ipv4_metric : Optional IPv4 interface metric, set inside a Windows guest
+                      through the QEMU guest agent (needs the ssh_* variables).
+                      Windows keeps the DHCP router option even when option 121
+                      is present, so a secondary NIC needs a high metric.
 
     Use this variable to add extra network interfaces for management, storage,
     or application needs beyond the base NIC provided by the template.
@@ -482,6 +486,7 @@ variable "network_interfaces" {
     vnic_bridge = optional(string, "vmbr0")
     vlan_tag    = optional(number, null)
     mac_address = optional(string, null)
+    ipv4_metric = optional(number, null)
   }))
 
   default = [{
@@ -662,5 +667,50 @@ variable "shutdown_delay" {
   validation {
     condition     = var.shutdown_delay == null || var.shutdown_delay >= 0
     error_message = "shutdown_delay must be a non-negative number of seconds."
+  }
+}
+
+
+###############################################################################
+## SSH connection
+###############################################################################
+variable "ssh_hostname" {
+  description = <<EOT
+    Hostname or IP address of the Proxmox node used for SSH access.
+    This must be reachable from the system executing the configuration.
+  EOT
+  type        = string
+  default     = null
+}
+
+variable "ssh_username" {
+  description = <<EOT
+    SSH username with root privileges on the Proxmox node.
+    Defaults to `root`.
+  EOT
+  type        = string
+  default     = "root"
+}
+
+variable "ssh_private_key" {
+  description = <<EOT
+    Path to the private key used for SSH authentication to the Proxmox node.
+    This key must allow access to the specified user and host. Sensitive value.
+  EOT
+  type        = string
+  default     = null
+  sensitive   = true
+}
+
+variable "ssh_port" {
+  description = <<EOT
+    SSH port used to connect to the Proxmox node. Defaults to `22`.
+  EOT
+  type        = number
+  default     = 22
+
+  validation {
+    condition     = var.ssh_port >= 1 && var.ssh_port <= 65535
+    error_message = "ssh_port must be a valid port number between 1 and 65535."
   }
 }
