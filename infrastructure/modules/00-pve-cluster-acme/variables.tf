@@ -184,7 +184,7 @@ variable "ssh_username" {
 
 variable "ssh_private_key" {
   description = <<EOT
-    PEM-encoded private key used for SSH authentication to the Proxmox node.
+    Path to the private key used for SSH authentication to the Proxmox node.
     This key must have access to the specified user and host. Sensitive value.
   EOT
   type        = string
