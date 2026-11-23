@@ -17,6 +17,8 @@ spec:
 
   # Rolling update process is managed by Kubernetes
   primaryUpdateStrategy: unsupervised
+  # Promote the replica that already runs the new image; a restart waits out smartShutdownTimeout first
+  primaryUpdateMethod: switchover
 
   # Storage configuration
   storage:
