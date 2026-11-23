@@ -12,13 +12,13 @@ machine:
     interfaces:
       # talos-dp-01
       - deviceSelector:
-          hardwareAddr: "bc:24:11:f2:2f:f1"
+          hardwareAddr: "bc:24:11:93:38:91"
         dhcp: true
         addresses:
           - 192.168.10.2/32
       # talos-dp-02
       - deviceSelector:
-          hardwareAddr: "bc:24:11:af:85:ad"
+          hardwareAddr: "bc:24:11:30:29:2c"
         dhcp: true
         addresses:
           - 192.168.10.3/32
