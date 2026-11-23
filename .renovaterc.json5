@@ -46,6 +46,13 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb"],
       "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)-ts(?<patch>\\d+)\\.(?<build>\\d+)-tk$"
+    },
+    {
+      "description": "A Postgres major is an offline pg_upgrade per cluster, so it waits in the dashboard instead of opening a PR",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/cloudnative-pg/postgresql", "ghcr.io/alexander-zimmermann/cnpg-postgres-timescaledb"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
     }
   ]
 }
