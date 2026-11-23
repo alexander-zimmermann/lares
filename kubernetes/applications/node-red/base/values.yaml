@@ -2,9 +2,10 @@ applicationName: node-red
 
 deployment:
   enabled: true
-  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  # Caged by agent-cage, reaches the KNX IP interface in the IoT LAN with an egress IP (both in components/cilium)
   podLabels:
     lares.agent-cage: "true"
+    lares.egress-iot: "true"
 
   replicas: 1
   # Node-RED uses local state on a PVC; avoid concurrent writers.

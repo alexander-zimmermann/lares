@@ -7,9 +7,10 @@ deployment:
     tag: 1.36.0
     pullPolicy: IfNotPresent
 
-  # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
+  # Caged by agent-cage, reaches the PBS API in Infrastructure with an egress IP (both in components/cilium)
   podLabels:
     lares.agent-cage: "true"
+    lares.egress-infra: "true"
 
   replicas: 1
   strategy:

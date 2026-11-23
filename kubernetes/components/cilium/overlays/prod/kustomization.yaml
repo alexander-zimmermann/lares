@@ -47,6 +47,28 @@ replacements:
         fieldPaths:
           - spec.blocks.0.stop
 
+  # Inject the egress IPs: `.2` and `.3` of VLAN 10 on the two gateway workers
+  - sourceValue: 192.168.10.2
+    targets:
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        fieldPaths:
+          - spec.egressGateway.egressIP
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        reject:
+          - name: egress-traefik
+        fieldPaths:
+          - spec.egressGateways.0.egressIP
+  - sourceValue: 192.168.10.3
+    targets:
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        reject:
+          - name: egress-traefik
+        fieldPaths:
+          - spec.egressGateways.1.egressIP
+
   # Authentik host the caged agents and Open WebUI may call for OIDC and JWKS
   - sourceValue: auth.zimmermann.sh
     targets:

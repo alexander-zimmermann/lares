@@ -261,9 +261,10 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Egress IP** — one of the two addresses, `.2` and `.3` in the
   Kubernetes zone, with which cluster traffic may cross into another zone.
   A pod leaves with one only if it carries the matching egress label
-  (`egress-infra`, `egress-iot`, `egress-outdoor`) and heads for that
-  label's zone; everything else leaves with a node IP and is dropped at
-  the border.
+  (`lares.egress-infra`, `lares.egress-iot`, `lares.egress-outdoor`)
+  and heads for that label's zone; Traefik alone reaches the IoT LAN
+  through a policy of its own. Everything else leaves with a node IP
+  and is dropped at the border.
 - **Dual-homed** — an app reachable two ways: from the LAN directly on its
   own LB IP under `*.zimmermann.eu.com`, and through Cloudflare and
   Traefik under `*.zimmermann.sh`. Intended, not an artefact.

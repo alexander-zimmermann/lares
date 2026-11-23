@@ -1,23 +1,113 @@
 apiVersion: cilium.io/v2
 kind: CiliumEgressGatewayPolicy
 
+# Pods labelled lares.egress-<zone> reach that zone with .2 or .3, every other pod keeps the node IP (ADR 0004)
 metadata:
-  name: dali-stable-egress
+  name: egress-infra
 
 spec:
-  # MDT DALI gateways bind their web session to the client source IP; with multiple
-  # traefik replicas the SNAT source flips between nodes and the device rejects
-  # requests mid-session. Route all traefik egress to the gateways via one node
-  # (lexically first worker; survives node renames, no hostname pinning).
+  selectors:
+    - podSelector:
+        matchLabels:
+          lares.egress-infra: "true"
+  destinationCIDRs:
+    - 192.168.5.0/24
+  # Required by the CRD, ignored while egressGateways has entries
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        kubernetes.io/hostname: talos-dp-01
+    egressIP: PLACEHOLDER
+  # Each overlay injects .2 and .3 of its /24, bound to these workers' MACs (cluster/patches); each pod sticks to one
+  egressGateways:
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-01
+      egressIP: PLACEHOLDER
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-02
+      egressIP: PLACEHOLDER
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+
+metadata:
+  name: egress-iot
+
+spec:
+  selectors:
+    - podSelector:
+        matchLabels:
+          lares.egress-iot: "true"
+  destinationCIDRs:
+    - 192.168.6.0/24
+    - 192.168.7.0/24
+  # Required by the CRD, ignored while egressGateways has entries
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        kubernetes.io/hostname: talos-dp-01
+    egressIP: PLACEHOLDER
+  egressGateways:
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-01
+      egressIP: PLACEHOLDER
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-02
+      egressIP: PLACEHOLDER
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+
+metadata:
+  name: egress-outdoor
+
+spec:
+  selectors:
+    - podSelector:
+        matchLabels:
+          lares.egress-outdoor: "true"
+  destinationCIDRs:
+    - 192.168.3.0/24
+  # Required by the CRD, ignored while egressGateways has entries
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        kubernetes.io/hostname: talos-dp-01
+    egressIP: PLACEHOLDER
+  egressGateways:
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-01
+      egressIP: PLACEHOLDER
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-02
+      egressIP: PLACEHOLDER
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+
+metadata:
+  name: egress-traefik
+
+spec:
+  # DALI gateways bind a session to its source IP, so both Traefik replicas take .2 into the IoT LAN, without failover
   selectors:
     - podSelector:
         matchLabels:
           io.kubernetes.pod.namespace: ingress-controller
           app.kubernetes.io/name: traefik
-  # The gateways take DHCP-assigned fixed addresses in the IoT LAN, so match the zone
   destinationCIDRs:
     - 192.168.6.0/24
   egressGateway:
     nodeSelector:
       matchLabels:
-        node-role.kubernetes.io/worker: ""
+        kubernetes.io/hostname: talos-dp-01
+    egressIP: PLACEHOLDER

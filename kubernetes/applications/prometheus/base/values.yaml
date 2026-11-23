@@ -225,6 +225,11 @@ prometheus:
       bgp.cilium.io/advertise-service: default
 
   prometheusSpec:
+    # Reaches smartctl_exporter on pve-1 in Infrastructure with an egress IP (egress gateway policies in components/cilium)
+    podMetadata:
+      labels:
+        lares.egress-infra: "true"
+
     # Required for remote_write receiver (e.g. for agent-based ingestion)
     enableRemoteWriteReceiver: true
 

@@ -2,6 +2,9 @@ applicationName: pbs-exporter
 
 deployment:
   enabled: true
+  # Reaches Infrastructure with an egress IP (egress gateway policies in components/cilium)
+  podLabels:
+    lares.egress-infra: "true"
   image:
     repository: ghcr.io/natrontech/pbs-exporter
     tag: v0.10.0
