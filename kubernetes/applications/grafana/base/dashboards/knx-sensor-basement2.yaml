@@ -9,7 +9,7 @@ spec:
   folder: "Smart Home"
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   json: |
     {
       "annotations": {

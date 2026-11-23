@@ -29,7 +29,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: alloy
+      lares.app: alloy
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "8"

@@ -4,7 +4,7 @@ deployment:
   enabled: true
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
-    role: agent
+    lares.agent-cage: "true"
 
   replicas: 1
   # Node-RED uses local state on a PVC; avoid concurrent writers.

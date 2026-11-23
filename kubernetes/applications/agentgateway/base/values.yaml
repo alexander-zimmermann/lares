@@ -11,7 +11,7 @@ fullnameOverride: agentgateway
 
 # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
 podLabels:
-  role: agent
+  lares.agent-cage: "true"
 
 # The UI's sign-in secrets are read at start: each carries reloader.stakater.com/match,
 # so a change rolls the gateway. The routes' keys are reloaded by name, through the

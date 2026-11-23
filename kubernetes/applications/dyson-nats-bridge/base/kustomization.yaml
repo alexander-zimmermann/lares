@@ -26,7 +26,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: dyson-nats-bridge
+      lares.app: dyson-nats-bridge
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

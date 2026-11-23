@@ -7,7 +7,7 @@ deployment:
     pullPolicy: IfNotPresent
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
-    role: agent
+    lares.agent-cage: "true"
   # A second replica would fetch the same event twice; the dedupe would catch
   # it, but the durable consumer is meant to have one reader.
   replicas: 1

@@ -24,7 +24,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: timescaledb
+      lares.app: timescaledb
 
 # Wave 3 = apps that consume the CNPG Cluster CR (operator wave 1, plugin wave 2).
 commonAnnotations:

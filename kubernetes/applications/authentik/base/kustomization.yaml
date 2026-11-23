@@ -77,7 +77,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: authentik
+      lares.app: authentik
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "3"

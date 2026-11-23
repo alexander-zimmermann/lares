@@ -14,7 +14,7 @@ spec:
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   configMapRef:
     name: cilium-dashboard
     key: cilium-dashboard.json
@@ -32,7 +32,7 @@ spec:
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   configMapRef:
     name: cilium-operator-dashboard
     key: cilium-operator-dashboard.json

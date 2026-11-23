@@ -19,7 +19,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: lares-mcp-bridge
+      lares.app: lares-mcp-bridge
 
 # Wave 11 = after Kyverno (-4), timescaledb (3), nats-operator (9) and
 # knx-nats-bridge (10); aligns with the other consumer apps at wave 10.

@@ -46,7 +46,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: solaredge2mqtt
+      lares.app: solaredge2mqtt
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

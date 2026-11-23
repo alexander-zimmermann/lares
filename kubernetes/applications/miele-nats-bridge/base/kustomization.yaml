@@ -26,7 +26,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: miele-nats-bridge
+      lares.app: miele-nats-bridge
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

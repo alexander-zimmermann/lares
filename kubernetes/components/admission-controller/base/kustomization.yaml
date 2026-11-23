@@ -19,7 +19,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: admission-controller
+      lares.component: admission-controller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-4"

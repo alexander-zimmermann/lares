@@ -16,7 +16,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: prometheus-crds
+      lares.component: prometheus-crds
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-5"

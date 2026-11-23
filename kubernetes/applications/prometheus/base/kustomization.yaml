@@ -21,7 +21,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: prometheus
+      lares.app: prometheus
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "4"

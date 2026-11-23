@@ -36,6 +36,6 @@ Three reasons carry this:
 - **A part without a life of its own earns no boundary.** Splitting it off
   would turn every Secret it reads into a clone, or into a value sealed
   twice, for a seam nothing else crosses.
-- **The network cage does not depend on it.** The agent cage selects pods
-  by the label `role: agent` (ADR 0004); which namespace a caged pod sits
-  in changes nothing about where it may go.
+- **The network cage does not depend on it.** The agent cage selects
+  pods by the label `lares.agent-cage` (ADR 0004); which namespace a
+  caged pod sits in changes nothing about where it may go.

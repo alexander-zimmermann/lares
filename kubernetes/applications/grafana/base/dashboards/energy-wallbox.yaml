@@ -9,7 +9,7 @@ spec:
   folder: "Energie"
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   json: |
     {
       "annotations": {

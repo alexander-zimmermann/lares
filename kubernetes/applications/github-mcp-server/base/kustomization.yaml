@@ -22,7 +22,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: github-mcp-server
+      lares.app: github-mcp-server
 
 # Wave 12 = beside hermes, which owns the namespace; the token needs the
 # External Secrets CRDs (component, wave -1).

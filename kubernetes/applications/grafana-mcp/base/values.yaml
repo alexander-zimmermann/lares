@@ -44,7 +44,7 @@ serverAuth:
 
 # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
 podLabels:
-  role: agent
+  lares.agent-cage: "true"
 
 # The caller key is an environment variable, read at start
 podAnnotations:

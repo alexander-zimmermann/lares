@@ -18,7 +18,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: sealed-secrets-controller
+      lares.component: sealed-secrets-controller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-4"

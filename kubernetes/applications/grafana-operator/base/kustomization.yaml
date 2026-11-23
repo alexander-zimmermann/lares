@@ -17,7 +17,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: grafana-operator
+      lares.app: grafana-operator
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "4"

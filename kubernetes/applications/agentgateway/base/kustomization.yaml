@@ -54,7 +54,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: agentgateway
+      lares.app: agentgateway
 
 # Wave 12 = beside hermes, which owns the namespace; after lares-mcp-bridge (11),
 # whose key it attaches.

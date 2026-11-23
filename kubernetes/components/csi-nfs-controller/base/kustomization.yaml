@@ -18,7 +18,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: csi-nfs-controller
+      lares.component: csi-nfs-controller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-2"

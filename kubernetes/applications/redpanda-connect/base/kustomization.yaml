@@ -77,7 +77,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: redpanda-connect
+      lares.app: redpanda-connect
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "4"

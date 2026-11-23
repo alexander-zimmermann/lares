@@ -14,7 +14,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: cloudnative-pg
+      lares.app: cloudnative-pg
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "2"

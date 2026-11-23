@@ -41,7 +41,7 @@ images:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: unifi-mcp
+      lares.app: unifi-mcp
 
 # Wave 12 = beside the gateway, its only caller.
 commonAnnotations:

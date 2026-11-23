@@ -19,7 +19,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: external-secrets
+      lares.component: external-secrets
 
 # The CRDs are too large for a client-side apply's last-applied annotation
 commonAnnotations:

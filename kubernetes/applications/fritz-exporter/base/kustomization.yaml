@@ -24,7 +24,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: fritz-exporter
+      lares.app: fritz-exporter
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

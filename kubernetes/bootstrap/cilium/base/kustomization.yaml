@@ -20,7 +20,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: cilium
+      lares.component: cilium
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-1"

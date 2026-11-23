@@ -18,7 +18,7 @@ spec:
       timeInterval: "30s"
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -49,7 +49,7 @@ spec:
           urlDisplayLabel: Trace
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -79,7 +79,7 @@ spec:
         query: '{namespace=~".+", namespace!~"tempo|loki"} |= "${__trace.traceId}"'
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -117,4 +117,4 @@ spec:
       password: ${password}
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana

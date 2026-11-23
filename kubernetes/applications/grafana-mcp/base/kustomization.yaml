@@ -23,7 +23,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: grafana-mcp
+      lares.app: grafana-mcp
 
 # Wave 12 = beside the gateway, its only caller; after grafana (9), whose
 # instance the service account is created in.

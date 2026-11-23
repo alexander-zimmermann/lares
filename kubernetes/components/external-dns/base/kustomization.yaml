@@ -20,7 +20,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: external-dns
+      lares.component: external-dns
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-1"
