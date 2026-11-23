@@ -82,7 +82,7 @@ services:
       ## Advertised URLs (public for humans, LAN for SideroLink)
       - --advertised-api-url=${OMNI_PUBLIC_API_ENDPOINT}
       - --advertised-kubernetes-proxy-url=${OMNI_PUBLIC_K8S_PROXY_URL}
-      - --siderolink-api-advertised-url=${OMNI_API_ENDPOINT}:8090/
+      - --machine-api-advertised-url=${OMNI_API_ENDPOINT}:8090/
       - --siderolink-wireguard-advertised-addr=${OMNI_DOMAIN_NAME}:50180
       ## TLS & security
       - --cert=/certificates/${OMNI_TLS_CERT}
