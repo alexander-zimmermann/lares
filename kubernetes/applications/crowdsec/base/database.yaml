@@ -13,7 +13,7 @@ spec:
     - name: dhi-registry-secret
 
   # PostgreSQL version and configuration
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-standard-trixie
+  imageName: ghcr.io/cloudnative-pg/postgresql:19.0-standard-trixie
 
   # Rolling update process is managed by Kubernetes
   primaryUpdateStrategy: unsupervised
