@@ -6,6 +6,8 @@ metadata:
   namespace: grafana
 
 spec:
+  # Fixed uid: five dashboards point to it; recreating the object must not change it
+  uid: 454b7787-9ec4-42fc-9bf7-100716723e20
   valuesFrom: []
   datasource:
     name: Prometheus
