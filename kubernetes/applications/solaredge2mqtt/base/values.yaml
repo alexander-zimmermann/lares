@@ -1,5 +1,8 @@
 deployment:
   enabled: true
+  # Reaches IoT Cloud with an egress IP (egress gateway policies in components/cilium)
+  podLabels:
+    lares.egress-iot: "true"
   replicas: 1
   image:
     repository: ghcr.io/deroetzi/solaredge2mqtt

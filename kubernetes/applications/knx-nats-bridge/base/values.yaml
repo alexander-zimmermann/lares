@@ -2,6 +2,9 @@ applicationName: knx-nats-bridge
 
 deployment:
   enabled: true
+  # Reaches the IoT LAN with an egress IP (egress gateway policies in components/cilium)
+  podLabels:
+    lares.egress-iot: "true"
   image:
     repository: ghcr.io/alexander-zimmermann/knx-nats-bridge
     tag: 0.26.0

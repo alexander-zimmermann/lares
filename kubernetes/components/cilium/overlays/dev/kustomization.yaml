@@ -31,21 +31,43 @@ replacements:
           delimiter: "//"
           index: 1
 
-  # Inject the LoadBalancer pool: dev's own routed /24, same `.200`-`.254` block as prod
-  - sourceValue: 192.168.11.200
+  # Inject the LoadBalancer pool: dev's /24 is prod's VLAN 10 plus 100, same `.200`-`.254` block as prod
+  - sourceValue: 192.168.110.200
     targets:
       - select:
           kind: CiliumLoadBalancerIPPool
           name: default-bgp-ip-pool
         fieldPaths:
           - spec.blocks.0.start
-  - sourceValue: 192.168.11.254
+  - sourceValue: 192.168.110.254
     targets:
       - select:
           kind: CiliumLoadBalancerIPPool
           name: default-bgp-ip-pool
         fieldPaths:
           - spec.blocks.0.stop
+
+  # Inject the egress IPs: dev's /24 is prod's VLAN 10 plus 100, same `.2` and `.3` as prod
+  - sourceValue: 192.168.110.2
+    targets:
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        fieldPaths:
+          - spec.egressGateway.egressIP
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        reject:
+          - name: egress-traefik
+        fieldPaths:
+          - spec.egressGateways.0.egressIP
+  - sourceValue: 192.168.110.3
+    targets:
+      - select:
+          kind: CiliumEgressGatewayPolicy
+        reject:
+          - name: egress-traefik
+        fieldPaths:
+          - spec.egressGateways.1.egressIP
 
   # Authentik host the caged agents and Open WebUI may call for OIDC and JWKS
   - sourceValue: auth.zimmermann.phd

@@ -2,6 +2,9 @@ applicationName: devolutions-gateway
 
 deployment:
   enabled: true
+  # Reaches the IoT LAN with an egress IP (egress gateway policies in components/cilium)
+  podLabels:
+    lares.egress-iot: "true"
   replicas: 1
 
   image:

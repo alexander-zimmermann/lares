@@ -15,11 +15,14 @@ The UDM sees the cluster only as node IPs and cannot tell pods apart, so
 it is given exactly two exceptions: the egress IPs `.2` and `.3`, one
 secondary address per egress gateway worker. Cilium's egress gateway decides,
 from pod label and destination CIDR, which traffic leaves with one of
-them: `egress-infra`, `egress-iot`, `egress-outdoor`. A pod without the
-label leaves with the node IP and is dropped at the zone border; a pod
-with one label still reaches the other zones with the node IP and is
-dropped there. The UDM therefore holds one rule with ports per zone for
-the pair and no knowledge of pods.
+them: `lares.egress-infra`, `lares.egress-iot`, `lares.egress-outdoor`.
+A pod without the label leaves with the node IP and is dropped at the
+zone border; a pod with one label still reaches the other zones with
+the node IP and is dropped there. The UDM therefore holds one rule with
+ports per zone for the pair and no knowledge of pods. Traefik is the
+one pod that reaches a zone without a label: the DALI gateways bind a
+web session to its source address, so both Traefik replicas reach the
+IoT LAN through `.2` alone, without a second gateway to fail over to.
 
 A Cilium network policy exists only where the UDM is blind: the pods
 that run agents or act for them (`lares.agent-cage`) are caged inside
