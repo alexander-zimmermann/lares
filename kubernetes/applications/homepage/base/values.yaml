@@ -2,9 +2,10 @@ applicationName: homepage
 
 deployment:
   enabled: true
-  # Reaches Infrastructure, IoT LAN and Outdoor with an egress IP (egress gateway policies in components/cilium)
+  # Reaches Infrastructure, IoT LAN, Outdoor and the Basalte Core in Internal with an egress IP (egress gateway policies in components/cilium)
   podLabels:
     lares.egress-infra: "true"
+    lares.egress-internal: "true"
     lares.egress-iot: "true"
     lares.egress-outdoor: "true"
   # Kubernetes widget queries the cluster API via the SA token; v7 flipped the chart default to false

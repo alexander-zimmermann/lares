@@ -261,7 +261,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
 - **Egress IP** — one of the two addresses, `.2` and `.3` in the
   Kubernetes zone, with which cluster traffic may cross into another zone.
   A pod leaves with one only if it carries the matching egress label
-  (`lares.egress-infra`, `lares.egress-iot`, `lares.egress-outdoor`)
+  (`lares.egress-infra`, `lares.egress-iot`, `lares.egress-outdoor`,
+  `lares.egress-internal`)
   and heads for that label's zone; Traefik alone reaches the IoT LAN
   through a policy of its own. Everything else leaves with a node IP
   and is dropped at the border.

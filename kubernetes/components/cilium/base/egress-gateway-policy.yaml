@@ -95,6 +95,37 @@ apiVersion: cilium.io/v2
 kind: CiliumEgressGatewayPolicy
 
 metadata:
+  name: egress-internal
+
+spec:
+  # Internal holds the clients, so the UDM opens single devices there to the egress IPs, never the zone
+  selectors:
+    - podSelector:
+        matchLabels:
+          lares.egress-internal: "true"
+  destinationCIDRs:
+    - 192.168.1.0/24
+  # Required by the CRD, ignored while egressGateways has entries
+  egressGateway:
+    nodeSelector:
+      matchLabels:
+        kubernetes.io/hostname: talos-dp-01
+    egressIP: PLACEHOLDER
+  egressGateways:
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-01
+      egressIP: PLACEHOLDER
+    - nodeSelector:
+        matchLabels:
+          kubernetes.io/hostname: talos-dp-02
+      egressIP: PLACEHOLDER
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumEgressGatewayPolicy
+
+metadata:
   name: egress-traefik
 
 spec:
