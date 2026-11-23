@@ -8,6 +8,8 @@
     ":dependencyDashboard",
     ":semanticCommits",
     ":timezone(Europe/Berlin)",
+    // The same auto-merge rules as lares
+    "github>alexander-zimmermann/lares//.renovate/autoMerge.json5",
   ],
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
@@ -17,9 +19,6 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "github-actions",
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true,
     },
   ],
 }

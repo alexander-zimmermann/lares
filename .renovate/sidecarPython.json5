@@ -13,7 +13,9 @@
       "groupName": "python base image",
     },
     {
+      // requires-python stays out: it is merged by hand and would hold the whole group
       "matchManagers": ["pep621"],
+      "matchDepNames": ["!python"],
       "matchUpdateTypes": ["patch", "minor"],
       "groupName": "python deps (non-major)",
     },

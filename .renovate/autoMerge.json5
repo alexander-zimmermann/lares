@@ -1,19 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  // Every auto-merge rule for lares and the sidecars. GitHub merges once the repo's required check is green.
+  // Never a major; only what a check tests or what changes no image and no cluster.
   "packageRules": [
     {
       "description": "Auto-merge trusted container digests",
       "matchDatasources": ["docker"],
       "automerge": true,
-      "automergeType": "pr",
-      "matchUpdateTypes": ["digest"],
-      "ignoreTests": false
+      "matchUpdateTypes": ["digest"]
     },
     {
       "description": "Auto-merge trusted minor/patch container updates",
       "matchDatasources": ["docker"],
       "automerge": true,
-      "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": [
         // Observability stack — strict semver, frequent CVE patches
@@ -37,27 +36,48 @@
         "/dyson-nats-bridge/",
         "/miele-nats-bridge/",
         "/midea-nats-bridge/"
-      ],
-      "ignoreTests": false
+      ]
     },
     {
       "description": "Auto-merge GitHub Actions (General)",
       "matchManagers": ["github-actions"],
       "automerge": true,
-      "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch", "digest"],
-      "minimumReleaseAge": "3 days",
-      "ignoreTests": true
+      "minimumReleaseAge": "3 days"
     },
     {
       "description": "Auto-merge GitHub Actions (Fast-Track)",
       "matchManagers": ["github-actions"],
       "matchPackageNames": ["/^actions//", "/^renovatebot//"],
       "automerge": true,
-      "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch", "digest"],
-      "minimumReleaseAge": "1 minute",
-      "ignoreTests": true
+      "minimumReleaseAge": "1 minute"
+    },
+    {
+      "description": "Auto-merge own code: the lares workflows digest and the sidecar libraries",
+      "matchPackageNames": ["/^alexander-zimmermann//"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      // A branch digest has no release timestamp, so any wait would hold it forever
+      "minimumReleaseAge": "0 days"
+    },
+    {
+      "description": "Auto-merge pre-commit hooks (they run locally and in lares CI, never in an image)",
+      "matchManagers": ["pre-commit"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Auto-merge Python dependencies but not Python itself (sidecar images resolve from pyproject.toml)",
+      "matchManagers": ["pep621"],
+      "matchDepNames": ["!python"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "Auto-merge lock file maintenance",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "automerge": true
     }
   ]
 }
