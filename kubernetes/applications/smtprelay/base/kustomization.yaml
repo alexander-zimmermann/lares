@@ -22,7 +22,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: smtprelay
+      lares.app: smtprelay
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

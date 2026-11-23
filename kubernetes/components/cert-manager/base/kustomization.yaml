@@ -36,7 +36,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: cert-manager
+      lares.component: cert-manager
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-3"

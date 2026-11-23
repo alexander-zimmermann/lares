@@ -22,7 +22,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: lares-diagnostics-engine
+      lares.app: lares-diagnostics-engine
 
 # Wave 11 = after Kyverno (-4), timescaledb (3), nats-operator (9) and
 # knx-nats-bridge (10) — aligns with lares-mcp-bridge so the secret

@@ -7,7 +7,7 @@ deployment:
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
-    role: agent
+    lares.agent-cage: "true"
 
   # Reads only, the toolsets the agents use; every call brings the token the gateway attaches
   args: ["http", "--read-only", "--toolsets=repos,issues,pull_requests"]

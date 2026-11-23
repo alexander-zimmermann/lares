@@ -4,7 +4,7 @@
 deployment:
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
-    role: agent
+    lares.agent-cage: "true"
 
   env:
     # Self-signed certificate, so the default of no verification stays

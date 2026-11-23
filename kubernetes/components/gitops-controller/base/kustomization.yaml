@@ -24,7 +24,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: gitops-controller
+      lares.component: gitops-controller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "0"

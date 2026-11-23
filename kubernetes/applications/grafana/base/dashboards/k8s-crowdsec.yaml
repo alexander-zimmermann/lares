@@ -9,7 +9,7 @@ spec:
   folder: "Kubernetes"
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   # Resolves the dashboard's ${DS_PROMETHEUS} input to the Prometheus datasource
   datasources:
     - inputName: "DS_PROMETHEUS"

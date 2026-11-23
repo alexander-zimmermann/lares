@@ -19,7 +19,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: pbs-exporter
+      lares.app: pbs-exporter
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

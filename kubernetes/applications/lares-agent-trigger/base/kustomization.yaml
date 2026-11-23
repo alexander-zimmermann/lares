@@ -38,7 +38,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: lares-agent-trigger
+      lares.app: lares-agent-trigger
 
 # Wave 13 = after nats (10), lares-mcp-bridge (11) and hermes (12): the trigger
 # needs the stream, the ledger and the Runs API before it has anything to do.

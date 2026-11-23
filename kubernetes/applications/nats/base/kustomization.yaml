@@ -20,7 +20,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: nats
+      lares.app: nats
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

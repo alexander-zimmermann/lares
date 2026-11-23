@@ -51,7 +51,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: grafana
+      lares.app: grafana
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "9"

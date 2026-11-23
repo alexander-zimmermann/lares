@@ -29,7 +29,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: reloader
+      lares.component: reloader
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-1"

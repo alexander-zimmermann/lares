@@ -46,7 +46,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: homepage
+      lares.app: homepage
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

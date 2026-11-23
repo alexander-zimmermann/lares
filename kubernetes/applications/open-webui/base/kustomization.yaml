@@ -23,7 +23,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: open-webui
+      lares.app: open-webui
 
 # Wave 13 = after hermes (12), whose profiles the connections reach.
 commonAnnotations:

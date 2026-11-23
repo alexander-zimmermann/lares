@@ -14,7 +14,7 @@ resources:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: external-services
+      lares.component: external-services
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

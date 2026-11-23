@@ -16,7 +16,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: tempo
+      lares.app: tempo
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "4"

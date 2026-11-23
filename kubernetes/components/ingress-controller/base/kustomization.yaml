@@ -89,7 +89,7 @@ secretGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: ingress-controller
+      lares.component: ingress-controller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-8"

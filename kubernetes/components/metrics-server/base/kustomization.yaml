@@ -15,7 +15,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: metrics-server
+      lares.component: metrics-server
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-5"

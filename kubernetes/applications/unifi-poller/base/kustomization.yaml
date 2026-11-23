@@ -26,7 +26,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: unifi-poller
+      lares.app: unifi-poller
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

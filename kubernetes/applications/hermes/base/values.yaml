@@ -10,7 +10,7 @@ deployment:
 
   # Caged by the CiliumClusterwideNetworkPolicy agent-cage (components/cilium)
   podLabels:
-    role: agent
+    lares.agent-cage: "true"
 
   # One gateway per data volume, never two; the PVC is ReadWriteOnce anyway.
   replicas: 1

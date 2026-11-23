@@ -12,14 +12,12 @@ resources:
   - ./bgp-advertisement.yaml
   - ./bgp-lb-ip-pool.yaml
   - ./egress-gateway-policy.yaml
-  - ./agent-cage-policy.yaml
-  - ./hermes-ingress-policy.yaml
-  - ./open-webui-egress-policy.yaml
+  - ./clusterwide-network-policy.yaml
 
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: cilium
+      lares.component: cilium
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-1"

@@ -24,7 +24,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: devolutions-gateway
+      lares.app: devolutions-gateway
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"

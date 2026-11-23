@@ -9,7 +9,7 @@ spec:
   folder: "Kubernetes"
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   json: |
     {
       "annotations": {

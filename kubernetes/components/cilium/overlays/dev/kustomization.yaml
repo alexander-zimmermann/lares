@@ -57,7 +57,7 @@ replacements:
           - spec.egress.*.toFQDNs.[matchName=PLACEHOLDER_AUTH_HOST].matchName
       - select:
           kind: CiliumClusterwideNetworkPolicy
-          name: open-webui-egress
+          name: open-webui-cage
         fieldPaths:
           - spec.egress.*.toFQDNs.[matchName=PLACEHOLDER_AUTH_HOST].matchName
 

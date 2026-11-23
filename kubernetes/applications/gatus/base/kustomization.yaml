@@ -30,7 +30,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: gatus
+      lares.app: gatus
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "9"

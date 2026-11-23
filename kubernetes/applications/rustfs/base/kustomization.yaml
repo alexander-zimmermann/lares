@@ -42,7 +42,7 @@ patches:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: rustfs
+      lares.app: rustfs
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "1"

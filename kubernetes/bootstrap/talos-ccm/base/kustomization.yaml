@@ -15,7 +15,7 @@ helmCharts:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.component: talos-ccm
+      lares.component: talos-ccm
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "-5"

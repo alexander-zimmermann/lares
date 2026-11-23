@@ -14,7 +14,7 @@ spec:
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
-      homelab.app: grafana
+      lares.app: grafana
   configMapRef:
     name: cnpg-grafana-dashboard
     key: cnp.json

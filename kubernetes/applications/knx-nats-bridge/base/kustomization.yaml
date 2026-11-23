@@ -42,7 +42,7 @@ configMapGenerator:
 labels:
   - includeSelectors: false
     pairs:
-      homelab.app: knx-nats-bridge
+      lares.app: knx-nats-bridge
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: "10"
