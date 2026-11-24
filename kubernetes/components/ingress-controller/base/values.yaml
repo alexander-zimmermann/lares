@@ -106,7 +106,7 @@ metrics:
     serviceMonitor:
       enabled: true
       # Prometheus Operator label (Opt-In)
-      labels:
+      additionalLabels:
         release: prometheus
 
 # Traces every request (default sampleRate 1.0): services behind Traefik follow its sampling decision
