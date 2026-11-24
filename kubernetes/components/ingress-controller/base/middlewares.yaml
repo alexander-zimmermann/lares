@@ -7,8 +7,9 @@ metadata:
 
 spec:
   rateLimit:
-    average: 100
-    burst: 50
+    # Sized for Homepage: one load fires ~60 API calls, an open tab polls ~110/min
+    average: 300
+    burst: 100
     period: 1m
 
 ---
