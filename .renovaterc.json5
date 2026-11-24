@@ -17,8 +17,10 @@
     ":semanticCommits",
     ":timezone(Europe/Berlin)"
   ],
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
-  "dependencyDashboardLabels": ["area/renovate"],
+  "dependencyDashboard": {
+    "title": "Renovate Dashboard 🤖",
+    "labels": ["area/renovate"]
+  },
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "ignorePaths": ["**/resources/**", "**/deprecated/**"],
   "ignoreDeps": ["alexellis/arkade-get"],
