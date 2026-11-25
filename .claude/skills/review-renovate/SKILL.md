@@ -11,7 +11,7 @@ Adapted from the review prompt in [billimek/k8s-gitops](https://github.com/billi
 
 ## The Lares stack
 
-Three independent layers, one top-level folder each. Each layer has its own file beside this one, with its context and its parts of steps 3 and 4 and of After merge:
+Three independent layers, one top-level folder each. Each layer has its own file beside this one, with its context and its parts of steps 4 and 5 and of After merge:
 
 - Layer 1 — `infrastructure/` · Proxmox IaC: `infrastructure.md`
 - Layer 2 — `cluster/` · Omni + Talos: `cluster.md`
@@ -23,10 +23,11 @@ There is no dev cluster: what targets dev (`kubernetes/**/overlays/dev`, `cluste
 
 1. **Read the PR.** `pr-context.md` in the working directory holds the title, labels, body (Renovate's release notes), the link base for our files, the git diff and, for a change under `kubernetes/`, the rendered Argo CD diff for `overlays/prod`, cut off at 65,000 characters (`rendered.diff` beside it holds all of it). Without `pr-context.md` (a local run), fetch the same with `gh pr view <PR> --json title,labels,body,headRefOid` and `gh pr diff <PR>`; the link base is `https://github.com/<repo>/blob/<headRefOid>/`. Then read the file of every layer the PR changes, from `.claude/skills/review-renovate/`. Done when old → new and the source repo are known for every component, and for a wrapper (an image or chart around upstream software) for its inner component too. A guessed repo that returns 404 is not known: search for it (Tools).
 2. **Research the whole range.** Read the release notes of every release from old to new, intermediate ones included: migration notes often sit in the middle. Read the wrapper's notes and the inner component's; without GitHub releases, try `CHANGELOG`/`UPGRADING`, then the docs. Where a note touches something lares uses and its line alone does not settle it, read the linked PR: its description and changed files. Then list the open upstream bugs created since the first release after old, by creation date, and read every title against what lares uses. Done when every release in the range is read, every note that touches lares is settled, and every listed bug title is checked.
-3. **Diff what lares sets** against the upstream definition at the old and the new tag, as the folder file says. Done when its criterion holds.
-4. **Assess against lares.** For each change, ask what in lares depends on it, beyond what lares sets. Read every file that consumes the component, then run the folder file's checks. Done when every finding has its place (a line it hits, or Not applicable with its proof: a feature lares leaves unused) and the folder file's criterion holds.
-5. **Settle the open points.** Go through every Unknown and every check under After merge. A point one more PR, file or diff would settle is read now, not listed. Done when Unknowns holds only what the sources cannot settle or the turn budget leaves unread, each with where you looked.
-6. **Write the review and the verdict** (formats below).
+3. **Drop the backports.** When new opens a new minor or major line, its notes count from where that line branched off, so they repeat what the old line's patch releases already shipped. Look up the PRs of all notes that touch lares in one call (Tools: Backports). Done when every such PR is looked up, and each one a release of the old line up to old lists sits under Not applicable, with that release.
+4. **Diff what lares sets** against the upstream definition at the old and the new tag, as the folder file says. Done when its criterion holds.
+5. **Assess against lares.** For each change, ask what in lares depends on it, beyond what lares sets. Read every file that consumes the component, then run the folder file's checks. Done when every finding has its place (a line it hits, or Not applicable with its proof: a feature lares leaves unused) and the folder file's criterion holds.
+6. **Settle the open points.** Go through every Unknown and every check under After merge. A point one more PR, file or diff would settle is read now, not listed. Done when Unknowns holds only what the sources cannot settle or the turn budget leaves unread, each with where you looked.
+7. **Write the review and the verdict** (formats below).
 
 ## Verdict
 
@@ -100,6 +101,7 @@ In CI, Bash runs `gh api`, `gh release view`, `git log`, `git show` and the read
 - Filter API output with `--jq` on the command itself.
 - Issue independent lookups (one release per version, several repo files) as parallel calls in one turn.
 - A linked PR: its description with `gh api repos/<owner>/<repo>/pulls/<n> --jq .body`, its files with `gh api repos/<owner>/<repo>/pulls/<n>/files --paginate --jq '.[] | "\(.filename) +\(.additions) -\(.deletions)"'`, one file's patch with `--jq '.[] | select(.filename == "<path>") | .patch'`.
+- Backports: the PRs each release of the old line lists, all PRs in one call, `gh api --paginate "repos/<owner>/<repo>/releases?per_page=100" --jq '.[] | select(.tag_name | startswith("<old line>")) | [.tag_name, ([.body | scan("#(<n1>|<n2>)\\b")] | flatten | unique | join(","))] | select(.[1] != "") | join(" ")'`, with `<old line>` such as `v3.7.`. A PR listed for a tag up to old is one old already has; a PR missing from the output is new.
 - Open bugs since a release: its date from `gh release view <tag> --repo <owner>/<repo> --json publishedAt --jq .publishedAt`, then `gh api -X GET search/issues -f q='repo:<owner>/<repo> is:issue is:open label:bug created:>=<date>' -f per_page=100 --jq '.items[] | "\(.number) \(.title)"'`. When that returns nothing, run it once more without `label:bug`: some repos keep the label but sort new reports by others, such as `needs triage` or `S-*`.
 - Upstream files between two tags: `gh api "repos/<owner>/<repo>/compare/<old>...<new>" --jq '.files[] | select(<filter>) | .patch'`, with the filter the folder file names. No match means the file did not change, as long as the compare lists fewer than 300 files: GitHub cuts the list off at 300. When the list is cut off or the patch is missing (large file), fetch both versions raw: `gh api -H "Accept: application/vnd.github.raw" "repos/<owner>/<repo>/contents/<path>?ref=<tag>"`.
 - A file's path in an upstream repo: one `gh api "repos/<owner>/<repo>/git/trees/<tag>?recursive=1" --jq '.tree[].path | select(endswith("values.yaml"))'` call.
