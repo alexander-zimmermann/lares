@@ -20,25 +20,33 @@ spec:
             summary: "Instance {{ $labels.instance }} down"
             description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
 
+    # service is the Traefik backend; the 10-request floor and a `for` longer than the window keep single requests and scanner bursts quiet
     - name: traefik-alerts
       rules:
         - alert: HighHttp4xxErrorRateService
-          expr: 'sum(rate(traefik_service_requests_total{code=~"4.*"}[3m])) by (service) / sum(rate(traefik_service_requests_total[3m])) by (service) * 100 > 10'
-          for: 1m
+          # 404 is scanner noise, 499 is the client hanging up
+          expr: |
+            sum by (service) (increase(traefik_service_requests_total{code=~"4..", code!~"404|499"}[10m]))
+              / sum by (service) (increase(traefik_service_requests_total[10m])) * 100 > 10
+            and sum by (service) (increase(traefik_service_requests_total[10m])) >= 10
+          for: 15m
           labels:
             severity: warning
           annotations:
-            summary: "Traefik high HTTP 4xx error rate ({{ $labels.service }})"
-            description: "Traefik service 4xx error rate is above 10%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+            summary: "Traefik backend {{ $labels.service }}: high 4xx rate"
+            description: "{{ $value | humanize }}% of the requests to {{ $labels.service }} got a 4xx (not counting 404 and 499) for 15 minutes."
 
         - alert: HighHttp5xxErrorRateService
-          expr: 'sum(rate(traefik_service_requests_total{code=~"5.*"}[3m])) by (service) / sum(rate(traefik_service_requests_total[3m])) by (service) * 100 > 5'
-          for: 1m
+          expr: |
+            sum by (service) (increase(traefik_service_requests_total{code=~"5.."}[10m]))
+              / sum by (service) (increase(traefik_service_requests_total[10m])) * 100 > 5
+            and sum by (service) (increase(traefik_service_requests_total[10m])) >= 10
+          for: 15m
           labels:
             severity: warning
           annotations:
-            summary: "Traefik high HTTP 5xx error rate ({{ $labels.service }})"
-            description: "Traefik service 5xx error rate is above 5%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+            summary: "Traefik backend {{ $labels.service }}: high 5xx rate"
+            description: "{{ $value | humanize }}% of the requests to {{ $labels.service }} got a 5xx for 15 minutes."
 
     - name: gatus-alerts
       rules:
