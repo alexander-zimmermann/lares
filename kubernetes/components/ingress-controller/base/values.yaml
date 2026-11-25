@@ -103,8 +103,13 @@ accessLog:
 metrics:
   # Prometheus Monitoring
   prometheus:
+    # One Service for the ServiceMonitor: it selects every Service with the pod labels, so traefik and traefik-internal scraped each pod twice
+    service:
+      enabled: true
     serviceMonitor:
       enabled: true
+      # Keeps Traefik's own service label (the backend) instead of renaming it exported_service
+      honorLabels: true
       # Prometheus Operator label (Opt-In)
       additionalLabels:
         release: prometheus
@@ -152,11 +157,11 @@ ports:
       default: false
       internal: true
 
-  # Prometheus metrics (Port 9100) – only exposed on internal ClusterIP service for the ServiceMonitor
+  # Prometheus metrics (Port 9100) – served by the dedicated metrics service, see metrics.prometheus.service
   metrics:
     expose:
       default: false
-      internal: true
+      internal: false
 
   # Web entry point (Port 80)
   web:
