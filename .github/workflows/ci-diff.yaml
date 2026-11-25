@@ -288,7 +288,10 @@ jobs:
             "| Model | `\(env.MODEL)` |",
             "| Turns | \(.num_turns // "n/a") |",
             "| Duration | \(if .duration_ms then "\(.duration_ms / 1000 | floor) s" else "n/a" end) |",
-            "| Cost | \(if .total_cost_usd then "$\(.total_cost_usd * 100 | round / 100)" else "n/a" end) |"
+            "| Cost | \(if .total_cost_usd then "$\(.total_cost_usd * 100 | round / 100)" else "n/a" end) |",
+            "| Denied tool calls | \(.permission_denials | if . then length else "n/a" end) |",
+            # Each call the allow list or the safety check refused, with its input.
+            (.permission_denials // [] | select(length > 0) | "", "```", (.[] | "\(.tool_name) \(.tool_input | tojson | .[0:300])"), "```")
           ' <<< "$result" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload review
