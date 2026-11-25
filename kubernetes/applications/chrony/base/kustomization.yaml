@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: chrony
+resources:
+  - ./namespace.yaml
+
+helmCharts:
+  - name: application
+    repo: oci://ghcr.io/stakater/charts
+    releaseName: chrony
+    version: 9.3.2
+    valuesFile: values.yaml
+    namespace: chrony
+
+configMapGenerator:
+  - name: chrony-config
+    files:
+      - config/chrony.conf
+
+labels:
+  - includeSelectors: false
+    pairs:
+      lares.app: chrony
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "10"
