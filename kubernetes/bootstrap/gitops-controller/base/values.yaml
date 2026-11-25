@@ -72,6 +72,9 @@ controller:
 repoServer:
   livenessProbe:
     timeoutSeconds: 3
+  # The revision cache TTL defaults to timeout.reconciliation (1h), so the ApplicationSets saw new commits up to an hour late
+  extraArgs:
+    - --revision-cache-expiration=3m
 
 # Notifications controller off: Alertmanager owns delivery, and the
 # ArgoCD alerts already exist as debounced PrometheusRules on argocd_app_info
