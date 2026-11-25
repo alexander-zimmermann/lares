@@ -1,0 +1,98 @@
+applicationName: chrony
+
+deployment:
+  enabled: true
+  # Two replicas on different nodes, so a node reboot never leaves IoT LAN and Outdoor without time
+  replicas: 2
+  image:
+    repository: dockurr/chrony
+    tag: "4.9"
+    pullPolicy: IfNotPresent
+
+  # Skips the image's entrypoint, which needs root to rewrite its config; chronyd reads the ConfigMap instead
+  command:
+    - /usr/sbin/chronyd
+  args:
+    # -U starts without root, -d stays in the foreground, -x never touches the node's clock (Talos owns it)
+    - "-U"
+    - "-d"
+    - "-x"
+    - "-f"
+    - /etc/chrony/config/chrony.conf
+
+  volumes:
+    config-volume:
+      configMap:
+        name: chrony-config
+    # pidfile and driftfile; the drift is relearned within minutes after a restart
+    state-volume:
+      emptyDir: {}
+
+  volumeMounts:
+    config-volume:
+      mountPath: /etc/chrony/config
+      readOnly: true
+    state-volume:
+      mountPath: /var/lib/chrony
+
+  ports:
+    - containerPort: 1123
+      name: ntp
+      protocol: UDP
+
+  # Ready only once synchronised, so the LB never hands clients an unsynchronised server
+  readinessProbe:
+    enabled: true
+    periodSeconds: 10
+    failureThreshold: 3
+    timeoutSeconds: 2
+    exec:
+      command: ["chronyc", "-h", "127.0.0.1", "-p", "1323", "-n", "waitsync", "1"]
+
+  # Alive while chronyd answers on its command port, synchronised or not
+  livenessProbe:
+    enabled: true
+    periodSeconds: 30
+    failureThreshold: 3
+    timeoutSeconds: 2
+    exec:
+      command: ["chronyc", "-h", "127.0.0.1", "-p", "1323", "-n", "tracking"]
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: chrony
+
+  # The image runs as root by default; nobody suffices, the NTP port is unprivileged
+  containerSecurityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+
+  # Pod-level fsGroup so the emptyDir is writable by the non-root user
+  securityContext:
+    fsGroup: 65534
+
+# One replica stays up during node drains
+pdb:
+  enabled: true
+  minAvailable: 1
+
+# LoadBalancer with BGP advertisement via Cilium — static IP injected per environment via overlay
+service:
+  enabled: true
+  type: LoadBalancer
+  additionalLabels:
+    bgp.cilium.io/advertise-service: default
+  ports:
+    - port: 123
+      name: ntp
+      protocol: UDP
+      targetPort: ntp

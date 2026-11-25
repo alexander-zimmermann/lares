@@ -202,6 +202,7 @@ All components grouped by what they do. Icons via [homarr-labs/dashboard-icons](
 |                                                                                                    | [Fritz!Box Exporter](https://github.com/pdreker/fritz_exporter)                              | Prometheus metrics from the Fritz!Box               |
 |                                                                                                    | [UniFi Poller](https://github.com/unpoller/unpoller)                                         | Prometheus metrics from the UniFi controller        |
 |                                                                                                    | [SMTPRelay](https://github.com/grafana/smtprelay)                                            | Outbound mail relay for cluster workloads           |
+|                                                                                                    | [chrony](https://chrony-project.org/)                                                        | Time server for the zones without WAN               |
 |                                                                                                    | [Devolutions Gateway](https://github.com/Devolutions/devolutions-gateway)                    | Browser remote desktop behind Authentik             |
 
 ## Portability note
