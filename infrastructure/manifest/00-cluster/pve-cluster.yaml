@@ -1,6 +1,6 @@
 pve_cluster:
   api_connection:
-    api_url: "https://pve-1.zimmermann.eu.com:8006/api2/json"
+    api_url: "https://pve-01.zimmermann.eu.com:8006/api2/json"
     username: "root@pam"
     insecure: true
 
@@ -17,5 +17,5 @@ pve_cluster:
   nodes:
     pve-1:
       node_name: "pve-1"
-      address: "pve-1.zimmermann.eu.com"
+      address: "pve-01.zimmermann.eu.com"
       port: 22

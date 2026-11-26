@@ -2,5 +2,5 @@ pve_cluster_acme:
   target_node: "pve-1"
   account_name: "letsencrypt-prod"
   contact_email: "alexander@zimmermann.eu.com"
-  primary_domain: "pve-1.zimmermann.eu.com"
+  primary_domain: "pve-01.zimmermann.eu.com"
   san_domains: ["proxmox.zimmermann.eu.com"]

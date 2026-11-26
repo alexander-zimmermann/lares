@@ -40,7 +40,7 @@ metadata:
 spec:
   # smartctl_exporter runs on the Proxmox host (infrastructure/, 10-pve-node-core): the Talos VMs see no physical disks.
   staticConfigs:
-    - targets: ["pve-1.zimmermann.eu.com:9633"]
+    - targets: ["pve-01.zimmermann.eu.com:9633"]
   scheme: HTTP
   relabelings:
     - targetLabel: job

@@ -96,7 +96,7 @@
           password: "{{HOMEPAGE_VAR_PBS_PASSWORD}}"
     - ThinkStation AMT:
         icon: /icons/thinkstation.png
-        href: https://pve-1-amt.zimmermann.eu.com:16993
+        href: https://pve-01-amt.zimmermann.eu.com:16993
     - APC UPS:
         icon: apc.png
         href: https://smartconnect.apc.com/auth/login
