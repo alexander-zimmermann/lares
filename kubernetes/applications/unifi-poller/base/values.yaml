@@ -7,7 +7,7 @@ deployment:
     lares.egress-infra: "true"
   image:
     repository: ghcr.io/unpoller/unpoller
-    tag: v5.10.1
+    tag: v5.10.2
     pullPolicy: IfNotPresent
 
   # unpoller is a static distroless binary that writes nothing to disk; run it
