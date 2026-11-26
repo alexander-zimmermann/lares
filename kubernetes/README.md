@@ -115,6 +115,8 @@ From the repo root (uses [go-task](https://taskfile.dev)):
 3. Create `overlays/{dev,prod}/kustomization.yaml` that reference `../../base` and apply env-specific patches (hostnames, replicas).
 4. Commit, push. The `applications` ApplicationSet picks it up within one sync interval.
 
+If your app needs config files: put them in `base/config/` and build the ConfigMap with `configMapGenerator` in `base/kustomization.yaml`, so a change rolls the workload through the content-hash name. Other kinds of files get a folder of their own (`scripts/`, `blueprints/`, `streams/`, `rules/`, …); none lie loose in `base/`. Write a `kind: ConfigMap` manifest only for plain key/value pairs with no file behind them.
+
 If your app needs secrets: write them as plain `secret.yaml`, then `task k8s:seal -- kubernetes/applications/<name>/base/secret.yaml`, commit only the `sealed-secret.yaml`.
 
 If a third-party chart reads those secrets only at start, opt its workload in to Reloader with `reloader.stakater.com/auto: "true"` (workload or pod annotations); `application`-chart apps carry it by default.
