@@ -15,4 +15,4 @@ Done when every argument we set is accounted for.
 
 ## Step 5 and After merge
 
-There is no rendered diff. After merge says what the next `tofu plan` should show, or for a cloud-init version that it waits for the VM's rebuild.
+There is no rendered diff. After merge says what the next `tofu plan` should show, or for a cloud-init version that it waits for the VM's rebuild. A question only a plan or PVE itself could answer, such as whether state still matches what lares sets, is not an Unknown, since the review never has that access: it goes under After merge, as what to check in the next plan.
