@@ -98,13 +98,13 @@ metadata:
   name: egress-internal
 
 spec:
-  # Internal holds the clients, so the UDM opens single devices there to the egress IPs, never the zone
+  # Internal holds the clients, so only single devices get the egress IPs: the Basalte Core for homepage's status check
   selectors:
     - podSelector:
         matchLabels:
           lares.egress-internal: "true"
   destinationCIDRs:
-    - 192.168.1.0/24
+    - 192.168.1.175/32
   # Required by the CRD, ignored while egressGateways has entries
   egressGateway:
     nodeSelector:
