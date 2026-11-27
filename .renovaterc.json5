@@ -4,7 +4,7 @@
     "config:recommended",
     "docker:enableMajor",
     "helpers:pinGitHubActionDigests",
-    "github>alexander-zimmermann/.github//.renovate/autoMerge.json5#v1.0.1",
+    "github>alexander-zimmermann/.github//.renovate/autoMerge.json5#v1.0.2",
     "github>alexander-zimmermann/lares//.renovate/customManagers.json5",
     "github>alexander-zimmermann/lares//.renovate/grafanaDashboards.json5",
     "github>alexander-zimmermann/lares//.renovate/groups.json5",
