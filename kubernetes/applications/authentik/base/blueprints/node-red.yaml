@@ -15,6 +15,7 @@ entries:
       invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
       client_type: confidential
       client_id: node-red
+      # Rotated 2026-10-30; change this line on every rotation, a new secret alone does not re-import this blueprint.
       client_secret: !Env NODE_RED_OIDC_CLIENT_SECRET
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
       redirect_uris:
