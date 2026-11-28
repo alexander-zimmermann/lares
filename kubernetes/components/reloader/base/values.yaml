@@ -2,8 +2,6 @@
 fullnameOverride: reloader
 
 reloader:
-  # Secrets only: a ConfigMap change rolls its workload through the kustomize content-hash name
-  ignoreConfigMaps: true
   # Stamps the pod template with an annotation Argo CD does not track, so a reload leaves no drift
   reloadStrategy: annotations
 
