@@ -28,6 +28,13 @@ directly: the gateway sets each profile's gateway key from
 `hermes-credentials`, the Secret the harness composes its `.env` files
 from, because the harness reads a profile's keys from that file alone.
 
+A ConfigMap follows the same rule. It is generated once, under a fixed
+name, in the namespace of the application that owns it; another namespace
+that reads it gets a clone through the Kyverno policy
+`sync-cluster-configmaps`. No application's directory includes another's.
+Reloader rolls a workload when a Secret or ConfigMap it reads changes, a
+clone included.
+
 Three reasons carry this:
 
 - **A namespace is an application's boundary.** Its Secrets, its
