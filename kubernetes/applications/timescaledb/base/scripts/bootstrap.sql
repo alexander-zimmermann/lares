@@ -707,7 +707,10 @@ SELECT add_retention_policy('miele_eco',           INTERVAL '365 days');
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,
 -- populated by the knx-nats-bridge import-ga-catalog Job from
--- its ConfigMap. The `ga_catalog_view` view
+-- its ConfigMap. `space_path` is the ETS building tree from the top
+-- down to the GA's space (last element = room), so a consumer
+-- collects every GA beneath a floor or building part by prefix.
+-- The `ga_catalog_view` view
 -- joins `knx` against the catalog so MCP tools can filter / group by
 -- room or function in plain SQL.
 -- =========================================================
@@ -718,7 +721,9 @@ CREATE TABLE IF NOT EXISTS ga_catalog (
     function    TEXT,
     description TEXT,
     dpt         TEXT NOT NULL,
-    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    -- Last, as on the live cluster, where it was added by ALTER TABLE.
+    space_path  TEXT[]
 );
 CREATE INDEX IF NOT EXISTS ga_catalog_room_idx     ON ga_catalog (room) WHERE room IS NOT NULL;
 CREATE INDEX IF NOT EXISTS ga_catalog_function_idx ON ga_catalog (function);
