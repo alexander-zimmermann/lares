@@ -565,6 +565,25 @@ SELECT create_hypertable('miele_eco', 'time', chunk_time_interval => INTERVAL '1
 CREATE INDEX ON miele_eco (device, time DESC);
 
 -- =========================================================
+-- RuuviTag readings via the ESPHome receiver (→ ruuvi.<floor>.<room>.<quantity>)
+-- Long form, because ESPHome publishes each quantity as its own message: one
+-- 60 s average per row. `room` is the house's room key as in faults.yaml
+-- (`OG.Badezimmer-Kinder`); it is set per tag in the firmware, so a tag moved
+-- to another room is renamed there. Quantities and units: temperature °C,
+-- humidity %, pressure hPa, battery_voltage V, movement_counter (wraps at
+-- 255), rssi dBm.
+-- =========================================================
+CREATE TABLE ruuvi (
+    time     TIMESTAMPTZ      NOT NULL,
+    room     TEXT             NOT NULL,
+    quantity TEXT             NOT NULL,
+    value    DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (time, room, quantity)
+);
+SELECT create_hypertable('ruuvi', 'time', chunk_time_interval => INTERVAL '1 day');
+CREATE INDEX ON ruuvi (room, quantity, time DESC);
+
+-- =========================================================
 -- Continuous Aggregate Refresh Policies
 -- =========================================================
 SELECT add_continuous_aggregate_policy('knx_1h',
@@ -660,6 +679,9 @@ ALTER TABLE miele_state SET (timescaledb.compress,
 ALTER TABLE miele_eco SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'device',
     timescaledb.compress_orderby = 'time DESC');
+ALTER TABLE ruuvi SET (timescaledb.compress,
+    timescaledb.compress_segmentby = 'room, quantity',
+    timescaledb.compress_orderby = 'time DESC');
 ALTER TABLE unifi_events SET (timescaledb.compress,
     timescaledb.compress_segmentby = 'camera',
     timescaledb.compress_orderby = 'time DESC');
@@ -680,6 +702,7 @@ SELECT add_compression_policy('midea_environment',   INTERVAL '2 days');
 SELECT add_compression_policy('midea_state',         INTERVAL '2 days');
 SELECT add_compression_policy('miele_state',         INTERVAL '2 days');
 SELECT add_compression_policy('miele_eco',           INTERVAL '2 days');
+SELECT add_compression_policy('ruuvi',               INTERVAL '2 days');
 SELECT add_compression_policy('unifi_events',        INTERVAL '7 days');
 
 -- =========================================================
@@ -703,6 +726,7 @@ SELECT add_retention_policy('midea_environment',   INTERVAL '365 days');
 SELECT add_retention_policy('midea_state',         INTERVAL '365 days');
 SELECT add_retention_policy('miele_state',         INTERVAL '365 days');
 SELECT add_retention_policy('miele_eco',           INTERVAL '365 days');
+SELECT add_retention_policy('ruuvi',               INTERVAL '365 days');
 
 -- =========================================================
 -- GA catalog — GA → name/room/function/description lookup,

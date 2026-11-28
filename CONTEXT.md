@@ -62,7 +62,7 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   sidecar container. Avoid: side-car, split repo.
 - **Sidecar bridge** (avoid: device bridge) — a sidecar that translates one
   device family's native protocol into NATS subjects and back: the KNX,
-  Dyson, Miele, Midea and Bordbar bridges. Unqualified, "the bridge" always
+  Dyson, Miele, Midea, Bordbar and Ruuvi bridges. Unqualified, "the bridge" always
   means the KNX-NATS bridge, which is also a generated device.
   `lares-mcp-bridge` is not one: it fronts the archive for MCP, no device.
 - **Stream** — a JetStream stream: the retained subject space of one source

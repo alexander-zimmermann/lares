@@ -29,6 +29,7 @@ BEGIN
             'dyson_environment', 'dyson_state',
             'midea_environment', 'midea_state',
             'miele_state', 'miele_eco',
+            'ruuvi',
             'unifi_events']
         LOOP
             IF EXISTS (SELECT 1 FROM pg_tables
