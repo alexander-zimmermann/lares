@@ -1,0 +1,86 @@
+# RuuviTag readings from the ESPHome receiver -> TimescaleDB + parquet.
+#
+#   ruuvi.<floor>.<room>.<quantity> -> ruuvi
+#
+# ESPHome publishes every quantity of a tag as its own message, a bare number
+# averaged over 60 s, so each message is one row. The receiver's status
+# (ruuvi.<receiver>.status, three tokens) does not match the subject filter.
+# The payload carries no timestamp; the JetStream receive time stands in.
+input:
+  nats_jetstream:
+    urls: ["nats://nats.nats.svc:4222"]
+    auth:
+      user: redpanda-connect
+      password: ${NATS_PASSWORD}
+    stream: RUUVI
+    subject: ruuvi.*.*.*
+    durable: redpanda-connect-ruuvi
+    deliver: all
+    ack_wait: 20m
+    max_ack_pending: 5000
+    # Join the trace carried in the NATS headers
+    extract_tracing_map: root = @
+
+pipeline:
+  processors:
+    - mapping: |
+        let subject = meta("nats_subject").split(".")
+        let raw = content().string()
+        # ESPHome sends "None" for a sensor without a state; a NaN never
+        # equals itself.
+        let value = $raw.number().catch(null)
+        root = if $value == null || $value != $value { deleted() } else { {
+          "time":     (meta("nats_timestamp_unix_nano").number() / 1000000000).ts_format("2006-01-02T15:04:05.999999Z").catch(now().ts_format("2006-01-02T15:04:05.999999Z")),
+          "room":     $subject.index(1) + "." + $subject.index(2),
+          "quantity": $subject.index(3),
+          "value":    $value,
+          "raw":      $raw,
+        } }
+
+output:
+  broker:
+    pattern: fan_out
+    outputs:
+      - sql_raw:
+          driver: pgx
+          max_in_flight: 16
+          dsn: postgres://${PGUSER}:${PGPASSWORD}@timescaledb-db-pooler.timescaledb.svc.cluster.local:5432/homelab?sslmode=disable
+          init_statement: |
+            SET timezone = 'UTC';
+          query: |
+            INSERT INTO ruuvi (time, room, quantity, value)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (time, room, quantity) DO NOTHING
+          args_mapping: |
+            root = [
+              this.time,
+              this.room,
+              this.quantity,
+              this.value,
+            ]
+      - aws_s3:
+          bucket: nats-archive
+          object_canned_acl: private
+          region: us-east-1
+          endpoint: http://rustfs-svc.rustfs.svc.cluster.local:9000
+          force_path_style_urls: true
+          credentials:
+            id: ${RUSTFS_ACCESS_KEY}
+            secret: ${RUSTFS_SECRET_KEY}
+          path: ruuvi/${!now().ts_format("2006/01/02/15")}/${!uuid_v4()}.parquet
+          batching:
+            count: 2000
+            period: 15m
+            processors:
+              - mapping: |
+                  root = {
+                    "time":    this.time,
+                    "subject": meta("nats_subject"),
+                    "payload": this.raw,
+                  }
+              - parquet_encode:
+                  default_compression: zstd
+                  schema:
+                    - { name: time,    type: UTF8 }
+                    - { name: subject, type: UTF8 }
+                    - { name: payload, type: UTF8 }

@@ -1,0 +1,16 @@
+# RuuviTag readings published by the ESPHome receiver via the MQTT gateway:
+# ruuvi/<floor>/<room>/<quantity> becomes ruuvi.<floor>.<room>.<quantity>,
+# and the receiver's online/offline state arrives on ruuvi.<receiver>.status.
+apiVersion: jetstream.nats.io/v1beta2
+kind: Stream
+metadata:
+  name: ruuvi
+  namespace: nats
+spec:
+  name: RUUVI
+  subjects:
+    - ruuvi.>
+  storage: file
+  retention: limits
+  maxAge: 168h
+  replicas: 1
