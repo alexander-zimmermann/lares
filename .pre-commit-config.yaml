@@ -82,7 +82,8 @@ repos:
         entry: task diagnostics:validate-faults
         language: system
         pass_filenames: false
-        files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/faults\.yaml|detect-faults-cronjob\.yaml)$
+        # The fault list is held against the site beside it.
+        files: ^kubernetes/applications/lares-diagnostics-engine/base/(config/(faults|site)\.yaml|detect-faults-cronjob\.yaml)$
       - id: diagnostics-validate-site
         name: diagnostics:validate-site
         entry: task diagnostics:validate-site
