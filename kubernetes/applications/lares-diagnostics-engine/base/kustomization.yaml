@@ -11,10 +11,12 @@ resources:
   - ./detect-faults-cronjob.yaml
 
 # The engine's two declared files: what counts as wrong, and what the
-# house is. Hash suffix on: an edit re-renders the CronJob reference, so
-# the next run picks it up without a manual restart.
+# house is. A fixed name, because Kyverno clones the ConfigMap by name to
+# the applications that read it; every run starts a pod on the current files.
 configMapGenerator:
   - name: lares-diagnostics-engine-config
+    options:
+      disableNameSuffixHash: true
     files:
       - ./config/faults.yaml
       - ./config/site.yaml
