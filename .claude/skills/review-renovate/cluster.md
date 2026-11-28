@@ -9,7 +9,7 @@
 - A Talos minor also needs an Omni that supports it; Omni's version sits in `infrastructure/templates/30-cloud-init/cluster-mgmt/omni-bootstrap.conf.tftpl`.
 - High blast radius: every bump here reaches every node.
 
-## Step 4: diff the machine config and the APIs
+## Step 5: compare the machine config and the APIs
 
 - Talos: check every field our patches set against the config changes in each release's upgrade notes: renamed, removed, changed default.
 - Kubernetes: list the APIs the new minor removes or deprecates (the changelog's deprecation and API change notes) and grep `apiVersion:` under `kubernetes/` for each.
@@ -17,7 +17,7 @@
 
 Done when every field our patches set and every removed or deprecated API is accounted for.
 
-## Step 5: checks
+## Step 6: checks
 
 - For a Kubernetes minor, check that each high-blast-radius component in `kubernetes.md` supports the new minor at the version lares pins. Fetch these pages with WebFetch, all in one turn. `<minor>` is the component's own version, for a wrapper chart its `appVersion`:
   - cilium: `https://docs.cilium.io/en/v<minor>/network/kubernetes/compatibility/`
