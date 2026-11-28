@@ -12,8 +12,10 @@ tasks:
     summary: |
       Load the fault list with the engine's own loader, installed from GitHub
       at the image tag the detect-faults cronjob deploys — schema validation
-      plus the loader's checks (duplicate names, per-kind parameters) — so a
-      bad edit fails here instead of at startup in the cluster.
+      plus the loader's checks (duplicate names, per-kind parameters) — and
+      hold it against the site file beside it (every room a fault names is a
+      room of the site), so a bad edit fails here instead of at startup in
+      the cluster.
       Called by the pre-commit hook. Needs network (the git tag is fetched on
       every run).
     vars:
@@ -25,16 +27,19 @@ tasks:
         --with "lares-diagnostics-engine @ git+https://github.com/alexander-zimmermann/lares-diagnostics-engine@v{{.DIAGNOSTICS_ENGINE_TAG}}"
         python -c
         "import sys; from pathlib import Path;
-        from lares_diagnostics_engine.faults import FaultList;
+        from lares_diagnostics_engine.faults import FaultList, check_against_site;
+        from lares_diagnostics_engine.site import Site;
         faults = FaultList.load(Path(sys.argv[1]));
+        check_against_site(faults, Site.load(Path(sys.argv[2])));
         print(f'OK: {len(faults)} faults, {len(faults.schedulable())} schedulable (engine v{{.DIAGNOSTICS_ENGINE_TAG}})')"
-        "{{.DIAGNOSTICS_FAULTS_PATH}}"
+        "{{.DIAGNOSTICS_FAULTS_PATH}}" "{{.DIAGNOSTICS_SITE_PATH}}"
 
   validate-site:
     summary: |
-      Load the site file — what the house is: location, timezone, PV planes
-      — with the engine's own loader at the deployed tag: schema validation
-      plus the loader's checks (known timezone, one inverter per plane).
+      Load the site file — what the house is: location, timezone, PV planes,
+      the channel each room is read on — with the engine's own loader at the
+      deployed tag: schema validation plus the loader's checks (known
+      timezone, one inverter per plane).
       Called by the pre-commit hook. Needs network.
     vars:
       DIAGNOSTICS_ENGINE_TAG:
@@ -47,5 +52,5 @@ tasks:
         "import sys; from pathlib import Path;
         from lares_diagnostics_engine.site import Site;
         site = Site.load(Path(sys.argv[1]));
-        print(f'OK: {len(site.planes)} planes, {site.timezone} (engine v{{.DIAGNOSTICS_ENGINE_TAG}})')"
+        print(f'OK: {len(site.planes)} planes, {len(site.rooms)} rooms, {site.timezone} (engine v{{.DIAGNOSTICS_ENGINE_TAG}})')"
         "{{.DIAGNOSTICS_SITE_PATH}}"

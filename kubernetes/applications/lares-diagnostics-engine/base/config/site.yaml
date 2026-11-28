@@ -1,7 +1,8 @@
 # What the house is: where it stands, the timezone its days are counted
-# in, and the PV planes with the inverter each of them feeds. The fault
-# list beside this file says what counts as wrong; a fact about the plant
-# lives here and is never a fault parameter (ADR 0009).
+# in, the PV planes with the inverter each of them feeds, and the channel
+# each room's temperature is read on. The fault list beside this file says
+# what counts as wrong; a fact about the house lives here and is never a
+# fault parameter (ADR 0009).
 
 location:
   latitude: 50.62598
@@ -26,3 +27,36 @@ pv:
       tilt: 17
       azimuth: -51
       kwp: 6.175
+
+rooms:
+  # Keyed as the catalog names carry the room. The channel is the one the
+  # room's Basalte thermostat reads (task basalte:thermostats): the room
+  # sensor, or a motion-detector head where the room has none.
+  EG.Flur:
+    temperature: "Sensorik.EG.Flur.BWM.Eingang.Temperatur"
+  EG.Gäste-WC:
+    temperature: "Sensorik.EG.Gäste-WC.Sensor.Temperatur"
+  EG.Büro:
+    temperature: "Sensorik.EG.Büro.Sensor.Temperatur"
+  EG.Wohnzimmer:
+    temperature: "Sensorik.EG.Wohnzimmer.Sensor.Temperatur"
+  EG.Esszimmer:
+    temperature: "Sensorik.EG.Esszimmer.Sensor.Temperatur"
+  EG.Küche:
+    temperature: "Sensorik.EG.Küche.Sensor.Temperatur"
+  OG.Flur:
+    temperature: "Sensorik.OG.Flur.BWM.Treppe.Temperatur"
+  OG.Abstellraum:
+    temperature: "Sensorik.OG.Abstellraum.Sensor.Temperatur"
+  OG.Badezimmer-Kinder:
+    temperature: "Sensorik.OG.Badezimmer-Kinder.Sensor.Temperatur"
+  OG.Schlafzimmer-Gregory:
+    temperature: "Sensorik.OG.Schlafzimmer-Gregory.Sensor.Temperatur"
+  OG.Schlafzimmer-Luis:
+    temperature: "Sensorik.OG.Schlafzimmer-Luis.Sensor.Temperatur"
+  OG.Schlafzimmer-Eltern:
+    temperature: "Sensorik.OG.Schlafzimmer-Eltern.Sensor.Temperatur"
+  OG.Begehbarer-Schrank:
+    temperature: "Sensorik.OG.Begehbarer-Schrank.BWM.Temperatur"
+  OG.Badezimmer-Eltern:
+    temperature: "Sensorik.OG.Badezimmer-Eltern.Sensor.Temperatur"
