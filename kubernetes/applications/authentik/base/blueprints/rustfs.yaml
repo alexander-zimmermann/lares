@@ -27,6 +27,7 @@ entries:
         - authorization_code
         - refresh_token
       client_id: rustfs
+      # Rotated 2026-10-30; change this line on every rotation, a new secret alone does not re-import this blueprint.
       client_secret: !Env RUSTFS_OIDC_CLIENT_SECRET
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
       redirect_uris:
