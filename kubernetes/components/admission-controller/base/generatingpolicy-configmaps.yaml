@@ -1,0 +1,40 @@
+apiVersion: policies.kyverno.io/v1
+kind: GeneratingPolicy
+
+metadata:
+  name: sync-cluster-configmaps
+  annotations:
+    policies.kyverno.io/title: Sync Cluster ConfigMaps
+    policies.kyverno.io/category: ConfigMaps
+    policies.kyverno.io/subject: ConfigMap
+    policies.kyverno.io/description: >-
+      Clones each listed ConfigMap from its namespace into the namespace that
+      needs it and keeps the copy in sync with the source.
+
+spec:
+  evaluation:
+    generateExisting:
+      enabled: true
+    synchronize:
+      enabled: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["namespaces"]
+  variables:
+    # One line per copy: source namespace, ConfigMap name, target namespace
+    - name: clones
+      expression: |
+        [
+          {"from": "lares-diagnostics-engine", "configmap": "lares-diagnostics-engine-config", "to": "agents"},
+          {"from": "lares-diagnostics-engine", "configmap": "lares-diagnostics-engine-config", "to": "lares-mcp-bridge"}
+        ]
+    - name: wanted
+      expression: >-
+        variables.clones.filter(c, c.to == object.metadata.name)
+  generate:
+    - expression: >-
+        variables.wanted.all(c, generator.Apply(object.metadata.name,
+          dyn(resource.List("v1", "configmaps", c.from).items).filter(m, m.metadata.name == c.configmap)))
