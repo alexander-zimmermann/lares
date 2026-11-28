@@ -69,7 +69,7 @@ deployment:
       value: Lares <admin@zimmermann.sh>
     MAIL_TO:
       value: admin@zimmermann.sh
-    # The engine's fault list, for the sentence in the mail subject
+    # The engine's fault list, for the sentence in the mail subject (Kyverno clones the engine's config)
     FAULTS_FILE:
       value: /etc/lares-agent-trigger/faults.yaml
     # The episode on the knx-episodes dashboard; the host is set per overlay
@@ -150,7 +150,7 @@ deployment:
             path: discord-bot-token
     faults:
       configMap:
-        name: lares-diagnostics-engine-faults
+        name: lares-diagnostics-engine-config
     hook-secret:
       secret:
         secretName: hermes-credentials
