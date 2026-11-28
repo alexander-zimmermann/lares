@@ -1,7 +1,7 @@
 # What the house is: where it stands, the timezone its days are counted
 # in, and the PV planes with the inverter each of them feeds. The fault
 # list beside this file says what counts as wrong; a fact about the plant
-# lives here and is never a fault parameter.
+# lives here and is never a fault parameter (ADR 0009).
 
 location:
   latitude: 50.62598

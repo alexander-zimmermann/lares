@@ -77,7 +77,18 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   opposed to the state and events it reports. From the KNX side a command
   starts as a bus write on a consumed address and leaves the bus through a
   `*_from_knx` pipeline.
-- **Episode** (avoid: alert, incident, anomaly) —
+- **Portal path** (avoid: cloud path, monitoring path) — the route module
+  data takes: from the SolarEdge portal through solaredge2mqtt's
+  `monitoring` service and NATS into `solaredge_module`. Independent of the
+  modbus path that carries the inverters, and watched by its own staleness
+  alert, because a broken portal login is silence, not an error.
+- **Fault** (avoid: anomaly, detector, error) — one declared thing that can
+  be wrong with the house: a sentence with a unit in `faults.yaml`, judged
+  against a declared or measured reference, never against a learned normal
+  ([ADR 0010](docs/adr/0010-fault-references-are-declared-never-derived.md)).
+  On the bus and in Basalte the German word is *Anomalie*, deliberately
+  distinct from a device's own *Störung* and *Fehlerzustand* flags.
+- **Episode** (German UI: *Vorfall*; avoid: alert, incident, anomaly) —
   repeated observations of one fault on one subject, folded into a single
   situation with a start, an end and a severity trajectory. The unit that
   reports, notifications and verdicts address; the per-bucket observations
@@ -86,11 +97,11 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   emits: appeared, escalated, ended. Published by the engine as
   `episode.<kind>` and the house-side trigger for Explain. The message is
   a pointer, not a report: `episode_id`, `fault`, `subject` (the channel,
-  as below), `severity`, `kind` and `time`; everything else is fetched from
-  the episode the id names. Only for a fault declared `explain` — on by
-  default for the measured kinds, off for `external` — and `ended` is
-  published like the others, so the stream is complete and the consumer
-  filters.
+  plane or module, as below), `severity`, `kind` and `time`; everything
+  else is fetched from the episode the id names. Only for a fault declared
+  `explain` — on by default for the measured kinds, off for `external` —
+  and `ended` is published like the others, so the stream is complete and
+  the consumer filters.
 - **Verdict** (avoid: feedback, rating) — a person's binary judgement on
   one subject. On an episode it says whether the fault was real: `real`
   or `nonsense`. On a run it says whether the output helped: `helpful` or
@@ -129,7 +140,8 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   `shared-with-default`.
 - **Subject** — what an explanation is about: one episode (house) or one
   firing alert group (cluster). Not the episode's own `subject` column,
-  which names the channel a fault was measured on; say "channel" for that.
+  which names the channel, plane or module a fault was measured on; say
+  that word for it.
   Never a NATS subject; say "NATS subject".
 - **Subject key** — how a run names its subject in the ledger's
   `subject_key` column: the subject's own id, optionally followed by a
@@ -238,13 +250,13 @@ Terms this repo uses with a specific meaning. Use these words, not synonyms.
   delivered on the subject's own channel; never pushed to KNX.
 - **Propose** — the agent role that periodically
   reads episodes, verdicts and data and offers changes to the fault list as
-  pull requests: a new fault sentence, a moved threshold, a dormant fault to
-  activate, a fault to retire. A person merges or discards; nothing is
-  applied automatically.
+  pull requests: a new fault sentence, a moved threshold or reference, a
+  dormant fault to activate, a fault to retire. A person merges or
+  discards; nothing is applied automatically.
 - **Proposal** — one pull request from Propose: a new fault sentence, a
-  moved threshold, a dormant fault to activate or a fault to retire, with
-  its evidence and a back-test against history. Opened by the trigger as a
-  delivery, never by the model
+  moved threshold or reference, a dormant fault to activate or a fault to
+  retire, with its evidence and a back-test against history. Opened by the
+  trigger as a delivery, never by the model
   ([ADR 0005](docs/adr/0005-github-reads-through-the-official-server-writes-as-deliveries.md)),
   labelled `agent/proposal`. A person merges or rejects it; a rejection
   keeps the same proposal away for a while, and the outcome is read back

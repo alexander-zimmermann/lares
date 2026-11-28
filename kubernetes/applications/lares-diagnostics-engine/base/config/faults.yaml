@@ -525,9 +525,7 @@ faults:
       Verschattung, ein toter String oder ein abregelnder Wechselrichter."
     unit: "× des erlaubten Fehlbetrags"
     kind: deviation
-    # Where the day's expectation comes from — the one line that swaps the
-    # reference: today the weather-adjusted forecast, tomorrow a sibling
-    # inverter or a clear-sky model. The comparison itself never changes.
+    # The day's expectation; swapping it leaves the comparison unchanged.
     expectation: forecast_solar
     parameters:
       # Clouds are already in the forecast, so only a clear shortfall
